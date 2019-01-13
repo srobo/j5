@@ -1,0 +1,12 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: python:3.6
+    steps:
+      - checkout
+      - run: pip install pipenv
+      - run: pipenv install --dev
+      - run: pipenv run lint
+      - run: pipenv run type
+      - run: pipenv run test
