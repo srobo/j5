@@ -22,15 +22,29 @@ The above code is likely to be familiar to any student who has competed in one o
 `j5` lets competition vendors define how the basic parts of the apis are accessed. A robot can thus be constructed from any combination of parts from various organisations.
 
 ```python
-class Robot(j5.Robot):
+from j5.boards import BoardGroup
+from j5.backends.hw import HardwareBackendGroup
 
-    def __init__(self, *args, **kwargs):
-        self.power_board = j5.boards.sr.v4power()
-        self.motor_board = j5.boards.sr.v4motor()
-        self.servo_board = j5.boards.sb.servo_board()
-        self.camera_board = j5.boards.sb.camera_board()
+from j5.boards.sr.v4 import PowerBoard, MotorBoard, ServoBoard, Ruggeduino
+
+
+class Robot:
+
+    def __init__(self):
+
+        self._backend_group = HardwareBackendGroup()
+        
+        self.power_board = PowerBoard(self._backend_group)
+        
+        self.motor_boards = BoardGroup(MotorBoard, self._backend_group)
+        self.motor_board = self.motor_boards.singular()
+        
+        self.servo_boards = BoardGroup(ServoBoard, self._backend_group)
+        self.servo_board = self.servo_boards.singular()
+        
+        self.ruggeduino = Ruggeduino(self._backend_group)
+
 ```
-The above code is for example purposes only and the API is subject to change at any time before it is declared stable.
 
 ## Competitions
 
