@@ -28,8 +28,10 @@ class LED(Component):
 
     @property
     def state(self) -> bool:
+        """Get the current state of the LED."""
         return self._backend.get_led_state(self._identifier)
 
     @state.setter
     def state(self, new_state: bool) -> None:
+        """Set the state of the LED."""
         self._backend.set_led_state(self._identifier, new_state)
