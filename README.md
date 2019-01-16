@@ -34,13 +34,19 @@ The above code is for example purposes only and the API is subject to change at 
 
 ## Competitions
 
-We are working with the following robotics competition to support their hardware(1):
+We are working with developers for the following robotics competition to support their hardware(1):
 
 - SourceBots
 - Student Robotics
 - Hills Road RoboCon
 
 If you are interested in adding support for your hardware, please get in touch.
+
+## Design
+
+As this library has to support multiple hardwares, with multiple backends and still have a common api for people to use, it has ended up fairly complex under the hood. The below diagram should help:
+
+![](/j5.svg)
 
 ## How do I contribute to j5?
 
