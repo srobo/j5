@@ -3,15 +3,15 @@
 from typing import List
 
 from j5 import Board
-from j5.backends import Backend
+from j5.backends import BackendGroup
 from j5.components.led import LED
 
 
 class DemoBoard(Board):
-    """A board for demo purposes, containg 3 LEDs."""
+    """A board for demo purposes, containng 3 LEDs."""
 
-    def __init__(self, backend: Backend):
-        self._backend = backend()
+    def __init__(self, backend_group: BackendGroup):
+        self._backend = backend_group.get_backend(self.__class__)
         self._leds = [LED(n, self._backend) for n in range(0, 3)]
 
     @property
