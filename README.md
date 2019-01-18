@@ -1,8 +1,9 @@
 # j5
 
 [![CircleCI](https://circleci.com/gh/j5api/j5.svg?style=svg)](https://circleci.com/gh/j5api/j5)
-[![Maintainability](https://api.codeclimate.com/v1/badges/54e440aba5a51c9ee133/maintainability)](https://codeclimate.com/github/j5api/j5/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/54e440aba5a51c9ee133/test_coverage)](https://codeclimate.com/github/j5api/j5/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/54e440aba5a51c9ee133/maintainability)](https://codeclimate.com/github/j5api/j5/maintainability)
+[![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](http://opensource.org/licenses/MIT)
 
 j5 Robotics API - Currently under development.
 
