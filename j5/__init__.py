@@ -1,5 +1,5 @@
 """j5 Robotics API."""
 
-from .boards import Board, BoardGroup
+from .boards import BoardGroup
 
-__all__ = ["Board", "BoardGroup"]
+__all__ = ["BoardGroup"]

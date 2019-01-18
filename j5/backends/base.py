@@ -1,9 +1,7 @@
 """The base classes for backends."""
 
 from abc import ABCMeta, abstractmethod
-from typing import Mapping
-
-from j5 import Board
+from typing import Any, Mapping
 
 
 class Backend(metaclass=ABCMeta):
@@ -20,14 +18,15 @@ class BackendGroup(metaclass=ABCMeta):
 
     @property
     @abstractmethod
-    def supported_boards(self) -> Mapping[Board, Backend]:
+    def supported_boards(self) -> Mapping[Any, Backend]:
         """The boards that are supported by this backend group."""
         raise NotImplementedError
 
-    def get_backend(self, board: Board) -> Backend:
+    def get_backend(self, board: Any) -> Backend:
         """Get the backend for a board."""
-
         if board not in self.supported_boards.keys():
-            raise NotImplementedError("The {} does not support {}".format(str(self), str(board)))
+            raise NotImplementedError(
+                "The {} does not support {}".format(str(self), str(board)),
+            )
 
-        return self.supported_boards[board]()
+        return self.supported_boards[board]()  # type: ignore
