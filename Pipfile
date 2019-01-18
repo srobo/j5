@@ -22,6 +22,7 @@ name = "pypi"
 [scripts]
 lint = "flake8 j5 tests"
 type = "mypy j5"
-test = "pytest"
+test = "pytest --cov=j5 tests"
+test-ci = "pytest --cov=j5 tests --cov-report xml"
 build = "python setup.py sdist bdist_wheel"
 upload = "twine upload dist/*"
