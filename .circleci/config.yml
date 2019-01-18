@@ -17,4 +17,4 @@ jobs:
       - run: pipenv run type
       - run: ./cc-test-reporter before-build
       - run: pipenv run test-ci
-      - run: ./cc-test-report after-build -t coverage.py --exit-code $? coverage.xml
+      - run: ./cc-test-reporter after-build -t coverage.py --exit-code $? coverage.xml
