@@ -14,9 +14,10 @@ name = "pypi"
 "flake8-isort" = "*"
 "flake8-mutable" = "*"
 "flake8-todo" = "*"
-mypy = "*"
-pytest = "*"
-twine = "*"
+"mypy" = "*"
+"pytest" = "*"
+"pytest-cov" = "*"
+"twine" = "*"
 
 [scripts]
 lint = "flake8 j5 tests"

@@ -2,6 +2,10 @@
 
 j5 Robotics API - Currently under development.
 
+[![CircleCI](https://circleci.com/gh/j5api/j5.svg?style=svg)](https://circleci.com/gh/j5api/j5)
+[![Maintainability](https://api.codeclimate.com/v1/badges/54e440aba5a51c9ee133/maintainability)](https://codeclimate.com/github/j5api/j5/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/54e440aba5a51c9ee133/test_coverage)](https://codeclimate.com/github/j5api/j5/test_coverage)
+
 ## What is j5?
 
 `j5` is a Python 3 library that aims to abstract away robotics hardware and provide a consistent API for robotics. It was created to reduce the replication of effort into developing the separate, yet very similar APIs for several robotics competitions. Combining the API into a single library with support for various hardware gives a consistent feel for students and volunteers. This means more time to work on building robots!
