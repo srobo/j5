@@ -18,6 +18,10 @@ name = "pypi"
 "pytest" = "*"
 "pytest-cov" = "*"
 "twine" = "*"
+sphinx = "*"
+v = {editable = true,version = "*"}
+recommonmark = "*"
+sphinx-rtd-theme = "*"
 
 [scripts]
 lint = "flake8 j5 tests"

@@ -1,0 +1,30 @@
+j5.components package
+=====================
+
+Submodules
+----------
+
+j5.components.base module
+-------------------------
+
+.. automodule:: j5.components.base
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+j5.components.led module
+------------------------
+
+.. automodule:: j5.components.led
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: j5.components
+    :members:
+    :undoc-members:
+    :show-inheritance:
