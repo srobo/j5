@@ -12,12 +12,12 @@ class LEDInterface(metaclass=ABCMeta):
     @abstractmethod
     def set_led_state(self, board: Board, identifier: int, state: bool) -> None:
         """Set the state of an LED."""
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     @abstractmethod
     def get_led_state(self, board: Board, identifier: int) -> bool:
         """Set the state of an LED."""
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
 
 class LED(Component):

@@ -23,19 +23,19 @@ class Board(metaclass=ABCMeta):
     @abstractmethod
     def name(self) -> str:
         """A human friendly name for this board."""
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     @property
     @abstractmethod
     def serial(self) -> str:
         """The serial number of the board."""
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     @staticmethod
     @abstractmethod
     def detect_all(backend: Backend):
         """Detect all and return a list of boards of this type."""
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
 
 class BoardGroup:
@@ -57,7 +57,7 @@ class BoardGroup:
         """If there is only a single board in the group, return that board."""
         if len(self) == 1:
             return self.boards[0]
-        raise Exception("There is more than one board connected.")
+        raise Exception("There is more than one or zero boards connected.")
 
     def __len__(self):
         """Get the number of boards in this group."""
