@@ -20,7 +20,7 @@ class BackendGroup(metaclass=ABCMeta):
     @abstractmethod
     def supported_boards(self) -> Mapping[Any, Backend]:
         """The boards that are supported by this backend group."""
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     def get_backend(self, board: Any) -> Backend:
         """Get the backend for a board."""

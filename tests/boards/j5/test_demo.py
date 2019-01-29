@@ -1,10 +1,10 @@
 """Test the demo board."""
+from typing import Mapping
+
+from j5.backends import Backend, BackendGroup
 from j5.boards import Board
 from j5.boards.j5 import DemoBoard
-from j5.components import LEDInterface, LED
-from j5.backends import Backend, BackendGroup
-
-from typing import Mapping
+from j5.components import LED, LEDInterface
 
 
 class TestDemoBoardBackend(LEDInterface, Backend):
