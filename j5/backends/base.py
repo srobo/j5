@@ -23,7 +23,7 @@ class BackendGroup(metaclass=ABCMeta):
         raise NotImplementedError  # pragma: no cover
 
     @property
-    def supported_boards(self) -> List:
+    def supported_boards(self) -> List[Any]:
         """The boards that are supported by this backend group."""
         return list(self.board_backend_mapping.keys())
 
