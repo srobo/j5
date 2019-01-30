@@ -56,7 +56,7 @@ class TestBackendGroup(BackendGroup):
     """A test backend group."""
 
     @property
-    def supported_boards(self) -> Mapping[Board, Backend]:
+    def board_backend_mapping(self) -> Mapping[Board, Backend]:
         """The supported boards for this backend group."""
         return {TestBoard: TestBackend}  # type: ignore
 
@@ -74,7 +74,16 @@ def test_backend_group_instantiation():
 def test_backend_group_supported_boards():
     """Test that we can get the supported boards for a backend group."""
     tbg = TestBackendGroup()
+    assert type(tbg.supported_boards) == list
     assert len(tbg.supported_boards) == 1
+
+
+def test_backend_group_board_backend_mapping():
+    """Test that the board_backend_mapping works."""
+    tbg = TestBackendGroup()
+    assert type(tbg.board_backend_mapping) == dict
+    assert len(tbg.supported_boards) == 1
+    assert tbg.board_backend_mapping[TestBoard] == TestBackend
 
 
 def test_backend_group_board_get_backend():

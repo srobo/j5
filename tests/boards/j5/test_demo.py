@@ -23,7 +23,7 @@ class TestBackendGroup(BackendGroup):
     """A test backend group."""
 
     @property
-    def supported_boards(self) -> Mapping[Board, Backend]:
+    def board_backend_mapping(self) -> Mapping[Board, Backend]:
         """The supported boards for this backend group."""
         return {DemoBoard: TestDemoBoardBackend}  # type: ignore
 

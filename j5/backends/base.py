@@ -1,7 +1,7 @@
 """The base classes for backends."""
 
 from abc import ABCMeta, abstractmethod
-from typing import Any, Mapping
+from typing import Any, List, Mapping
 
 
 class Backend(metaclass=ABCMeta):
@@ -18,15 +18,20 @@ class BackendGroup(metaclass=ABCMeta):
 
     @property
     @abstractmethod
-    def supported_boards(self) -> Mapping[Any, Backend]:
-        """The boards that are supported by this backend group."""
+    def board_backend_mapping(self) -> Mapping[Any, Backend]:
+        """A mapping of a supported board to a supported backend."""
         raise NotImplementedError  # pragma: no cover
+
+    @property
+    def supported_boards(self) -> List:
+        """The boards that are supported by this backend group."""
+        return list(self.board_backend_mapping.keys())
 
     def get_backend(self, board: Any) -> Backend:
         """Get the backend for a board."""
-        if board not in self.supported_boards.keys():
+        if board not in self.supported_boards:
             raise NotImplementedError(
                 "The {} does not support {}".format(str(self), str(board)),
             )
 
-        return self.supported_boards[board]()  # type: ignore
+        return self.board_backend_mapping[board]()  # type: ignore
