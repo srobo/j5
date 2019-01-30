@@ -31,7 +31,7 @@ class BackendGroup(metaclass=ABCMeta):
         """Get the backend for a board."""
         if board not in self.supported_boards:
             raise NotImplementedError(
-                "The {} does not support {}".format(str(self), str(board)),
+                f"The {str(self)} does not support {str(board)}",
             )
 
         return self.board_backend_mapping[board]()  # type: ignore

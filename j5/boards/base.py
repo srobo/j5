@@ -13,11 +13,11 @@ class Board(metaclass=ABCMeta):
 
     def __str__(self) -> str:
         """A string representation of this board."""
-        return "{} - {}".format(self.name, self.serial)
+        return f"{self.name} - {self.serial}"
 
     def __repr__(self) -> str:
         """A representation of this board."""
-        return "<{} serial={}>".format(self.__class__.__name__, self.serial)
+        return f"<{self.__class__.__name__} serial={self.serial}>"
 
     @property
     @abstractmethod
@@ -89,8 +89,8 @@ class BoardGroup:
             for b in self.boards:
                 if b.serial == index:
                     return b
-            raise KeyError("Could not find a board with the serial {}".format(index))
+            raise KeyError(f"Could not find a board with the serial {index}")
         else:
             raise IndexError(
-                "Cannot index boards with type {}".format(str(type(index))),
+                f"Cannot index boards with type {str(type(index))}",
             )
