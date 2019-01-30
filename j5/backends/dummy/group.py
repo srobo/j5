@@ -12,6 +12,6 @@ class DummyBackendGroup(BackendGroup):
     """The backends for the dummy environment."""
 
     @property
-    def supported_boards(self) -> Mapping[Board, Backend]:
+    def board_backend_mapping(self) -> Mapping[Board, Backend]:
         """The supported boards for this backend group."""
         return {DemoBoard: DemoBoardDummyBackend}   # type: ignore
