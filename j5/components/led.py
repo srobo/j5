@@ -28,8 +28,8 @@ class LED(Component):
         self._backend = backend
         self._identifier = identifier
 
-    @property
-    def interface_class(self):
+    @staticmethod
+    def interface_class():
         """Get the interface class that is required to use this component."""
         return LEDInterface
 

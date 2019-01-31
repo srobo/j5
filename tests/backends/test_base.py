@@ -19,8 +19,8 @@ class TestBoard(Board):
         """The serial number of the board."""
         return "TEST"
 
-    @property
-    def supported_components(self):
+    @staticmethod
+    def supported_components():
         """List the components that this Board supports."""
         return []
 
@@ -43,8 +43,8 @@ class Test2Board(Board):
         """The serial number of the board."""
         return "TEST2"
 
-    @property
-    def supported_components(self):
+    @staticmethod
+    def supported_components():
         """List the components that this Board supports."""
         return []
 

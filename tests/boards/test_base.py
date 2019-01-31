@@ -18,8 +18,8 @@ class TestingBoard(Board):
         """Get the serial number of this board."""
         return "SERIAL"
 
-    @property
-    def supported_components(self):
+    @staticmethod
+    def supported_components():
         """List the components that this Board supports."""
         return []
 

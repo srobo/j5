@@ -25,8 +25,8 @@ class DemoBoard(Board):
         """Get the serial number."""
         return self._serial
 
-    @property
-    def supported_components(self):
+    @staticmethod
+    def supported_components():
         """List the components that this Board supports."""
         return[LED]
 
