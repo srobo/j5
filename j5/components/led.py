@@ -29,6 +29,11 @@ class LED(Component):
         self._identifier = identifier
 
     @property
+    def interface_class(self):
+        """Get the interface class that is required to use this component."""
+        return LEDInterface
+
+    @property
     def state(self) -> bool:
         """Get the current state of the LED."""
         return self._backend.get_led_state(self._board, self._identifier)
