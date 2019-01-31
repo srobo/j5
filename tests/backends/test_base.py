@@ -1,7 +1,5 @@
 """Tests for the base backend classes."""
 
-from typing import Mapping
-
 import pytest
 
 from j5.backends import Backend, BackendGroup
@@ -46,19 +44,14 @@ class Test2Board(Board):
         return []
 
 
+TestBackendGroup = BackendGroup("TestBackendGroup")
+
+
 class TestBackend(Backend):
     """A test backend."""
 
-    pass
-
-
-class TestBackendGroup(BackendGroup):
-    """A test backend group."""
-
-    @property
-    def board_backend_mapping(self) -> Mapping[Board, Backend]:
-        """The supported boards for this backend group."""
-        return {TestBoard: TestBackend}  # type: ignore
+    group = TestBackendGroup
+    board = TestBoard
 
 
 def test_backend_instantiation():
@@ -66,21 +59,16 @@ def test_backend_instantiation():
     TestBackend()
 
 
-def test_backend_group_instantiation():
-    """Test that we can instantiate a backend group."""
-    TestBackendGroup()
-
-
 def test_backend_group_supported_boards():
     """Test that we can get the supported boards for a backend group."""
-    tbg = TestBackendGroup()
+    tbg = TestBackendGroup
     assert type(tbg.supported_boards) == list
     assert len(tbg.supported_boards) == 1
 
 
 def test_backend_group_board_backend_mapping():
     """Test that the board_backend_mapping works."""
-    tbg = TestBackendGroup()
+    tbg = TestBackendGroup
     assert type(tbg.board_backend_mapping) == dict
     assert len(tbg.supported_boards) == 1
     assert tbg.board_backend_mapping[TestBoard] == TestBackend
@@ -88,12 +76,12 @@ def test_backend_group_board_backend_mapping():
 
 def test_backend_group_board_get_backend():
     """Test that we can get the backend of a board."""
-    tbg = TestBackendGroup()
-    assert tbg.get_backend(TestBoard)
+    tbg = TestBackendGroup
+    assert isinstance(tbg.get_backend(TestBoard), TestBackend)
 
 
 def test_backend_group_board_get_backend_unknown():
     """Test that we can't get the backend of an unknown board."""
-    tbg = TestBackendGroup()
+    tbg = TestBackendGroup
     with pytest.raises(NotImplementedError):
         assert tbg.get_backend(Test2Board)

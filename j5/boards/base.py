@@ -91,6 +91,4 @@ class BoardGroup:
                     return b
             raise KeyError(f"Could not find a board with the serial {index}")
         else:
-            raise IndexError(
-                f"Cannot index boards with type {str(type(index))}",
-            )
+            raise IndexError(f"Cannot index boards with type {str(type(index))}")
