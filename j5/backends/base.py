@@ -21,8 +21,13 @@ class BackendMeta(ABCMeta):
 
         if hasattr(cls, "group"):
             if cls.group is not None and cls.board is not None:
+
                 if type(cls.group) != BackendGroup:
                     raise ValueError("The Backend Group must be of type BackendGroup.")
+
+                if cls.board in cls.group.supported_boards:
+                    raise RuntimeError("You cannot register multiple backends for the same board in the same BackendGroup.")  # noqa: E501
+                
                 cls.group.register_backend(cls.board, cls)
                 return cls
 
