@@ -14,7 +14,7 @@ class BackendMeta(ABCMeta):
 
     def __new__(mcs, name, bases, namespace, **kwargs):
         """Create a new class object."""
-        cls = super().__new__(mcs, name, bases, namespace, **kwargs)
+        cls = super().__new__(mcs, name, bases, namespace, **kwargs)  # type: ignore
 
         if cls.__name__ == "Backend":
             return cls
@@ -30,7 +30,7 @@ class BackendMeta(ABCMeta):
 
                 for component in cls.board.supported_components():
                     if not issubclass(cls, component.interface_class()):
-                        raise TypeError("The backend class doesn't have a required interface.")
+                        raise TypeError("The backend class doesn't have a required interface.")  # noqa: E501
 
                 cls.group.register_backend(cls.board, cls)
                 return cls
@@ -69,7 +69,7 @@ class BackendGroup:
 
     def register_backend(self, board: Any, backend: Backend):
         """Register a new backend with this Backend Group."""
-        self.board_backend_mapping[board] = backend
+        self.board_backend_mapping[board] = backend  # type: ignore
 
     def get_backend(self, board: Any) -> Backend:
         """Get the backend for a board."""
