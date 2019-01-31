@@ -31,6 +31,12 @@ class Board(metaclass=ABCMeta):
         """The serial number of the board."""
         raise NotImplementedError  # pragma: no cover
 
+    @property
+    @abstractmethod
+    def supported_components(self):
+        """The serial number of the board."""
+        raise NotImplementedError  # pragma: no cover
+
     @staticmethod
     @abstractmethod
     def detect_all(backend: Backend):

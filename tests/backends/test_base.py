@@ -19,6 +19,11 @@ class TestBoard(Board):
         """The serial number of the board."""
         return "TEST"
 
+    @property
+    def supported_components(self):
+        """List the components that this Board supports."""
+        return []
+
     @staticmethod
     def detect_all(backend: Backend):
         """Get all boards of this type."""
@@ -37,6 +42,11 @@ class Test2Board(Board):
     def serial(self) -> str:
         """The serial number of the board."""
         return "TEST2"
+
+    @property
+    def supported_components(self):
+        """List the components that this Board supports."""
+        return []
 
     @staticmethod
     def detect_all(backend: Backend):

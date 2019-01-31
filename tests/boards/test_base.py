@@ -18,19 +18,21 @@ class TestingBoard(Board):
         """Get the serial number of this board."""
         return "SERIAL"
 
+    @property
+    def supported_components(self):
+        """List the components that this Board supports."""
+        return []
+
     @staticmethod
     def detect_all(backend: Backend):
         """Detect all boards of this type that are attached."""
         return backend.get_testing_boards()
 
 
-TestBackendGroup = BackendGroup("TestBackendGroup")
-
-
 class NoBoardTestingBackend(Backend):
     """This backend never finds any testing boards."""
 
-    group = TestBackendGroup
+    group = BackendGroup("TestBackendGroup")
     board = TestingBoard
 
     def get_testing_boards(self):
@@ -41,7 +43,7 @@ class NoBoardTestingBackend(Backend):
 class OneBoardTestingBackend(Backend):
     """This backend finds exactly one."""
 
-    group = TestBackendGroup
+    group = BackendGroup("TestBackendGroup")
     board = TestingBoard
 
     def get_testing_boards(self):
@@ -52,7 +54,7 @@ class OneBoardTestingBackend(Backend):
 class TwoBoardsTestingBackend(Backend):
     """This backend finds exactly two."""
 
-    group = TestBackendGroup
+    group = BackendGroup("TestBackendGroup")
     board = TestingBoard
 
     def get_testing_boards(self):
