@@ -8,7 +8,7 @@ class BackendMeta(ABCMeta):
     """
     The metaclass for a backend.
 
-    Responsible for registering the backend with a BackendGroup.
+    Responsible for registering the board-backend mapping with an Environment.
 
     """
 
@@ -19,35 +19,35 @@ class BackendMeta(ABCMeta):
         if cls.__name__ == "Backend":
             return cls
 
-        if hasattr(cls, "group"):
-            if cls.group is not None and cls.board is not None:
+        if hasattr(cls, "environment"):
+            if cls.environment is not None and cls.board is not None:
 
-                if type(cls.group) != BackendGroup:
-                    raise ValueError("The Backend Group must be of type BackendGroup.")
+                if type(cls.environment) != Environment:
+                    raise ValueError("The environment must be of type Environment.")
 
-                if cls.board in cls.group.supported_boards:
-                    raise RuntimeError("You cannot register multiple backends for the same board in the same BackendGroup.")  # noqa: E501
+                if cls.board in cls.environment.supported_boards:
+                    raise RuntimeError("You cannot register multiple backends for the same board in the same Environment.")  # noqa: E501
 
                 for component in cls.board.supported_components():
                     if not issubclass(cls, component.interface_class()):
                         raise TypeError("The backend class doesn't have a required interface.")  # noqa: E501
 
-                cls.group.register_backend(cls.board, cls)
+                cls.environment.register_backend(cls.board, cls)
                 return cls
 
-        raise RuntimeError(f"The {str(cls)} has no group attribute")
+        raise RuntimeError(f"The {str(cls)} has no environment attribute")
 
 
 class Backend(metaclass=BackendMeta):
     """
     The base class for a backend.
 
-    A backend is an implementation of a specific board for a specific environment.
+    A backend is an implementation of a specific board for an environment.
 
     """
 
 
-class BackendGroup:
+class Environment:
     """
     A collection of board implementations that can work together.
 

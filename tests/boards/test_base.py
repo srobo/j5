@@ -1,7 +1,7 @@
 """Test the base classes for boards."""
 import pytest
 
-from j5.backends import Backend, BackendGroup
+from j5.backends import Backend, Environment
 from j5.boards.base import Board, BoardGroup, BoardIndex
 
 
@@ -32,7 +32,7 @@ class TestingBoard(Board):
 class NoBoardTestingBackend(Backend):
     """This backend never finds any testing boards."""
 
-    group = BackendGroup("TestBackendGroup")
+    environment = Environment("TestEnvironment")
     board = TestingBoard
 
     def get_testing_boards(self):
@@ -43,7 +43,7 @@ class NoBoardTestingBackend(Backend):
 class OneBoardTestingBackend(Backend):
     """This backend finds exactly one."""
 
-    group = BackendGroup("TestBackendGroup")
+    environment = Environment("TestEnvironment")
     board = TestingBoard
 
     def get_testing_boards(self):
@@ -54,7 +54,7 @@ class OneBoardTestingBackend(Backend):
 class TwoBoardsTestingBackend(Backend):
     """This backend finds exactly two."""
 
-    group = BackendGroup("TestBackendGroup")
+    environment = Environment("TestEnvironment")
     board = TestingBoard
 
     def get_testing_boards(self):
