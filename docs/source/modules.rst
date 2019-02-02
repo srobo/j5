@@ -1,5 +1,5 @@
-j5
-==
+Module API
+===========
 
 .. toctree::
    :maxdepth: 4
