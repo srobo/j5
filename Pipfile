@@ -18,6 +18,7 @@ name = "pypi"
 "pytest" = "*"
 "pytest-cov" = "*"
 "twine" = "*"
+sphinx = "*"
 
 [scripts]
 lint = "flake8 j5 tests"
