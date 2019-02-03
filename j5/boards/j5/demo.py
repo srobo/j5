@@ -26,12 +26,12 @@ class DemoBoard(Board):
         return self._serial
 
     @staticmethod
-    def supported_components():
-        """List the components that this Board supports."""
+    def components():
+        """List the components on this Board."""
         return[LED]
 
     @staticmethod
-    def detect_all(backend: Backend) -> List[Any]:
+    def discover(backend: Backend) -> List[Any]:
         """Detect all connected boards of this type and return them."""
         return [DemoBoard(str(n), backend) for n in range(0, 3)]  # type: ignore
 

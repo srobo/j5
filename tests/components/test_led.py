@@ -30,12 +30,12 @@ class TestingLEDBoard(Board):
         return "SERIAL"
 
     @property
-    def supported_components(self):
+    def components(self):
         """List the components that this Board supports."""
         return [LED]
 
     @staticmethod
-    def detect_all(backend: Backend):
+    def discover(backend: Backend):
         """Detect all of the boards on a given backend."""
         return []
 

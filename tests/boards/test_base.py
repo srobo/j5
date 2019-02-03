@@ -19,12 +19,12 @@ class TestingBoard(Board):
         return "SERIAL"
 
     @staticmethod
-    def supported_components():
-        """List the components that this Board supports."""
+    def components():
+        """List the components on this Board."""
         return []
 
     @staticmethod
-    def detect_all(backend: Backend):
+    def discover(backend: Backend):
         """Detect all boards of this type that are attached."""
         return backend.get_testing_boards()
 
@@ -108,9 +108,9 @@ def test_testing_board_repr():
     assert repr(tb) == "<TestingBoard serial=SERIAL>"
 
 
-def test_detect_all():
+def test_discover():
     """Test that the detect all static method works."""
-    assert TestingBoard.detect_all(NoBoardTestingBackend()) == []
+    assert TestingBoard.discover(NoBoardTestingBackend()) == []
 
 
 def test_create_boardgroup():

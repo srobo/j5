@@ -23,6 +23,7 @@ python_version = "3.7"
 "pytest-cov" = "*"
 "twine" = "*"
 sphinx = "*"
+rope = "*"
 
 [scripts]
 lint = "flake8 j5 tests"
