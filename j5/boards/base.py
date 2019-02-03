@@ -90,7 +90,6 @@ class BoardGroup:
             board.make_safe()
 
     def __len__(self) -> int:
-
         """Get the number of boards in this group."""
         return len(self.boards)
 
