@@ -22,6 +22,9 @@ sphinx-rtd-theme = "*"
 sphinx = "*"
 rope = "*"
 
+[requires]
+python_version = "3.7"
+
 [scripts]
 lint = "flake8 j5 tests"
 type = "mypy j5"
