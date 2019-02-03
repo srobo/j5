@@ -1,7 +1,10 @@
 """The base classes for backends."""
 
-from abc import ABCMeta
-from typing import Any, List, Mapping
+from abc import ABCMeta, abstractmethod
+from typing import TYPE_CHECKING, Dict, List, Type
+
+if TYPE_CHECKING:
+    from j5.boards import Board # noqa
 
 
 class BackendMeta(ABCMeta):
@@ -46,6 +49,12 @@ class Backend(metaclass=BackendMeta):
 
     """
 
+    @property
+    @abstractmethod
+    def environment(self):
+        """Environment the backend belongs too."""
+        raise NotImplementedError  # pragma: no cover
+
 
 class Environment:
     """
@@ -56,24 +65,24 @@ class Environment:
 
     def __init__(self, name: str):
         self.name = name
-        self.board_backend_mapping: Mapping[Any, Backend] = {}
+        self.board_backend_mapping: Dict[Type['Board'], Type[Backend]] = {}
 
     @property
-    def supported_boards(self) -> List[Any]:
+    def supported_boards(self) -> List[Type['Board']]:
         """The boards that are supported by this backend group."""
         return list(self.board_backend_mapping.keys())
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Get a string representation of this group."""
         return self.name
 
-    def register_backend(self, board: Any, backend: Backend):
+    def register_backend(self, board: Type['Board'], backend: Type[Backend]) -> None:
         """Register a new backend with this Backend Group."""
-        self.board_backend_mapping[board] = backend  # type: ignore
+        self.board_backend_mapping[board] = backend
 
-    def get_backend(self, board: Any) -> Backend:
+    def get_backend(self, board: 'Type[Board]') -> Backend:
         """Get the backend for a board."""
         if board not in self.supported_boards:
             raise NotImplementedError(f"The {str(self)} does not support {str(board)}")
 
-        return self.board_backend_mapping[board]()  # type: ignore
+        return self.board_backend_mapping[board]()

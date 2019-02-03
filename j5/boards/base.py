@@ -1,9 +1,13 @@
 """The base classes for boards and group of boards."""
 
 from abc import ABCMeta, abstractmethod
-from typing import Iterator, Union
+from typing import TYPE_CHECKING, Iterator, List, Type, Union, cast
 
 from j5.backends import Backend
+
+if TYPE_CHECKING:
+    from j5.components import Component # noqa
+
 
 BoardIndex = Union[int, str]
 
@@ -33,13 +37,13 @@ class Board(metaclass=ABCMeta):
 
     @staticmethod
     @abstractmethod
-    def components():
+    def components() -> List[Type['Component']]:
         """The components on this board."""
         raise NotImplementedError  # pragma: no cover
 
     @staticmethod
     @abstractmethod
-    def discover(backend: Backend):
+    def discover(backend: Backend) -> List['Board']:
         """Detect and return a list of boards of this type."""
         raise NotImplementedError  # pragma: no cover
 
@@ -51,7 +55,7 @@ class BoardGroup:
         self.board_class: Board = board
         self._backend: Backend = backend
         self._iterator_counter: int = 0
-        self.boards = []  # type: ignore
+        self.boards: List[Board] = []
 
         self.update_boards()
 
@@ -65,7 +69,7 @@ class BoardGroup:
             return self.boards[0]
         raise Exception("There is more than one or zero boards connected.")
 
-    def __len__(self):
+    def __len__(self) -> int:
         """Get the number of boards in this group."""
         return len(self.boards)
 
@@ -84,13 +88,13 @@ class BoardGroup:
         self._iterator_counter += 1
         return board
 
-    def __getitem__(self, index: BoardIndex):
+    def __getitem__(self, index: BoardIndex) -> Board:
         """Get the board from an index."""
         if len(self.boards) <= 0:
             raise IndexError("Could not find any boards.")
 
         if type(index) == int:
-            return self.boards[index]  # type: ignore
+            return self.boards[cast(int, index)]
         elif type(index) == str:
             for b in self.boards:
                 if b.serial == index:
