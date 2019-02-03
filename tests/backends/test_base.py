@@ -25,7 +25,7 @@ class TestBoard(Board):
         return []
 
     @staticmethod
-    def detect_all(backend: Backend):
+    def discover(backend: Backend):
         """Get all boards of this type."""
         return []
 
@@ -49,7 +49,7 @@ class Test2Board(Board):
         return []
 
     @staticmethod
-    def detect_all(backend: Backend):
+    def discover(backend: Backend):
         """Get all boards of this type."""
         return []
 

@@ -62,5 +62,5 @@ def test_demo_board_led_operation():
 
 def test_demo_board_detection():
     """Test that we can detect all the demo boards."""
-    boards = DemoBoard.detect_all(TestEnvironment)
+    boards = DemoBoard.discover(TestEnvironment)
     assert len(boards) == 3

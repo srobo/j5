@@ -35,7 +35,7 @@ class TestingLEDBoard(Board):
         return [LED]
 
     @staticmethod
-    def detect_all(backend: Backend):
+    def discover(backend: Backend):
         """Detect all of the boards on a given backend."""
         return []
 

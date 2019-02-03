@@ -39,8 +39,8 @@ class Board(metaclass=ABCMeta):
 
     @staticmethod
     @abstractmethod
-    def detect_all(backend: Backend):
-        """Detect all and return a list of boards of this type."""
+    def discover(backend: Backend):
+        """Detect and return a list of boards of this type."""
         raise NotImplementedError  # pragma: no cover
 
 
@@ -57,7 +57,7 @@ class BoardGroup:
 
     def update_boards(self) -> None:
         """Update the boards in this group to see if new boards have been added."""
-        self.boards = self.board_class.detect_all(self._backend)
+        self.boards = self.board_class.discover(self._backend)
 
     def singular(self) -> Board:
         """If there is only a single board in the group, return that board."""
