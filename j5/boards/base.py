@@ -1,5 +1,6 @@
 """The base classes for boards and group of boards."""
 
+import atexit
 from abc import ABCMeta, abstractmethod
 from typing import TYPE_CHECKING, Iterator, List, Type, Union, cast
 
@@ -61,6 +62,13 @@ class Board(metaclass=ABCMeta):
     def discover(backend: Backend) -> List['Board']:
         """Detect and return a list of boards of this type."""
         raise NotImplementedError  # pragma: no cover
+
+    @staticmethod
+    @atexit.register
+    def make_all_safe():
+        """Make all boards safe."""
+        for board in Board.BOARDS:
+            board.make_safe()
 
 
 class BoardGroup:
