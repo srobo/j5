@@ -1,7 +1,7 @@
 """The base classes for boards and group of boards."""
 
 from abc import ABCMeta, abstractmethod
-from typing import TYPE_CHECKING, Iterator, List, Type, Union, cast
+from typing import TYPE_CHECKING, Iterator, List, Type, Union
 
 from j5.backends import Backend
 
