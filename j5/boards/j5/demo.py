@@ -33,8 +33,8 @@ class DemoBoard(Board):
         return self._serial
 
     @staticmethod
-    def components() -> List['Type[Component]']:
-        """List the components on this Board."""
+    def supported_components() -> List['Type[Component]']:
+        """List the types of component supported by this Board."""
         return [LED]
 
     @staticmethod
