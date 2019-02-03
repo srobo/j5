@@ -2,12 +2,12 @@
 import pytest
 
 from j5.backends import Backend, Environment
-from j5.boards.base import Board, BoardGroup, BoardIndex
+from j5.boards.base import Board, BoardGroup
 
 
 class TestingBoard(Board):
     """A testing board with little to no functionality."""
-    
+
     @property
     def name(self) -> str:
         """Get the name of this board."""
@@ -39,9 +39,11 @@ class NoBoardTestingBackend(Backend):
         """Get the connected TestingBoards."""
         return []
 
+
 """ Instantiate testing boards to use in the backends"""
 testing_board_instance_one: Board = TestingBoard()
 testing_board_instance_two: Board = TestingBoard()
+
 
 class OneBoardTestingBackend(Backend):
     """This backend finds exactly one."""
@@ -51,7 +53,7 @@ class OneBoardTestingBackend(Backend):
 
     def get_testing_boards(self):
         """Get the connected TestingBoards."""
-        return [ testing_board_instance_one ]
+        return [testing_board_instance_one]
 
 
 class TwoBoardsTestingBackend(Backend):
@@ -64,7 +66,7 @@ class TwoBoardsTestingBackend(Backend):
         """Get the connected TestingBoards."""
         return [
             testing_board_instance_one,
-            testing_board_instance_two
+            testing_board_instance_two,
         ]
 
 
@@ -107,9 +109,10 @@ def test_discover():
     """Test that the detect all static method works."""
     assert TestingBoard.discover(NoBoardTestingBackend()) == []
     assert TestingBoard.discover(OneBoardTestingBackend()) == (OneBoardTestingBackend()
-                                                                .get_testing_boards())
+                                                               .get_testing_boards())
     assert TestingBoard.discover(TwoBoardsTestingBackend()) == (TwoBoardsTestingBackend()
                                                                 .get_testing_boards())
+
 
 def test_create_boardgroup():
     """Test that we can create a board group of testing boards."""
@@ -143,7 +146,7 @@ def test_board_group_boards():
     board_group = BoardGroup(TestingBoard, OneBoardTestingBackend())
 
     assert len(board_group.boards) == 1
-    assert type(board_group.boards[f"SERIAL {id(testing_board_instance_one)}"]) == TestingBoard
+    assert type(board_group.boards[f"SERIAL {id(testing_board_instance_one)}"]) == TestingBoard  # noqa: E501
 
 
 def test_board_group_boards_multiple():
@@ -151,7 +154,7 @@ def test_board_group_boards_multiple():
     board_group = BoardGroup(TestingBoard, TwoBoardsTestingBackend())
 
     assert len(board_group.boards) == 2
-    assert type(board_group.boards[f"SERIAL {id(testing_board_instance_one)}"]) == TestingBoard
+    assert type(board_group.boards[f"SERIAL {id(testing_board_instance_one)}"]) == TestingBoard  # noqa: E501
 
 
 def test_board_group_boards_zero():
@@ -177,7 +180,7 @@ def test_board_group_board_by_unknown():
 
     with pytest.raises(KeyError):
         board_group[0]
-    
+
     with pytest.raises(KeyError):
         board_group[""]
 

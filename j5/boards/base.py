@@ -1,11 +1,9 @@
 """The base classes for boards and group of boards."""
 
 from abc import ABCMeta, abstractmethod
-from typing import Iterator, Union
+from typing import Iterator
 
 from j5.backends import Backend
-
-BoardIndex = Union[int, str]
 
 
 class Board(metaclass=ABCMeta):
@@ -95,5 +93,3 @@ class BoardGroup:
         if serial not in self.boards:
             raise KeyError(f"Could not find a board with the serial {serial}")
         return self.boards[serial]
-
-
