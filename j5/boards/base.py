@@ -64,7 +64,7 @@ class BoardGroup:
     def singular(self) -> Board:
         """If there is only a single board in the group, return that board."""
         if len(self) == 1:
-            return self.boards[0]
+            return self.boards[list(self.boards.keys())[0]]
         raise Exception("There is more than one or zero boards connected.")
 
     def __len__(self):
@@ -82,7 +82,7 @@ class BoardGroup:
         """Get the next item in the iteration."""
         if self._iterator_counter >= len(self.boards):
             raise StopIteration
-        board = self.boards[self.boards.keys()[self._iterator_counter]]
+        board = self.boards[list(self.boards.keys())[self._iterator_counter]]
         self._iterator_counter += 1
         return board
 
@@ -90,6 +90,8 @@ class BoardGroup:
         """Get the board from an index."""
         if len(self.boards) <= 0:
             raise IndexError("Could not find any boards.")
+        if type(serial) != str:
+            raise KeyError("Index must be a string")
         if serial not in self.boards:
             raise KeyError(f"Could not find a board with the serial {serial}")
         return self.boards[serial]

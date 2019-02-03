@@ -7,7 +7,7 @@ from j5.boards.base import Board, BoardGroup, BoardIndex
 
 class TestingBoard(Board):
     """A testing board with little to no functionality."""
-
+    
     @property
     def name(self) -> str:
         """Get the name of this board."""
@@ -16,7 +16,7 @@ class TestingBoard(Board):
     @property
     def serial(self) -> str:
         """Get the serial number of this board."""
-        return "SERIAL"
+        return f"SERIAL {id(self)}"
 
     @staticmethod
     def components():
@@ -68,26 +68,6 @@ class TwoBoardsTestingBackend(Backend):
         ]
 
 
-def test_board_index():
-    """Test that the correct types are included in BoardIndex."""
-    assert isinstance("bees", BoardIndex.__args__)
-    assert isinstance("12345", BoardIndex.__args__)
-    assert isinstance("", BoardIndex.__args__)
-   
-    """Test that integer types throw an exception."""
-    with pytest.raises(KeyError):
-        assert isinstance(0, BoardIndex.__args__)
-
-    with pytest.raises(KeyError):
-        assert isinstance(-1, BoardIndex.__args__)
-    
-    with pytest.raises(KeyError):
-        assert isinstance(2, BoardIndex.__args__)
-    
-    with pytest.raises(KeyError):
-        assert isinstance(21, BoardIndex.__args__)
-
-
 def test_testing_board_instantiation():
     """Test that we can instantiate the testing board."""
     TestingBoard()
@@ -105,7 +85,7 @@ def test_testing_board_serial():
     """Test the serial property of the board class."""
     tb = TestingBoard()
 
-    assert tb.serial == "SERIAL"
+    assert tb.serial == f"SERIAL {id(tb)}"
     assert type(tb.serial) == str
 
 
@@ -113,14 +93,14 @@ def test_testing_board_str():
     """Test the __str__ method of the board class."""
     tb = TestingBoard()
 
-    assert str(tb) == "Testing Board - SERIAL"
+    assert str(tb) == f"Testing Board - SERIAL {id(tb)}"
 
 
 def test_testing_board_repr():
     """Test the __repr__ method of the board class."""
     tb = TestingBoard()
 
-    assert repr(tb) == "<TestingBoard serial=SERIAL>"
+    assert repr(tb) == f"<TestingBoard serial=SERIAL {id(tb)}>"
 
 
 def test_discover():
@@ -163,7 +143,7 @@ def test_board_group_boards():
     board_group = BoardGroup(TestingBoard, OneBoardTestingBackend())
 
     assert len(board_group.boards) == 1
-    assert type(board_group.boards[0]) == TestingBoard
+    assert type(board_group.boards[f"SERIAL {id(testing_board_instance_one)}"]) == TestingBoard
 
 
 def test_board_group_boards_multiple():
@@ -171,7 +151,7 @@ def test_board_group_boards_multiple():
     board_group = BoardGroup(TestingBoard, TwoBoardsTestingBackend())
 
     assert len(board_group.boards) == 2
-    assert type(board_group.boards[0]) == TestingBoard
+    assert type(board_group.boards[f"SERIAL {id(testing_board_instance_one)}"]) == TestingBoard
 
 
 def test_board_group_boards_zero():
@@ -180,22 +160,15 @@ def test_board_group_boards_zero():
 
     assert len(board_group.boards) == 0
 
-    with pytest.raises(IndexError):
-        board_group.boards[0]
-
-
-def test_board_group_board_by_int():
-    """Test that the boards property works with int indices."""
-    board_group = BoardGroup(TestingBoard, OneBoardTestingBackend())
-
-    assert type(board_group[0]) == TestingBoard
+    with pytest.raises(KeyError):
+        board_group.boards[f"SERIAL {id(testing_board_instance_one)}"]
 
 
 def test_board_group_board_by_serial():
     """Test that the boards property works with serial indices."""
     board_group = BoardGroup(TestingBoard, OneBoardTestingBackend())
 
-    assert type(board_group["SERIAL"]) == TestingBoard
+    assert type(board_group[f"SERIAL {id(testing_board_instance_one)}"]) == TestingBoard
 
 
 def test_board_group_board_by_unknown():
@@ -203,21 +176,16 @@ def test_board_group_board_by_unknown():
     board_group = BoardGroup(TestingBoard, OneBoardTestingBackend())
 
     with pytest.raises(KeyError):
+        board_group[0]
+    
+    with pytest.raises(KeyError):
         board_group[""]
 
-    with pytest.raises(IndexError):
+    with pytest.raises(KeyError):
         board_group[{}]
 
     with pytest.raises(KeyError):
         board_group["ARGHHHJ"]
-
-
-def test_board_group_board_no_boards():
-    """Test that the boards property works with int indices."""
-    board_group = BoardGroup(TestingBoard, NoBoardTestingBackend())
-
-    with pytest.raises(IndexError):
-        board_group[0]
 
 
 def test_board_group_length():
