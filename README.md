@@ -30,7 +30,7 @@ The above code is likely to be familiar to any student who has competed in one o
 
 ```python
 from j5.boards import BoardGroup
-from j5.backends.hw import HardwareBackendGroup
+from j5.backends.hw import HardwareEnvironment
 
 from j5.boards.sr.v4 import PowerBoard, MotorBoard, ServoBoard, Ruggeduino
 
@@ -39,17 +39,17 @@ class Robot:
 
     def __init__(self):
 
-        self._backend_group = HardwareBackendGroup()
+        self._env = HardwareEnvironment()
         
-        self.power_board = PowerBoard(self._backend_group)
+        self.power_board = PowerBoard(self._env)
         
-        self.motor_boards = BoardGroup(MotorBoard, self._backend_group)
+        self.motor_boards = BoardGroup(MotorBoard, self._env)
         self.motor_board = self.motor_boards.singular()
         
-        self.servo_boards = BoardGroup(ServoBoard, self._backend_group)
+        self.servo_boards = BoardGroup(ServoBoard, self._env)
         self.servo_board = self.servo_boards.singular()
         
-        self.ruggeduino = Ruggeduino(self._backend_group)
+        self.ruggeduino = Ruggeduino(self._env)
 
 ```
 

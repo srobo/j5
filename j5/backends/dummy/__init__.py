@@ -1,5 +1,5 @@
 """Backends for the dummy environment."""
 
-from .group import DummyBackendGroup
+from .env import DummyEnvironment
 
-__all__ = ["DummyBackendGroup"]
+__all__ = ["DummyEnvironment"]

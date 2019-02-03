@@ -1,5 +1,5 @@
 """Backend classes."""
 
-from .base import Backend, BackendGroup
+from .base import Backend, Environment
 
-__all__ = ["Backend", "BackendGroup"]
+__all__ = ["Backend", "Environment"]

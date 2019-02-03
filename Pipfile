@@ -4,6 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+sphinx-rtd-theme = "*"
 
 [dev-packages]
 "flake8" = "*"
@@ -18,6 +19,7 @@ name = "pypi"
 "pytest" = "*"
 "pytest-cov" = "*"
 "twine" = "*"
+sphinx = "*"
 
 [scripts]
 lint = "flake8 j5 tests"

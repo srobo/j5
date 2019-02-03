@@ -2,7 +2,7 @@
 
 import pytest
 
-from j5.backends import Backend, BackendGroup
+from j5.backends import Backend, Environment
 from j5.boards import Board
 
 
@@ -54,13 +54,13 @@ class Test2Board(Board):
         return []
 
 
-TestBackendGroup = BackendGroup("TestBackendGroup")
+TestEnvironment = Environment("TestBackendGroup")
 
 
 class TestBackend(Backend):
     """A test backend."""
 
-    group = TestBackendGroup
+    environment = TestEnvironment
     board = TestBoard
 
 
@@ -69,29 +69,29 @@ def test_backend_instantiation():
     TestBackend()
 
 
-def test_backend_group_supported_boards():
-    """Test that we can get the supported boards for a backend group."""
-    tbg = TestBackendGroup
-    assert type(tbg.supported_boards) == list
-    assert len(tbg.supported_boards) == 1
+def test_environment_supported_boards():
+    """Test that we can get the supported boards for a environment."""
+    environment = TestEnvironment
+    assert type(environment.supported_boards) == list
+    assert len(environment.supported_boards) == 1
 
 
-def test_backend_group_board_backend_mapping():
+def test_environment_board_backend_mapping():
     """Test that the board_backend_mapping works."""
-    tbg = TestBackendGroup
-    assert type(tbg.board_backend_mapping) == dict
-    assert len(tbg.supported_boards) == 1
-    assert tbg.board_backend_mapping[TestBoard] == TestBackend
+    environment = TestEnvironment
+    assert type(environment.board_backend_mapping) == dict
+    assert len(environment.supported_boards) == 1
+    assert environment.board_backend_mapping[TestBoard] == TestBackend
 
 
-def test_backend_group_board_get_backend():
+def test_environment_board_get_backend():
     """Test that we can get the backend of a board."""
-    tbg = TestBackendGroup
-    assert isinstance(tbg.get_backend(TestBoard), TestBackend)
+    environment = TestEnvironment
+    assert isinstance(environment.get_backend(TestBoard), TestBackend)
 
 
-def test_backend_group_board_get_backend_unknown():
+def test_environment_board_get_backend_unknown():
     """Test that we can't get the backend of an unknown board."""
-    tbg = TestBackendGroup
+    environment = TestEnvironment
     with pytest.raises(NotImplementedError):
-        assert tbg.get_backend(Test2Board)
+        assert environment.get_backend(Test2Board)
