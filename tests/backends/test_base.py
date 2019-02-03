@@ -9,6 +9,9 @@ from j5.boards import Board
 class TestBoard(Board):
     """A test board."""
 
+    def __init__(self):
+        self.setup()
+
     @property
     def name(self) -> str:
         """The name of the board."""
@@ -36,6 +39,9 @@ class TestBoard(Board):
 
 class Test2Board(Board):
     """A test board."""
+
+    def __init__(self):
+        self.setup()
 
     @property
     def name(self) -> str:

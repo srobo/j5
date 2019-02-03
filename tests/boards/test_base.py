@@ -8,6 +8,9 @@ from j5.boards.base import Board, BoardGroup, BoardIndex
 class TestingBoard(Board):
     """A testing board with little to no functionality."""
 
+    def __init__(self):
+        self.setup()
+
     @property
     def name(self) -> str:
         """Get the name of this board."""

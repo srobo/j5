@@ -11,6 +11,7 @@ class DemoBoard(Board):
     """A board for demo purposes, containing 3 LEDs."""
 
     def __init__(self, serial: str, environment: Environment):
+        self.setup()
         self._backend = environment.get_backend(self.__class__)
         self._serial = serial
         self._leds = [LED(n, self, self._backend) for n in range(0, 3)]  # type: ignore

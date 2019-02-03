@@ -19,6 +19,9 @@ class TestingLEDDriver(LEDInterface):
 class TestingLEDBoard(Board):
     """A testing board for the led."""
 
+    def __init__(self):
+        self.setup()
+
     @property
     def name(self) -> str:
         """The name of this board."""
