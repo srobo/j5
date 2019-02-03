@@ -6,7 +6,7 @@ from j5.backends import Backend, Environment
 from j5.boards import Board
 
 
-class TestBoard(Board):
+class MockBoard(Board):
     """A test board."""
 
     def __init__(self):
@@ -37,7 +37,7 @@ class TestBoard(Board):
         return []
 
 
-class Test2Board(Board):
+class Mock2Board(Board):
     """A test board."""
 
     def __init__(self):
@@ -68,44 +68,44 @@ class Test2Board(Board):
         return []
 
 
-TestEnvironment = Environment("TestBackendGroup")
+MockEnvironment = Environment("TestBackendGroup")
 
 
-class TestBackend(Backend):
+class MockBackend(Backend):
     """A test backend."""
 
-    environment = TestEnvironment
-    board = TestBoard
+    environment = MockEnvironment
+    board = MockBoard
 
 
 def test_backend_instantiation():
     """Test that we can instantiate a backend."""
-    TestBackend()
+    MockBackend()
 
 
 def test_environment_supported_boards():
     """Test that we can get the supported boards for a environment."""
-    environment = TestEnvironment
+    environment = MockEnvironment
     assert type(environment.supported_boards) == list
     assert len(environment.supported_boards) == 1
 
 
 def test_environment_board_backend_mapping():
     """Test that the board_backend_mapping works."""
-    environment = TestEnvironment
+    environment = MockEnvironment
     assert type(environment.board_backend_mapping) == dict
     assert len(environment.supported_boards) == 1
-    assert environment.board_backend_mapping[TestBoard] == TestBackend
+    assert environment.board_backend_mapping[MockBoard] == MockBackend
 
 
 def test_environment_board_get_backend():
     """Test that we can get the backend of a board."""
-    environment = TestEnvironment
-    assert isinstance(environment.get_backend(TestBoard), TestBackend)
+    environment = MockEnvironment
+    assert isinstance(environment.get_backend(MockBoard), MockBackend)
 
 
 def test_environment_board_get_backend_unknown():
     """Test that we can't get the backend of an unknown board."""
-    environment = TestEnvironment
+    environment = MockEnvironment
     with pytest.raises(NotImplementedError):
-        assert environment.get_backend(Test2Board)
+        assert environment.get_backend(Mock2Board)
