@@ -56,7 +56,7 @@ class BoardGroup:
         self.board_class: Board = board
         self._backend: Backend = backend
         self._iterator_counter: int = 0
-        self.boards: List[Board] = []  # type: ignore
+        self.boards: List[Board] = []
 
         self.update_boards()
 

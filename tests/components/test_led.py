@@ -34,6 +34,10 @@ class TestingLEDBoard(Board):
         """List the components that this Board supports."""
         return [LED]
 
+    def make_safe(self):
+        """Make this board safe."""
+        pass
+
     @staticmethod
     def discover(backend: Backend):
         """Detect all of the boards on a given backend."""

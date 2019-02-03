@@ -18,6 +18,10 @@ class TestingBoard(Board):
         """Get the serial number of this board."""
         return "SERIAL"
 
+    def make_safe(self):
+        """Make this board safe."""
+        pass
+
     @staticmethod
     def components():
         """List the components on this Board."""
