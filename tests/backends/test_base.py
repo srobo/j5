@@ -20,7 +20,7 @@ class TestBoard(Board):
         return "TEST"
 
     @staticmethod
-    def supported_components():
+    def components():
         """List the components that this Board supports."""
         return []
 
@@ -44,7 +44,7 @@ class Test2Board(Board):
         return "TEST2"
 
     @staticmethod
-    def supported_components():
+    def components():
         """List the components that this Board supports."""
         return []
 
