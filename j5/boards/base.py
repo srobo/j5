@@ -1,7 +1,7 @@
 """The base classes for boards and group of boards."""
 
 from abc import ABCMeta, abstractmethod
-from typing import TYPE_CHECKING, Iterator, List, Type, Union
+from typing import TYPE_CHECKING, Dict, Iterator, List, Type, Union
 
 from j5.backends import Backend
 
@@ -55,13 +55,13 @@ class BoardGroup:
         self.board_class: Board = board
         self._backend: Backend = backend
         self._iterator_counter: int = 0
-        self.boards: List[Board] = []
+        self.boards: Dict[str, Board] = {}
 
         self.update_boards()
 
     def update_boards(self) -> None:
         """Update the boards in this group to see if new boards have been added."""
-        self.boards = {}
+        self.boards = {}  # type: Dict[str, Board]
         for board in self.board_class.discover(self._backend):
             self.boards[board.serial] = board
 
