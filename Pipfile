@@ -6,9 +6,6 @@ name = "pypi"
 [packages]
 sphinx-rtd-theme = "*"
 
-[requires]
-python_version = "3.7"
-
 [dev-packages]
 "flake8" = "*"
 "flake8-commas" = "*"
@@ -24,6 +21,9 @@ python_version = "3.7"
 "twine" = "*"
 sphinx = "*"
 rope = "*"
+
+[requires]
+python_version = "3.7"
 
 [scripts]
 lint = "flake8 j5 tests"
