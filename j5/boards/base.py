@@ -1,7 +1,7 @@
 """The base classes for boards and group of boards."""
 
 from abc import ABCMeta, abstractmethod
-from typing import Iterator, Union
+from typing import Iterator, Union, List
 
 from j5.backends import Backend
 
@@ -56,7 +56,7 @@ class BoardGroup:
         self.board_class: Board = board
         self._backend: Backend = backend
         self._iterator_counter: int = 0
-        self.boards = []  # type: ignore
+        self.boards: List[Board] = []  # type: ignore
 
         self.update_boards()
 
@@ -69,6 +69,11 @@ class BoardGroup:
         if len(self) == 1:
             return self.boards[0]
         raise Exception("There is more than one or zero boards connected.")
+
+    def make_safe(self):
+        """Make all of the boards safe."""
+        for board in self.boards:
+            board.make_safe()
 
     def __len__(self):
         """Get the number of boards in this group."""
