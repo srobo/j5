@@ -27,7 +27,7 @@ class DemoBoard(Board):
 
     @staticmethod
     def components():
-        """List the components that this Board supports."""
+        """List the components on this Board."""
         return[LED]
 
     @staticmethod

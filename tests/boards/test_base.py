@@ -20,7 +20,7 @@ class TestingBoard(Board):
 
     @staticmethod
     def components():
-        """List the components that this Board supports."""
+        """List the components on this Board."""
         return []
 
     @staticmethod
