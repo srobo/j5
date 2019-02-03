@@ -31,6 +31,11 @@ class Board(metaclass=ABCMeta):
         """The serial number of the board."""
         raise NotImplementedError  # pragma: no cover
 
+    @abstractmethod
+    def make_safe(self):
+        """Make all components on this board safe."""
+        raise NotImplementedError  # pragma: no cover
+
     @staticmethod
     @abstractmethod
     def components():

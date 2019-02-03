@@ -25,6 +25,10 @@ class DemoBoard(Board):
         """Get the serial number."""
         return self._serial
 
+    def make_safe(self):
+        """Make this board safe."""
+        pass
+
     @staticmethod
     def components():
         """List the components on this Board."""
