@@ -11,7 +11,7 @@ BoardIndex = Union[int, str]
 class Board(metaclass=ABCMeta):
     """A collection of hardware that has an implementation."""
 
-    __BOARDS: List['Board'] = []  # All the boards.
+    BOARDS: List['Board'] = []  # All the boards.
 
     def __str__(self) -> str:
         """A string representation of this board."""
@@ -27,7 +27,7 @@ class Board(metaclass=ABCMeta):
 
         Adds the implementation to BOARDS.
         """
-        Board.__BOARDS.append(self)
+        Board.BOARDS.append(self)
 
     @property
     @abstractmethod
