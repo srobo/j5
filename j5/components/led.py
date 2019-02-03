@@ -28,6 +28,11 @@ class LED(Component):
         self._backend = backend
         self._identifier = identifier
 
+    @staticmethod
+    def interface_class():
+        """Get the interface class that is required to use this component."""
+        return LEDInterface
+
     @property
     def state(self) -> bool:
         """Get the current state of the LED."""

@@ -33,6 +33,12 @@ class Board(metaclass=ABCMeta):
 
     @staticmethod
     @abstractmethod
+    def supported_components():
+        """The components on this board."""
+        raise NotImplementedError  # pragma: no cover
+
+    @staticmethod
+    @abstractmethod
     def detect_all(backend: Backend):
         """Detect all and return a list of boards of this type."""
         raise NotImplementedError  # pragma: no cover
@@ -91,6 +97,4 @@ class BoardGroup:
                     return b
             raise KeyError(f"Could not find a board with the serial {index}")
         else:
-            raise IndexError(
-                f"Cannot index boards with type {str(type(index))}",
-            )
+            raise IndexError(f"Cannot index boards with type {str(type(index))}")

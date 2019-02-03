@@ -1,0 +1,22 @@
+j5.boards.j5 package
+====================
+
+Submodules
+----------
+
+j5.boards.j5.demo module
+------------------------
+
+.. automodule:: j5.boards.j5.demo
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: j5.boards.j5
+    :members:
+    :undoc-members:
+    :show-inheritance:

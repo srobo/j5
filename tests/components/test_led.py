@@ -29,6 +29,11 @@ class TestingLEDBoard(Board):
         """The serial number of this board."""
         return "SERIAL"
 
+    @property
+    def supported_components(self):
+        """List the components that this Board supports."""
+        return [LED]
+
     @staticmethod
     def detect_all(backend: Backend):
         """Detect all of the boards on a given backend."""

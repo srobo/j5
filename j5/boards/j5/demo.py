@@ -2,7 +2,7 @@
 
 from typing import Any, List
 
-from j5.backends import Backend, BackendGroup
+from j5.backends import Backend, Environment
 from j5.boards import Board
 from j5.components.led import LED
 
@@ -10,8 +10,8 @@ from j5.components.led import LED
 class DemoBoard(Board):
     """A board for demo purposes, containing 3 LEDs."""
 
-    def __init__(self, serial: str, backend_group: BackendGroup):
-        self._backend = backend_group.get_backend(self.__class__)
+    def __init__(self, serial: str, environment: Environment):
+        self._backend = environment.get_backend(self.__class__)
         self._serial = serial
         self._leds = [LED(n, self, self._backend) for n in range(0, 3)]  # type: ignore
 
@@ -24,6 +24,11 @@ class DemoBoard(Board):
     def serial(self) -> str:
         """Get the serial number."""
         return self._serial
+
+    @staticmethod
+    def supported_components():
+        """List the components that this Board supports."""
+        return[LED]
 
     @staticmethod
     def detect_all(backend: Backend) -> List[Any]:

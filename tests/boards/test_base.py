@@ -1,37 +1,8 @@
 """Test the base classes for boards."""
 import pytest
 
-from j5.backends import Backend
+from j5.backends import Backend, Environment
 from j5.boards.base import Board, BoardGroup, BoardIndex
-
-
-class NoBoardTestingBackend(Backend):
-    """This backend never finds any testing boards."""
-
-    def get_testing_boards(self):
-        """Get the connected TestingBoards."""
-        return []
-
-
-class OneBoardTestingBackend(Backend):
-    """This backend finds exactly one."""
-
-    def get_testing_boards(self):
-        """Get the connected TestingBoards."""
-        return [
-            TestingBoard(),
-        ]
-
-
-class TwoBoardsTestingBackend(Backend):
-    """This backend finds exactly one."""
-
-    def get_testing_boards(self):
-        """Get the connected TestingBoards."""
-        return [
-            TestingBoard(),
-            TestingBoard(),
-        ]
 
 
 class TestingBoard(Board):
@@ -48,9 +19,47 @@ class TestingBoard(Board):
         return "SERIAL"
 
     @staticmethod
+    def supported_components():
+        """List the components that this Board supports."""
+        return []
+
+    @staticmethod
     def detect_all(backend: Backend):
         """Detect all boards of this type that are attached."""
         return backend.get_testing_boards()
+
+
+class NoBoardTestingBackend(Backend):
+    """This backend never finds any testing boards."""
+
+    environment = Environment("TestEnvironment")
+    board = TestingBoard
+
+    def get_testing_boards(self):
+        """Get the connected TestingBoards."""
+        return []
+
+
+class OneBoardTestingBackend(Backend):
+    """This backend finds exactly one."""
+
+    environment = Environment("TestEnvironment")
+    board = TestingBoard
+
+    def get_testing_boards(self):
+        """Get the connected TestingBoards."""
+        return [TestingBoard()]
+
+
+class TwoBoardsTestingBackend(Backend):
+    """This backend finds exactly two."""
+
+    environment = Environment("TestEnvironment")
+    board = TestingBoard
+
+    def get_testing_boards(self):
+        """Get the connected TestingBoards."""
+        return [TestingBoard(), TestingBoard()]
 
 
 def test_board_index():
@@ -168,7 +177,7 @@ def test_board_group_board_by_serial():
     """Test that the boards property works with serial indices."""
     board_group = BoardGroup(TestingBoard, OneBoardTestingBackend())
 
-    assert type(board_group['SERIAL']) == TestingBoard
+    assert type(board_group["SERIAL"]) == TestingBoard
 
 
 def test_board_group_board_by_unknown():
@@ -182,7 +191,7 @@ def test_board_group_board_by_unknown():
         board_group[{}]
 
     with pytest.raises(KeyError):
-        board_group['ARGHHHJ']
+        board_group["ARGHHHJ"]
 
 
 def test_board_group_board_no_boards():
