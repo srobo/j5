@@ -20,6 +20,7 @@ sphinx-rtd-theme = "*"
 "pytest-cov" = "*"
 "twine" = "*"
 sphinx = "*"
+rope = "*"
 
 [scripts]
 lint = "flake8 j5 tests"
