@@ -6,6 +6,9 @@ name = "pypi"
 [packages]
 sphinx-rtd-theme = "*"
 
+[requires]
+python_version = "3.7"
+
 [dev-packages]
 "flake8" = "*"
 "flake8-commas" = "*"
