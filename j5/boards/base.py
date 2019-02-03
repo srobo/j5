@@ -51,13 +51,15 @@ class BoardGroup:
         self.board_class: Board = board
         self._backend: Backend = backend
         self._iterator_counter: int = 0
-        self.boards = []  # type: ignore
+        self.boards = {}  # type: ignore
 
         self.update_boards()
 
     def update_boards(self) -> None:
         """Update the boards in this group to see if new boards have been added."""
-        self.boards = self.board_class.discover(self._backend)
+        self.boards = {}
+        for board in self.board_class.discover(self._backend):
+            self.boards[board.serial] = board
 
     def singular(self) -> Board:
         """If there is only a single board in the group, return that board."""
@@ -84,17 +86,12 @@ class BoardGroup:
         self._iterator_counter += 1
         return board
 
-    def __getitem__(self, index: BoardIndex):
+    def __getitem__(self, serial: str):
         """Get the board from an index."""
         if len(self.boards) <= 0:
             raise IndexError("Could not find any boards.")
+        if serial not in self.boards:
+            raise KeyError(f"Could not find a board with the serial {serial}")
+        return self.boards[serial]
 
-        if type(index) == int:
-            return self.boards[index]  # type: ignore
-        elif type(index) == str:
-            for b in self.boards:
-                if b.serial == index:
-                    return b
-            raise KeyError(f"Could not find a board with the serial {index}")
-        else:
-            raise IndexError(f"Cannot index boards with type {str(type(index))}")
+
