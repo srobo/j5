@@ -16,7 +16,9 @@ BoardIndex = Union[int, str]
 class Board(metaclass=ABCMeta):
     """A collection of hardware that has an implementation."""
 
-    BOARDS: List['Board'] = []  # All the boards.
+    # BOARDS is a list of currently instantiated boards.
+    # This is useful to know so that we can make them safe in a crash.
+    BOARDS: List['Board'] = []
 
     def __str__(self) -> str:
         """A string representation of this board."""
