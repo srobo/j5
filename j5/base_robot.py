@@ -6,6 +6,7 @@ from j5.boards import Board
 
 
 class BaseRobot:
+    """A base robot."""
 
     def make_self(self):
         """Make this robot safe."""
