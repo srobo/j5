@@ -39,6 +39,9 @@ class NoBoardTestingBackend(Backend):
         """Get the connected TestingBoards."""
         return []
 
+""" Instantiate testing boards to use in the backends"""
+testing_board_instance_one: Board = TestingBoard()
+testing_board_instance_two: Board = TestingBoard()
 
 class OneBoardTestingBackend(Backend):
     """This backend finds exactly one."""
@@ -48,7 +51,7 @@ class OneBoardTestingBackend(Backend):
 
     def get_testing_boards(self):
         """Get the connected TestingBoards."""
-        return [TestingBoard()]
+        return [ testing_board_instance_one ]
 
 
 class TwoBoardsTestingBackend(Backend):
@@ -59,7 +62,10 @@ class TwoBoardsTestingBackend(Backend):
 
     def get_testing_boards(self):
         """Get the connected TestingBoards."""
-        return [TestingBoard(), TestingBoard()]
+        return [
+            testing_board_instance_one,
+            testing_board_instance_two
+        ]
 
 
 def test_board_index():
@@ -67,10 +73,19 @@ def test_board_index():
     assert isinstance("bees", BoardIndex.__args__)
     assert isinstance("12345", BoardIndex.__args__)
     assert isinstance("", BoardIndex.__args__)
-    assert isinstance(0, BoardIndex.__args__)
-    assert isinstance(-1, BoardIndex.__args__)
-    assert isinstance(2, BoardIndex.__args__)
-    assert isinstance(21, BoardIndex.__args__)
+   
+    """Test that integer types throw an exception."""
+    with pytest.raises(KeyError):
+        assert isinstance(0, BoardIndex.__args__)
+
+    with pytest.raises(KeyError):
+        assert isinstance(-1, BoardIndex.__args__)
+    
+    with pytest.raises(KeyError):
+        assert isinstance(2, BoardIndex.__args__)
+    
+    with pytest.raises(KeyError):
+        assert isinstance(21, BoardIndex.__args__)
 
 
 def test_testing_board_instantiation():
@@ -111,7 +126,10 @@ def test_testing_board_repr():
 def test_discover():
     """Test that the detect all static method works."""
     assert TestingBoard.discover(NoBoardTestingBackend()) == []
-
+    assert TestingBoard.discover(OneBoardTestingBackend()) == (OneBoardTestingBackend()
+                                                                .get_testing_boards())
+    assert TestingBoard.discover(TwoBoardsTestingBackend()) == (TwoBoardsTestingBackend()
+                                                                .get_testing_boards())
 
 def test_create_boardgroup():
     """Test that we can create a board group of testing boards."""
