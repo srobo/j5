@@ -1,15 +1,12 @@
 """The base classes for boards and group of boards."""
 
 from abc import ABCMeta, abstractmethod
-from typing import TYPE_CHECKING, Dict, Iterator, List, Type, Union
+from typing import TYPE_CHECKING, Dict, Iterator, List, Type
 
 from j5.backends import Backend
 
 if TYPE_CHECKING:
     from j5.components import Component # noqa
-
-
-BoardIndex = Union[int, str]
 
 
 class Board(metaclass=ABCMeta):
