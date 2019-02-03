@@ -30,7 +30,7 @@ class TestingLEDBoard(Board):
         return "SERIAL"
 
     @property
-    def supported_components(self):
+    def components(self):
         """List the components that this Board supports."""
         return [LED]
 

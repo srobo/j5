@@ -19,8 +19,8 @@ class TestingBoard(Board):
         return "SERIAL"
 
     @staticmethod
-    def supported_components():
-        """List the components that this Board supports."""
+    def components():
+        """List the components on this Board."""
         return []
 
     @staticmethod

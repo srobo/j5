@@ -26,8 +26,8 @@ class DemoBoard(Board):
         return self._serial
 
     @staticmethod
-    def supported_components():
-        """List the components that this Board supports."""
+    def components():
+        """List the components on this Board."""
         return[LED]
 
     @staticmethod

@@ -33,7 +33,7 @@ class Board(metaclass=ABCMeta):
 
     @staticmethod
     @abstractmethod
-    def supported_components():
+    def components():
         """The components on this board."""
         raise NotImplementedError  # pragma: no cover
 
