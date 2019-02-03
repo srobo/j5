@@ -82,7 +82,7 @@ class BoardGroup:
         """Get the next item in the iteration."""
         if self._iterator_counter >= len(self.boards):
             raise StopIteration
-        board = self.boards[self._iterator_counter]
+        board = self.boards[self.boards.keys()[self._iterator_counter]]
         self._iterator_counter += 1
         return board
 
