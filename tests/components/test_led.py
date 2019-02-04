@@ -4,7 +4,7 @@ from j5.boards import Board
 from j5.components.led import LED, LEDInterface
 
 
-class TestingLEDDriver(LEDInterface):
+class MockLEDDriver(LEDInterface):
     """A testing driver for the led."""
 
     def set_led_state(self, board: Board, identifier: int, state: bool) -> None:
@@ -16,8 +16,11 @@ class TestingLEDDriver(LEDInterface):
         return True
 
 
-class TestingLEDBoard(Board):
+class MockLEDBoard(Board):
     """A testing board for the led."""
+
+    def __init__(self):
+        self.setup()
 
     @property
     def name(self) -> str:
@@ -30,9 +33,13 @@ class TestingLEDBoard(Board):
         return "SERIAL"
 
     @property
-    def components(self):
-        """List the components that this Board supports."""
+    def supported_components(self):
+        """List the types of component that this Board supports."""
         return [LED]
+
+    def make_safe(self):
+        """Make this board safe."""
+        pass
 
     @staticmethod
     def discover(backend: Backend):
@@ -42,17 +49,17 @@ class TestingLEDBoard(Board):
 
 def test_led_interface_implementation():
     """Test that we can implement the LEDInterface."""
-    TestingLEDDriver()
+    MockLEDDriver()
 
 
 def test_led_instantiation():
     """Test that we can instantiate an LED."""
-    LED(0, TestingLEDBoard(), TestingLEDDriver())
+    LED(0, MockLEDBoard(), MockLEDDriver())
 
 
 def test_led_state():
     """Test the state property of an LED."""
-    led = LED(0, TestingLEDBoard(), TestingLEDDriver())
+    led = LED(0, MockLEDBoard(), MockLEDDriver())
 
     led.state = True
     assert led.state

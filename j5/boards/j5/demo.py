@@ -7,15 +7,16 @@ from j5.boards import Board
 from j5.components.led import LED
 
 if TYPE_CHECKING:
-    from j5.components import Component # noqa
+    from j5.components import Component  # noqa
     from typing import Type  # noqa
-    from j5.components.led import LEDInterface # noqa
+    from j5.components.led import LEDInterface  # noqa
 
 
 class DemoBoard(Board):
     """A board for demo purposes, containing 3 LEDs."""
 
     def __init__(self, serial: str, environment: Environment):
+        self.setup()
         self._environment = environment
         self._backend = environment.get_backend(self.__class__)
         self._serial = serial
@@ -32,9 +33,13 @@ class DemoBoard(Board):
         """Get the serial number."""
         return self._serial
 
+    def make_safe(self):
+        """Make this board safe."""
+        pass
+
     @staticmethod
-    def components() -> List['Type[Component]']:
-        """List the components on this Board."""
+    def supported_components() -> List['Type[Component]']:
+        """List the types of component supported by this Board."""
         return [LED]
 
     @staticmethod

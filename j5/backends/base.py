@@ -4,7 +4,7 @@ from abc import ABCMeta, abstractmethod
 from typing import TYPE_CHECKING, Dict, List, Type
 
 if TYPE_CHECKING:
-    from j5.boards import Board # noqa
+    from j5.boards import Board  # noqa
 
 
 class BackendMeta(ABCMeta):
@@ -31,7 +31,7 @@ class BackendMeta(ABCMeta):
                 if cls.board in cls.environment.supported_boards:
                     raise RuntimeError("You cannot register multiple backends for the same board in the same Environment.")  # noqa: E501
 
-                for component in cls.board.components():
+                for component in cls.board.supported_components():
                     if not issubclass(cls, component.interface_class()):
                         raise TypeError("The backend class doesn't have a required interface.")  # noqa: E501
 
