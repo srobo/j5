@@ -19,7 +19,7 @@ class MockBoard(Board):
     @property
     def serial(self) -> str:
         """Get the serial number of this board."""
-        return f"SERIAL {id(self)}"
+        return str(id(self))
 
     def make_safe(self):
         """Make this board safe."""
@@ -86,7 +86,7 @@ def test_testing_board_serial():
     """Test the serial property of the board class."""
     tb = MockBoard()
 
-    assert tb.serial == f"SERIAL {id(tb)}"
+    assert tb.serial == f"{id(tb)}"
     assert type(tb.serial) == str
 
 
@@ -94,25 +94,20 @@ def test_testing_board_str():
     """Test the __str__ method of the board class."""
     tb = MockBoard()
 
-    assert str(tb) == f"Testing Board - SERIAL {id(tb)}"
+    assert str(tb) == f"Testing Board - {id(tb)}"
 
 
 def test_testing_board_repr():
     """Test the __repr__ method of the board class."""
     tb = MockBoard()
-
-    assert repr(tb) == "<MockBoard serial=SERIAL>"
+    assert repr(tb) == f"<MockBoard serial={id(tb)}>"
 
 
 def test_discover():
     """Test that the detect all static method works."""
     assert MockBoard.discover(NoBoardMockBackend()) == []
-    assert MockBoard.discover(OneBoardMockBackend()) == (
-        OneBoardMockBackend().get_testing_boards()
-    )
-    assert MockBoard.discover(TwoBoardsMockBackend()) == (
-        TwoBoardsMockBackend().get_testing_boards()
-    )
+    assert len(MockBoard.discover(OneBoardMockBackend())) == 1
+    assert len(MockBoard.discover(TwoBoardsMockBackend())) == 2
 
 
 def test_create_boardgroup():
@@ -147,7 +142,7 @@ def test_board_group_boards():
     board_group = BoardGroup(MockBoard, OneBoardMockBackend())
 
     assert len(board_group.boards) == 1
-    # assert type(board_group.boards[f"SERIAL {id(testing_board_instance_one)}"]) == TestingBoard  # noqa: E501
+    assert type(list(board_group.boards.values())[0]) == MockBoard  # noqa: E501
 
 
 def test_board_group_boards_multiple():
@@ -155,7 +150,7 @@ def test_board_group_boards_multiple():
     board_group = BoardGroup(MockBoard, TwoBoardsMockBackend())
 
     assert len(board_group.boards) == 2
-    # assert type(board_group.boards[f"SERIAL {id(testing_board_instance_one)}"]) == TestingBoard  # noqa: E501
+    assert type(list(board_group.boards.values())[0]) == MockBoard  # noqa: E501
 
 
 def test_board_group_boards_zero():
@@ -164,16 +159,16 @@ def test_board_group_boards_zero():
 
     assert len(board_group.boards) == 0
 
-    # with pytest.raises(KeyError):
-    #    board_group.boards[f"SERIAL {id(testing_board_instance_one)}"]
+    with pytest.raises(KeyError):
+        board_group.boards["SERIAL0"]
 
 
 def test_board_group_board_by_serial():
     """Test that the boards property works with serial indices."""
-    # board_group = BoardGroup(MockBoard, OneBoardMockBackend())
+    board_group = BoardGroup(MockBoard, OneBoardMockBackend())
     BoardGroup(MockBoard, OneBoardMockBackend())
 
-    # assert type(board_group[f"SERIAL {id(testing_board_instance_one)}"]) == TestingBoard
+    assert type(board_group[list(board_group.boards.values())[0].serial]) == MockBoard
 
 
 def test_board_group_board_by_unknown():
