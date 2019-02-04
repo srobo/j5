@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Iterator, List, Type, Union, cast
 from j5.backends import Backend
 
 if TYPE_CHECKING:
-    from j5.components import Component # noqa
+    from j5.components import Component  # noqa
 
 
 BoardIndex = Union[int, str]

@@ -4,7 +4,7 @@ from abc import ABCMeta, abstractmethod
 from typing import TYPE_CHECKING, Dict, List, Type
 
 if TYPE_CHECKING:
-    from j5.boards import Board # noqa
+    from j5.boards import Board  # noqa
 
 
 class BackendMeta(ABCMeta):
