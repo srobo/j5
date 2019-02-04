@@ -1,5 +1,6 @@
 """The base classes for boards and group of boards."""
 
+import atexit
 from abc import ABCMeta, abstractmethod
 from typing import TYPE_CHECKING, Dict, Iterator, List, Type
 
@@ -12,6 +13,10 @@ if TYPE_CHECKING:
 class Board(metaclass=ABCMeta):
     """A collection of hardware that has an implementation."""
 
+    # BOARDS is a list of currently instantiated boards.
+    # This is useful to know so that we can make them safe in a crash.
+    BOARDS: List['Board'] = []
+
     def __str__(self) -> str:
         """A string representation of this board."""
         return f"{self.name} - {self.serial}"
@@ -19,6 +24,14 @@ class Board(metaclass=ABCMeta):
     def __repr__(self) -> str:
         """A representation of this board."""
         return f"<{self.__class__.__name__} serial={self.serial}>"
+
+    def setup(self):
+        """
+        Setup the board.
+
+        Adds the implementation to BOARDS.
+        """
+        Board.BOARDS.append(self)
 
     @property
     @abstractmethod
@@ -32,10 +45,15 @@ class Board(metaclass=ABCMeta):
         """The serial number of the board."""
         raise NotImplementedError  # pragma: no cover
 
+    @abstractmethod
+    def make_safe(self):
+        """Make all components on this board safe."""
+        raise NotImplementedError  # pragma: no cover
+
     @staticmethod
     @abstractmethod
-    def components() -> List[Type['Component']]:
-        """The components on this board."""
+    def supported_components() -> List[Type['Component']]:
+        """The types of component supported by this board."""
         raise NotImplementedError  # pragma: no cover
 
     @staticmethod
@@ -43,6 +61,13 @@ class Board(metaclass=ABCMeta):
     def discover(backend: Backend) -> List['Board']:
         """Detect and return a list of boards of this type."""
         raise NotImplementedError  # pragma: no cover
+
+    @staticmethod
+    @atexit.register
+    def make_all_safe():
+        """Make all boards safe."""
+        for board in Board.BOARDS:
+            board.make_safe()
 
 
 class BoardGroup:
@@ -67,6 +92,11 @@ class BoardGroup:
         if len(self) == 1:
             return self.boards[list(self.boards.keys())[0]]
         raise Exception("There is more than one or zero boards connected.")
+
+    def make_safe(self):
+        """Make all of the boards safe."""
+        for board in self.boards:
+            board.make_safe()
 
     def __len__(self) -> int:
         """Get the number of boards in this group."""
