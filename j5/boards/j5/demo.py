@@ -16,6 +16,7 @@ class DemoBoard(Board):
     """A board for demo purposes, containing 3 LEDs."""
 
     def __init__(self, serial: str, environment: Environment):
+        self.setup()
         self._environment = environment
         self._backend = environment.get_backend(self.__class__)
         self._serial = serial
@@ -31,6 +32,10 @@ class DemoBoard(Board):
     def serial(self) -> str:
         """Get the serial number."""
         return self._serial
+
+    def make_safe(self):
+        """Make this board safe."""
+        pass
 
     @staticmethod
     def supported_components() -> List['Type[Component]']:
