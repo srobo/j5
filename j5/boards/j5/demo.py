@@ -7,9 +7,9 @@ from j5.boards import Board
 from j5.components.led import LED
 
 if TYPE_CHECKING:
-    from j5.components import Component # noqa
+    from j5.components import Component  # noqa
     from typing import Type  # noqa
-    from j5.components.led import LEDInterface # noqa
+    from j5.components.led import LEDInterface  # noqa
 
 
 class DemoBoard(Board):
