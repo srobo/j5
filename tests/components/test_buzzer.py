@@ -4,7 +4,7 @@ from j5.boards import Board
 from j5.components.buzzer import Buzzer, BuzzerInterface
 
 
-class TestingBuzzerDriver(BuzzerInterface):
+class MockBuzzerDriver(BuzzerInterface):
     """A testing driver for the buzzer."""
 
     def buzz(self, board: Board, identifier: int, length: int,
@@ -13,13 +13,13 @@ class TestingBuzzerDriver(BuzzerInterface):
         pass
 
 
-class TestingBuzzerBoard(Board):
+class MockBuzzerBoard(Board):
     """A testing board for the buzzer."""
 
     @property
     def name(self) -> str:
         """The name of this board."""
-        return "Testing Buzzer Board"
+        return "Mock Buzzer Board"
 
     @property
     def serial(self) -> str:
@@ -27,9 +27,13 @@ class TestingBuzzerBoard(Board):
         return "SERIAL"
 
     @property
-    def components(self):
+    def supported_components(self):
         """List the components that this Board supports."""
         return [Buzzer]
+
+    def make_safe(self):
+        """Make this board safe."""
+        pass
 
     @staticmethod
     def discover(backend: Backend):
@@ -39,9 +43,9 @@ class TestingBuzzerBoard(Board):
 
 def test_buzzer_interface_implementation():
     """Test that we can implement the BuzzerInterface."""
-    TestingBuzzerDriver()
+    MockBuzzerDriver()
 
 
 def test_buzzer_instantiation():
     """Test that we can instantiate an buzzer."""
-    Buzzer(0, TestingBuzzerBoard(), TestingBuzzerDriver())
+    Buzzer(0, MockBuzzerBoard(), MockBuzzerDriver())
