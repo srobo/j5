@@ -55,8 +55,8 @@ class Board(metaclass=ABCMeta):
 
     @staticmethod
     @abstractmethod
-    def components() -> List[Type['Component']]:
-        """The components on this board."""
+    def supported_components() -> List[Type['Component']]:
+        """The types of component supported by this board."""
         raise NotImplementedError  # pragma: no cover
 
     @staticmethod

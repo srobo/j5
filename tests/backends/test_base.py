@@ -27,8 +27,8 @@ class MockBoard(Board):
         pass
 
     @staticmethod
-    def components():
-        """List the components on this Board."""
+    def supported_components():
+        """List the types of component supported by this Board."""
         return []
 
     @staticmethod
@@ -58,8 +58,8 @@ class Mock2Board(Board):
         pass
 
     @staticmethod
-    def components():
-        """List the components on this Board."""
+    def supported_components():
+        """List the types of component supported by this Board."""
         return []
 
     @staticmethod

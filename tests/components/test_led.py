@@ -33,8 +33,8 @@ class MockLEDBoard(Board):
         return "SERIAL"
 
     @property
-    def components(self):
-        """List the components that this Board supports."""
+    def supported_components(self):
+        """List the types of component that this Board supports."""
         return [LED]
 
     def make_safe(self):
