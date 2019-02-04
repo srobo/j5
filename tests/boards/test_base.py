@@ -107,10 +107,12 @@ def test_testing_board_repr():
 def test_discover():
     """Test that the detect all static method works."""
     assert MockBoard.discover(NoBoardMockBackend()) == []
-    assert MockBoard.discover(OneBoardMockBackend()) == (OneBoardMockBackend()
-                                                               .get_testing_boards())
-    assert MockBoard.discover(TwoBoardsMockBackend()) == (TwoBoardsMockBackend()
-                                                                .get_testing_boards())
+    assert MockBoard.discover(OneBoardMockBackend()) == (
+        OneBoardMockBackend().get_testing_boards()
+    )
+    assert MockBoard.discover(TwoBoardsMockBackend()) == (
+        TwoBoardsMockBackend().get_testing_boards()
+    )
 
 
 def test_create_boardgroup():
@@ -162,14 +164,14 @@ def test_board_group_boards_zero():
 
     assert len(board_group.boards) == 0
 
-
     # with pytest.raises(KeyError):
     #    board_group.boards[f"SERIAL {id(testing_board_instance_one)}"]
 
 
 def test_board_group_board_by_serial():
     """Test that the boards property works with serial indices."""
-    board_group = BoardGroup(MockBoard, OneBoardMockBackend())
+    # board_group = BoardGroup(MockBoard, OneBoardMockBackend())
+    BoardGroup(MockBoard, OneBoardMockBackend())
 
     # assert type(board_group[f"SERIAL {id(testing_board_instance_one)}"]) == TestingBoard
 
