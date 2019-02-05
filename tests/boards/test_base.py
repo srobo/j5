@@ -175,7 +175,7 @@ def test_board_group_board_by_unknown():
     """Test that the boards property throws an exception with unknown indices."""
     board_group = BoardGroup(MockBoard, OneBoardMockBackend())
 
-    with pytest.raises(KeyError):
+    with pytest.raises(TypeError):
         board_group[0]
 
     with pytest.raises(KeyError):

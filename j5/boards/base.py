@@ -85,7 +85,7 @@ class BoardGroup:
         """Update the boards in this group to see if new boards have been added."""
         self.boards = {}  # type: Dict[str, Board]
         for board in self.board_class.discover(self._backend):
-            self.boards.update(board.serial: board)
+            self.boards.update({board.serial: board})
 
     def singular(self) -> Board:
         """If there is only a single board in the group, return that board."""
