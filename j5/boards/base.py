@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Dict, Iterator, List, Type
 from j5.backends import Backend
 
 if TYPE_CHECKING:
-    from j5.components import Component # noqa
+    from j5.components import Component  # noqa
 
 
 class Board(metaclass=ABCMeta):
