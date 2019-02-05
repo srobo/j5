@@ -142,7 +142,8 @@ def test_board_group_boards():
     board_group = BoardGroup(MockBoard, OneBoardMockBackend())
 
     assert len(board_group.boards) == 1
-    assert type(list(board_group.boards.values())[0]) == MockBoard  # noqa: E501
+    assert type(list(board_group.boards
+                .values())[0]) == MockBoard
 
 
 def test_board_group_boards_multiple():
@@ -150,7 +151,8 @@ def test_board_group_boards_multiple():
     board_group = BoardGroup(MockBoard, TwoBoardsMockBackend())
 
     assert len(board_group.boards) == 2
-    assert type(list(board_group.boards.values())[0]) == MockBoard  # noqa: E501
+    assert type(list(board_group.boards
+                .values())[0]) == MockBoard
 
 
 def test_board_group_boards_zero():
