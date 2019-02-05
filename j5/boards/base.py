@@ -119,10 +119,9 @@ class BoardGroup:
 
     def __getitem__(self, serial: str):
         """Get the board from serial."""
-        if len(self.boards) <= 0:
-            raise IndexError("Could not find any boards.")
         if type(serial) != str:
             raise TypeError("Serial must be a string")
-        if serial not in self.boards:
+        try:
+            return self.boards[serial]
+        except KeyError:
             raise KeyError(f"Could not find a board with the serial {serial}")
-        return self.boards[serial]
