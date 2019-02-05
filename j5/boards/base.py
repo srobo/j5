@@ -85,12 +85,12 @@ class BoardGroup:
         """Update the boards in this group to see if new boards have been added."""
         self.boards = {}  # type: Dict[str, Board]
         for board in self.board_class.discover(self._backend):
-            self.boards[board.serial] = board
+            self.boards.update(board.serial: board)
 
     def singular(self) -> Board:
         """If there is only a single board in the group, return that board."""
         if len(self) == 1:
-            return self.boards[list(self.boards.keys())[0]]
+            return list(self.boards.values())[0]
         raise Exception("There is more than one or zero boards connected.")
 
     def make_safe(self):
@@ -113,7 +113,7 @@ class BoardGroup:
         """Get the next item in the iteration."""
         if self._iterator_counter >= len(self.boards):
             raise StopIteration
-        board = self.boards[list(self.boards.keys())[self._iterator_counter]]
+        board = list(self.boards.values())[self._iterator_counter]
         self._iterator_counter += 1
         return board
 
@@ -122,7 +122,7 @@ class BoardGroup:
         if len(self.boards) <= 0:
             raise IndexError("Could not find any boards.")
         if type(serial) != str:
-            raise KeyError("Index must be a string")
+            raise TypeError("Index must be a string")
         if serial not in self.boards:
             raise KeyError(f"Could not find a board with the serial {serial}")
         return self.boards[serial]

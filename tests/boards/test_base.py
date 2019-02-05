@@ -181,7 +181,7 @@ def test_board_group_board_by_unknown():
     with pytest.raises(KeyError):
         board_group[""]
 
-    with pytest.raises(KeyError):
+    with pytest.raises(TypeError):
         board_group[{}]
 
     with pytest.raises(KeyError):
