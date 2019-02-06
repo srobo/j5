@@ -10,8 +10,8 @@ class ButtonInterface(metaclass=ABCMeta):
     """An interface containing the methods required for a button."""
 
     @abstractmethod
-    def get_led_state(self, board: Board, identifier: int) -> bool:
-        """Set the state of an LED."""
+    def get_button_state(self, board: Board, identifier: int) -> bool:
+        """Set the state of a button."""
         raise NotImplementedError  # pragma: no cover
 
     @abstractmethod
@@ -35,8 +35,8 @@ class Button(Component):
 
     @property
     def is_pressed(self) -> bool:
-        """Get the current pushed state of the LED."""
-        return self._backend.get_led_state(self._board, self._identifier)
+        """Get the current pushed state of the button."""
+        return self._backend.get_button_state(self._board, self._identifier)
 
     def wait_until_button_pressed(self):
         """Halt the program until this button is pushed."""
