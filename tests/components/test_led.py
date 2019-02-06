@@ -19,9 +19,6 @@ class MockLEDDriver(LEDInterface):
 class MockLEDBoard(Board):
     """A testing board for the led."""
 
-    def __init__(self):
-        self.setup()
-
     @property
     def name(self) -> str:
         """The name of this board."""
