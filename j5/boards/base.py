@@ -27,6 +27,7 @@ class Board(metaclass=ABCMeta):
     def __new__(cls, *args, **kwargs):
         """Ensure any instantiated board is correctly setup."""
         instance = super().__new__(cls)
+        instance._board_setup = False
         instance._setup()
         return instance
 
@@ -40,7 +41,11 @@ class Board(metaclass=ABCMeta):
 
         Adds the implementation to BOARDS.
         """
-        Board.BOARDS.append(self)
+        if not self._board_setup:
+            Board.BOARDS.append(self)
+            self._board_setup = True
+        else:
+            raise Exception(f"Setup has already been called for board {self.serial}")
 
     @property
     @abstractmethod
