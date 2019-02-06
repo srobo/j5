@@ -27,14 +27,14 @@ class Board(metaclass=ABCMeta):
     def __new__(cls, *args, **kwargs):
         """Ensure any instantiated board is correctly setup."""
         instance = super().__new__(cls)
-        instance.setup()
+        instance._setup()
         return instance
 
     def __repr__(self) -> str:
         """A representation of this board."""
         return f"<{self.__class__.__name__} serial={self.serial}>"
 
-    def setup(self):
+    def _setup(self):
         """
         Setup the board.
 
