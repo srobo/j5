@@ -134,21 +134,10 @@ def test_discover():
     assert MockBoard.discover(NoBoardMockBackend()) == []
 
 
-def test_testing_board_setup():
-    """Test that a board is correctly marked as setup."""
+def test_testing_board_added_to_boards_list():
+    """Test that an instantiated board is added to the boards list."""
     board = MockBoard()
-    assert board._board_setup
-
-
-def test_testing_board_setup_throw_when_called_twice():
-    """Test that a board raises an exception if setup multiple times."""
-    board = MockBoard()
-    assert board._board_setup
-    with pytest.raises(Exception) as exec_info:
-        board._setup()
-
-    # Check that the boards serial number is in the error message
-    assert board.serial in exec_info.value.args[0]
+    assert board in Board.BOARDS
 
 
 def test_create_boardgroup():

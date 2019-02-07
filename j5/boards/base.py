@@ -25,27 +25,14 @@ class Board(metaclass=ABCMeta):
         return f"{self.name} - {self.serial}"
 
     def __new__(cls, *args, **kwargs):
-        """Ensure any instantiated board is correctly setup."""
+        """Ensure any instantiated board is added to the boards list."""
         instance = super().__new__(cls)
-        instance._board_setup = False
-        instance._setup()
+        Board.BOARDS.append(instance)
         return instance
 
     def __repr__(self) -> str:
         """A representation of this board."""
         return f"<{self.__class__.__name__} serial={self.serial}>"
-
-    def _setup(self):
-        """
-        Setup the board.
-
-        Adds the implementation to BOARDS.
-        """
-        if not self._board_setup:
-            Board.BOARDS.append(self)
-            self._board_setup = True
-        else:
-            raise Exception(f"Setup has already been called for board {self.serial}")
 
     @property
     @abstractmethod
