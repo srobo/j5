@@ -1,4 +1,6 @@
 """Tests for the LED Classes."""
+from typing import List, Type
+
 from j5.backends import Backend
 from j5.boards import Board
 from j5.components.led import LED, LEDInterface
@@ -30,7 +32,7 @@ class MockLEDBoard(Board):
         return "SERIAL"
 
     @property
-    def supported_components(self):
+    def supported_components(self) -> List[Type['Component']]:
         """List the types of component that this Board supports."""
         return [LED]
 
