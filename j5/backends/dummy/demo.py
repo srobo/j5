@@ -18,5 +18,5 @@ class DemoBoardDummyBackend(LEDInterface, Backend):
         print(f"Set LED {str(identifier)} to {str(state)} on {str(board)}")
 
     def get_led_state(self, board: Board, identifier: int) -> bool:
-        """Set the state of an LED."""
+        """Get the state of an LED."""
         return False
