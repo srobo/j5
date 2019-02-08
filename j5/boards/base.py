@@ -2,15 +2,12 @@
 
 import atexit
 from abc import ABCMeta, abstractmethod
-from typing import TYPE_CHECKING, Iterator, List, Type, Union, cast
+from typing import TYPE_CHECKING, Dict, Iterator, List, Type
 
 from j5.backends import Backend
 
 if TYPE_CHECKING:
     from j5.components import Component  # noqa
-
-
-BoardIndex = Union[int, str]
 
 
 class Board(metaclass=ABCMeta):
@@ -78,18 +75,20 @@ class BoardGroup:
         self.board_class: Board = board
         self._backend: Backend = backend
         self._iterator_counter: int = 0
-        self.boards: List[Board] = []
+        self.boards: Dict[str, Board] = {}
 
         self.update_boards()
 
     def update_boards(self) -> None:
         """Update the boards in this group to see if new boards have been added."""
-        self.boards = self.board_class.discover(self._backend)
+        self.boards: Dict[str, Board] = {}
+        for board in self.board_class.discover(self._backend):
+            self.boards.update({board.serial: board})
 
     def singular(self) -> Board:
         """If there is only a single board in the group, return that board."""
         if len(self) == 1:
-            return self.boards[0]
+            return list(self.boards.values())[0]
         raise Exception("There is more than one or zero boards connected.")
 
     def make_safe(self):
@@ -112,21 +111,15 @@ class BoardGroup:
         """Get the next item in the iteration."""
         if self._iterator_counter >= len(self.boards):
             raise StopIteration
-        board = self.boards[self._iterator_counter]
+        board = list(self.boards.values())[self._iterator_counter]
         self._iterator_counter += 1
         return board
 
-    def __getitem__(self, index: BoardIndex) -> Board:
-        """Get the board from an index."""
-        if len(self.boards) <= 0:
-            raise IndexError("Could not find any boards.")
-
-        if type(index) == int:
-            return self.boards[cast(int, index)]
-        elif type(index) == str:
-            for b in self.boards:
-                if b.serial == index:
-                    return b
-            raise KeyError(f"Could not find a board with the serial {index}")
-        else:
-            raise IndexError(f"Cannot index boards with type {str(type(index))}")
+    def __getitem__(self, serial: str):
+        """Get the board from serial."""
+        try:
+            return self.boards[serial]
+        except KeyError:
+            if type(serial) != str:
+                raise TypeError("Serial must be a string")
+            raise KeyError(f"Could not find a board with the serial {serial}")
