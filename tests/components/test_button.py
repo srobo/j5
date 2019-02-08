@@ -4,7 +4,6 @@ from typing import List, Type
 
 from j5.backends import Backend
 from j5.boards import Board
-from j5.components import Component
 from j5.components.button import Button, ButtonInterface
 
 
@@ -78,5 +77,5 @@ def test_button_wait_until_pressed():
 
 
 def test_button_interface_class():
-    """Test that the Button Interface class is a ButtonInterface"""
+    """Test that the Button Interface class is a ButtonInterface."""
     assert Button.interface_class() == ButtonInterface
