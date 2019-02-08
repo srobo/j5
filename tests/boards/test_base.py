@@ -8,9 +8,6 @@ from j5.boards.base import Board, BoardGroup, BoardIndex
 class MockBoard(Board):
     """A testing board with little to no functionality."""
 
-    def __init__(self):
-        self.setup()
-
     @property
     def name(self) -> str:
         """Get the name of this board."""
@@ -34,6 +31,15 @@ class MockBoard(Board):
     def discover(backend: Backend):
         """Detect all boards of this type that are attached."""
         return backend.get_testing_boards()
+
+
+class MockBoardWithConstructor(MockBoard):
+    """A testing board with a constructor."""
+
+    def __init__(self, test_param, another_param, one_that_defaults=True):
+        self.test_param = test_param
+        self.another_param = another_param
+        self.one_that_defaults = one_that_defaults
 
 
 class NoBoardMockBackend(Backend):
@@ -85,6 +91,14 @@ def test_testing_board_instantiation():
     MockBoard()
 
 
+def test_testing_board_instantiation_with_constructor():
+    """Test that we can instantiate a board that has a constructor."""
+    board = MockBoardWithConstructor("test", another_param="test2")
+    assert board.test_param == "test"
+    assert board.another_param == "test2"
+    assert board.one_that_defaults is True
+
+
 def test_testing_board_name():
     """Test the name property of the board class."""
     tb = MockBoard()
@@ -118,6 +132,12 @@ def test_testing_board_repr():
 def test_discover():
     """Test that the detect all static method works."""
     assert MockBoard.discover(NoBoardMockBackend()) == []
+
+
+def test_testing_board_added_to_boards_list():
+    """Test that an instantiated board is added to the boards list."""
+    board = MockBoard()
+    assert board in Board.BOARDS
 
 
 def test_create_boardgroup():
