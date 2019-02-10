@@ -78,4 +78,4 @@ def test_button_wait_until_pressed():
 
 def test_button_interface_class():
     """Test that the Button Interface class is a ButtonInterface."""
-    assert Button.interface_class() == ButtonInterface
+    assert Button.interface_class() is ButtonInterface
