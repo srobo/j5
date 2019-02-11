@@ -1,15 +1,19 @@
 """Tests for the Piezo Classes."""
+
+from datetime import timedelta
+from typing import List, Type
+
 from j5.backends import Backend
 from j5.boards import Board
-from j5.components.piezo import Piezo, PiezoInterface
+from j5.components.piezo import Piezo, PiezoInterface, Pitch
 
 
 class MockPiezoDriver(PiezoInterface):
     """A testing driver for the piezo."""
 
-    def buzz(self, board: Board, identifier: int, length: int,
-             frequency: int = None, note: str = None) -> None:
-        """Set the state of an piezo."""
+    def buzz(self, board: Board, identifier: int,
+             duration: timedelta, pitch: Pitch) -> None:
+        """Queue a pitch to be played."""
         pass
 
 
@@ -27,7 +31,7 @@ class MockPiezoBoard(Board):
         return "SERIAL"
 
     @property
-    def supported_components(self):
+    def supported_components(self) -> List[Type['Component']]:
         """List the components that this Board supports."""
         return [Piezo]
 

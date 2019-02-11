@@ -3,4 +3,4 @@
 from .base import Component
 from .led import LED, LEDInterface
 
-__all__ = ["Component", "LED", "LEDInterface"]
+__all__ = ["Component", "LED", "LEDInterface", "Piezo", "PiezoInterface"]
