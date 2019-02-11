@@ -2,14 +2,11 @@
 import pytest
 
 from j5.backends import Backend, Environment
-from j5.boards.base import Board, BoardGroup, BoardIndex
+from j5.boards.base import Board, BoardGroup
 
 
 class MockBoard(Board):
     """A testing board with little to no functionality."""
-
-    def __init__(self):
-        self.setup()
 
     @property
     def name(self) -> str:
@@ -19,7 +16,7 @@ class MockBoard(Board):
     @property
     def serial(self) -> str:
         """Get the serial number of this board."""
-        return "SERIAL"
+        return str(id(self))
 
     def make_safe(self):
         """Make this board safe."""
@@ -36,6 +33,15 @@ class MockBoard(Board):
         return backend.get_testing_boards()
 
 
+class MockBoardWithConstructor(MockBoard):
+    """A testing board with a constructor."""
+
+    def __init__(self, test_param, another_param, one_that_defaults=True):
+        self.test_param = test_param
+        self.another_param = another_param
+        self.one_that_defaults = one_that_defaults
+
+
 class NoBoardMockBackend(Backend):
     """This backend never finds any testing boards."""
 
@@ -43,7 +49,7 @@ class NoBoardMockBackend(Backend):
     board = MockBoard
 
     def get_testing_boards(self):
-        """Get the connected TestingBoards."""
+        """Get the connected MockBoards."""
         return []
 
 
@@ -54,7 +60,7 @@ class OneBoardMockBackend(Backend):
     board = MockBoard
 
     def get_testing_boards(self):
-        """Get the connected TestingBoards."""
+        """Get the connected MockBoards."""
         return [MockBoard()]
 
 
@@ -65,24 +71,21 @@ class TwoBoardsMockBackend(Backend):
     board = MockBoard
 
     def get_testing_boards(self):
-        """Get the connected TestingBoards."""
+        """Get the connected MockBoards."""
         return [MockBoard(), MockBoard()]
-
-
-def test_board_index():
-    """Test that the correct types are included in BoardIndex."""
-    assert isinstance("bees", BoardIndex.__args__)
-    assert isinstance("12345", BoardIndex.__args__)
-    assert isinstance("", BoardIndex.__args__)
-    assert isinstance(0, BoardIndex.__args__)
-    assert isinstance(-1, BoardIndex.__args__)
-    assert isinstance(2, BoardIndex.__args__)
-    assert isinstance(21, BoardIndex.__args__)
 
 
 def test_testing_board_instantiation():
     """Test that we can instantiate the testing board."""
     MockBoard()
+
+
+def test_testing_board_instantiation_with_constructor():
+    """Test that we can instantiate a board that has a constructor."""
+    board = MockBoardWithConstructor("test", another_param="test2")
+    assert board.test_param == "test"
+    assert board.another_param == "test2"
+    assert board.one_that_defaults is True
 
 
 def test_testing_board_name():
@@ -97,7 +100,7 @@ def test_testing_board_serial():
     """Test the serial property of the board class."""
     tb = MockBoard()
 
-    assert tb.serial == "SERIAL"
+    assert tb.serial == f"{id(tb)}"
     assert type(tb.serial) == str
 
 
@@ -105,19 +108,26 @@ def test_testing_board_str():
     """Test the __str__ method of the board class."""
     tb = MockBoard()
 
-    assert str(tb) == "Testing Board - SERIAL"
+    assert str(tb) == f"Testing Board - {id(tb)}"
 
 
 def test_testing_board_repr():
     """Test the __repr__ method of the board class."""
     tb = MockBoard()
-
-    assert repr(tb) == "<MockBoard serial=SERIAL>"
+    assert repr(tb) == f"<MockBoard serial={id(tb)}>"
 
 
 def test_discover():
     """Test that the detect all static method works."""
     assert MockBoard.discover(NoBoardMockBackend()) == []
+    assert len(MockBoard.discover(OneBoardMockBackend())) == 1
+    assert len(MockBoard.discover(TwoBoardsMockBackend())) == 2
+
+
+def test_testing_board_added_to_boards_list():
+    """Test that an instantiated board is added to the boards list."""
+    board = MockBoard()
+    assert board in Board.BOARDS
 
 
 def test_create_boardgroup():
@@ -152,7 +162,8 @@ def test_board_group_boards():
     board_group = BoardGroup(MockBoard, OneBoardMockBackend())
 
     assert len(board_group.boards) == 1
-    assert type(board_group.boards[0]) == MockBoard
+    assert type(list(board_group.boards
+                .values())[0]) == MockBoard
 
 
 def test_board_group_boards_multiple():
@@ -160,7 +171,8 @@ def test_board_group_boards_multiple():
     board_group = BoardGroup(MockBoard, TwoBoardsMockBackend())
 
     assert len(board_group.boards) == 2
-    assert type(board_group.boards[0]) == MockBoard
+    assert type(list(board_group.boards
+                .values())[0]) == MockBoard
 
 
 def test_board_group_boards_zero():
@@ -169,44 +181,33 @@ def test_board_group_boards_zero():
 
     assert len(board_group.boards) == 0
 
-    with pytest.raises(IndexError):
-        board_group.boards[0]
-
-
-def test_board_group_board_by_int():
-    """Test that the boards property works with int indices."""
-    board_group = BoardGroup(MockBoard, OneBoardMockBackend())
-
-    assert type(board_group[0]) == MockBoard
+    with pytest.raises(KeyError):
+        board_group.boards["SERIAL0"]
 
 
 def test_board_group_board_by_serial():
     """Test that the boards property works with serial indices."""
     board_group = BoardGroup(MockBoard, OneBoardMockBackend())
+    BoardGroup(MockBoard, OneBoardMockBackend())
 
-    assert type(board_group["SERIAL"]) == MockBoard
+    assert type(board_group[list(board_group.boards.values())[0].serial]) == MockBoard
 
 
 def test_board_group_board_by_unknown():
     """Test that the boards property throws an exception with unknown indices."""
     board_group = BoardGroup(MockBoard, OneBoardMockBackend())
 
+    with pytest.raises(TypeError):
+        board_group[0]
+
     with pytest.raises(KeyError):
         board_group[""]
 
-    with pytest.raises(IndexError):
+    with pytest.raises(TypeError):
         board_group[{}]
 
     with pytest.raises(KeyError):
         board_group["ARGHHHJ"]
-
-
-def test_board_group_board_no_boards():
-    """Test that the boards property works with int indices."""
-    board_group = BoardGroup(MockBoard, NoBoardMockBackend())
-
-    with pytest.raises(IndexError):
-        board_group[0]
 
 
 def test_board_group_length():
