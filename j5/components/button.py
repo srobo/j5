@@ -38,6 +38,6 @@ class Button(Component):
         """Get the current pushed state of the button."""
         return self._backend.get_button_state(self._board, self._identifier)
 
-    def wait_until_button_pressed(self):
+    def wait_until_pressed(self):
         """Halt the program until this button is pushed."""
         self._backend.wait_until_button_pressed(self._board, self._identifier)
