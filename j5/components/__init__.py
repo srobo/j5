@@ -3,6 +3,7 @@
 from .base import Component
 from .button import Button, ButtonInterface
 from .led import LED, LEDInterface
+from .piezo import Piezo, PiezoInterface
 
 __all__ = ["Component",
            "Button", "ButtonInterface",
