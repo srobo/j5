@@ -53,12 +53,12 @@ def test_battery_sensor_interface_implementation():
 
 
 def test_battery_sensor_instantiation():
-    """Test that we can instantiate an LED."""
+    """Test that we can instantiate a BatterySensor."""
     BatterySensor(0, MockBatterySensorBoard(), MockBatterySensorDriver())
 
 
 def test_battery_sensor_interface_class():
-    """Test that tne interface class is correct."""
+    """Test that the interface class is correct."""
     assert BatterySensor.interface_class() is BatterySensorInterface
 
 
