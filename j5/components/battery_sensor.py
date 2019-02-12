@@ -7,7 +7,7 @@ from j5.components import Component
 
 
 class BatterySensorInterface(metaclass=ABCMeta):
-    """An interface containing the methods required to read data from a BatterySensor"""
+    """An interface containing the methods required to read data from a BatterySensor."""
 
     @abstractmethod
     def get_battery_sensor_voltage(self, board: Board, identifier: int) -> float:
@@ -23,7 +23,9 @@ class BatterySensorInterface(metaclass=ABCMeta):
 class BatterySensor(Component):
     """A sensor capable of monitoring a battery."""
 
-    def __init__(self, identifier: int, board: Board, backend: BatterySensorInterface) -> None:
+    def __init__(
+        self, identifier: int, board: Board, backend: BatterySensorInterface,
+    ) -> None:
         self._board = board
         self._backend = backend
         self._identifier = identifier

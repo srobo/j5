@@ -58,13 +58,12 @@ def test_battery_sensor_instantiation():
 
 
 def test_battery_sensor_interface_class():
-    """Test that tne interface class is correct"""
+    """Test that tne interface class is correct."""
     assert BatterySensor.interface_class() is BatterySensorInterface
 
 
 def test_battery_sensor_voltage():
     """Test that we can get the voltage of a battery sensor."""
-
     battery = BatterySensor(0, MockBatterySensorBoard(), MockBatterySensorDriver())
     assert type(battery.voltage) is float
     assert battery.voltage == 5.0
@@ -72,8 +71,6 @@ def test_battery_sensor_voltage():
 
 def test_battery_sensor_current():
     """Test that we can get the current of a battery sensor."""
-
     battery = BatterySensor(0, MockBatterySensorBoard(), MockBatterySensorDriver())
     assert type(battery.current) is float
     assert battery.current == 2.0
-
