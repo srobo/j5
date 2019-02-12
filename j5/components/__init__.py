@@ -7,11 +7,11 @@ from .battery_sensor import BatterySensor, BatterySensorInterface
 
 
 __all__ = [
-  "BatterySensor",
-  "BatterySensorInterface",
-  "Button",
-  "ButtonInterface",
-  "Component",
-  "LED",
-  "LEDInterface"
+    "BatterySensor",
+    "BatterySensorInterface",
+    "Button",
+    "ButtonInterface",
+    "Component",
+    "LED",
+    "LEDInterface",
 ]
