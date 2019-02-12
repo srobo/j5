@@ -12,20 +12,20 @@ from j5.components import Component
 class Note(Enum):
     """An enumeration of notes from scientific pitch notation and their related frequencies in Hz."""
 
-    C6 = 1046.50
-    D6 = 1174.66
-    E6 = 1318.51
-    F6 = 1396.91
-    G6 = 1567.98
-    A6 = 1760.00
-    B6 = 1975.53
-    C7 = 2093.00
-    D7 = 2349.32
-    E7 = 2637.02
-    F7 = 2793.83
-    G7 = 3135.96
-    A7 = 3520.00
-    B7 = 3951.07
+    C6 = 1046
+    D6 = 1174
+    E6 = 1318
+    F6 = 1396
+    G6 = 1567
+    A6 = 1760
+    B6 = 1975
+    C7 = 2093
+    D7 = 2349
+    E7 = 2637
+    F7 = 2793
+    G7 = 3135
+    A7 = 3520
+    B7 = 3951
 
 
 Pitch = Union[int, Note]
