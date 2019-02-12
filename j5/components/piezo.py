@@ -3,7 +3,7 @@
 from abc import ABCMeta, abstractmethod
 from datetime import timedelta
 from enum import Enum
-from typing import TypeVar
+from typing import Union
 
 from j5.boards import Board
 from j5.components import Component
