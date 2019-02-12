@@ -15,7 +15,7 @@ class BackendMeta(ABCMeta):
 
     """
 
-    def __new__(mcs, name, bases, namespace, **kwargs):
+    def __new__(mcs, name, bases, namespace, **kwargs):  # type:ignore
         """Create a new class object."""
         cls = super().__new__(mcs, name, bases, namespace, **kwargs)  # type: ignore
 
@@ -51,7 +51,7 @@ class Backend(metaclass=BackendMeta):
 
     @property
     @abstractmethod
-    def environment(self):
+    def environment(self) -> 'Environment':
         """Environment the backend belongs too."""
         raise NotImplementedError  # pragma: no cover
 

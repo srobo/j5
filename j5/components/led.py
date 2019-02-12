@@ -1,12 +1,13 @@
 """Classes for the LED support."""
 
-from abc import ABCMeta, abstractmethod
+from abc import abstractmethod
 
 from j5.boards import Board
-from j5.components import Component
+from j5.components import Component, Interface
+from typing import Type
 
 
-class LEDInterface(metaclass=ABCMeta):
+class LEDInterface(Interface):
     """An interface containing the methods required to control an LED."""
 
     @abstractmethod
@@ -29,7 +30,7 @@ class LED(Component):
         self._identifier = identifier
 
     @staticmethod
-    def interface_class():
+    def interface_class() -> Type[LEDInterface]:
         """Get the interface class that is required to use this component."""
         return LEDInterface
 
