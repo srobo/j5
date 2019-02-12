@@ -1,11 +1,11 @@
 """Base classes for components."""
 
-from typing import Type
 from abc import ABCMeta, abstractmethod
+from typing import Type
 
 
 class Interface(metaclass=ABCMeta):
-    """A small useless class"""
+    """A base class for interfaces to inherit from"""
 
 
 class Component(metaclass=ABCMeta):
