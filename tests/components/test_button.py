@@ -79,7 +79,7 @@ def test_button_wait_until_pressed():
     """Test that the button takes at least 0.2 secs to be pressed."""
     button = Button(0, MockButtonBoard(), MockButtonDriver())
     start_time = time()
-    button.wait_until_button_pressed()
+    button.wait_until_pressed()
     end_time = time()
     time_taken = end_time - start_time
 
