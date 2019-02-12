@@ -1,6 +1,7 @@
 """Classes for Battery Sensing Components."""
 
 from abc import ABCMeta, abstractmethod
+from typing import Type
 
 from j5.boards import Board
 from j5.components import Component
@@ -31,7 +32,7 @@ class BatterySensor(Component):
         self._identifier = identifier
 
     @staticmethod
-    def interface_class():
+    def interface_class() -> Type[BatterySensorInterface]:
         """Get the interface class that is required to use this component."""
         return BatterySensorInterface
 
