@@ -5,7 +5,7 @@ from typing import Type
 
 
 class Interface(metaclass=ABCMeta):
-    """A base class for interfaces to inherit from"""
+    """A base class for interfaces to inherit from."""
 
 
 class Component(metaclass=ABCMeta):

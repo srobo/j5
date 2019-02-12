@@ -1,10 +1,10 @@
 """Classes for the LED support."""
 
 from abc import abstractmethod
+from typing import Type
 
 from j5.boards import Board
 from j5.components import Component, Interface
-from typing import Type
 
 
 class LEDInterface(Interface):
