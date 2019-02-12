@@ -10,7 +10,11 @@ from j5.components import Component
 
 
 class Note(Enum):
-    """An enumeration of notes from scientific pitch notation and their related frequencies in Hz."""
+    """An enumeration of notes.
+
+    An enumeration of notes from scientific pitch
+    notation and their related frequencies in Hz.
+    """
 
     C6 = 1046
     D6 = 1174
