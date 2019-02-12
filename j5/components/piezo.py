@@ -28,7 +28,7 @@ class Note(Enum):
     B7 = 3951.07
 
 
-Pitch = TypeVar('Pitch', int, Note)
+Pitch = Union[int, Note]
 
 
 class PiezoInterface(metaclass=ABCMeta):
