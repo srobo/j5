@@ -54,7 +54,7 @@ class Piezo(Component):
         self._identifier = identifier
 
     @staticmethod
-    def interface_class():
+    def interface_class() -> PiezoInterface:
         """Get the interface class that is required to use this component."""
         return PiezoInterface
 
