@@ -32,7 +32,7 @@ class DemoBoard(Board):
         """Get the serial number."""
         return self._serial
 
-    def make_safe(self):
+    def make_safe(self) -> None:
         """Make this board safe."""
         pass
 
