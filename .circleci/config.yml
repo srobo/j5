@@ -6,7 +6,7 @@ jobs:
     steps:
       - checkout
       - run: pip install pipenv
-      - run: pipenv install --dev
+      - run: pipenv install --deploy --dev
       - run:
           name: Setup Code Climate test-reporter
           command: |
