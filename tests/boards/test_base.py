@@ -256,3 +256,14 @@ def test_board_group_iteration_sorted_by_serial():
     serials = [board.serial for board in board_group]
     assert len(serials) == 2
     assert serials[0] < serials[1]
+
+
+def test_board_group_simultaneous_iteration():
+    """Test that iterators returned by iter(BoardGroup) are independent."""
+    board_group = BoardGroup(MockBoard, TwoBoardsMockBackend())
+    iter1 = iter(board_group)
+    iter2 = iter(board_group)
+    assert next(iter1) is board_group["TESTSERIAL1"]
+    assert next(iter2) is board_group["TESTSERIAL1"]
+    assert next(iter1) is board_group["TESTSERIAL2"]
+    assert next(iter2) is board_group["TESTSERIAL2"]
