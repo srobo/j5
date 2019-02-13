@@ -82,7 +82,9 @@ class BoardGroup:
     def update_boards(self) -> None:
         """Update the boards in this group to see if new boards have been added."""
         self.boards: Dict[str, Board] = {}
-        for board in self.board_class.discover(self._backend):
+        discovered_boards = self.board_class.discover(self._backend)
+        discovered_boards.sort(key=lambda board: board.serial)
+        for board in discovered_boards:
             self.boards.update({board.serial: board})
 
     def singular(self) -> Board:
@@ -101,7 +103,7 @@ class BoardGroup:
         return len(self.boards)
 
     def __iter__(self) -> Iterator[Board]:
-        """Iterate over the boards in the group."""
+        """Iterate over the boards in the group, ordered lexiographically by serial number."""
         self._iterator_counter = (
             0
         )  # Reset the iteration counter. This will break if you iterate simultaneously.

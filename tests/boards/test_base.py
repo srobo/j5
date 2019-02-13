@@ -75,7 +75,10 @@ class TwoBoardsMockBackend(Backend):
 
     def get_testing_boards(self):
         """Get the connected MockBoards."""
-        return [MockBoard("TESTSERIAL1"), MockBoard("TESTSERIAL2")]
+        # These serial numbers are deliberately in reverse lexiographic order, to ensure
+        # that sorting the boards (as tested by
+        # test_board_group_iteration_sorted_by_serial) actually has an effect.
+        return [MockBoard("TESTSERIAL2"), MockBoard("TESTSERIAL1")]
 
 
 def test_testing_board_instantiation():
@@ -245,3 +248,11 @@ def test_board_group_iteration():
         count += 1
 
     assert count == 2
+
+
+def test_board_group_iteration_sorted_by_serial():
+    """Test that the boards yielded by iterating over a BoardGroup are sorted by serial number."""
+    board_group = BoardGroup(MockBoard, TwoBoardsMockBackend())
+    serials = [board.serial for board in board_group]
+    assert len(serials) == 2
+    assert serials[0] < serials[1]
