@@ -1,13 +1,13 @@
 """Classes for Battery Sensing Components."""
 
-from abc import ABCMeta, abstractmethod
+from abc import abstractmethod
 from typing import Type
 
 from j5.boards import Board
-from j5.components import Component
+from j5.components import Component, Interface
 
 
-class BatterySensorInterface(metaclass=ABCMeta):
+class BatterySensorInterface(Interface):
     """An interface containing the methods required to read data from a BatterySensor."""
 
     @abstractmethod

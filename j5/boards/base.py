@@ -21,7 +21,7 @@ class Board(metaclass=ABCMeta):
         """A string representation of this board."""
         return f"{self.name} - {self.serial}"
 
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls, *args, **kwargs):  # type: ignore
         """Ensure any instantiated board is added to the boards list."""
         instance = super().__new__(cls)
         Board.BOARDS.append(instance)
@@ -44,7 +44,7 @@ class Board(metaclass=ABCMeta):
         raise NotImplementedError  # pragma: no cover
 
     @abstractmethod
-    def make_safe(self):
+    def make_safe(self) -> None:
         """Make all components on this board safe."""
         raise NotImplementedError  # pragma: no cover
 
@@ -62,7 +62,7 @@ class Board(metaclass=ABCMeta):
 
     @staticmethod
     @atexit.register
-    def make_all_safe():
+    def make_all_safe() -> None:
         """Make all boards safe."""
         for board in Board.BOARDS:
             board.make_safe()
@@ -91,9 +91,9 @@ class BoardGroup:
             return list(self.boards.values())[0]
         raise Exception("There is more than one or zero boards connected.")
 
-    def make_safe(self):
+    def make_safe(self) -> None:
         """Make all of the boards safe."""
-        for board in self.boards:
+        for board in self.boards.values():
             board.make_safe()
 
     def __len__(self) -> int:
@@ -115,7 +115,7 @@ class BoardGroup:
         self._iterator_counter += 1
         return board
 
-    def __getitem__(self, serial: str):
+    def __getitem__(self, serial: str) -> Board:
         """Get the board from serial."""
         try:
             return self.boards[serial]
