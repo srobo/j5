@@ -1,12 +1,12 @@
 """Classes for Piezo support."""
 
-from abc import ABCMeta, abstractmethod
+from abc import abstractmethod
 from datetime import timedelta
 from enum import Enum
-from typing import Union
+from typing import Type, Union
 
 from j5.boards import Board
-from j5.components import Component
+from j5.components import Component, Interface
 
 
 class Note(Enum):
@@ -35,7 +35,7 @@ class Note(Enum):
 Pitch = Union[int, Note]
 
 
-class PiezoInterface(metaclass=ABCMeta):
+class PiezoInterface(Interface):
     """An interface containing the methods required to control an piezo."""
 
     @abstractmethod
@@ -54,7 +54,7 @@ class Piezo(Component):
         self._identifier = identifier
 
     @staticmethod
-    def interface_class() -> PiezoInterface:
+    def interface_class() -> Type[PiezoInterface]:
         """Get the interface class that is required to use this component."""
         return PiezoInterface
 
