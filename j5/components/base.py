@@ -1,6 +1,11 @@
 """Base classes for components."""
 
 from abc import ABCMeta, abstractmethod
+from typing import Type
+
+
+class Interface(metaclass=ABCMeta):
+    """A base class for interfaces to inherit from."""
 
 
 class Component(metaclass=ABCMeta):
@@ -8,6 +13,6 @@ class Component(metaclass=ABCMeta):
 
     @staticmethod
     @abstractmethod
-    def interface_class():
+    def interface_class() -> Type[Interface]:
         """Get the interface class that is required to use this component."""
         raise NotImplementedError  # pragma: no cover
