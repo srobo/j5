@@ -251,7 +251,7 @@ def test_board_group_iteration():
 
 
 def test_board_group_iteration_sorted_by_serial():
-    """Test that the boards yielded by iterating over a BoardGroup are sorted by serial number."""
+    """Test that the boards yielded by iterating over a BoardGroup are sorted."""
     board_group = BoardGroup(MockBoard, TwoBoardsMockBackend())
     serials = [board.serial for board in board_group]
     assert len(serials) == 2

@@ -102,7 +102,11 @@ class BoardGroup:
         return len(self.boards)
 
     def __iter__(self) -> Iterator[Board]:
-        """Iterate over the boards in the group, ordered lexiographically by serial number."""
+        """
+        Iterate over the boards in the group.
+
+        The boards are ordered lexiographically by serial number.
+        """
         return iter(self.boards.values())
 
     def __getitem__(self, serial: str) -> Board:
