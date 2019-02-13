@@ -1,6 +1,6 @@
 """Classes for Battery Sensing Components."""
 
-from abc import ABCMeta, abstractmethod
+from abc import abstractmethod
 from typing import Type
 
 from j5.boards import Board
