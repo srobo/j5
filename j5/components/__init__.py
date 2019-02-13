@@ -3,5 +3,15 @@
 from .base import Component
 from .button import Button, ButtonInterface
 from .led import LED, LEDInterface
+from .battery_sensor import BatterySensor, BatterySensorInterface
 
-__all__ = ["Component", "Button", "ButtonInterface", "LED", "LEDInterface"]
+
+__all__ = [
+    "BatterySensor",
+    "BatterySensorInterface",
+    "Button",
+    "ButtonInterface",
+    "Component",
+    "LED",
+    "LEDInterface",
+]
