@@ -5,11 +5,18 @@ from typing import TYPE_CHECKING, List, Union, cast
 
 from j5.backends import Backend, Environment
 from j5.boards import Board
-from j5.components import Button, PowerOutput, Piezo, BatterySensor, LED
+from j5.components import LED, BatterySensor, Button, Piezo, PowerOutput
 
 if TYPE_CHECKING:
-    from j5.components import Component, ButtonInterface, PowerOutputInterface, PiezoInterface, BatterySensorInterface, LEDInterface  # noqa
-    from typing import Type  # noqa
+    from j5.components import (
+        Component,
+        ButtonInterface,
+        PowerOutputInterface,
+        PiezoInterface,
+        BatterySensorInterface,
+        LEDInterface,
+    )
+    from typing import Type  # noqa: F401
 
 
 class PowerOutputPosition(Enum):
@@ -33,7 +40,7 @@ class PowerOutputGroup:
         self._backend = backend
         self._board = board
         self._outputs = [
-            PowerOutput(n, self._board, cast('PowerOutputInterface', self._backend))
+            PowerOutput(n, self._board, cast("PowerOutputInterface", self._backend))
             for n in range(0, 6)
         ]
 
@@ -68,12 +75,14 @@ class PowerBoard(Board):
         self._backend = self._environment.get_backend(self.__class__)
 
         self._output_group = PowerOutputGroup(self._backend, self)
-        self._piezo = Piezo(0, self, cast('PiezoInterface', self._backend))
-        self._start_button = Button(0, self, cast('ButtonInterface', self._backend))
-        self._battery_sensor = BatterySensor(0, self, cast('BatterySensorInterface', self._backend))
+        self._piezo = Piezo(0, self, cast("PiezoInterface", self._backend))
+        self._start_button = Button(0, self, cast("ButtonInterface", self._backend))
+        self._battery_sensor = BatterySensor(
+            0, self, cast("BatterySensorInterface", self._backend),
+        )
 
-        self._run_led = LED(0, self, cast('LEDInterface', self._backend))
-        self._error_led = LED(0, self, cast('LEDInterface', self._backend))
+        self._run_led = LED(0, self, cast("LEDInterface", self._backend))
+        self._error_led = LED(0, self, cast("LEDInterface", self._backend))
 
     @property
     def name(self) -> str:
@@ -110,11 +119,11 @@ class PowerBoard(Board):
         self.outputs.power_off()
 
     @staticmethod
-    def supported_components() -> List['Type[Component]']:
+    def supported_components() -> List["Type[Component]"]:
         """List the types of components supported by this board."""
         return [PowerOutput, Piezo, Button, BatterySensor, LED]
 
     @staticmethod
-    def discover(backend: Backend) -> List['Board']:
+    def discover(backend: Backend) -> List["Board"]:
         """Detect all connected power boards."""
         return []
