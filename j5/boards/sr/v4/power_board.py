@@ -5,14 +5,14 @@ from typing import TYPE_CHECKING, List, Union, cast
 
 from j5.backends import Backend, Environment
 from j5.boards import Board
-from j5.components import PowerOutput
+from j5.components import Button, PowerOutput, Piezo, BatterySensor, LED
 
 if TYPE_CHECKING:
-    from j5.components import Component, PowerOutputInterface  # noqa
+    from j5.components import Component, ButtonInterface, PowerOutputInterface, PiezoInterface, BatterySensorInterface, LEDInterface  # noqa
     from typing import Type  # noqa
 
 
-class PowerBoardOutputType(Enum):
+class PowerOutputPosition(Enum):
     """A mapping of name to number of the PowerBoard outputs."""
 
     H0 = 0
@@ -23,10 +23,10 @@ class PowerBoardOutputType(Enum):
     L3 = 5
 
 
-PowerBoardOutputGroupIndex = Union[int, PowerBoardOutputType]
+PowerOutputGroupIndex = Union[int, PowerOutputPosition]
 
 
-class PowerBoardOutputGroup:
+class PowerOutputGroup:
     """A group of PowerOutputs on the PowerBoard."""
 
     def __init__(self, backend: Backend, board: Board):
@@ -47,11 +47,11 @@ class PowerBoardOutputGroup:
         for output in self._outputs:
             output.is_enabled = True
 
-    def __getitem__(self, index: PowerBoardOutputGroupIndex) -> PowerOutput:
+    def __getitem__(self, index: PowerOutputGroupIndex) -> PowerOutput:
         """Get the item using output notation."""
         if type(index) is int:
             return self._outputs[cast(int, index)]
-        elif type(index) is PowerBoardOutputType:
+        elif type(index) is PowerOutputPosition:
             return self._outputs[cast(int, index.value)]  # type: ignore
             # See github.com/python/mypy/issues/3546 for more info
         else:
@@ -67,7 +67,13 @@ class PowerBoard(Board):
 
         self._backend = self._environment.get_backend(self.__class__)
 
-        self._output_group = PowerBoardOutputGroup(self._backend, self)
+        self._output_group = PowerOutputGroup(self._backend, self)
+        self._piezo = Piezo(0, self, cast('PiezoInterface', self._backend))
+        self._start_button = Button(0, self, cast('ButtonInterface', self._backend))
+        self._battery_sensor = BatterySensor(0, self, cast('BatterySensorInterface', self._backend))
+
+        self._run_led = LED(0, self, cast('LEDInterface', self._backend))
+        self._error_led = LED(0, self, cast('LEDInterface', self._backend))
 
     @property
     def name(self) -> str:
@@ -79,14 +85,34 @@ class PowerBoard(Board):
         """Get the serial number."""
         return self._serial
 
+    @property
+    def outputs(self) -> PowerOutputGroup:
+        """Get the PowerOutputs."""
+        return self._output_group
+
+    @property
+    def piezo(self) -> Piezo:
+        """Get the piezo buzzer."""
+        return self._piezo
+
+    @property
+    def start_button(self) -> Button:
+        """Get the start button."""
+        return self._start_button
+
+    @property
+    def battery_sensor(self) -> BatterySensor:
+        """Get the battery sensor."""
+        return self._battery_sensor
+
     def make_safe(self) -> None:
         """Make this board safe."""
-        pass
+        self.outputs.power_off()
 
     @staticmethod
     def supported_components() -> List['Type[Component]']:
         """List the types of components supported by this board."""
-        return []
+        return [PowerOutput, Piezo, Button, BatterySensor, LED]
 
     @staticmethod
     def discover(backend: Backend) -> List['Board']:
