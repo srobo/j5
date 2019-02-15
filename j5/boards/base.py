@@ -74,7 +74,6 @@ class BoardGroup:
     def __init__(self, board: Board, backend: Backend):
         self.board_class: Board = board
         self._backend: Backend = backend
-        self._iterator_counter: int = 0
         self.boards: Dict[str, Board] = {}
 
         self.update_boards()
@@ -82,7 +81,9 @@ class BoardGroup:
     def update_boards(self) -> None:
         """Update the boards in this group to see if new boards have been added."""
         self.boards: Dict[str, Board] = {}
-        for board in self.board_class.discover(self._backend):
+        discovered_boards = self.board_class.discover(self._backend)
+        discovered_boards.sort(key=lambda board: board.serial)
+        for board in discovered_boards:
             self.boards.update({board.serial: board})
 
     def singular(self) -> Board:
@@ -101,19 +102,12 @@ class BoardGroup:
         return len(self.boards)
 
     def __iter__(self) -> Iterator[Board]:
-        """Iterate over the boards in the group."""
-        self._iterator_counter = (
-            0
-        )  # Reset the iteration counter. This will break if you iterate simultaneously.
-        return self
+        """
+        Iterate over the boards in the group.
 
-    def __next__(self) -> Board:
-        """Get the next item in the iteration."""
-        if self._iterator_counter >= len(self.boards):
-            raise StopIteration
-        board = list(self.boards.values())[self._iterator_counter]
-        self._iterator_counter += 1
-        return board
+        The boards are ordered lexiographically by serial number.
+        """
+        return iter(self.boards.values())
 
     def __getitem__(self, serial: str) -> Board:
         """Get the board from serial."""
