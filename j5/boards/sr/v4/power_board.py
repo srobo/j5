@@ -8,7 +8,7 @@ from j5.boards import Board
 from j5.components import LED, BatterySensor, Button, Piezo, PowerOutput
 
 if TYPE_CHECKING:
-    from j5.components import (
+    from j5.components import (  # noqa: F401
         Component,
         ButtonInterface,
         PowerOutputInterface,
