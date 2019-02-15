@@ -2,19 +2,12 @@ version: 2
 jobs:
   build:
     docker:
-      - image: python:3.7
+      - image: j5api/ci:latest
     steps:
       - checkout
-      - run: pip install pipenv
-      - run: pipenv install --dev
-      - run:
-          name: Setup Code Climate test-reporter
-          command: |
-            # download test reporter as a static binary
-                     curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-                     chmod +x ./cc-test-reporter
+      - run: pipenv sync --dev
       - run: pipenv run lint
       - run: pipenv run type
-      - run: ./cc-test-reporter before-build
+      - run: cc-test-reporter before-build
       - run: pipenv run test-ci
-      - run: ./cc-test-reporter after-build -t coverage.py --exit-code $? coverage.xml
+      - run: cc-test-reporter after-build -t coverage.py --exit-code $? coverage.xml
