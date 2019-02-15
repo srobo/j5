@@ -19,7 +19,7 @@ Goals
 There are some goals behind the `j5` project:
 
 - To be compatible with all current and future robotics kits.
-- To use the latest versions of software and be continuously maintained, even between and during competitions.
+- To use the latest stable version of software and be continuously maintained, even between and during competitions.
 - To be an example to students of what good code should look like.
 - To unify all existing robotics kits and simulators into one codebase.
 - Open by default, no hidden documentation, features or meetings.
