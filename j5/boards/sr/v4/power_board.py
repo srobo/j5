@@ -64,6 +64,10 @@ class PowerOutputGroup:
         else:
             raise TypeError
 
+    def __len__(self) -> int:
+        """Get the length of the group."""
+        return 6
+
 
 class PowerBoard(Board):
     """Student Robotics v4 Power Board."""

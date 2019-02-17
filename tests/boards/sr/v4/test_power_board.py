@@ -3,13 +3,14 @@ from datetime import timedelta
 
 from j5.backends import Backend, Environment
 from j5.boards import Board
-from j5.boards.sr.v4 import PowerBoard
+from j5.boards.sr.v4 import PowerBoard, PowerOutputGroup
 from j5.components import (
     BatterySensorInterface,
     ButtonInterface,
     LEDInterface,
     PiezoInterface,
     PowerOutputInterface,
+    Piezo,
 )
 from j5.components.piezo import Pitch
 
@@ -72,3 +73,40 @@ class MockPowerBoardBackend(
     def set_led_state(self, board: Board, identifier: int, state: bool) -> None:
         """Set the state of an LED."""
         pass
+
+
+def test_power_board_instantiation():
+    """Test that we can instantiate a PowerBoard."""
+    PowerBoard("SERIAL0", MockEnvironment)
+
+
+def test_power_board_name():
+    """Test the name attribute of the PowerBoard."""
+    pb = PowerBoard("SERIAL0", MockEnvironment)
+
+    assert pb.name == "Student Robotics v4 Power Board"
+
+
+def test_power_board_serial():
+    """Test the serial attribute of the PowerBoard."""
+    pb = PowerBoard("SERIAL0", MockEnvironment)
+
+    assert pb.serial == "SERIAL0"
+
+
+def test_power_board_outputs():
+    """Test the power outputs on the PowerBoard."""
+    pb = PowerBoard("SERIAL0", MockEnvironment)
+
+    assert type(pb.outputs) is PowerOutputGroup
+    assert len(pb.outputs) == 6
+
+    # Todo: Test iteration of outputs.
+    # Todo: Test power_on and power_off
+
+
+def test_power_board_piezo():
+    """Test the Piezo on the PowerBoard."""
+    pb = PowerBoard("SERIAL0", MockEnvironment)
+
+    assert type(pb.piezo) is Piezo
