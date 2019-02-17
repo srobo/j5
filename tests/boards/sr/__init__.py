@@ -1,1 +1,1 @@
-"""Tests for Student Robptics boards."""
+"""Tests for Student Robotics boards."""

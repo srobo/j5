@@ -1,7 +1,7 @@
 """Classes for the SR v4 Power Board."""
 
 from enum import Enum
-from typing import TYPE_CHECKING, List, Union, cast
+from typing import TYPE_CHECKING, List, Union, cast, Mapping
 
 from j5.backends import Backend, Environment
 from j5.boards import Board
@@ -30,19 +30,18 @@ class PowerOutputPosition(Enum):
     L3 = 5
 
 
-PowerOutputGroupIndex = Union[int, PowerOutputPosition]
-
-
 class PowerOutputGroup:
     """A group of PowerOutputs on the PowerBoard."""
 
     def __init__(self, backend: Backend, board: Board):
         self._backend = backend
         self._board = board
-        self._outputs = [
-            PowerOutput(n, self._board, cast("PowerOutputInterface", self._backend))
-            for n in range(0, 6)
-        ]
+
+        self._outputs: Mapping[PowerOutputPosition, PowerOutput] = {
+            output: PowerOutput(output.value, self._board, cast("PowerOutputInterface", self._backend))
+            for output in PowerOutputPosition
+            # Note that in Python 3, Enums are ordered.
+        }
 
     def power_on(self) -> None:
         """Set all outputs in the group on."""
@@ -54,19 +53,13 @@ class PowerOutputGroup:
         for output in self._outputs:
             output.is_enabled = False
 
-    def __getitem__(self, index: PowerOutputGroupIndex) -> PowerOutput:
-        """Get the item using output notation."""
-        if type(index) is int:
-            return self._outputs[cast(int, index)]
-        elif type(index) is PowerOutputPosition:
-            return self._outputs[cast(int, index.value)]  # type: ignore
-            # See github.com/python/mypy/issues/3546 for more info
-        else:
-            raise TypeError
+    def __getitem__(self, index: PowerOutputPosition) -> PowerOutput:
+        """Get an output using list notation."""
+        return self._outputs[index]
 
     def __len__(self) -> int:
         """Get the length of the group."""
-        return 6
+        return len(self._outputs)
 
 
 class PowerBoard(Board):
