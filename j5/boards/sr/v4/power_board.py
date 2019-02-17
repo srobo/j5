@@ -120,7 +120,7 @@ class PowerBoard(Board):
 
     def make_safe(self) -> None:
         """Make this board safe."""
-        self.outputs.power_off()
+        self._output_group.power_off()
 
     @staticmethod
     def supported_components() -> List["Type[Component]"]:
