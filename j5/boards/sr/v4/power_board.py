@@ -47,12 +47,12 @@ class PowerOutputGroup:
     def power_on(self) -> None:
         """Set all outputs in the group on."""
         for output in self._outputs:
-            output.is_enabled = False
+            output.is_enabled = True
 
     def power_off(self) -> None:
         """Set all outputs in the group off."""
         for output in self._outputs:
-            output.is_enabled = True
+            output.is_enabled = False
 
     def __getitem__(self, index: PowerOutputGroupIndex) -> PowerOutput:
         """Get the item using output notation."""
