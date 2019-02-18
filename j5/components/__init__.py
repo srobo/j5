@@ -5,7 +5,7 @@ from .battery_sensor import BatterySensor, BatterySensorInterface
 from .button import Button, ButtonInterface
 from .led import LED, LEDInterface
 from .piezo import Piezo, PiezoInterface
-from .power_output import PowerOutput, PowerOutputInterface
+from .power_output import PowerOutput, PowerOutputInterface, PowerOutputGroup
 
 
 __all__ = [
@@ -21,4 +21,5 @@ __all__ = [
     "PiezoInterface",
     "PowerOutput",
     "PowerOutputInterface",
+    "PowerOutputGroup",
 ]

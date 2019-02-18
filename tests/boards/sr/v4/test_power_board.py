@@ -8,9 +8,9 @@ from j5.components import (
     BatterySensorInterface,
     ButtonInterface,
     LEDInterface,
+    Piezo,
     PiezoInterface,
     PowerOutputInterface,
-    Piezo,
 )
 from j5.components.piezo import Pitch
 
