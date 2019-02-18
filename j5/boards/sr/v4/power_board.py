@@ -67,7 +67,7 @@ class PowerBoard(Board):
         )
 
         self._run_led = LED(0, self, cast("LEDInterface", self._backend))
-        self._error_led = LED(0, self, cast("LEDInterface", self._backend))
+        self._error_led = LED(1, self, cast("LEDInterface", self._backend))
 
     @property
     def name(self) -> str:
