@@ -20,7 +20,11 @@ if TYPE_CHECKING:
 
 
 class PowerOutputPosition(Enum):
-    """A mapping of name to number of the PowerBoard outputs."""
+    """
+    A mapping of name to number of the PowerBoard outputs.
+
+    The numbers here are the same as used in wire communication with the PowerBoard.
+    """
 
     H0 = 0
     H1 = 1
