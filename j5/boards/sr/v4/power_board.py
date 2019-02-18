@@ -44,12 +44,12 @@ class PowerOutputGroup:
         }
 
     def power_on(self) -> None:
-        """Set all outputs in the group on."""
+        """Enable all outputs in the group."""
         for output in self._outputs:
             output.is_enabled = True
 
     def power_off(self) -> None:
-        """Set all outputs in the group off."""
+        """Disable all outputs in the group."""
         for output in self._outputs:
             output.is_enabled = False
 
@@ -58,7 +58,7 @@ class PowerOutputGroup:
         return self._outputs[index]
 
     def __len__(self) -> int:
-        """Get the length of the group."""
+        """Get the number of outputs in the group."""
         return len(self._outputs)
 
 
@@ -93,12 +93,12 @@ class PowerBoard(Board):
 
     @property
     def outputs(self) -> PowerOutputGroup:
-        """Get the PowerOutputs."""
+        """Get the power outputs."""
         return self._output_group
 
     @property
     def piezo(self) -> Piezo:
-        """Get the piezo buzzer."""
+        """Get the piezo sounder."""
         return self._piezo
 
     @property
