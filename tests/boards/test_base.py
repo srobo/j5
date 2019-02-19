@@ -1,7 +1,7 @@
 """Test the base classes for boards."""
-import pytest
-
 from typing import List
+
+import pytest
 
 from j5.backends import Backend, Environment
 from j5.boards.base import Board, BoardGroup
@@ -77,6 +77,7 @@ class OneBoardMockBackend(Backend):
     def discover(cls) -> List[Board]:
         """Discover boards available on this backend."""
         return []
+
 
 class TwoBoardsMockBackend(Backend):
     """This backend finds exactly two."""
