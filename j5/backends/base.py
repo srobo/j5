@@ -35,7 +35,6 @@ class BackendMeta(ABCMeta):
 
     def _check_compatibility(cls):  # type: ignore
         """Check that the backend and environment are compatible."""
-
         if type(cls.environment) != Environment:
             raise ValueError("The environment must be of type Environment.")
 
@@ -44,8 +43,13 @@ class BackendMeta(ABCMeta):
                 "You cannot register multiple backends for the same board in the same Environment.")  # noqa: E501
 
     def _check_component_interfaces(cls):  # type: ignore
-        """Check that the backend has the interfaces required to support the board components."""
+        """
+        Check that the backend has the right interfaces.
 
+        Certain interfaces are required to support components,
+        and we want to make sure that the Backend implements
+        them. This is a run-time type check.
+        """
         for component in cls.board.supported_components():
             if not issubclass(cls, component.interface_class()):
                 raise TypeError("The backend class doesn't have a required interface.")  # noqa: E501
