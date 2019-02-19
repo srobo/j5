@@ -5,7 +5,10 @@ from j5.backends import Backend, Environment
 from j5.boards import Board
 from j5.boards.sr.v4 import PowerBoard, PowerOutputGroup
 from j5.components import (
+    LED,
+    BatterySensor,
     BatterySensorInterface,
+    Button,
     ButtonInterface,
     LEDInterface,
     Piezo,
@@ -29,6 +32,11 @@ class MockPowerBoardBackend(
 
     environment = MockEnvironment
     board = PowerBoard
+
+    @classmethod
+    def discover(cls):
+        """Discover the PowerBoards on this backend."""
+        return []
 
     def get_power_output_enabled(self, board: Board, identifier: int) -> bool:
         """Get the enabled status of a power output."""
@@ -80,6 +88,12 @@ def test_power_board_instantiation():
     PowerBoard("SERIAL0", MockEnvironment)
 
 
+def test_power_board_discover():
+    """Test that we can discover PowerBoards."""
+    backend = MockEnvironment.get_backend(PowerBoard)
+    assert PowerBoard.discover(backend) == []
+
+
 def test_power_board_name():
     """Test the name attribute of the PowerBoard."""
     pb = PowerBoard("SERIAL0", MockEnvironment)
@@ -94,6 +108,12 @@ def test_power_board_serial():
     assert pb.serial == "SERIAL0"
 
 
+def test_power_board_make_safe():
+    """Test the make_safe method of the PowerBoard."""
+    pb = PowerBoard("SERIAL0", MockEnvironment)
+    pb.make_safe()
+
+
 def test_power_board_outputs():
     """Test the power outputs on the PowerBoard."""
     pb = PowerBoard("SERIAL0", MockEnvironment)
@@ -101,12 +121,37 @@ def test_power_board_outputs():
     assert type(pb.outputs) is PowerOutputGroup
     assert len(pb.outputs) == 6
 
-    # Todo: Test iteration of outputs.
-    # Todo: Test power_on and power_off
-
 
 def test_power_board_piezo():
     """Test the Piezo on the PowerBoard."""
     pb = PowerBoard("SERIAL0", MockEnvironment)
 
     assert type(pb.piezo) is Piezo
+
+
+def test_power_board_button():
+    """Test the Button on the PowerBoard."""
+    pb = PowerBoard("SERIAL0", MockEnvironment)
+
+    assert type(pb.start_button) is Button
+
+
+def test_power_board_battery_sensor():
+    """Test the Battery Sensor on the Power Board."""
+    pb = PowerBoard("SERIAL0", MockEnvironment)
+
+    assert type(pb.battery_sensor) is BatterySensor
+
+
+def test_power_board_run_led():
+    """Test the run LED on the Power Board."""
+    pb = PowerBoard("SERIAL0", MockEnvironment)
+
+    assert type(pb._run_led) is LED
+
+
+def test_power_board_error_led():
+    """Test the error LED on the Power Board."""
+    pb = PowerBoard("SERIAL0", MockEnvironment)
+
+    assert type(pb._error_led) is LED

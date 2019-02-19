@@ -14,7 +14,7 @@ from j5.components import (
     PowerOutputGroup,
 )
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from j5.components import (  # noqa: F401
         Component,
         ButtonInterface,
@@ -111,4 +111,4 @@ class PowerBoard(Board):
     @staticmethod
     def discover(backend: Backend) -> List["Board"]:
         """Detect all connected power boards."""
-        return []
+        return backend.discover()
