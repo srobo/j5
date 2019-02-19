@@ -2,6 +2,8 @@
 
 import pytest
 
+from typing import List
+
 from j5.backends import Backend, Environment
 from j5.boards import Board
 
@@ -70,6 +72,12 @@ class MockBackend(Backend):
 
     environment = MockEnvironment
     board = MockBoard
+
+
+    @classmethod
+    def discover(cls) -> List[Board]:
+        """Discover boards available on this backend."""
+        return []
 
 
 def test_backend_instantiation():
