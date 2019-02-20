@@ -49,6 +49,12 @@ class Backend(metaclass=BackendMeta):
 
     """
 
+    @classmethod
+    @abstractmethod
+    def discover(cls) -> List['Board']:
+        """Discover boards that this backend can control."""
+        raise NotImplementedError  # pragma: no cover
+
     @property
     @abstractmethod
     def environment(self) -> 'Environment':

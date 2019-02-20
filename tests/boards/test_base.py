@@ -1,4 +1,6 @@
 """Test the base classes for boards."""
+from typing import List
+
 import pytest
 
 from j5.backends import Backend, Environment
@@ -55,6 +57,11 @@ class NoBoardMockBackend(Backend):
         """Get the connected MockBoards."""
         return []
 
+    @classmethod
+    def discover(cls) -> List[Board]:
+        """Discover boards available on this backend."""
+        return []
+
 
 class OneBoardMockBackend(Backend):
     """This backend finds exactly one."""
@@ -65,6 +72,11 @@ class OneBoardMockBackend(Backend):
     def get_testing_boards(self):
         """Get the connected MockBoards."""
         return [MockBoard("TESTSERIAL1")]
+
+    @classmethod
+    def discover(cls) -> List[Board]:
+        """Discover boards available on this backend."""
+        return []
 
 
 class TwoBoardsMockBackend(Backend):
@@ -79,6 +91,11 @@ class TwoBoardsMockBackend(Backend):
         # that sorting the boards (as tested by
         # test_board_group_iteration_sorted_by_serial) actually has an effect.
         return [MockBoard("TESTSERIAL2"), MockBoard("TESTSERIAL1")]
+
+    @classmethod
+    def discover(cls) -> List[Board]:
+        """Discover boards available on this backend."""
+        return []
 
 
 def test_testing_board_instantiation():
