@@ -1,4 +1,6 @@
 """Test the demo board."""
+from typing import List
+
 from j5.backends import Backend, Environment
 from j5.boards import Board
 from j5.boards.j5 import DemoBoard
@@ -20,6 +22,11 @@ class MockDemoBoardBackend(LEDInterface, Backend):
     def get_led_state(self, board: Board, identifier: int) -> bool:
         """Get the current state of an LED."""
         return True
+
+    @classmethod
+    def discover(cls) -> List[Board]:
+        """Discover boards available on this backend."""
+        return []
 
 
 def test_demo_board_instantiation():
