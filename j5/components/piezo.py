@@ -2,14 +2,14 @@
 
 from abc import abstractmethod
 from datetime import timedelta
-from enum import Enum
+from enum import IntEnum
 from typing import Type, Union
 
 from j5.boards import Board
 from j5.components import Component, Interface
 
 
-class Note(Enum):
+class Note(IntEnum):
     """An enumeration of notes.
 
     An enumeration of notes from scientific pitch
@@ -61,14 +61,14 @@ class Piezo(Component):
     def buzz(self, board: Board, identifier: int,
              duration: timedelta, pitch: Pitch) -> None:
         """Queue a note to be played."""
-        if type(pitch) is int:
+        if isinstance(pitch, int):
             frequency = pitch
-        elif type(pitch) is Note:
-            frequency = pitch.value  # type: ignore
+        elif isinstance(pitch, Note):
+            frequency = pitch.value
         else:
             raise TypeError
 
-        if frequency < 0:  # type: ignore
+        if frequency < 0:
             raise ValueError
         else:
             self._backend.buzz(board, identifier, duration, pitch)
