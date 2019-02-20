@@ -14,7 +14,7 @@ class ServoInterface(Interface):
     """An interface containing the methods required to control a Servo."""
 
     @abstractmethod
-    def get_servo_position(self, board: Board, identifier: int) -> bool:
+    def get_servo_position(self, board: Board, identifier: int) -> ServoPosition:
         """Get the position of a Servo."""
         raise NotImplementedError  # pragma: no cover
 
@@ -50,4 +50,7 @@ class Servo(Component):
     @position.setter
     def position(self, new_position: ServoPosition) -> None:
         """Set the position of the Servo."""
+        if new_position is not None:
+            if not -1 <= new_position <= 1:
+                raise ValueError
         self._backend.set_servo_position(self._board, self._identifier, new_position)
