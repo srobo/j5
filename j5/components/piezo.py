@@ -64,11 +64,11 @@ class Piezo(Component):
         if type(pitch) is int:
             frequency = pitch
         elif type(pitch) is Note:
-            frequency = pitch.value
+            frequency = pitch.value  # type: ignore
         else:
             raise TypeError
 
-        if frequency < 0:
+        if frequency < 0:  # type: ignore
             raise ValueError
         else:
             self._backend.buzz(board, identifier, duration, pitch)
