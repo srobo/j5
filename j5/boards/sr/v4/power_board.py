@@ -3,7 +3,7 @@
 from enum import Enum
 from typing import TYPE_CHECKING, List, Mapping, cast
 
-from j5.backends import Backend, Environment
+from j5.backends import Backend
 from j5.boards import Board
 from j5.components import (
     LED,
@@ -44,11 +44,9 @@ class PowerOutputPosition(Enum):
 class PowerBoard(Board):
     """Student Robotics v4 Power Board."""
 
-    def __init__(self, serial: str, environment: Environment):
+    def __init__(self, serial: str, backend: Backend):
         self._serial = serial
-        self._environment = environment
-
-        self._backend = self._environment.get_backend(self.__class__)
+        self._backend = backend
 
         self._outputs: Mapping[PowerOutputPosition, PowerOutput] = {
             output: PowerOutput(
