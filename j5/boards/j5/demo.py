@@ -17,7 +17,7 @@ class DemoBoard(Board):
 
     def __init__(self, serial: str, environment: Environment):
         self._environment = environment
-        self._backend = environment.get_backend(self.__class__)
+        self._backend = environment.get_backend(self.__class__)()
         self._serial = serial
         self._leds = [LED(n, self, cast('LEDInterface', self._backend))
                       for n in range(0, 3)]
