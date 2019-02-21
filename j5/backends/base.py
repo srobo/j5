@@ -100,9 +100,9 @@ class Environment:
         """Register a new backend with this Backend Group."""
         self.board_backend_mapping[board] = backend
 
-    def get_backend(self, board: 'Type[Board]') -> Backend:
+    def get_backend(self, board: 'Type[Board]') -> Type[Backend]:
         """Get the backend for a board."""
         if board not in self.supported_boards:
             raise NotImplementedError(f"The {str(self)} does not support {str(board)}")
 
-        return self.board_backend_mapping[board]()
+        return self.board_backend_mapping[board]

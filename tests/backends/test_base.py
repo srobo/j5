@@ -102,7 +102,7 @@ def test_environment_board_backend_mapping():
 def test_environment_board_get_backend():
     """Test that we can get the backend of a board."""
     environment = MockEnvironment
-    assert isinstance(environment.get_backend(MockBoard), MockBackend)
+    assert issubclass(environment.get_backend(MockBoard), MockBackend)
 
 
 def test_environment_board_get_backend_unknown():
