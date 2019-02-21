@@ -23,4 +23,5 @@ stdenv.mkDerivation {
     pipenv
     python3
   ];
+  LD_LIBRARY_PATH = [ "${libusb1}/lib" ];
 }
