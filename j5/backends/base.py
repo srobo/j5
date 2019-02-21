@@ -25,20 +25,34 @@ class BackendMeta(ABCMeta):
         if hasattr(cls, "environment"):
             if cls.environment is not None and cls.board is not None:
 
-                if type(cls.environment) != Environment:
-                    raise ValueError("The environment must be of type Environment.")
-
-                if cls.board in cls.environment.supported_boards:
-                    raise RuntimeError("You cannot register multiple backends for the same board in the same Environment.")  # noqa: E501
-
-                for component in cls.board.supported_components():
-                    if not issubclass(cls, component.interface_class()):
-                        raise TypeError("The backend class doesn't have a required interface.")  # noqa: E501
+                mcs._check_compatibility(cls)
+                mcs._check_component_interfaces(cls)
 
                 cls.environment.register_backend(cls.board, cls)
                 return cls
 
         raise RuntimeError(f"The {str(cls)} has no environment attribute")
+
+    def _check_compatibility(cls):  # type: ignore
+        """Check that the backend and environment are compatible."""
+        if type(cls.environment) != Environment:
+            raise ValueError("The environment must be of type Environment.")
+
+        if cls.board in cls.environment.supported_boards:
+            raise RuntimeError(
+                "You cannot register multiple backends for the same board in the same Environment.")  # noqa: E501
+
+    def _check_component_interfaces(cls):  # type: ignore
+        """
+        Check that the backend has the right interfaces.
+
+        Certain interfaces are required to support components,
+        and we want to make sure that the Backend implements
+        them. This is a run-time type check.
+        """
+        for component in cls.board.supported_components():
+            if not issubclass(cls, component.interface_class()):
+                raise TypeError("The backend class doesn't have a required interface.")  # noqa: E501
 
 
 class Backend(metaclass=BackendMeta):
