@@ -40,26 +40,28 @@ class Robot:
     def __init__(self):
 
         self._env = HardwareEnvironment()
-        
+
         self.power_board = PowerBoard(self._env)
-        
+
         self.motor_boards = BoardGroup(MotorBoard, self._env)
         self.motor_board = self.motor_boards.singular()
-        
+
         self.servo_boards = BoardGroup(ServoBoard, self._env)
         self.servo_board = self.servo_boards.singular()
-        
+
         self.ruggeduino = Ruggeduino(self._env)
 
 ```
 
 ## Competitions
 
-We are working with developers for the following robotics competition to support their hardware(1):
+We intend to support the kits of the following robotics competitions:
 
 - SourceBots
 - Student Robotics
 - Hills Road RoboCon
+
+Whilst `j5` isn't officially endorced by Student Robotics or RoboCon, we are working closely with Student Robotics to ensure perfect compatibility. Many `j5` contributors are members of Student Robotics and SourceBots
 
 If you are interested in adding support for your hardware, please get in touch.
 
@@ -72,6 +74,3 @@ As this library has to support multiple hardwares, with multiple backends and st
 ## How do I contribute to j5?
 
 `j5` is being developed by a group of volunteers at the University of Southampton. We welcome contributions and reside in a channel on the SourceBots Slack.
-
-
-(1): Neither Student Robotics nor Hills Road have officially agreed to use this software for their respective competitions. `j5` does not represent any of the competitions listed.
