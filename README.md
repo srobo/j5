@@ -57,9 +57,9 @@ class Robot:
 
 We intend to support the kits of the following robotics competitions:
 
-- SourceBots
-- Student Robotics
-- Hills Road RoboCon
+- [SourceBots](https://sourcebots.co.uk/)
+- [Student Robotics](https://studentrobotics.org/)
+- [Hills Road RoboCon](https://hr-robocon.org/)
 
 Whilst `j5` isn't officially endorced by Student Robotics or RoboCon, we are working closely with Student Robotics to ensure perfect compatibility. Many `j5` contributors are members of Student Robotics and SourceBots
 
