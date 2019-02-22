@@ -16,7 +16,7 @@ class ButtonInterface(Interface):
         raise NotImplementedError  # pragma: no cover
 
     @abstractmethod
-    def wait_until_button_pressed(self, board: Board, identifier: int) -> bool:
+    def wait_until_button_pressed(self, board: Board, identifier: int) -> None:
         """Halt the program until this button is pushed."""
         raise NotImplementedError  # pragma: no cover
 
