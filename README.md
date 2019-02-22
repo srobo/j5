@@ -73,4 +73,4 @@ As this library has to support multiple hardwares, with multiple backends and st
 
 ## How do I contribute to j5?
 
-`j5` is being developed by a group of volunteers at the University of Southampton. We welcome contributions and reside in a channel on the SourceBots Slack.
+`j5` is being developed by a group of volunteers primarily based at the University of Southampton. We welcome contributions and reside in a channel on the SourceBots Slack.
