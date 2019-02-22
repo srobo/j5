@@ -16,6 +16,7 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('../'))
 
+from j5 import SHORT_VERSION, VERSION
 
 # -- Project information -----------------------------------------------------
 
@@ -24,9 +25,9 @@ copyright = '2019, Dan Trickey'
 author = 'Dan Trickey'
 
 # The short X.Y version
-version = ''
+version = SHORT_VERSION
 # The full version, including alpha/beta/rc tags
-release = '0.0.2'
+release = VERSION
 
 
 # -- General configuration ---------------------------------------------------

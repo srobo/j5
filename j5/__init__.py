@@ -3,4 +3,7 @@
 from .boards import BoardGroup
 from .base_robot import BaseRobot
 
-__all__ = ["BoardGroup", "BaseRobot"]
+VERSION = "0.0.2"
+SHORT_VERSION = "0.0.2"
+
+__all__ = ["BoardGroup", "BaseRobot", "SHORT_VERSION", "VERSION"]
