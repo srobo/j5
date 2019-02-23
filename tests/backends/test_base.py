@@ -1,5 +1,7 @@
 """Tests for the base backend classes."""
 
+from typing import List
+
 import pytest
 
 from j5.backends import Backend, Environment
@@ -71,6 +73,11 @@ class MockBackend(Backend):
     environment = MockEnvironment
     board = MockBoard
 
+    @classmethod
+    def discover(cls) -> List[Board]:
+        """Discover boards available on this backend."""
+        return []
+
 
 def test_backend_instantiation():
     """Test that we can instantiate a backend."""
@@ -95,7 +102,7 @@ def test_environment_board_backend_mapping():
 def test_environment_board_get_backend():
     """Test that we can get the backend of a board."""
     environment = MockEnvironment
-    assert isinstance(environment.get_backend(MockBoard), MockBackend)
+    assert issubclass(environment.get_backend(MockBoard), MockBackend)
 
 
 def test_environment_board_get_backend_unknown():
