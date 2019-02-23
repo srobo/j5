@@ -86,6 +86,7 @@ def test_servo_set_position_none():
     servo = Servo(2, MockServoBoard(), MockServoDriver())
     servo.position = None
 
+
 def test_servo_set_position_out_of_bounds():
     """Test that we cannot set < -1 or > 1."""
     servo = Servo(2, MockServoBoard(), MockServoDriver())
