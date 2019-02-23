@@ -61,7 +61,7 @@ We intend to support the kits of the following robotics competitions:
 - [Student Robotics](https://studentrobotics.org/)
 - [Hills Road RoboCon](https://hr-robocon.org/)
 
-Whilst `j5` isn't officially endorced by Student Robotics or RoboCon, we are working closely with Student Robotics to ensure perfect compatibility. Many `j5` contributors are members of Student Robotics and SourceBots
+Whilst `j5` isn't officially endorsed by Student Robotics or RoboCon, we are working closely with Student Robotics to ensure perfect compatibility. Many `j5` contributors are members of Student Robotics and SourceBots.
 
 If you are interested in adding support for your hardware, please get in touch.
 
