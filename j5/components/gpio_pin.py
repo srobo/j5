@@ -4,7 +4,7 @@ from enum import IntEnum
 from typing import List, Type
 
 from j5.boards import Board
-from j5.components import Component, Interface
+from j5.components import Component, Interface, NotSupportedByHardware
 
 
 class GPIOPinMode(IntEnum):
@@ -23,7 +23,9 @@ class GPIOPinMode(IntEnum):
 class GPIOPinInterface(Interface):
     """An interface containing the methods required for a GPIO Pin."""
 
-    pass
+    def set_gpio_pin_mode(self, board: Board, identifier: int, pin_mode: GPIOPinMode) -> None:
+        """Set the hardware mode of a GPIO pin."""
+        raise NotImplementedError  # pragma: nocover
 
 
 class GPIOPin(Component):
@@ -34,14 +36,25 @@ class GPIOPin(Component):
             identifier: int,
             board: Board,
             backend: GPIOPinInterface,
-            supported_modes: List[GPIOPinMode] = [],
+            supported_modes: List[GPIOPinMode] = [GPIOPinMode.DIGITAL_OUTPUT],
+            initial_mode: GPIOPinMode = GPIOPinMode.DIGITAL_OUTPUT,
     ) -> None:
         self._board = board
         self._backend = backend
         self._identifier = identifier
         self._supported_modes = supported_modes
 
+        self.set_mode(initial_mode)
+
     @staticmethod
     def interface_class() -> Type[GPIOPinInterface]:
         """Get the interface class that is required to use this component."""
         return GPIOPinInterface
+
+    def set_mode(self, pin_mode: GPIOPinMode) -> None:
+        """Set the hardware mode of this pin."""
+        if pin_mode not in self._supported_modes:
+            raise NotSupportedByHardware(
+                f"Pin {self._identifier} on {str(self._board)} \
+                does not support {str(pin_mode)}.",
+            )

@@ -1,6 +1,6 @@
 """This module contains components, which are the smallest logical element of hardware."""
 
-from .base import Component, Interface
+from .base import Component, Interface, NotSupportedByHardware
 from .battery_sensor import BatterySensor, BatterySensorInterface
 from .button import Button, ButtonInterface
 from .gpio_pin import GPIOPin, GPIOPinInterface, GPIOPinMode
@@ -22,6 +22,7 @@ __all__ = [
     "Interface",
     "LED",
     "LEDInterface",
+    "NotSupportedByHardware",
     "Piezo",
     "PiezoInterface",
     "PowerOutput",
