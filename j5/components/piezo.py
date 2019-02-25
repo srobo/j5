@@ -69,6 +69,6 @@ class Piezo(Component):
             raise TypeError
 
         if frequency < 0:
-            raise ValueError
+            raise ValueError("Pitch must be greater than zero")
         else:
             self._backend.buzz(board, identifier, duration, pitch)
