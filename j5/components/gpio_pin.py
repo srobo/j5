@@ -7,6 +7,11 @@ from j5.boards import Board
 from j5.components import Component, Interface, NotSupportedByHardware
 
 
+class BadGPIOPinMode(Exception):
+    """The pin is not in the correct mode."""
+    pass
+
+
 class GPIOPinMode(IntEnum):
     """Hardware modes that a GPIO pin can be set to."""
 
@@ -25,6 +30,10 @@ class GPIOPinInterface(Interface):
 
     def set_gpio_pin_mode(self, board: Board, identifier: int, pin_mode: GPIOPinMode) -> None:
         """Set the hardware mode of a GPIO pin."""
+        raise NotImplementedError  # pragma: nocover
+
+    def set_gpio_pin_digital_state(self, board: Board, identifier: int, state: bool):
+        """Set the digital state of a GPIO pin."""
         raise NotImplementedError  # pragma: nocover
 
 
@@ -58,3 +67,14 @@ class GPIOPin(Component):
                 f"Pin {self._identifier} on {str(self._board)} \
                 does not support {str(pin_mode)}.",
             )
+        self._backend.set_gpio_pin_mode(self._board, self._identifier, pin_mode)
+
+    def _require_pin_mode(self, pin_mode: GPIOPinMode):
+        """Ensure that this pin is in the specified hardware mode."""
+        if pin_mode not in self.supported_modes:
+            raise BadGPIOPinMode(f"Pin {self._identifier} needs to be in {pin_mode} to call {f.__name__}.")
+
+    def set_digital(self, state: bool):
+        """Set the digital state of the pin."""
+        self._require_pin_mode(GPIOPinMode.DIGITAL_OUTPUT)
+        self._backend.set_gpio_pin_digital_state(self._board, self._identifier, state)
