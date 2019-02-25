@@ -1,7 +1,8 @@
 """Classes for GPIO Pins."""
 
+from abc import abstractmethod
 from enum import IntEnum
-from typing import List, Type
+from typing import List, Optional, Type
 
 from j5.boards import Board
 from j5.components import Component, Interface, NotSupportedByHardware
@@ -9,6 +10,7 @@ from j5.components import Component, Interface, NotSupportedByHardware
 
 class BadGPIOPinMode(Exception):
     """The pin is not in the correct mode."""
+
     pass
 
 
@@ -28,12 +30,37 @@ class GPIOPinMode(IntEnum):
 class GPIOPinInterface(Interface):
     """An interface containing the methods required for a GPIO Pin."""
 
-    def set_gpio_pin_mode(self, board: Board, identifier: int, pin_mode: GPIOPinMode) -> None:
+    @abstractmethod
+    def set_gpio_pin_mode(self,
+                          board: Board,
+                          identifier: int,
+                          pin_mode: GPIOPinMode,
+                          ) -> None:
         """Set the hardware mode of a GPIO pin."""
         raise NotImplementedError  # pragma: nocover
 
-    def set_gpio_pin_digital_state(self, board: Board, identifier: int, state: bool):
-        """Set the digital state of a GPIO pin."""
+    @abstractmethod
+    def get_gpio_pin_mode(self, board: Board, identifier: int) -> GPIOPinMode:
+        """Get the hardware mode of a GPIO pin."""
+        raise NotImplementedError  # pragma: nocover
+
+    @abstractmethod
+    def write_gpio_pin_digital_state(self,
+                                     board: Board,
+                                     identifier: int,
+                                     state: bool,
+                                     ) -> None:
+        """Write to the digital state of a GPIO pin."""
+        raise NotImplementedError  # pragma: nocover
+
+    @abstractmethod
+    def get_gpio_pin_digital_state(self, board: Board, identifier: int) -> bool:
+        """Get the last written state of the GPIO pin."""
+        raise NotImplementedError  # pragma: nocover
+
+    @abstractmethod
+    def read_gpio_pin_digital_state(self, board: Board, identifier: int) -> bool:
+        """Read the digital state of the GPIO pin."""
         raise NotImplementedError  # pragma: nocover
 
 
@@ -46,21 +73,40 @@ class GPIOPin(Component):
             board: Board,
             backend: GPIOPinInterface,
             supported_modes: List[GPIOPinMode] = [GPIOPinMode.DIGITAL_OUTPUT],
-            initial_mode: GPIOPinMode = GPIOPinMode.DIGITAL_OUTPUT,
+            initial_mode: Optional[GPIOPinMode] = None,
     ) -> None:
         self._board = board
         self._backend = backend
         self._identifier = identifier
         self._supported_modes = supported_modes
 
-        self.set_mode(initial_mode)
+        if len(supported_modes) < 1:
+            raise ValueError("A GPIO pin must support at least one GPIOPinMode.")
+
+        if initial_mode is None:
+            # If no initial mode is set, choose the first supported mode.
+            initial_mode = self._supported_modes[0]
+        self.mode = initial_mode
 
     @staticmethod
     def interface_class() -> Type[GPIOPinInterface]:
         """Get the interface class that is required to use this component."""
         return GPIOPinInterface
 
-    def set_mode(self, pin_mode: GPIOPinMode) -> None:
+    def _require_pin_modes(self, pin_modes: List[GPIOPinMode]) -> None:
+        """Ensure that this pin is in the specified hardware mode."""
+        if not any(self.mode == mode for mode in pin_modes) and not len(pin_modes) == 0:
+            raise BadGPIOPinMode(
+                f"Pin {self._identifier} needs to be in one of {pin_modes}",
+            )
+
+    @property
+    def mode(self) -> GPIOPinMode:
+        """Get the hardware mode of this pin."""
+        return self._backend.get_gpio_pin_mode(self._board, self._identifier)
+
+    @mode.setter
+    def mode(self, pin_mode: GPIOPinMode) -> None:
         """Set the hardware mode of this pin."""
         if pin_mode not in self._supported_modes:
             raise NotSupportedByHardware(
@@ -69,12 +115,23 @@ class GPIOPin(Component):
             )
         self._backend.set_gpio_pin_mode(self._board, self._identifier, pin_mode)
 
-    def _require_pin_mode(self, pin_mode: GPIOPinMode):
-        """Ensure that this pin is in the specified hardware mode."""
-        if pin_mode not in self.supported_modes:
-            raise BadGPIOPinMode(f"Pin {self._identifier} needs to be in {pin_mode} to call {f.__name__}.")
+    @property
+    def digital_state(self) -> bool:
+        """Get the digital state of the pin."""
+        self._require_pin_modes([
+            GPIOPinMode.DIGITAL_OUTPUT,
+            GPIOPinMode.DIGITAL_INPUT,
+            GPIOPinMode.DIGITAL_INPUT_PULLUP],
+        )
 
-    def set_digital(self, state: bool):
+        # Behave differently depending on the hardware mode.
+        if self.mode is GPIOPinMode.DIGITAL_OUTPUT:
+            return self._backend.get_gpio_pin_digital_state(self._board, self._identifier)
+
+        return self._backend.read_gpio_pin_digital_state(self._board, self._identifier)
+
+    @digital_state.setter
+    def digital_state(self, state: bool) -> None:
         """Set the digital state of the pin."""
-        self._require_pin_mode(GPIOPinMode.DIGITAL_OUTPUT)
-        self._backend.set_gpio_pin_digital_state(self._board, self._identifier, state)
+        self._require_pin_modes([GPIOPinMode.DIGITAL_OUTPUT])
+        self._backend.write_gpio_pin_digital_state(self._board, self._identifier, state)
