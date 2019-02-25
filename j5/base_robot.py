@@ -19,7 +19,7 @@ class BaseRobot:
         # We have to ignore some of the types here as they are unknown.
         obj: BaseRobot = super().__new__(cls, *args, **kwargs)  # type: ignore
 
-        obj.obtain_lock()
+        obj._obtain_lock()
 
         return obj
 
@@ -27,7 +27,7 @@ class BaseRobot:
         """Make this robot safe."""
         Board.make_all_safe()
 
-    def obtain_lock(self) -> None:
+    def _obtain_lock(self) -> None:
         """
         Obtain a lock.
 
