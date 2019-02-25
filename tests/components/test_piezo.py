@@ -64,7 +64,7 @@ def test_piezo_interface_class_method():
 
 
 def test_piezo_buzz_method():
-    """Tests piezo's buzz method."""
+    """Tests piezo's buzz method's input validation."""
     piezo = Piezo(0, MockPiezoBoard(), MockPiezoDriver())
     piezo.buzz(MockPiezoBoard, 0, 0, 2093)
     piezo.buzz(MockPiezoBoard, 0, 0, Note.D7)
