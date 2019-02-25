@@ -34,7 +34,7 @@ class BaseRobot:
         This ensures that there can only be one instance of
         Robot at any time, which is a safety feature.
         """
-        if not hasattr(self,'_lock'):
+        if not hasattr(self, '_lock'):
 
             self._lock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
