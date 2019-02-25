@@ -63,12 +63,6 @@ We are working with developers for the following robotics competition to support
 
 If you are interested in adding support for your hardware, please get in touch.
 
-## Design
-
-As this library has to support multiple hardwares, with multiple backends and still have a common api for people to use, it has ended up fairly complex under the hood. The below diagram should help:
-
-![](/j5.svg)
-
 ## How do I contribute to j5?
 
 `j5` is being developed by a group of volunteers at the University of Southampton. We welcome contributions and reside in a channel on the SourceBots Slack.
