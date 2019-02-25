@@ -19,12 +19,13 @@ class GPIOPinMode(IntEnum):
 
     DIGITAL_INPUT = 0  # The digital state of the pin can be read
     DIGITAL_INPUT_PULLUP = 1  # Same as DIGITAL_INPUT but the internal pull-up is enabled
-    DIGITAL_OUTPUT = 2  # The digital state of the pin can be set.
+    DIGITAL_OUTPUT_PULLDOWN = 2 # Same as DIGITAL_INPUT but the internal pull-down is enabled
+    DIGITAL_OUTPUT = 3  # The digital state of the pin can be set.
 
-    ANALOGUE_INPUT = 3  # The analogue voltage of the pin can be read.
-    ANALOGUE_OUTPUT = 4  # The analogue voltage of the pin can be set using a DAC.
+    ANALOGUE_INPUT = 4  # The analogue voltage of the pin can be read.
+    ANALOGUE_OUTPUT = 5  # The analogue voltage of the pin can be set using a DAC.
 
-    PWM_OUTPUT = 5  # A PWM output signal can be created on the pin.
+    PWM_OUTPUT = 6  # A PWM output signal can be created on the pin.
 
 
 class GPIOPinInterface(Interface):
@@ -121,7 +122,8 @@ class GPIOPin(Component):
         self._require_pin_modes([
             GPIOPinMode.DIGITAL_OUTPUT,
             GPIOPinMode.DIGITAL_INPUT,
-            GPIOPinMode.DIGITAL_INPUT_PULLUP],
+            GPIOPinMode.DIGITAL_INPUT_PULLUP,
+            GPIOPinMode.DIGITAL_OUTPUT_PULLDOWN],
         )
 
         # Behave differently depending on the hardware mode.
