@@ -34,12 +34,18 @@ class BaseRobot:
         This ensures that there can only be one instance of
         Robot at any time, which is a safety feature.
         """
-        self._lock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        if not self._lock:
+            
+            self._lock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        try:
-            self._lock.bind(('localhost', lock_port))
-        except OSError:
-            raise UnableToObtainLock(
-                "Unable to obtain lock. \
-                Are you trying to create more than one Robot object?",
-            ) from None
+            try:
+                self._lock.bind(('localhost', lock_port))
+            except OSError:
+                raise UnableToObtainLock(
+                    "Unable to obtain lock. \
+                    Are you trying to create more than one Robot object?",
+                ) from None
+
+        lock_details = self._lock.getsockname()
+        if lock_details[1] != lock_port:
+            raise OSError("Socket for lock is on the wrong port.")
