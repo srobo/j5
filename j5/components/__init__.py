@@ -6,6 +6,7 @@ from .button import Button, ButtonInterface
 from .led import LED, LEDInterface
 from .piezo import Piezo, PiezoInterface
 from .power_output import PowerOutput, PowerOutputInterface, PowerOutputGroup
+from .servo import Servo, ServoInterface
 
 
 __all__ = [
@@ -22,4 +23,6 @@ __all__ = [
     "PowerOutput",
     "PowerOutputInterface",
     "PowerOutputGroup",
+    "Servo",
+    "ServoInterface",
 ]

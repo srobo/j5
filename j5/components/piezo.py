@@ -2,32 +2,32 @@
 
 from abc import abstractmethod
 from datetime import timedelta
-from enum import Enum
+from enum import IntEnum
 from typing import Type, Union
 
 from j5.boards import Board
 from j5.components import Component, Interface
 
 
-class Note(Enum):
+class Note(IntEnum):
     """An enumeration of notes.
 
     An enumeration of notes from scientific pitch
     notation and their related frequencies in Hz.
     """
 
-    C6 = 1046
-    D6 = 1174
-    E6 = 1318
-    F6 = 1396
-    G6 = 1567
+    C6 = 1047
+    D6 = 1175
+    E6 = 1319
+    F6 = 1397
+    G6 = 1568
     A6 = 1760
-    B6 = 1975
+    B6 = 1976
     C7 = 2093
     D7 = 2349
     E7 = 2637
-    F7 = 2793
-    G7 = 3135
+    F7 = 2794
+    G7 = 3136
     A7 = 3520
     B7 = 3951
 
@@ -61,4 +61,14 @@ class Piezo(Component):
     def buzz(self, board: Board, identifier: int,
              duration: timedelta, pitch: Pitch) -> None:
         """Queue a note to be played."""
-        self._backend.buzz(board, identifier, duration, pitch)
+        if isinstance(pitch, int):
+            frequency = pitch
+        elif isinstance(pitch, Note):
+            frequency = pitch.value
+        else:
+            raise TypeError("Pitch must be of either type int or Note")
+
+        if frequency < 0:
+            raise ValueError("Pitch must be greater than zero")
+        else:
+            self._backend.buzz(board, identifier, duration, pitch)
