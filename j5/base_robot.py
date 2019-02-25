@@ -27,7 +27,7 @@ class BaseRobot:
         """Make this robot safe."""
         Board.make_all_safe()
 
-    def _obtain_lock(self) -> None:
+    def _obtain_lock(self, lock_port: int = 10653) -> None:
         """
         Obtain a lock.
 
@@ -37,7 +37,7 @@ class BaseRobot:
         self._lock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         try:
-            self._lock.bind(('localhost', 8335))
+            self._lock.bind(('localhost', lock_port))
         except OSError:
             raise UnableToObtainLock(
                 "Unable to obtain lock. \
