@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "2d307ff2f1482f70bf122bf2637d79cbbc0c03bbef57b51635c3f458c1d445ca"
+            "sha256": "c11f61d55533d4ecf1e88c5f9ea368ae725425d116dbcb3d38fc60a9eaa88305"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -15,7 +15,15 @@
             }
         ]
     },
-    "default": {},
+    "default": {
+        "libusb1": {
+            "hashes": [
+                "sha256:9d4f66d2ed699986b06bc3082cd262101cb26af7a76a34bd15b7eb56cba37e0f"
+            ],
+            "index": "pypi",
+            "version": "==1.7"
+        }
+    },
     "develop": {
         "alabaster": {
             "hashes": [
