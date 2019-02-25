@@ -35,7 +35,7 @@ class BaseRobot:
         Robot at any time, which is a safety feature.
         """
         if not self._lock:
-            
+
             self._lock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
             try:
