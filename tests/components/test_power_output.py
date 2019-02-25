@@ -65,6 +65,11 @@ def test_power_output_instantiation():
     PowerOutput(0, MockPowerOutputBoard(), MockPowerOutputDriver())
 
 
+def test_power_output_interface():
+    """Test that the class returns the correct interface."""
+    assert PowerOutput.interface_class() is PowerOutputInterface
+
+
 def test_power_output_enabled():
     """Test the is_enabled property of a PowerOutput."""
     power_output = PowerOutput(0, MockPowerOutputBoard(), MockPowerOutputDriver())
