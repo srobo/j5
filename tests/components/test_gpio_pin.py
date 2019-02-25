@@ -255,7 +255,7 @@ def test_digital_state_getter():
     for mode in [
         GPIOPinMode.DIGITAL_INPUT,
         GPIOPinMode.DIGITAL_INPUT_PULLUP,
-        GPIOPinMode.DIGITAL_OUTPUT_PULLDOWN,
+        GPIOPinMode.DIGITAL_INPUT_PULLDOWN,
     ]:
         pin.mode = mode
         assert pin.digital_state is driver._digital_state[0]

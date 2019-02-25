@@ -19,7 +19,7 @@ class GPIOPinMode(IntEnum):
 
     DIGITAL_INPUT = 0  # The digital state of the pin can be read
     DIGITAL_INPUT_PULLUP = 1  # Same as DIGITAL_INPUT but the internal pull-up is enabled
-    DIGITAL_OUTPUT_PULLDOWN = 2 # Same as DIGITAL_INPUT but the internal pull-down is enabled
+    DIGITAL_INPUT_PULLDOWN = 2  # Same as DIGITAL_INPUT but the internal pull-down is enabled
     DIGITAL_OUTPUT = 3  # The digital state of the pin can be set.
 
     ANALOGUE_INPUT = 4  # The analogue voltage of the pin can be read.
@@ -123,7 +123,7 @@ class GPIOPin(Component):
             GPIOPinMode.DIGITAL_OUTPUT,
             GPIOPinMode.DIGITAL_INPUT,
             GPIOPinMode.DIGITAL_INPUT_PULLUP,
-            GPIOPinMode.DIGITAL_OUTPUT_PULLDOWN],
+            GPIOPinMode.DIGITAL_INPUT_PULLDOWN],
         )
 
         # Behave differently depending on the hardware mode.
