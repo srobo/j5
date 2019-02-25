@@ -66,7 +66,7 @@ class Piezo(Component):
         elif isinstance(pitch, Note):
             frequency = pitch.value
         else:
-            raise TypeError
+            raise TypeError("Pitch must be of either type int or Note")
 
         if frequency < 0:
             raise ValueError("Pitch must be greater than zero")
