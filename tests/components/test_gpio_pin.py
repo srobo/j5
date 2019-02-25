@@ -52,6 +52,28 @@ class MockGPIOPinDriver(GPIOPinInterface):
         """Read the digital state of the GPIO pin."""
         return self._digital_state[identifier]
 
+    def read_gpio_pin_analogue_value(self, board: Board, identifier: int) -> float:
+        """Read the scaled analogue value of the GPIO pin."""
+        return 0.6
+
+    def write_gpio_pin_dac_value(
+            self,
+            board: Board,
+            identifier: int,
+            scaled_value: float,
+    ) -> None:
+        """Write a scaled analogue value to the DAC on the GPIO pin."""
+        pass
+
+    def write_gpio_pin_pwm_value(
+            self,
+            board: Board,
+            identifier: int,
+            duty_cycle: float,
+    ) -> None:
+        """Write a scaled analogue value to the PWM on the GPIO pin."""
+        pass
+
 
 class MockGPIOPinBoard(Board):
     """A testing board for the GPIO pin."""
@@ -241,6 +263,7 @@ def test_digital_state_getter():
             GPIOPinMode.DIGITAL_OUTPUT,
             GPIOPinMode.DIGITAL_INPUT,
             GPIOPinMode.DIGITAL_INPUT_PULLUP,
+            GPIOPinMode.DIGITAL_INPUT_PULLDOWN,
             GPIOPinMode.ANALOGUE_INPUT,
         ],
     )
@@ -288,3 +311,48 @@ def test_digital_state_setter():
     assert driver._written_digital_state[0]
     pin.digital_state = False
     assert not driver._written_digital_state[0]
+
+
+def test_analogue_value_getter():
+    """Test that we can get a scaled analogue value."""
+    driver = MockGPIOPinDriver()
+    pin = GPIOPin(
+        0,
+        MockGPIOPinBoard(),
+        driver,
+        supported_modes=[
+            GPIOPinMode.DIGITAL_OUTPUT,
+            GPIOPinMode.DIGITAL_INPUT,
+            GPIOPinMode.DIGITAL_INPUT_PULLUP,
+            GPIOPinMode.ANALOGUE_INPUT,
+        ],
+    )
+    pin.mode = GPIOPinMode.ANALOGUE_INPUT
+    assert pin.analogue_value == 0.6
+
+    with pytest.raises(BadGPIOPinMode):
+        pin.mode = GPIOPinMode.DIGITAL_OUTPUT
+        _ = pin.analogue_value
+
+
+def test_analogue_value_setter():
+    """Test that we can set a scaled analogue value."""
+    driver = MockGPIOPinDriver()
+    pin = GPIOPin(
+        0,
+        MockGPIOPinBoard(),
+        driver,
+        supported_modes=[
+            GPIOPinMode.ANALOGUE_OUTPUT,
+            GPIOPinMode.PWM_OUTPUT,
+        ],
+    )
+
+    pin.mode = GPIOPinMode.ANALOGUE_OUTPUT
+    pin.analogue_value = 0.6
+
+    pin.mode = GPIOPinMode.PWM_OUTPUT
+    pin.analogue_value = 0.7
+
+    with pytest.raises(ValueError):
+        pin.analogue_value = -1

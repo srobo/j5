@@ -18,8 +18,8 @@ class GPIOPinMode(IntEnum):
     """Hardware modes that a GPIO pin can be set to."""
 
     DIGITAL_INPUT = 0  # The digital state of the pin can be read
-    DIGITAL_INPUT_PULLUP = 1  # Same as DIGITAL_INPUT but the internal pull-up is enabled
-    DIGITAL_INPUT_PULLDOWN = 2  # Same as DIGITAL_INPUT but the internal pull-down is enabled
+    DIGITAL_INPUT_PULLUP = 1  # Same as DIGITAL_INPUT but internal pull-up is enabled
+    DIGITAL_INPUT_PULLDOWN = 2  # Same as DIGITAL_INPUT but internal pull-down is enabled
     DIGITAL_OUTPUT = 3  # The digital state of the pin can be set.
 
     ANALOGUE_INPUT = 4  # The analogue voltage of the pin can be read.
@@ -62,6 +62,31 @@ class GPIOPinInterface(Interface):
     @abstractmethod
     def read_gpio_pin_digital_state(self, board: Board, identifier: int) -> bool:
         """Read the digital state of the GPIO pin."""
+        raise NotImplementedError  # pragma: nocover
+
+    @abstractmethod
+    def read_gpio_pin_analogue_value(self, board: Board, identifier: int) -> float:
+        """Read the scaled analogue value of the GPIO pin."""
+        raise NotImplementedError  # pragma: nocover
+
+    @abstractmethod
+    def write_gpio_pin_dac_value(
+            self,
+            board: Board,
+            identifier: int,
+            scaled_value: float,
+    ) -> None:
+        """Write a scaled analogue value to the DAC on the GPIO pin."""
+        raise NotImplementedError  # pragma: nocover
+
+    @abstractmethod
+    def write_gpio_pin_pwm_value(
+            self,
+            board: Board,
+            identifier: int,
+            duty_cycle: float,
+    ) -> None:
+        """Write a scaled analogue value to the PWM on the GPIO pin."""
         raise NotImplementedError  # pragma: nocover
 
 
@@ -137,3 +162,30 @@ class GPIOPin(Component):
         """Set the digital state of the pin."""
         self._require_pin_modes([GPIOPinMode.DIGITAL_OUTPUT])
         self._backend.write_gpio_pin_digital_state(self._board, self._identifier, state)
+
+    @property
+    def analogue_value(self) -> float:
+        """Get the scaled analogue reading of the pin."""
+        self._require_pin_modes([GPIOPinMode.ANALOGUE_INPUT])
+        return self._backend.read_gpio_pin_analogue_value(self._board, self._identifier)
+
+    @analogue_value.setter
+    def analogue_value(self, new_value: float) -> None:
+        """Set the analogue value of the pin."""
+        self._require_pin_modes([
+            GPIOPinMode.ANALOGUE_OUTPUT,
+            GPIOPinMode.PWM_OUTPUT,
+        ])
+        if new_value < 0 or new_value > 1:
+            raise ValueError("An analogue pin value must be between 0 and 1.")
+
+        if self.mode is GPIOPinMode.ANALOGUE_OUTPUT:
+            self._backend.write_gpio_pin_dac_value(
+                self._board,
+                self._identifier,
+                new_value,
+            )
+
+        # We must be a PWM_OUTPUT
+
+        self._backend.write_gpio_pin_pwm_value(self._board, self._identifier, new_value)
