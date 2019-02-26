@@ -1,5 +1,5 @@
 """Test the base classes for boards."""
-from typing import List
+from typing import List, Optional
 
 import pytest
 
@@ -22,6 +22,11 @@ class MockBoard(Board):
     def serial(self) -> str:
         """Get the serial number of this board."""
         return self._serial
+
+    @property
+    def firmware_version(self) -> Optional[str]:
+        """Get the firmware version of this board."""
+        return self._backend.get_firmware_version(self)
 
     def make_safe(self):
         """Make this board safe."""
@@ -57,6 +62,10 @@ class NoBoardMockBackend(Backend):
         """Get the connected MockBoards."""
         return []
 
+    def get_firmware_version(self, board: 'Board') -> Optional[str]:
+        """Get the firmware version of the board."""
+        return None
+
     @classmethod
     def discover(cls) -> List[Board]:
         """Discover boards available on this backend."""
@@ -72,6 +81,10 @@ class OneBoardMockBackend(Backend):
     def get_testing_boards(self):
         """Get the connected MockBoards."""
         return [MockBoard("TESTSERIAL1")]
+
+    def get_firmware_version(self, board: 'Board') -> Optional[str]:
+        """Get the firmware version of the board."""
+        return None
 
     @classmethod
     def discover(cls) -> List[Board]:
@@ -91,6 +104,10 @@ class TwoBoardsMockBackend(Backend):
         # that sorting the boards (as tested by
         # test_board_group_iteration_sorted_by_serial) actually has an effect.
         return [MockBoard("TESTSERIAL2"), MockBoard("TESTSERIAL1")]
+
+    def get_firmware_version(self, board: 'Board') -> Optional[str]:
+        """Get the firmware version of the board."""
+        return None
 
     @classmethod
     def discover(cls) -> List[Board]:

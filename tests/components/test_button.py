@@ -1,6 +1,6 @@
 """Tests for the Button Classes."""
 from time import sleep, time
-from typing import List, Type
+from typing import List, Optional, Type
 
 from j5.backends import Backend
 from j5.boards import Board
@@ -39,6 +39,11 @@ class MockButtonBoard(Board):
     def serial(self) -> str:
         """The serial number of this board."""
         return "SERIAL"
+
+    @property
+    def firmware_version(self) -> Optional[str]:
+        """Get the firmware version of this board."""
+        return self._backend.get_firmware_version(self)
 
     def make_safe(self):
         """Make this board safe."""
