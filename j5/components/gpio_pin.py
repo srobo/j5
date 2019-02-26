@@ -185,7 +185,6 @@ class GPIOPin(Component):
                 self._identifier,
                 new_value,
             )
-
-        # We must be a PWM_OUTPUT
-
-        self._backend.write_gpio_pin_pwm_value(self._board, self._identifier, new_value)
+        else:
+            # We must be a PWM_OUTPUT
+            self._backend.write_gpio_pin_pwm_value(self._board, self._identifier, new_value)
