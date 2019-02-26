@@ -80,4 +80,5 @@ def test_piezo_buzz_invalid_value():
 
 
 def test_note_reversed():
+    """Test Note reversed dunder method."""
     assert list(reversed(list(Note))) == list(reversed(Note))
