@@ -120,6 +120,8 @@ def test_power_board_outputs():
     assert type(pb.outputs) is PowerOutputGroup
     assert len(pb.outputs) == 6
 
+    # TODO: Test iteration
+
 
 def test_power_board_piezo():
     """Test the Piezo on the PowerBoard."""
