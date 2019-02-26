@@ -5,10 +5,10 @@ from enum import IntEnum
 from typing import List, Optional, Type
 
 from j5.boards import Board
-from j5.components import Component, Interface, NotSupportedByHardware
+from j5.components import Component, Interface, NotSupportedByHardwareError
 
 
-class BadGPIOPinMode(Exception):
+class BadGPIOPinModeError(Exception):
     """The pin is not in the correct mode."""
 
     pass
@@ -122,7 +122,7 @@ class GPIOPin(Component):
     def _require_pin_modes(self, pin_modes: List[GPIOPinMode]) -> None:
         """Ensure that this pin is in the specified hardware mode."""
         if not any(self.mode == mode for mode in pin_modes) and not len(pin_modes) == 0:
-            raise BadGPIOPinMode(
+            raise BadGPIOPinModeError(
                 f"Pin {self._identifier} needs to be in one of {pin_modes}",
             )
 

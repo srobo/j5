@@ -7,7 +7,7 @@ from j5.backends import Backend
 from j5.boards import Board
 from j5.components import Component, NotSupportedByHardwareError
 from j5.components.gpio_pin import (
-    BadGPIOPinMode,
+    BadGPIOPinModeError,
     GPIOPin,
     GPIOPinInterface,
     GPIOPinMode,
@@ -242,7 +242,7 @@ def test_required_pin_modes():
     # 1
     pin._require_pin_modes([GPIOPinMode.DIGITAL_OUTPUT])
 
-    with pytest.raises(BadGPIOPinMode):
+    with pytest.raises(BadGPIOPinModeError):
         pin._require_pin_modes([GPIOPinMode.DIGITAL_INPUT_PULLUP])
 
     # 2
@@ -287,7 +287,7 @@ def test_digital_state_getter():
 
     # Analogue
     pin.mode = GPIOPinMode.ANALOGUE_INPUT
-    with pytest.raises(BadGPIOPinMode):
+    with pytest.raises(BadGPIOPinModeError):
         _ = pin.digital_state
 
 
@@ -330,7 +330,7 @@ def test_analogue_value_getter():
     pin.mode = GPIOPinMode.ANALOGUE_INPUT
     assert pin.analogue_value == 0.6
 
-    with pytest.raises(BadGPIOPinMode):
+    with pytest.raises(BadGPIOPinModeError):
         pin.mode = GPIOPinMode.DIGITAL_OUTPUT
         _ = pin.analogue_value
 
