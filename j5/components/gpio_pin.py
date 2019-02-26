@@ -17,15 +17,15 @@ class BadGPIOPinModeError(Exception):
 class GPIOPinMode(IntEnum):
     """Hardware modes that a GPIO pin can be set to."""
 
-    DIGITAL_INPUT = 0  # The digital state of the pin can be read
-    DIGITAL_INPUT_PULLUP = 1  # Same as DIGITAL_INPUT but internal pull-up is enabled
-    DIGITAL_INPUT_PULLDOWN = 2  # Same as DIGITAL_INPUT but internal pull-down is enabled
-    DIGITAL_OUTPUT = 3  # The digital state of the pin can be set.
+    DIGITAL_INPUT = 0  #: The digital state of the pin can be read
+    DIGITAL_INPUT_PULLUP = 1  #: Same as DIGITAL_INPUT but internal pull-up is enabled
+    DIGITAL_INPUT_PULLDOWN = 2  #: Same as DIGITAL_INPUT but internal pull-down is enabled
+    DIGITAL_OUTPUT = 3  #: The digital state of the pin can be set.
 
-    ANALOGUE_INPUT = 4  # The analogue voltage of the pin can be read.
-    ANALOGUE_OUTPUT = 5  # The analogue voltage of the pin can be set using a DAC.
+    ANALOGUE_INPUT = 4  #: The analogue voltage of the pin can be read.
+    ANALOGUE_OUTPUT = 5  #: The analogue voltage of the pin can be set using a DAC.
 
-    PWM_OUTPUT = 6  # A PWM output signal can be created on the pin.
+    PWM_OUTPUT = 6  #: A PWM output signal can be created on the pin.
 
 
 class GPIOPinInterface(Interface):
