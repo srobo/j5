@@ -31,6 +31,9 @@ class Note(IntEnum):
     A7 = 3520
     B7 = 3951
 
+    def __reverse__(self):
+        yield from reversed(self.__members__.items())
+
 
 Pitch = Union[int, Note]
 
