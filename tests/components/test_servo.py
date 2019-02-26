@@ -1,5 +1,5 @@
 """Tests for the servo classes."""
-from typing import List, Type
+from typing import List, Optional, Type
 
 import pytest
 
@@ -37,6 +37,11 @@ class MockServoBoard(Board):
     def serial(self) -> str:
         """The serial number of this board."""
         return "SERIAL"
+
+    @property
+    def firmware_version(self) -> Optional[str]:
+        """Get the firmware version of this board."""
+        return self._backend.get_firmware_version(self)
 
     @property
     def supported_components(self) -> List[Type["Component"]]:
