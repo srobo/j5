@@ -58,8 +58,7 @@ class Piezo(Component):
         """Get the interface class that is required to use this component."""
         return PiezoInterface
 
-    def buzz(self, board: Board, identifier: int,
-             duration: timedelta, pitch: Pitch) -> None:
+    def buzz(self, duration: timedelta, pitch: Pitch) -> None:
         """Queue a note to be played."""
         if isinstance(pitch, int):
             frequency = pitch
@@ -71,4 +70,4 @@ class Piezo(Component):
         if frequency < 0:
             raise ValueError("Pitch must be greater than zero")
         else:
-            self._backend.buzz(board, identifier, duration, pitch)
+            self._backend.buzz(self._board, self._identifier, duration, pitch)
