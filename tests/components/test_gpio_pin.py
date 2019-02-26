@@ -5,7 +5,7 @@ import pytest
 
 from j5.backends import Backend
 from j5.boards import Board
-from j5.components import Component, NotSupportedByHardware
+from j5.components import Component, NotSupportedByHardwareError
 from j5.components.gpio_pin import (
     BadGPIOPinMode,
     GPIOPin,
@@ -151,7 +151,7 @@ def test_pin_mode_setter():
     pin.mode = GPIOPinMode.DIGITAL_OUTPUT
     assert driver._mode[0] is GPIOPinMode.DIGITAL_OUTPUT
 
-    with pytest.raises(NotSupportedByHardware):
+    with pytest.raises(NotSupportedByHardwareError):
         pin.mode = GPIOPinMode.ANALOGUE_INPUT
 
 
@@ -192,7 +192,7 @@ def test_initial_mode():
     assert driver._mode[2] is GPIOPinMode.DIGITAL_INPUT
 
     # Unsupported explicit initial mode with default supported modes
-    with pytest.raises(NotSupportedByHardware):
+    with pytest.raises(NotSupportedByHardwareError):
         GPIOPin(
             2,
             MockGPIOPinBoard(),
@@ -200,7 +200,7 @@ def test_initial_mode():
             initial_mode=GPIOPinMode.DIGITAL_INPUT,
         )
     # Unsupported explicit initial mode with specified supported modes
-    with pytest.raises(NotSupportedByHardware):
+    with pytest.raises(NotSupportedByHardwareError):
         GPIOPin(
             2,
             MockGPIOPinBoard(),

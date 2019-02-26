@@ -135,7 +135,7 @@ class GPIOPin(Component):
     def mode(self, pin_mode: GPIOPinMode) -> None:
         """Set the hardware mode of this pin."""
         if pin_mode not in self._supported_modes:
-            raise NotSupportedByHardware(
+            raise NotSupportedByHardwareError(
                 f"Pin {self._identifier} on {str(self._board)} \
                 does not support {str(pin_mode)}.",
             )
