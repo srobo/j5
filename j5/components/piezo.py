@@ -3,7 +3,7 @@
 from abc import abstractmethod
 from datetime import timedelta
 from enum import IntEnum
-from typing import Type, Union
+from typing import Type, Union, Generator
 
 from j5.boards import Board
 from j5.components import Component, Interface
@@ -31,7 +31,7 @@ class Note(IntEnum):
     A7 = 3520
     B7 = 3951
 
-    def __reverse__(self):
+    def __reverse__(self) -> Generator['Note', None, None]:
         yield from reversed(self.__members__.items())
 
 
