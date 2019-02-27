@@ -1,9 +1,10 @@
 """j5 Robotics API."""
 
+from packaging.version import Version
+
 from .boards import BoardGroup
 from .base_robot import BaseRobot
 
-VERSION = "0.0.2"
-SHORT_VERSION = "0.0.2"
+__all__ = ["BoardGroup", "BaseRobot", "__version__"]
 
-__all__ = ["BoardGroup", "BaseRobot", "SHORT_VERSION", "VERSION"]
+__version__ = str(Version("0.0.2"))

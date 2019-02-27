@@ -14,9 +14,12 @@
 #
 import os
 import sys
+
+from packaging import version
+
 sys.path.insert(0, os.path.abspath('../'))
 
-from j5 import SHORT_VERSION, VERSION
+from j5 import __version__
 
 # -- Project information -----------------------------------------------------
 
@@ -24,10 +27,12 @@ project = 'j5'
 copyright = '2019, Dan Trickey'
 author = 'Dan Trickey'
 
+j5_version = version.parse(__version__)
+
 # The short X.Y version
-version = SHORT_VERSION
+version = j5_version.base_version
 # The full version, including alpha/beta/rc tags
-release = VERSION
+release = str(j5_version)
 
 
 # -- General configuration ---------------------------------------------------

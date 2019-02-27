@@ -4,8 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-# We currently have no production dependencies! This is where they go once we
-# have some.
+packaging = "*"
 
 [dev-packages]
 "flake8" = "*"
