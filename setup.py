@@ -19,5 +19,7 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Development Status :: 3 - Alpha",
+        "Typing :: Typed",
+        "Topic :: Education",
     ],
 )
