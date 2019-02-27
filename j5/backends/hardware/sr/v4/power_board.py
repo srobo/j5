@@ -3,7 +3,7 @@
 import struct
 from datetime import timedelta
 from time import sleep
-from typing import Dict, List, NamedTuple, Union, cast
+from typing import Dict, List, NamedTuple, Union, cast, Optional
 
 import usb1
 
@@ -132,6 +132,10 @@ class SRV4PowerBoardHardwareBackend(
     def serial(self) -> str:
         """The serial number reported by the board."""
         return self._usb_device.getSerialNumber()
+
+    def get_firmware_version(self, board: 'Board') -> Optional[str]:
+        """Get the firmware version reported by the board."""
+        return str(self.firmware_version)
 
     def get_power_output_enabled(self, board: Board, identifier: int) -> bool:
         """Get whether a power output is enabled."""

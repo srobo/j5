@@ -1,5 +1,6 @@
 """Tests for the SR v4 Power Board and related classes."""
 from datetime import timedelta
+from typing import Optional
 
 from j5.backends import Backend, Environment
 from j5.boards import Board
@@ -37,6 +38,10 @@ class MockPowerBoardBackend(
     def discover(cls):
         """Discover the PowerBoards on this backend."""
         return []
+
+    def get_firmware_version(self, board: 'Board') -> Optional[str]:
+        """Get the firmware version reported by the board."""
+        return None
 
     def get_power_output_enabled(self, board: Board, identifier: int) -> bool:
         """Get the enabled status of a power output."""
