@@ -1,5 +1,5 @@
 """Tests for the power output classes."""
-from typing import List, Type
+from typing import List, Optional, Type
 
 from j5.backends import Backend
 from j5.boards import Board
@@ -41,6 +41,11 @@ class MockPowerOutputBoard(Board):
         return "SERIAL"
 
     @property
+    def firmware_version(self) -> Optional[str]:
+        """Get the firmware version of this board."""
+        return self._backend.get_firmware_version(self)
+
+    @property
     def supported_components(self) -> List[Type["Component"]]:
         """List the types of component that this Board supports."""
         return [PowerOutput]
@@ -63,6 +68,11 @@ def test_power_output_interface_implementation():
 def test_power_output_instantiation():
     """Test that we can instantiate a PowerOutput."""
     PowerOutput(0, MockPowerOutputBoard(), MockPowerOutputDriver())
+
+
+def test_power_output_interface():
+    """Test that the class returns the correct interface."""
+    assert PowerOutput.interface_class() is PowerOutputInterface
 
 
 def test_power_output_enabled():

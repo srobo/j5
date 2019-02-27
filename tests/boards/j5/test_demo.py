@@ -1,5 +1,5 @@
 """Test the demo board."""
-from typing import List
+from typing import List, Optional
 
 from j5.backends import Backend, Environment
 from j5.boards import Board
@@ -22,6 +22,10 @@ class MockDemoBoardBackend(LEDInterface, Backend):
     def get_led_state(self, board: Board, identifier: int) -> bool:
         """Get the current state of an LED."""
         return True
+
+    def get_firmware_version(self, board: 'Board') -> Optional[str]:
+        """Get the firmware version of the board."""
+        return None
 
     @classmethod
     def discover(cls) -> List[Board]:
