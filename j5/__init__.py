@@ -2,8 +2,8 @@
 
 from packaging.version import Version
 
-from .boards import BoardGroup
 from .base_robot import BaseRobot
+from .boards import BoardGroup
 
 __all__ = ["BoardGroup", "BaseRobot", "__version__"]
 
