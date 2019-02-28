@@ -1,6 +1,6 @@
 """Classes for demonstration purposes."""
 
-from typing import TYPE_CHECKING, List, cast
+from typing import TYPE_CHECKING, List, Optional, cast
 
 from j5.backends import Backend, Environment
 from j5.boards import Board
@@ -31,6 +31,11 @@ class DemoBoard(Board):
     def serial(self) -> str:
         """Get the serial number."""
         return self._serial
+
+    @property
+    def firmware_version(self) -> Optional[str]:
+        """Get the firmware version of this board."""
+        return self._backend.get_firmware_version(self)
 
     def make_safe(self) -> None:
         """Make this board safe."""

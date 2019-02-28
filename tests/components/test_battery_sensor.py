@@ -1,5 +1,5 @@
 """Tests for the Battery Sensor Classes."""
-from typing import List, Type
+from typing import List, Optional, Type
 
 from j5.backends import Backend
 from j5.boards import Board
@@ -36,6 +36,11 @@ class MockBatterySensorBoard(Board):
     def supported_components(self) -> List[Type[Component]]:
         """List the types of component that this Board supports."""
         return [BatterySensor]
+
+    @property
+    def firmware_version(self) -> Optional[str]:
+        """Get the firmware version of this board."""
+        return self._backend.get_firmware_version(self)
 
     def make_safe(self) -> None:
         """Make this board safe."""
