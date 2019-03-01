@@ -185,11 +185,10 @@ class SRV4PowerBoardHardwareBackend(
         state, = struct.unpack("<I", self._read(CMD_READ_BUTTON))
         return cast(int, state) != 0
 
-    def wait_until_button_pressed(self, board: Board, identifier: int) -> bool:
+    def wait_until_button_pressed(self, board: Board, identifier: int) -> None:
         """Halt the program until this button is pushed."""
         while not self.get_button_state(board, identifier):
             sleep(0.05)
-        return self.get_button_state(board, identifier)
 
     def get_battery_sensor_voltage(self, board: Board, identifier: int) -> float:
         """Get the voltage of a battery sensor."""
