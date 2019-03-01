@@ -52,12 +52,13 @@ if __name__ == '__main__':
         sleep(0.5)
 
     for pitch in Note:
+        print(f"Buzzing at pitch: {pitch}")
         r.power_board.piezo.buzz(timedelta(seconds=0.1), pitch)
 
-    r.power_board._run_led.state = True
-    sleep(0.5)
-    r.power_board._error_led.state = True
-    sleep(0.5)
-    r.power_board._run_led.state = False
-    sleep(0.5)
-    r.power_board._error_led.state = False
+    for led in [r.power_board._run_led, r.power_board._error_led]:
+        print(f"LED {led} is on.")
+        led.state = True
+        sleep(0.5)
+        print(f"LED {led} is off.")
+        led.state = False
+        sleep(0.5)
