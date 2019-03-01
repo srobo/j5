@@ -4,7 +4,7 @@ from typing import Optional
 
 from j5.backends import Backend, Environment
 from j5.boards import Board
-from j5.boards.sr.v4 import PowerBoard, PowerOutputGroup
+from j5.boards.sr.v4 import PowerBoard, PowerOutputGroup, PowerOutputPosition
 from j5.components import (
     LED,
     BatterySensor,
@@ -15,6 +15,7 @@ from j5.components import (
     Piezo,
     PiezoInterface,
     PowerOutputInterface,
+    PowerOutput,
 )
 from j5.components.piezo import Pitch
 
@@ -125,7 +126,10 @@ def test_power_board_outputs():
     assert type(pb.outputs) is PowerOutputGroup
     assert len(pb.outputs) == 6
 
-    # TODO: Test iteration
+    assert type(pb.outputs[PowerOutputPosition.H0])
+
+    for output in pb.outputs:
+        assert type(output) is PowerOutput
 
 
 def test_power_board_piezo():
