@@ -1,7 +1,7 @@
 """Classes for the SR v4 Power Board."""
 
 from enum import Enum
-from typing import TYPE_CHECKING, List, Mapping, cast, Optional
+from typing import TYPE_CHECKING, List, Mapping, Optional, cast
 
 from j5.backends import Backend
 from j5.boards import Board
@@ -43,7 +43,6 @@ class PowerOutputPosition(Enum):
 
 class PowerBoard(Board):
     """Student Robotics v4 Power Board."""
-
 
     def __init__(self, serial: str, backend: Backend):
         self._serial = serial

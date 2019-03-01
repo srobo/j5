@@ -3,7 +3,7 @@
 import struct
 from datetime import timedelta
 from time import sleep
-from typing import Dict, List, NamedTuple, Union, cast, Optional
+from typing import Dict, List, NamedTuple, Optional, Union, cast
 
 import usb1
 
