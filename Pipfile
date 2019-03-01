@@ -22,6 +22,7 @@ libusb1 = "*"
 sphinx = "*"
 sphinx-rtd-theme = "*"
 rope = "*"
+j5 = {editable = true,path = "."}
 
 [requires]
 python_version = "3.7"

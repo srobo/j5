@@ -23,15 +23,17 @@ class Robot(BaseRobot):
         self.power_board: PowerBoard = self.power_boards.singular()
 
 
-def test_power_board():
-    """Run some tests on the hardware."""
+if __name__ == '__main__':
+
+    print("Testing SR v4 PowerBoard.")
+
     r = Robot()
 
     print("Waiting for start button...")
     r.power_board.start_button.wait_until_pressed()
 
     print(f"Serial number: {r.power_board.serial}")
-    # TODO: Expose firmware version
+    print(f"Firmware version: {r.power_board.firmware_version}")
 
     print(f"Battery voltage: {r.power_board.battery_sensor.voltage} V")
     print(f"Battery current: {r.power_board.battery_sensor.current} A")
@@ -54,8 +56,8 @@ def test_power_board():
 
     r.power_board._run_led.state = True
     sleep(0.5)
-    r.power_board._error_led = True
+    r.power_board._error_led.state = True
     sleep(0.5)
     r.power_board._run_led.state = False
     sleep(0.5)
-    r.power_board._error_led = False
+    r.power_board._error_led.state = False

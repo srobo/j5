@@ -14,8 +14,8 @@ from j5.components import (
     LEDInterface,
     Piezo,
     PiezoInterface,
-    PowerOutputInterface,
     PowerOutput,
+    PowerOutputInterface,
 )
 from j5.components.piezo import Pitch
 
