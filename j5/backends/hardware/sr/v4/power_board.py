@@ -65,7 +65,10 @@ CMD_WRITE_RUNLED = WriteCommand(6)
 CMD_WRITE_ERRORLED = WriteCommand(7)
 CMD_WRITE_PIEZO = WriteCommand(8)
 
-usb._objfinalizer._AutoFinalizedObjectBase._do_finalize_object = lambda x: None
+# Stop the library from closing the USB connections before make_safe is called.
+usb._objfinalizer._AutoFinalizedObjectBase._do_finalize_object = (
+    lambda x: None
+)  # type: ignore
 
 
 class USBCommunicationError(CommunicationError):
