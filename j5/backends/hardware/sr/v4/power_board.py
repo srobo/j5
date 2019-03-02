@@ -139,7 +139,13 @@ class SRV4PowerBoardHardwareBackend(
     @handle_usb_error
     def _read(self, command: ReadCommand) -> bytes:
         request_type = (0x80 & ~0x80) | 0x80
-        return self._usb_device.ctrl_transfer(request_type, 64, wValue=0, wIndex=command.code, data_or_wLength=command.data_len)
+        return self._usb_device.ctrl_transfer(
+            request_type,
+            64,
+            wValue=0,
+            wIndex=command.code,
+            data_or_wLength=command.data_len,
+        )
 
     @handle_usb_error
     def _write(self, command: WriteCommand, param: Union[int, bytes]) -> None:
@@ -152,7 +158,13 @@ class SRV4PowerBoardHardwareBackend(
 
         request_type = (0x00 & ~0x80) | 0x00
 
-        self._usb_device.ctrl_transfer(request_type, 64, wValue=req_val, wIndex=command.code, data_or_wLength=req_data)
+        self._usb_device.ctrl_transfer(
+            request_type,
+            64,
+            wValue=req_val,
+            wIndex=command.code,
+            data_or_wLength=req_data,
+        )
 
     def check_firmware_version_supported(self) -> None:
         """Raises an exception if the firmware version is not supported."""
