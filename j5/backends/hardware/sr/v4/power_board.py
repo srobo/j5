@@ -6,7 +6,7 @@ from functools import wraps
 from time import sleep
 from typing import Dict, List, NamedTuple, Optional, Union, cast
 
-import usb1
+import usb
 
 from j5.backends import Backend, CommunicationError
 from j5.backends.hardware.env import HardwareEnvironment
@@ -74,31 +74,31 @@ def handle_usb_error(func):
     to users. This decorator catches the USBErrors and throws a friendlier exception that
     can also be caught more easily.
     """
-
-    @wraps(func)
-    def catch_exceptions(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except usb1.USBErrorNoDevice:
-            raise CommunicationError("USB Device not found. Is it connected?") from None
-        except (
-                usb1.USBErrorIO,
-                usb1.USBErrorInvalidParam,
-                usb1.USBErrorAccess,
-                usb1.USBErrorNotFound,
-                usb1.USBErrorBusy,
-                usb1.USBErrorTimeout,
-                usb1.USBErrorOverflow,
-                usb1.USBErrorPipe,
-                usb1.USBErrorInterrupted,
-                usb1.USBErrorNoMem,
-                usb1.USBErrorNotSupported,
-                usb1.USBErrorOther,
-
-        ) as e:
-            name = usb1.libusb1.libusb_error.get(e.value, 'Unknown Error.')
-            raise CommunicationError(f"USB Error({name})") from None
-    return catch_exceptions
+    # @wraps(func)
+    # def catch_exceptions(*args, **kwargs):
+        # try:
+        #     return func(*args, **kwargs)
+        # except usb1.USBErrorNoDevice:
+        #     raise CommunicationError("USB Device not found. Is it connected?") from None
+        # except (
+        #         usb1.USBErrorIO,
+        #         usb1.USBErrorInvalidParam,
+        #         usb1.USBErrorAccess,
+        #         usb1.USBErrorNotFound,
+        #         usb1.USBErrorBusy,
+        #         usb1.USBErrorTimeout,
+        #         usb1.USBErrorOverflow,
+        #         usb1.USBErrorPipe,
+        #         usb1.USBErrorInterrupted,
+        #         usb1.USBErrorNoMem,
+        #         usb1.USBErrorNotSupported,
+        #         usb1.USBErrorOther,
+        #
+        # ) as e:
+        #     name = usb1.libusb1.libusb_error.get(e.value, 'Unknown Error.')
+        #     raise CommunicationError(f"USB Error({name})") from None
+    # return catch_exceptions
+    return func
 
 
 class SRV4PowerBoardHardwareBackend(
@@ -119,18 +119,16 @@ class SRV4PowerBoardHardwareBackend(
     def discover(cls) -> List[Board]:
         """Discover boards that this backend can control."""
         boards: List[Board] = []
-        context = usb1.USBContext()
-        for device in context.getDeviceList(skip_on_error=True):
-            if device.getVendorID() == 0x1BDA and device.getProductID() == 0x0010:
-                backend = cls(device)
-                board = PowerBoard(backend.serial, backend)
-                boards.append(cast(Board, board))
+        device_list = usb.core.find(idVendor=0x1bda, idProduct=0x0010, find_all=True)
+        for device in device_list:
+            backend = cls(device)
+            board = PowerBoard(backend.serial, backend)
+            boards.append(cast(Board, board))
         return boards
 
     @handle_usb_error
-    def __init__(self, usb_device: usb1.USBDevice):
-        self._usb_device: usb1.USBDevice = usb_device
-        self._usb_handle: usb1.USBDeviceHandle = self._usb_device.open()
+    def __init__(self, usb_device):
+        self._usb_device = usb_device
         self._output_states: Dict[int, bool] = {
             output.value: False
             for output in PowerOutputPosition
@@ -143,7 +141,8 @@ class SRV4PowerBoardHardwareBackend(
 
     @handle_usb_error
     def _read(self, command: ReadCommand) -> bytes:
-        return self._usb_handle.controlRead(0x80, 64, 0, command.code, command.data_len)
+        request_type = (0x80 & ~0x80) | 0x80
+        return self._usb_device.ctrl_transfer(request_type, 64, wValue=0, wIndex=command.code, data_or_wLength=command.data_len)
 
     @handle_usb_error
     def _write(self, command: WriteCommand, param: Union[int, bytes]) -> None:
@@ -153,7 +152,10 @@ class SRV4PowerBoardHardwareBackend(
             req_val = param
         else:
             req_data = param
-        self._usb_handle.controlWrite(0x00, 64, req_val, command.code, req_data)
+
+        request_type = (0x00 & ~0x80) | 0x00
+
+        self._usb_device.ctrl_transfer(request_type, 64, wValue=req_val, wIndex=command.code, data_or_wLength=req_data)
 
     def check_firmware_version_supported(self) -> None:
         """Raises an exception if the firmware version is not supported."""
@@ -169,9 +171,10 @@ class SRV4PowerBoardHardwareBackend(
         return cast(int, version)
 
     @property
+    @handle_usb_error
     def serial(self) -> str:
         """The serial number reported by the board."""
-        return self._usb_device.getSerialNumber()
+        return self._usb_device.serial_number
 
     def get_firmware_version(self, board: 'Board') -> Optional[str]:
         """Get the firmware version reported by the board."""
