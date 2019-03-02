@@ -9,7 +9,6 @@ from .piezo import Piezo, PiezoInterface
 from .power_output import PowerOutput, PowerOutputInterface
 from .servo import Servo, ServoInterface
 
-
 __all__ = [
     "BatterySensor",
     "BatterySensorInterface",

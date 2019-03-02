@@ -2,7 +2,7 @@
 
 import atexit
 from abc import ABCMeta, abstractmethod
-from typing import TYPE_CHECKING, Dict, Iterator, List, Type
+from typing import TYPE_CHECKING, Dict, Iterator, List, Optional, Type
 
 from j5.backends import Backend
 
@@ -41,6 +41,12 @@ class Board(metaclass=ABCMeta):
     @abstractmethod
     def serial(self) -> str:
         """The serial number of the board."""
+        raise NotImplementedError  # pragma: no cover
+
+    @property
+    @abstractmethod
+    def firmware_version(self) -> Optional[str]:
+        """The firmware version of the board."""
         raise NotImplementedError  # pragma: no cover
 
     @abstractmethod

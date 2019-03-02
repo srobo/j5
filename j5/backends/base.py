@@ -1,7 +1,7 @@
 """The base classes for backends."""
 
 from abc import ABCMeta, abstractmethod
-from typing import TYPE_CHECKING, Dict, List, Type
+from typing import TYPE_CHECKING, Dict, List, Optional, Type
 
 if TYPE_CHECKING:
     from j5.boards import Board  # noqa
@@ -73,6 +73,11 @@ class Backend(metaclass=BackendMeta):
     @abstractmethod
     def environment(self) -> 'Environment':
         """Environment the backend belongs too."""
+        raise NotImplementedError  # pragma: no cover
+
+    @abstractmethod
+    def get_firmware_version(self, board: 'Board') -> Optional[str]:
+        """Get the firmware version of the board."""
         raise NotImplementedError  # pragma: no cover
 
 
