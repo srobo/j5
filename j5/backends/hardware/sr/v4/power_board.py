@@ -66,6 +66,13 @@ CMD_WRITE_ERRORLED = WriteCommand(7)
 CMD_WRITE_PIEZO = WriteCommand(8)
 
 
+class USBCommunicationError(CommunicationError):
+    """An error occurred during USB communication."""
+
+    def __init__(self, usb_error):
+        super().__init__(usb_error.strerror)
+
+
 def handle_usb_error(func):
     """
     Wrap functions that use usb1 and give friendly errors.
@@ -74,31 +81,13 @@ def handle_usb_error(func):
     to users. This decorator catches the USBErrors and throws a friendlier exception that
     can also be caught more easily.
     """
-    # @wraps(func)
-    # def catch_exceptions(*args, **kwargs):
-        # try:
-        #     return func(*args, **kwargs)
-        # except usb1.USBErrorNoDevice:
-        #     raise CommunicationError("USB Device not found. Is it connected?") from None
-        # except (
-        #         usb1.USBErrorIO,
-        #         usb1.USBErrorInvalidParam,
-        #         usb1.USBErrorAccess,
-        #         usb1.USBErrorNotFound,
-        #         usb1.USBErrorBusy,
-        #         usb1.USBErrorTimeout,
-        #         usb1.USBErrorOverflow,
-        #         usb1.USBErrorPipe,
-        #         usb1.USBErrorInterrupted,
-        #         usb1.USBErrorNoMem,
-        #         usb1.USBErrorNotSupported,
-        #         usb1.USBErrorOther,
-        #
-        # ) as e:
-        #     name = usb1.libusb1.libusb_error.get(e.value, 'Unknown Error.')
-        #     raise CommunicationError(f"USB Error({name})") from None
-    # return catch_exceptions
-    return func
+    @wraps(func)
+    def catch_exceptions(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except usb.USBError as e:
+            raise USBCommunicationError(e) from None
+    return catch_exceptions
 
 
 class SRV4PowerBoardHardwareBackend(
