@@ -75,7 +75,7 @@ As this library has to support multiple hardwares, with multiple backends and st
 
 ## Contributions
 
-This project is released under the MIT Licence. For more information, please see `LICENCE`.
+This project is released under the MIT Licence. For more information, please see `LICENSE`.
 
 `j5 contributors` refers to the people listed in the `CONTRIBUTORS` file.
 
