@@ -2,12 +2,13 @@
 
 import struct
 from datetime import timedelta
+from functools import wraps
 from time import sleep
 from typing import Dict, List, NamedTuple, Optional, Union, cast
 
 import usb1
 
-from j5.backends import Backend
+from j5.backends import Backend, CommunicationError
 from j5.backends.hardware.env import HardwareEnvironment
 from j5.boards import Board
 from j5.boards.sr.v4.power_board import PowerBoard, PowerOutputPosition
@@ -65,6 +66,41 @@ CMD_WRITE_ERRORLED = WriteCommand(7)
 CMD_WRITE_PIEZO = WriteCommand(8)
 
 
+def handle_usb_error(func):
+    """
+    Wrap functions that use usb1 and give friendly errors.
+
+    The exceptions from usb1 are hard to find in documentation or code and are confusing
+    to users. This decorator catches the USBErrors and throws a friendlier exception that
+    can also be caught more easily.
+    """
+
+    @wraps(func)
+    def catch_exceptions(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except usb1.USBErrorNoDevice:
+            raise CommunicationError("USB Device not found. Is it connected?") from None
+        except (
+                usb1.USBErrorIO,
+                usb1.USBErrorInvalidParam,
+                usb1.USBErrorAccess,
+                usb1.USBErrorNotFound,
+                usb1.USBErrorBusy,
+                usb1.USBErrorTimeout,
+                usb1.USBErrorOverflow,
+                usb1.USBErrorPipe,
+                usb1.USBErrorInterrupted,
+                usb1.USBErrorNoMem,
+                usb1.USBErrorNotSupported,
+                usb1.USBErrorOther,
+
+        ) as e:
+            name = usb1.libusb1.libusb_error.get(e.value, 'Unknown Error.')
+            raise CommunicationError(f"USB Error({name})") from None
+    return catch_exceptions
+
+
 class SRV4PowerBoardHardwareBackend(
     PowerOutputInterface,
     PiezoInterface,
@@ -79,6 +115,7 @@ class SRV4PowerBoardHardwareBackend(
     board = PowerBoard
 
     @classmethod
+    @handle_usb_error
     def discover(cls) -> List[Board]:
         """Discover boards that this backend can control."""
         boards: List[Board] = []
@@ -90,6 +127,7 @@ class SRV4PowerBoardHardwareBackend(
                 boards.append(cast(Board, board))
         return boards
 
+    @handle_usb_error
     def __init__(self, usb_device: usb1.USBDevice):
         self._usb_device: usb1.USBDevice = usb_device
         self._usb_handle: usb1.USBDeviceHandle = self._usb_device.open()
@@ -103,9 +141,11 @@ class SRV4PowerBoardHardwareBackend(
         }
         self.check_firmware_version_supported()
 
+    @handle_usb_error
     def _read(self, command: ReadCommand) -> bytes:
         return self._usb_handle.controlRead(0x80, 64, 0, command.code, command.data_len)
 
+    @handle_usb_error
     def _write(self, command: WriteCommand, param: Union[int, bytes]) -> None:
         req_val: int = 0
         req_data: bytes = b""
