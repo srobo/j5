@@ -65,6 +65,8 @@ CMD_WRITE_RUNLED = WriteCommand(6)
 CMD_WRITE_ERRORLED = WriteCommand(7)
 CMD_WRITE_PIEZO = WriteCommand(8)
 
+usb._objfinalizer._AutoFinalizedObjectBase._do_finalize_object = lambda x: None
+
 
 class USBCommunicationError(CommunicationError):
     """An error occurred during USB communication."""
@@ -118,6 +120,7 @@ class SRV4PowerBoardHardwareBackend(
     @handle_usb_error
     def __init__(self, usb_device):
         self._usb_device = usb_device
+
         self._output_states: Dict[int, bool] = {
             output.value: False
             for output in PowerOutputPosition
@@ -127,6 +130,11 @@ class SRV4PowerBoardHardwareBackend(
             for i in range(2)
         }
         self.check_firmware_version_supported()
+
+    @handle_usb_error
+    def __del__(self):
+        """Clean up device on destruction of object."""
+        usb.util.dispose_resources(self._usb_device)
 
     @handle_usb_error
     def _read(self, command: ReadCommand) -> bytes:
