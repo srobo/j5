@@ -1,5 +1,7 @@
 """Tests for the base backend classes."""
 
+from typing import List, Optional
+
 import pytest
 
 from j5.backends import Backend, Environment
@@ -22,6 +24,11 @@ class MockBoard(Board):
     def make_safe(self):
         """Make this board safe."""
         pass
+
+    @property
+    def firmware_version(self) -> Optional[str]:
+        """Get the firmware version of this board."""
+        return self._backend.get_firmware_version(self)
 
     @staticmethod
     def supported_components():
@@ -51,6 +58,11 @@ class Mock2Board(Board):
         """Make this board safe."""
         pass
 
+    @property
+    def firmware_version(self) -> Optional[str]:
+        """Get the firmware version of this board."""
+        return self._backend.get_firmware_version(self)
+
     @staticmethod
     def supported_components():
         """List the types of component supported by this Board."""
@@ -70,6 +82,15 @@ class MockBackend(Backend):
 
     environment = MockEnvironment
     board = MockBoard
+
+    @classmethod
+    def discover(cls) -> List[Board]:
+        """Discover boards available on this backend."""
+        return []
+
+    def get_firmware_version(self, board: 'Board') -> Optional[str]:
+        """Get the firmware version of the board."""
+        return None
 
 
 def test_backend_instantiation():
@@ -95,7 +116,7 @@ def test_environment_board_backend_mapping():
 def test_environment_board_get_backend():
     """Test that we can get the backend of a board."""
     environment = MockEnvironment
-    assert isinstance(environment.get_backend(MockBoard), MockBackend)
+    assert issubclass(environment.get_backend(MockBoard), MockBackend)
 
 
 def test_environment_board_get_backend_unknown():

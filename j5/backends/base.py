@@ -1,7 +1,7 @@
 """The base classes for backends."""
 
 from abc import ABCMeta, abstractmethod
-from typing import TYPE_CHECKING, Dict, List, Type
+from typing import TYPE_CHECKING, Dict, List, Optional, Type
 
 if TYPE_CHECKING:
     from j5.boards import Board  # noqa
@@ -25,20 +25,34 @@ class BackendMeta(ABCMeta):
         if hasattr(cls, "environment"):
             if cls.environment is not None and cls.board is not None:
 
-                if type(cls.environment) != Environment:
-                    raise ValueError("The environment must be of type Environment.")
-
-                if cls.board in cls.environment.supported_boards:
-                    raise RuntimeError("You cannot register multiple backends for the same board in the same Environment.")  # noqa: E501
-
-                for component in cls.board.supported_components():
-                    if not issubclass(cls, component.interface_class()):
-                        raise TypeError("The backend class doesn't have a required interface.")  # noqa: E501
+                mcs._check_compatibility(cls)
+                mcs._check_component_interfaces(cls)
 
                 cls.environment.register_backend(cls.board, cls)
                 return cls
 
         raise RuntimeError(f"The {str(cls)} has no environment attribute")
+
+    def _check_compatibility(cls):  # type: ignore
+        """Check that the backend and environment are compatible."""
+        if type(cls.environment) != Environment:
+            raise ValueError("The environment must be of type Environment.")
+
+        if cls.board in cls.environment.supported_boards:
+            raise RuntimeError(
+                "You cannot register multiple backends for the same board in the same Environment.")  # noqa: E501
+
+    def _check_component_interfaces(cls):  # type: ignore
+        """
+        Check that the backend has the right interfaces.
+
+        Certain interfaces are required to support components,
+        and we want to make sure that the Backend implements
+        them. This is a run-time type check.
+        """
+        for component in cls.board.supported_components():
+            if not issubclass(cls, component.interface_class()):
+                raise TypeError("The backend class doesn't have a required interface.")  # noqa: E501
 
 
 class Backend(metaclass=BackendMeta):
@@ -49,10 +63,21 @@ class Backend(metaclass=BackendMeta):
 
     """
 
+    @classmethod
+    @abstractmethod
+    def discover(cls) -> List['Board']:
+        """Discover boards that this backend can control."""
+        raise NotImplementedError  # pragma: no cover
+
     @property
     @abstractmethod
     def environment(self) -> 'Environment':
         """Environment the backend belongs too."""
+        raise NotImplementedError  # pragma: no cover
+
+    @abstractmethod
+    def get_firmware_version(self, board: 'Board') -> Optional[str]:
+        """Get the firmware version of the board."""
         raise NotImplementedError  # pragma: no cover
 
 
@@ -80,9 +105,9 @@ class Environment:
         """Register a new backend with this Backend Group."""
         self.board_backend_mapping[board] = backend
 
-    def get_backend(self, board: 'Type[Board]') -> Backend:
+    def get_backend(self, board: 'Type[Board]') -> Type[Backend]:
         """Get the backend for a board."""
         if board not in self.supported_boards:
             raise NotImplementedError(f"The {str(self)} does not support {str(board)}")
 
-        return self.board_backend_mapping[board]()
+        return self.board_backend_mapping[board]

@@ -4,7 +4,8 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-sphinx-rtd-theme = "*"
+# We currently have no production dependencies! This is where they go once we
+# have some.
 
 [dev-packages]
 "flake8" = "*"
@@ -20,6 +21,7 @@ sphinx-rtd-theme = "*"
 "pytest-cov" = "*"
 "twine" = "*"
 sphinx = "*"
+sphinx-rtd-theme = "*"
 rope = "*"
 
 [requires]
@@ -30,5 +32,6 @@ lint = "flake8 j5 tests"
 type = "mypy j5"
 test = "pytest --cov=j5 tests"
 test-ci = "pytest --cov=j5 tests --cov-report xml"
+test-cov = "pytest --cov=j5 tests --cov-report html"
 build = "python setup.py sdist bdist_wheel"
 upload = "twine upload dist/*"
