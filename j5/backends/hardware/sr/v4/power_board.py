@@ -174,6 +174,8 @@ class SRV4PowerBoardHardwareBackend(
         else:
             frequency = pitch
         duration_ms = round(duration / timedelta(milliseconds=1))
+        if duration_ms > 65535:
+            raise ValueError("Maximum piezo duration is 65535ms.")
         data = struct.pack("<HH", frequency, duration_ms)
         self._write(CMD_WRITE_PIEZO, data)
 
