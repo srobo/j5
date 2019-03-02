@@ -86,7 +86,7 @@ def handle_usb_error(func):
         try:
             return func(*args, **kwargs)
         except usb.USBError as e:
-            raise USBCommunicationError(e) from None
+            raise USBCommunicationError(e)
     return catch_exceptions
 
 
