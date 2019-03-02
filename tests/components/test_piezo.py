@@ -7,14 +7,14 @@ import pytest
 
 from j5.backends import Backend
 from j5.boards import Board
-from j5.components.piezo import Note, Piezo, PiezoInterface, Pitch
+from j5.components.piezo import Note, Piezo, PiezoInterface
 
 
 class MockPiezoDriver(PiezoInterface):
     """A testing driver for the piezo."""
 
     def buzz(self, board: Board, identifier: int,
-             duration: timedelta, pitch: Pitch) -> None:
+             duration: timedelta, pitch: int) -> None:
         """Queue a pitch to be played."""
         pass
 
@@ -71,14 +71,18 @@ def test_piezo_interface_class_method():
 def test_piezo_buzz_method():
     """Tests piezo's buzz method's input validation."""
     piezo = Piezo(0, MockPiezoBoard(), MockPiezoDriver())
-    piezo.buzz(MockPiezoBoard, 0, 0, 2093)
-    piezo.buzz(MockPiezoBoard, 0, 0, Note.D7)
+    piezo.buzz(MockPiezoBoard, 0, timedelta(seconds=1), 2093)
+    piezo.buzz(MockPiezoBoard, 0, timedelta(minutes=1), Note.D7)
 
 
 def test_piezo_buzz_invalid_value():
     """Test piezo's buzz method's input validation."""
     piezo = Piezo(0, MockPiezoBoard(), MockPiezoDriver())
     with pytest.raises(ValueError):
-        piezo.buzz(MockPiezoBoard, 0, 0, -42)
+        piezo.buzz(MockPiezoBoard, 0, timedelta(seconds=1), -42)
     with pytest.raises(TypeError):
-        piezo.buzz(MockPiezoBoard, 0, 0, "j5")
+        piezo.buzz(MockPiezoBoard, 0, timedelta(seconds=1), "j5")
+    with pytest.raises(ValueError):
+        piezo.buzz(MockPiezoBoard, 0, timedelta(seconds=-2), Note.D7)
+    with pytest.raises(TypeError):
+        piezo.buzz(MockPiezoBoard, 0, 1, Note.D7)

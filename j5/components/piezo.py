@@ -3,7 +3,7 @@
 from abc import abstractmethod
 from datetime import timedelta
 from enum import IntEnum
-from typing import Type, Union
+from typing import Type
 
 from j5.boards import Board
 from j5.components import Component, Interface
@@ -32,15 +32,12 @@ class Note(IntEnum):
     B7 = 3951
 
 
-Pitch = Union[int, Note]
-
-
 class PiezoInterface(Interface):
     """An interface containing the methods required to control an piezo."""
 
     @abstractmethod
     def buzz(self, board: Board, identifier: int,
-             duration: timedelta, pitch: Pitch) -> None:
+             duration: timedelta, pitch: int) -> None:
         """Queue a pitch to be played."""
         raise NotImplementedError  # pragma: no cover
 
@@ -59,16 +56,16 @@ class Piezo(Component):
         return PiezoInterface
 
     def buzz(self, board: Board, identifier: int,
-             duration: timedelta, pitch: Pitch) -> None:
+             duration: timedelta, pitch: int) -> None:
         """Queue a note to be played."""
-        if isinstance(pitch, int):
-            frequency = pitch
-        elif isinstance(pitch, Note):
-            frequency = pitch.value
-        else:
-            raise TypeError("Pitch must be of either type int or Note")
+        if not isinstance(pitch, int):
+            raise TypeError("Pitch must be an integer")
+        if not isinstance(duration, timedelta):
+            raise TypeError("duration must be a timedate.timedelta type")
 
-        if frequency < 0:
+        if pitch < 0:
             raise ValueError("Pitch must be greater than zero")
+        elif duration < timedelta(seconds=0):
+            raise ValueError("Duration must be greater than zero")
         else:
             self._backend.buzz(board, identifier, duration, pitch)
