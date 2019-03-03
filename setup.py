@@ -25,7 +25,4 @@ setuptools.setup(
         "Typing :: Typed",
         "Topic :: Education",
     ],
-    install_requires=[
-            "packaging",
-    ],
 )
