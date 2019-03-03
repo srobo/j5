@@ -4,9 +4,18 @@ import struct
 from datetime import timedelta
 from functools import wraps
 from time import sleep
-from typing import Dict, List, NamedTuple, Optional, Union, cast
+from typing import (
+    Callable,
+    Dict,
+    List,
+    NamedTuple,
+    Optional,
+    TypeVar,
+    Union,
+    cast,
+)
 
-import usb1
+import usb
 
 from j5.backends import Backend, CommunicationError
 from j5.backends.hardware.env import HardwareEnvironment
@@ -65,8 +74,23 @@ CMD_WRITE_RUNLED = WriteCommand(6)
 CMD_WRITE_ERRORLED = WriteCommand(7)
 CMD_WRITE_PIEZO = WriteCommand(8)
 
+# Stop the library from closing the USB connections before make_safe is called.
+usb._objfinalizer._AutoFinalizedObjectBase._do_finalize_object = (  # type: ignore
+    lambda x: None
+)
 
-def handle_usb_error(func):
+
+class USBCommunicationError(CommunicationError):
+    """An error occurred during USB communication."""
+
+    def __init__(self, usb_error: usb.core.USBError) -> None:
+        super().__init__(usb_error.strerror)
+
+
+RT = TypeVar('RT')
+
+
+def handle_usb_error(func: Callable[..., RT]) -> Callable[..., RT]:  # type: ignore
     """
     Wrap functions that use usb1 and give friendly errors.
 
@@ -74,30 +98,12 @@ def handle_usb_error(func):
     to users. This decorator catches the USBErrors and throws a friendlier exception that
     can also be caught more easily.
     """
-
     @wraps(func)
-    def catch_exceptions(*args, **kwargs):
+    def catch_exceptions(*args, **kwargs):  # type: ignore
         try:
             return func(*args, **kwargs)
-        except usb1.USBErrorNoDevice:
-            raise CommunicationError("USB Device not found. Is it connected?") from None
-        except (
-                usb1.USBErrorIO,
-                usb1.USBErrorInvalidParam,
-                usb1.USBErrorAccess,
-                usb1.USBErrorNotFound,
-                usb1.USBErrorBusy,
-                usb1.USBErrorTimeout,
-                usb1.USBErrorOverflow,
-                usb1.USBErrorPipe,
-                usb1.USBErrorInterrupted,
-                usb1.USBErrorNoMem,
-                usb1.USBErrorNotSupported,
-                usb1.USBErrorOther,
-
-        ) as e:
-            name = usb1.libusb1.libusb_error.get(e.value, 'Unknown Error.')
-            raise CommunicationError(f"USB Error({name})") from None
+        except usb.core.USBError as e:
+            raise USBCommunicationError(e)
     return catch_exceptions
 
 
@@ -119,18 +125,17 @@ class SRV4PowerBoardHardwareBackend(
     def discover(cls) -> List[Board]:
         """Discover boards that this backend can control."""
         boards: List[Board] = []
-        context = usb1.USBContext()
-        for device in context.getDeviceList(skip_on_error=True):
-            if device.getVendorID() == 0x1BDA and device.getProductID() == 0x0010:
-                backend = cls(device)
-                board = PowerBoard(backend.serial, backend)
-                boards.append(cast(Board, board))
+        device_list = usb.core.find(idVendor=0x1bda, idProduct=0x0010, find_all=True)
+        for device in device_list:
+            backend = cls(device)
+            board = PowerBoard(backend.serial, backend)
+            boards.append(cast(Board, board))
         return boards
 
     @handle_usb_error
-    def __init__(self, usb_device: usb1.USBDevice):
-        self._usb_device: usb1.USBDevice = usb_device
-        self._usb_handle: usb1.USBDeviceHandle = self._usb_device.open()
+    def __init__(self, usb_device: usb.core.Device) -> None:
+        self._usb_device = usb_device
+
         self._output_states: Dict[int, bool] = {
             output.value: False
             for output in PowerOutputPosition
@@ -142,8 +147,19 @@ class SRV4PowerBoardHardwareBackend(
         self.check_firmware_version_supported()
 
     @handle_usb_error
+    def __del__(self) -> None:
+        """Clean up device on destruction of object."""
+        usb.util.dispose_resources(self._usb_device)
+
+    @handle_usb_error
     def _read(self, command: ReadCommand) -> bytes:
-        return self._usb_handle.controlRead(0x80, 64, 0, command.code, command.data_len)
+        return self._usb_device.ctrl_transfer(
+            0x80,
+            64,
+            wValue=0,
+            wIndex=command.code,
+            data_or_wLength=command.data_len,
+        )
 
     @handle_usb_error
     def _write(self, command: WriteCommand, param: Union[int, bytes]) -> None:
@@ -153,7 +169,14 @@ class SRV4PowerBoardHardwareBackend(
             req_val = param
         else:
             req_data = param
-        self._usb_handle.controlWrite(0x00, 64, req_val, command.code, req_data)
+
+        self._usb_device.ctrl_transfer(
+            0x00,
+            64,
+            wValue=req_val,
+            wIndex=command.code,
+            data_or_wLength=req_data,
+        )
 
     def check_firmware_version_supported(self) -> None:
         """Raises an exception if the firmware version is not supported."""
@@ -168,10 +191,12 @@ class SRV4PowerBoardHardwareBackend(
         version, = struct.unpack("<I", self._read(CMD_READ_FWVER))
         return cast(int, version)
 
-    @property
+    @property  # type: ignore # https://github.com/python/mypy/issues/1362
+    @handle_usb_error
     def serial(self) -> str:
         """The serial number reported by the board."""
-        return self._usb_device.getSerialNumber()
+        # https://github.com/python/mypy/issues/1362
+        return self._usb_device.serial_number  # type: ignore
 
     def get_firmware_version(self, board: 'Board') -> Optional[str]:
         """Get the firmware version reported by the board."""

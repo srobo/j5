@@ -1,7 +1,6 @@
 """Classes for the SR v4 Power Board."""
 
 from enum import Enum
-from functools import wraps
 from typing import TYPE_CHECKING, List, Mapping, Optional, cast
 
 from j5.backends import Backend
