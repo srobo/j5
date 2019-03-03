@@ -254,8 +254,14 @@ class SRV4PowerBoardHardwareBackend(
 
     def wait_until_button_pressed(self, board: Board, identifier: int) -> None:
         """Halt the program until this button is pushed."""
+        counter = 0
+        led_state = False
         while not self.get_button_state(board, identifier):
+            if counter % 6 == 0:
+                led_state = not led_state
+                self.set_led_state(board, 0, led_state)
             sleep(0.05)
+            counter += 1
 
     def get_battery_sensor_voltage(self, board: Board, identifier: int) -> float:
         """Get the voltage of a battery sensor."""
