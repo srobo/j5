@@ -65,10 +65,6 @@ Whilst `j5` isn't officially endorsed by Student Robotics or RoboCon, we are wor
 
 If you are interested in adding support for your hardware, please get in touch.
 
-## How do I contribute to j5?
-
-`j5` is being developed by a group of volunteers at the University of Southampton. We welcome contributions and reside in a channel on the SourceBots Slack.
-
 ## Contributions
 
 This project is released under the MIT Licence. For more information, please see `LICENSE`.
