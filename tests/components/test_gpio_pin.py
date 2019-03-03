@@ -1,5 +1,5 @@
 """Tests for the GPIO Pin Classes."""
-from typing import List, Type
+from typing import List, Optional, Type
 
 import pytest
 
@@ -87,6 +87,11 @@ class MockGPIOPinBoard(Board):
     def serial(self) -> str:
         """The serial number of this board."""
         return "SERIAL"
+
+    @property
+    def firmware_version(self) -> Optional[str]:
+        """Get the firmware version of this board."""
+        return None
 
     def make_safe(self):
         """Make this board safe."""
