@@ -153,9 +153,8 @@ class SRV4PowerBoardHardwareBackend(
 
     @handle_usb_error
     def _read(self, command: ReadCommand) -> bytes:
-        request_type = (0x80 & ~0x80) | 0x80
         return self._usb_device.ctrl_transfer(
-            request_type,
+            0x80,
             64,
             wValue=0,
             wIndex=command.code,
@@ -171,10 +170,8 @@ class SRV4PowerBoardHardwareBackend(
         else:
             req_data = param
 
-        request_type = (0x00 & ~0x80) | 0x00
-
         self._usb_device.ctrl_transfer(
-            request_type,
+            0x00,
             64,
             wValue=req_val,
             wIndex=command.code,
