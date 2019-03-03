@@ -16,3 +16,9 @@ class Component(metaclass=ABCMeta):
     def interface_class() -> Type[Interface]:
         """Get the interface class that is required to use this component."""
         raise NotImplementedError  # pragma: no cover
+
+
+class NotSupportedByHardwareError(Exception):
+    """This is thrown when hardware does not support the action that is attempted."""
+
+    pass
