@@ -23,6 +23,6 @@ setuptools.setup(
         "Topic :: Education",
     ],
     install_requires=[
-        "libusb1",
+        "pyusb",
     ],
 )
