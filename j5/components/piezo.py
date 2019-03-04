@@ -3,7 +3,7 @@
 from abc import abstractmethod
 from datetime import timedelta
 from enum import IntEnum
-from typing import Type, Union, Generator
+from typing import Generator, Type, Union
 
 from j5.boards import Board
 from j5.components import Component, Interface
