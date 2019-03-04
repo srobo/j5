@@ -32,7 +32,10 @@ class Note(IntEnum):
     B7 = 3951
 
     def __reverse__(self) -> Generator['Note', None, None]:
-        yield from reversed(self.__members__.items())
+        # Type is ignored because of an open bug within mypy
+        # https://github.com/python/typeshed/issues/1590
+        # https://github.com/python/typeshed/issues/1595
+        yield from reversed(self.__members__.items())  # type: ignore
 
 
 Pitch = Union[int, Note]
