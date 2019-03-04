@@ -1,11 +1,14 @@
+from j5 import __version__
+
 import setuptools
+
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="j5",
-    version="0.0.2",
+    version=__version__,
     author="Dan Trickey",
     author_email="contact@trickey.io",
     description="J5 Robotics API",
@@ -19,5 +22,7 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Development Status :: 3 - Alpha",
+        "Typing :: Typed",
+        "Topic :: Education",
     ],
 )

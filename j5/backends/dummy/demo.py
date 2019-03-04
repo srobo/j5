@@ -1,5 +1,5 @@
 """Dummy Backends for the demo boards."""
-from typing import List
+from typing import List, Optional
 
 from j5.backends import Backend
 from j5.backends.dummy.env import DummyEnvironment
@@ -21,6 +21,10 @@ class DemoBoardDummyBackend(LEDInterface, Backend):
     def get_led_state(self, board: Board, identifier: int) -> bool:
         """Get the state of an LED."""
         return False
+
+    def get_firmware_version(self, board: 'Board') -> Optional[str]:
+        """Get the firmware version of the board."""
+        return None
 
     @classmethod
     def discover(cls) -> List[Board]:
