@@ -3,7 +3,7 @@
 from abc import abstractmethod
 from datetime import timedelta
 from enum import IntEnum
-from typing import Type, Union
+from typing import Generator, Type, Union
 
 from j5.boards import Board
 from j5.components import Component, Interface
@@ -30,6 +30,12 @@ class Note(IntEnum):
     G7 = 3136
     A7 = 3520
     B7 = 3951
+
+    def __reverse__(self) -> Generator['Note', None, None]:
+        # Type is ignored because of an open bug within mypy
+        # https://github.com/python/typeshed/issues/1590
+        # https://github.com/python/typeshed/issues/1595
+        yield from reversed(self.__members__.items())  # type: ignore
 
 
 Pitch = Union[int, Note]
