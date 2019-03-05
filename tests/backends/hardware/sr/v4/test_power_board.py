@@ -5,6 +5,7 @@ from datetime import timedelta
 from typing import List, Optional, Type, Union
 
 import pytest
+import usb
 
 from j5.backends import Backend
 from j5.backends.hardware.sr.v4.power_board import (
@@ -19,7 +20,9 @@ from j5.backends.hardware.sr.v4.power_board import (
     CMD_WRITE_RUNLED,
     ReadCommand,
     SRV4PowerBoardHardwareBackend,
+    USBCommunicationError,
     WriteCommand,
+    handle_usb_error,
 )
 from j5.boards import Board
 from j5.boards.sr.v4.power_board import PowerBoard, PowerOutputPosition
@@ -113,6 +116,23 @@ def test_cmd_write_piezo():
     """Test that the CMD_WRITE_PIEZO."""
     assert type(CMD_WRITE_PIEZO) is WriteCommand
     assert CMD_WRITE_PIEZO.code == 8
+
+
+def test_usb_communication_error():
+    """Test that USBCommunicationError works."""
+    u = USBCommunicationError(usb.core.USBError("Test."))
+    assert str(u) == "Test."
+    assert issubclass(USBCommunicationError, Exception)
+
+
+def test_usb_error_handler_decorator():
+    """Test that the handle_usb_error decorator works."""
+    @handle_usb_error
+    def test_func():
+        raise usb.core.USBError("Test")
+
+    with pytest.raises(USBCommunicationError):
+        test_func()
 
 
 class MockBoard(Board):
