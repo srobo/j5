@@ -30,7 +30,7 @@ if __name__ == '__main__':
     r = Robot()
 
     print("Waiting for start button...")
-    r.power_board.start_button.wait_until_pressed()
+    r.power_board.wait_for_start_flash()
 
     print(f"Serial number: {r.power_board.serial}")
     print(f"Firmware version: {r.power_board.firmware_version}")
