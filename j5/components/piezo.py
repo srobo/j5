@@ -30,6 +30,7 @@ class Note(IntEnum):
     G7 = 3136
     A7 = 3520
     B7 = 3951
+    C8 = 4186
 
     def __reverse__(self) -> Generator['Note', None, None]:
         # Type is ignored because of an open bug within mypy
