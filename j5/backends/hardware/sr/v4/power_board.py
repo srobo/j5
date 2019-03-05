@@ -8,6 +8,7 @@ from typing import (
     Callable,
     Dict,
     List,
+    Mapping,
     NamedTuple,
     Optional,
     TypeVar,
@@ -58,7 +59,7 @@ class WriteCommand(NamedTuple):
 
 # The names and codes of these commands match the definitions in usb.h in the firmware
 # source.
-CMD_READ_OUTPUT = {
+CMD_READ_OUTPUT: Mapping[int, ReadCommand] = {
     output.value: ReadCommand(output.value, 4)
     for output in PowerOutputPosition
 }
@@ -66,7 +67,8 @@ CMD_READ_5VRAIL = ReadCommand(6, 4)
 CMD_READ_BATTERY = ReadCommand(7, 8)
 CMD_READ_BUTTON = ReadCommand(8, 4)
 CMD_READ_FWVER = ReadCommand(9, 4)
-CMD_WRITE_OUTPUT = {
+
+CMD_WRITE_OUTPUT: Mapping[int, WriteCommand] = {
     output.value: WriteCommand(output.value)
     for output in PowerOutputPosition
 }
@@ -122,10 +124,10 @@ class SRV4PowerBoardHardwareBackend(
 
     @classmethod
     @handle_usb_error
-    def discover(cls) -> List[Board]:
+    def discover(cls, find: Callable = usb.core.find) -> List[Board]:
         """Discover boards that this backend can control."""
         boards: List[Board] = []
-        device_list = usb.core.find(idVendor=0x1bda, idProduct=0x0010, find_all=True)
+        device_list = find(idVendor=0x1bda, idProduct=0x0010, find_all=True)
         for device in device_list:
             backend = cls(device)
             board = PowerBoard(backend.serial, backend)
