@@ -1,4 +1,7 @@
+from j5 import __version__
+
 import setuptools
+
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
