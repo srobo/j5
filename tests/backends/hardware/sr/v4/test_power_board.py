@@ -184,7 +184,7 @@ class MockUSBPowerBoardDevice:
     def __init__(self, serial_number: str, fw_version: int = 3):
         self.serial = serial_number
         self.firmware_version = fw_version
-        self._ctx = MockUSBContext()
+        self._ctx = MockUSBContext()  # Used by PyUSB when cleaning up the device.
 
     def serial_number(self) -> str:
         """Get the serial number of the USB device."""
