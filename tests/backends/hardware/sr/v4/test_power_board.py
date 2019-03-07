@@ -32,7 +32,6 @@ from j5.components.piezo import Note
 def test_read_command():
     """Test that ReadCommand behaves as expected."""
     rc = ReadCommand(1, 2)
-    assert issubclass(ReadCommand, tuple)
 
     assert type(rc) is ReadCommand
     assert type(rc.code) is int
@@ -44,7 +43,6 @@ def test_read_command():
 def test_write_command():
     """Test that WriteCommand behaves as expected."""
     wc = WriteCommand(1)
-    assert issubclass(WriteCommand, tuple)
 
     assert type(wc) is WriteCommand
     assert type(wc.code) is int
