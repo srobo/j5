@@ -415,12 +415,6 @@ def test_backend_get_button_state():
         backend.get_button_state(MockBoard(), 1)
 
 
-def test_backend_wait_until_button_pressed():
-    """Test the wait_until_button_pressed."""
-    # No tests here as no known practical method to test it.
-    pass
-
-
 def test_backend_get_battery_sensor_voltage():
     """Test that we can get the battery sensor voltage."""
     device = MockUSBPowerBoardDevice("SERIAL0")
