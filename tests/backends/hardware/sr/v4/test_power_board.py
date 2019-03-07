@@ -291,10 +291,8 @@ def mock_find(
     """This function mocks the behaviour of usb.core.find."""
     assert idVendor == 0x1BDA
     assert idProduct == 0x0010
-    if find_all:
-        return [MockUSBPowerBoardDevice(f"SERIAL{n}") for n in range(0, 4)]
-    else:
-        return [MockUSBPowerBoardDevice("SERIAL0")]
+    assert find_all
+    return [MockUSBPowerBoardDevice(f"SERIAL{n}") for n in range(0, 4)]
 
 
 def test_backend_initialisation():
