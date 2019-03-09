@@ -13,10 +13,10 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-        keys:
-          - pip-packages-{{ .Branch }}-{{ checksum "poetry.lock" }}
-          - pip-packages-{{ .Branch }}-
-          - pip-packages-
+          keys:
+            - pip-packages-{{ .Branch }}-{{ checksum "poetry.lock" }}
+            - pip-packages-{{ .Branch }}-
+            - pip-packages-
       - run: poetry install
       - run: poetry run flake8 j5 tests
       - run: poetry run mypy j5
@@ -24,9 +24,9 @@ jobs:
       - run: poetry run pytest --cov=j5 tests --cov-report xml
       - run: cc-test-reporter after-build -t coverage.py --exit-code $? coverage.xml
       - save_cache:
-        paths:
-          - /root/.cache/pypoetry/virtualenvs
-        key: pip-packages-{{ .Branch }}-{{ checksum "poetry.lock" }}
+          paths:
+            - /root/.cache/pypoetry/virtualenvs
+          key: pip-packages-{{ .Branch }}-{{ checksum "poetry.lock" }}
   test-3.7:
     <<: *template
     docker:
