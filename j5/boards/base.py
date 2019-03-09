@@ -2,6 +2,7 @@
 
 import atexit
 from abc import ABCMeta, abstractmethod
+from collections import OrderedDict
 from typing import TYPE_CHECKING, Dict, Iterator, List, Optional, Type
 
 from j5.backends import Backend
@@ -80,13 +81,13 @@ class BoardGroup:
     def __init__(self, board: Board, backend: Backend):
         self.board_class: Board = board
         self._backend: Backend = backend
-        self.boards: Dict[str, Board] = {}
+        self.boards: Dict[str, Board] = OrderedDict()
 
         self.update_boards()
 
     def update_boards(self) -> None:
         """Update the boards in this group to see if new boards have been added."""
-        self.boards: Dict[str, Board] = {}
+        self.boards: Dict[str, Board] = OrderedDict()
         discovered_boards = self.board_class.discover(self._backend)
         discovered_boards.sort(key=lambda board: board.serial)
         for board in discovered_boards:
