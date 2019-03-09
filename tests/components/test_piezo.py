@@ -83,6 +83,7 @@ def test_piezo_buzz_invalid_value():
     with pytest.raises(TypeError):
         piezo.buzz(0, "j5")
 
+
 def test_note_reversed():
     """Test Note reversed dunder method."""
     assert list(reversed(list(Note))) == list(reversed(Note))
