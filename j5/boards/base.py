@@ -2,8 +2,8 @@
 
 import atexit
 from abc import ABCMeta, abstractmethod
-from typing import TYPE_CHECKING, Dict, Iterator, List, Optional, Type
 from collections import OrderedDict
+from typing import TYPE_CHECKING, Dict, Iterator, List, Optional, Type
 
 from j5.backends import Backend
 
