@@ -356,7 +356,7 @@ def test_backend_get_power_output_enabled():
     for i in range(0, 6):
         assert not backend.get_power_output_enabled(MockBoard(), i)
 
-    with pytest.raises(KeyError):
+    with pytest.raises(ValueError):
         backend.get_power_output_enabled(MockBoard(), 6)
 
 
