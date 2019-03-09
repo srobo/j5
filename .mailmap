@@ -1,0 +1,24 @@
+# This file is used by git to clean up inconsistencies in the author names and
+# email addresses in the commit history.
+#
+# To specify that the author Alternative Name <alternative@ema.il>
+# should be corrected to Preferred Name <preferred@ema.il>, type:
+#
+#   Preferred Name <preferred@ema.il> Alternative Name <alternative@ema.il>
+#
+# Alternative Name can be omitted, in which case any commit matching
+# alternative@ema.il is corrected. alternative@ema.il can also be omitted,
+# in which case any commit matching preferred@ema.il has only its name corrected.
+#
+# Let's try to keep the list sorted alphabetically!
+#
+# More detailed documentation on the format and use of this file can be found at:
+# https://github.com/git/git/blob/master/Documentation/mailmap.txt
+
+Dan Trickey <dan@trickey.io> <trickeydan@users.noreply.github.com>
+Daniel Goje <gojedan98@yahoo.com>
+Henry Oliver Edwards <henry.oliver.edwards@googlemail.com>
+Hugo McNally <hugo.mcnally@gmail.com>
+Hugo McNally <hugo.mcnally@gmail.com> <45573837+HU90m@users.noreply.github.com>
+James Seden Smith <sedders123@gmail.com> <james@river.red>
+James Seden Smith <sedders123@gmail.com> <sedders123@users.noreply.github.com>
