@@ -2,7 +2,7 @@
 name = "j5"
 version = "0.0.2"
 description = "J5 Robotics API"
-authors = ["Dan Trickey <contact@trickey.io>"]
+authors = ["j5 contributors <sro@soton.ac.uk>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
