@@ -7,6 +7,16 @@ if TYPE_CHECKING:
     from j5.boards import Board  # noqa
 
 
+class CommunicationError(Exception):
+    """
+    A communication error occurred.
+
+    This error is thrown when there is an error communicating with a board, if a more
+    specific exception is available, then that may be thrown instead, but it should
+    inherit from this one.
+    """
+
+
 class BackendMeta(ABCMeta):
     """
     The metaclass for a backend.

@@ -1,7 +1,7 @@
 """Classes for supporting toggleable power output channels."""
 
 from abc import abstractmethod
-from typing import Type
+from typing import Iterator, Mapping, Type, TypeVar
 
 from j5.boards import Board
 from j5.components import Component, Interface
@@ -62,3 +62,39 @@ class PowerOutput(Component):
     def current(self) -> float:
         """Get the current being drawn on this power output, in amperes."""
         return self._backend.get_power_output_current(self._board, self._identifier)
+
+
+T = TypeVar('T')
+
+
+class PowerOutputGroup:
+    """A group of PowerOutputs."""
+
+    def __init__(self, outputs: Mapping[T, PowerOutput]):
+        self._outputs = outputs
+
+    def power_on(self) -> None:
+        """Enable all outputs in the group."""
+        for output in self._outputs.values():
+            output.is_enabled = True
+
+    def power_off(self) -> None:
+        """Disable all outputs in the group."""
+        for output in self._outputs.values():
+            output.is_enabled = False
+
+    def __getitem__(self, index: T) -> PowerOutput:
+        """Get an output using list notation."""
+        return self._outputs[index]
+
+    def __iter__(self) -> Iterator[PowerOutput]:
+        """
+        Iterate over the outputs in the group.
+
+        The outputs are in no particular order.
+        """
+        return iter(self._outputs.values())
+
+    def __len__(self) -> int:
+        """Get the number of outputs in the group."""
+        return len(self._outputs)
