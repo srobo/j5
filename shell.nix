@@ -20,6 +20,7 @@ with pkgs;
 stdenv.mkDerivation {
   name = "j5-dev-env";
   buildInputs = [
+    gnumake
     python3
     python3Packages.poetry
   ];
