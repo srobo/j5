@@ -24,4 +24,5 @@ stdenv.mkDerivation {
     python3
     python3Packages.poetry
   ];
+  LD_LIBRARY_PATH = [ "${libusb1}/lib" ];
 }
