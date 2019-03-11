@@ -1,13 +1,33 @@
 version: 2
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test-3.6
+      - test-3.7
+
 jobs:
-  build:
+  test-3.6: &template
     docker:
-      - image: j5api/ci:latest
+      - image: j5api/ci:3.6
     steps:
       - checkout
-      - run: pipenv sync --dev
-      - run: pipenv run lint
-      - run: pipenv run type
+      - restore_cache:
+          keys:
+            - pip-packages-{{ .Branch }}-{{ checksum "poetry.lock" }}
+            - pip-packages-{{ .Branch }}-
+            - pip-packages-
+      - run: poetry install
+      - run: poetry run flake8 j5 tests
+      - run: poetry run mypy j5
       - run: cc-test-reporter before-build
-      - run: pipenv run test-ci
+      - run: poetry run pytest --cov=j5 tests --cov-report xml
       - run: cc-test-reporter after-build -t coverage.py --exit-code $? coverage.xml
+      - save_cache:
+          paths:
+            - /root/.cache/pypoetry/virtualenvs
+          key: pip-packages-{{ .Branch }}-{{ checksum "poetry.lock" }}
+  test-3.7:
+    <<: *template
+    docker:
+      - image: j5api/ci:3.7

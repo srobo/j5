@@ -75,6 +75,7 @@ def test_piezo_buzz_method():
     piezo.buzz(MockPiezoBoard, 0, timedelta(minutes=1), Note.D7)
 
 
+
 def test_piezo_buzz_invalid_value():
     """Test piezo's buzz method's input validation."""
     piezo = Piezo(0, MockPiezoBoard(), MockPiezoDriver())
@@ -86,3 +87,7 @@ def test_piezo_buzz_invalid_value():
         piezo.buzz(MockPiezoBoard, 0, timedelta(seconds=-2), Note.D7)
     with pytest.raises(TypeError):
         piezo.buzz(MockPiezoBoard, 0, 1, Note.D7)
+
+def test_note_reversed():
+    """Test Note reversed dunder method."""
+    assert list(reversed(list(Note))) == list(reversed(Note))

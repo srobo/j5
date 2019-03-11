@@ -1,11 +1,12 @@
 """This module contains components, which are the smallest logical element of hardware."""
 
-from .base import Component, Interface
+from .base import Component, Interface, NotSupportedByHardwareError
 from .battery_sensor import BatterySensor, BatterySensorInterface
 from .button import Button, ButtonInterface
+from .gpio_pin import GPIOPin, GPIOPinInterface, GPIOPinMode
 from .led import LED, LEDInterface
 from .piezo import Piezo, PiezoInterface
-from .power_output import PowerOutput, PowerOutputInterface
+from .power_output import PowerOutput, PowerOutputGroup, PowerOutputInterface
 from .servo import Servo, ServoInterface
 
 __all__ = [
@@ -14,13 +15,18 @@ __all__ = [
     "Button",
     "ButtonInterface",
     "Component",
+    "GPIOPin",
+    "GPIOPinInterface",
+    "GPIOPinMode",
     "Interface",
     "LED",
     "LEDInterface",
+    "NotSupportedByHardwareError",
     "Piezo",
     "PiezoInterface",
     "PowerOutput",
     "PowerOutputInterface",
+    "PowerOutputGroup",
     "Servo",
     "ServoInterface",
 ]

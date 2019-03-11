@@ -10,17 +10,19 @@ in
   pkgs ? import pkgsSrc { overlays = [python37ByDefault]; },
 }:
 
-# Note that as of 2019-01-21, pipenv is currently broken in the NixOS 18.09 release.
-# https://github.com/NixOS/nixpkgs/issues/51970
+# Note that as of 2019-03-11, poetry is not currently available in any nixpkgs release.
 # To work around, invoke with:
-# nix-shell -E 'import ./shell.nix { pkgsSrc = fetchTarball https://nixos.org/channels/nixpkgs-unstable/nixexprs.tar.xz; }'
+# nix-shell --arg pkgsSrc 'fetchTarball https://nixos.org/channels/nixpkgs-unstable/nixexprs.tar.xz'
+# It should appear in NixOS/nixpkgs 19.03.
 
 with pkgs;
 
 stdenv.mkDerivation {
   name = "j5-dev-env";
   buildInputs = [
-    pipenv
+    gnumake
     python3
+    python3Packages.poetry
   ];
+  LD_LIBRARY_PATH = [ "${libusb1}/lib" ];
 }

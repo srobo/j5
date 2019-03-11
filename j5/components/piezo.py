@@ -3,7 +3,8 @@
 from abc import abstractmethod
 from datetime import timedelta
 from enum import IntEnum
-from typing import Type
+
+from typing import Generator, Type, Union
 
 from j5.boards import Board
 from j5.components import Component, Interface
@@ -30,6 +31,13 @@ class Note(IntEnum):
     G7 = 3136
     A7 = 3520
     B7 = 3951
+    C8 = 4186
+
+    def __reverse__(self) -> Generator['Note', None, None]:
+        # Type is ignored because of an open bug within mypy
+        # https://github.com/python/typeshed/issues/1590
+        # https://github.com/python/typeshed/issues/1595
+        yield from reversed(self.__members__.items())  # type: ignore
 
 
 class PiezoInterface(Interface):
@@ -55,8 +63,7 @@ class Piezo(Component):
         """Get the interface class that is required to use this component."""
         return PiezoInterface
 
-    def buzz(self, board: Board, identifier: int,
-             duration: timedelta, pitch: int) -> None:
+    def buzz(self, duration: timedelta, pitch: int) -> None:
         """Queue a note to be played."""
         if not isinstance(pitch, int):
             raise TypeError("Pitch must be an integer")
@@ -68,4 +75,4 @@ class Piezo(Component):
         elif duration < timedelta(seconds=0):
             raise ValueError("Duration must be greater than zero")
         else:
-            self._backend.buzz(board, identifier, duration, pitch)
+            self._backend.buzz(self._board, self._identifier, duration, pitch)
