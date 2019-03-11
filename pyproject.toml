@@ -4,6 +4,13 @@ version = "0.0.3"
 description = "J5 Robotics API"
 authors = ["j5 contributors <sro@soton.ac.uk>"]
 license = "MIT"
+classifiers = [
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Operating System :: OS Independent",
+    "Development Status :: 3 - Alpha",
+    "Typing :: Typed",
+    "Topic :: Education",
+]
 
 [tool.poetry.dependencies]
 python = "^3.6"
