@@ -1,6 +1,7 @@
 """Classes for the SR v4 Power Board."""
 
 from enum import Enum
+from time import sleep
 from typing import TYPE_CHECKING, List, Mapping, Optional, cast
 
 from j5.backends import Backend
@@ -105,6 +106,17 @@ class PowerBoard(Board):
     def make_safe(self) -> None:
         """Make this board safe."""
         self._output_group.power_off()
+
+    def wait_for_start_flash(self) -> None:
+        """Wait for the start button to be pressed and flash."""
+        counter = 0
+        led_state = False
+        while not self.start_button.is_pressed:
+            if counter % 6 == 0:
+                led_state = not led_state
+                self._run_led.state = led_state
+            sleep(0.05)
+            counter += 1
 
     @staticmethod
     def supported_components() -> List["Type[Component]"]:
