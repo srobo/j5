@@ -62,12 +62,6 @@ class Board(metaclass=ABCMeta):
         raise NotImplementedError  # pragma: no cover
 
     @staticmethod
-    @abstractmethod
-    def discover(backend: Backend) -> List['Board']:
-        """Detect and return a list of boards of this type."""
-        raise NotImplementedError  # pragma: no cover
-
-    @staticmethod
     @atexit.register
     def make_all_safe() -> None:
         """Make all boards safe."""
@@ -88,7 +82,7 @@ class BoardGroup:
     def update_boards(self) -> None:
         """Update the boards in this group to see if new boards have been added."""
         self.boards: Dict[str, Board] = OrderedDict()
-        discovered_boards = self.board_class.discover(self._backend)
+        discovered_boards = self._backend.discover()
         discovered_boards.sort(key=lambda board: board.serial)
         for board in discovered_boards:
             self.boards.update({board.serial: board})

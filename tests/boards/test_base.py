@@ -37,11 +37,6 @@ class MockBoard(Board):
         """List the types of component supported by this Board."""
         return []
 
-    @staticmethod
-    def discover(backend: Backend):
-        """Detect all boards of this type that are attached."""
-        return backend.get_testing_boards()
-
 
 class MockBoardWithConstructor(MockBoard):
     """A testing board with a constructor."""
@@ -57,10 +52,6 @@ class NoBoardMockBackend(Backend):
 
     environment = Environment("MockEnvironment")
     board = MockBoard
-
-    def get_testing_boards(self):
-        """Get the connected MockBoards."""
-        return []
 
     def get_firmware_version(self) -> Optional[str]:
         """Get the firmware version of the board."""
@@ -78,10 +69,6 @@ class OneBoardMockBackend(Backend):
     environment = Environment("MockEnvironment")
     board = MockBoard
 
-    def get_testing_boards(self):
-        """Get the connected MockBoards."""
-        return [MockBoard("TESTSERIAL1")]
-
     def get_firmware_version(self) -> Optional[str]:
         """Get the firmware version of the board."""
         return None
@@ -89,7 +76,7 @@ class OneBoardMockBackend(Backend):
     @classmethod
     def discover(cls) -> List[Board]:
         """Discover boards available on this backend."""
-        return []
+        return [MockBoard("TESTSERIAL1")]
 
 
 class TwoBoardsMockBackend(Backend):
@@ -98,13 +85,6 @@ class TwoBoardsMockBackend(Backend):
     environment = Environment("MockEnvironment")
     board = MockBoard
 
-    def get_testing_boards(self):
-        """Get the connected MockBoards."""
-        # These serial numbers are deliberately in reverse lexiographic order, to ensure
-        # that sorting the boards (as tested by
-        # test_board_group_iteration_sorted_by_serial) actually has an effect.
-        return [MockBoard("TESTSERIAL2"), MockBoard("TESTSERIAL1")]
-
     def get_firmware_version(self) -> Optional[str]:
         """Get the firmware version of the board."""
         return None
@@ -112,7 +92,10 @@ class TwoBoardsMockBackend(Backend):
     @classmethod
     def discover(cls) -> List[Board]:
         """Discover boards available on this backend."""
-        return []
+        # These serial numbers are deliberately in reverse lexiographic order, to ensure
+        # that sorting the boards (as tested by
+        # test_board_group_iteration_sorted_by_serial) actually has an effect.
+        return [MockBoard("TESTSERIAL2"), MockBoard("TESTSERIAL1")]
 
 
 def test_testing_board_instantiation():
@@ -159,9 +142,9 @@ def test_testing_board_repr():
 
 def test_discover():
     """Test that the detect all static method works."""
-    assert MockBoard.discover(NoBoardMockBackend()) == []
-    assert len(MockBoard.discover(OneBoardMockBackend())) == 1
-    assert len(MockBoard.discover(TwoBoardsMockBackend())) == 2
+    assert NoBoardMockBackend.discover() == []
+    assert len(OneBoardMockBackend.discover()) == 1
+    assert len(TwoBoardsMockBackend.discover()) == 2
 
 
 def test_testing_board_added_to_boards_list():
