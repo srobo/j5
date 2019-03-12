@@ -21,6 +21,7 @@ stdenv.mkDerivation {
   name = "j5-dev-env";
   buildInputs = [
     gnumake
+    graphviz  # for docs
     python3
     python3Packages.poetry
   ];
