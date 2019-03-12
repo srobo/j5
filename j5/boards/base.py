@@ -106,7 +106,6 @@ class BoardGroup:
 
     def __str__(self) -> str:
         """A string representation of the board group."""
-
         list_str = ' , '.join(map(str, self.boards.values()))
 
         return f"Group of Boards - [{list_str}]"
