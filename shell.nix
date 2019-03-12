@@ -12,7 +12,7 @@ in
 
 # Note that as of 2019-03-11, poetry is not currently available in any nixpkgs release.
 # To work around, invoke with:
-# nix-shell --arg pkgsSrc 'fetchTarball https://nixos.org/channels/nixpkgs-unstable/nixexprs.tar.xz'
+# nix-shell --arg pkgsSrc 'fetchTarball https://github.com/NixOS/nixpkgs/archive/master.tar.gz'
 # It should appear in NixOS/nixpkgs 19.03.
 
 with pkgs;
@@ -21,6 +21,7 @@ stdenv.mkDerivation {
   name = "j5-dev-env";
   buildInputs = [
     gnumake
+    graphviz  # for docs
     python3
     python3Packages.poetry
   ];
