@@ -86,7 +86,7 @@ class Backend(metaclass=BackendMeta):
         raise NotImplementedError  # pragma: no cover
 
     @abstractmethod
-    def get_firmware_version(self, board: 'Board') -> Optional[str]:
+    def get_firmware_version(self) -> Optional[str]:
         """Get the firmware version of the board."""
         raise NotImplementedError  # pragma: no cover
 

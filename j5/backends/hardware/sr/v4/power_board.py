@@ -200,7 +200,7 @@ class SRV4PowerBoardHardwareBackend(
         # https://github.com/python/mypy/issues/1362
         return self._usb_device.serial_number  # type: ignore
 
-    def get_firmware_version(self, board: 'Board') -> Optional[str]:
+    def get_firmware_version(self) -> Optional[str]:
         """Get the firmware version reported by the board."""
         return str(self.firmware_version)
 

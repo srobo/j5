@@ -26,7 +26,7 @@ class MockBoard(Board):
     @property
     def firmware_version(self) -> Optional[str]:
         """Get the firmware version of this board."""
-        return self._backend.get_firmware_version(self)
+        return self._backend.get_firmware_version()
 
     def make_safe(self):
         """Make this board safe."""
@@ -62,7 +62,7 @@ class NoBoardMockBackend(Backend):
         """Get the connected MockBoards."""
         return []
 
-    def get_firmware_version(self, board: 'Board') -> Optional[str]:
+    def get_firmware_version(self) -> Optional[str]:
         """Get the firmware version of the board."""
         return None
 
@@ -82,7 +82,7 @@ class OneBoardMockBackend(Backend):
         """Get the connected MockBoards."""
         return [MockBoard("TESTSERIAL1")]
 
-    def get_firmware_version(self, board: 'Board') -> Optional[str]:
+    def get_firmware_version(self) -> Optional[str]:
         """Get the firmware version of the board."""
         return None
 
@@ -105,7 +105,7 @@ class TwoBoardsMockBackend(Backend):
         # test_board_group_iteration_sorted_by_serial) actually has an effect.
         return [MockBoard("TESTSERIAL2"), MockBoard("TESTSERIAL1")]
 
-    def get_firmware_version(self, board: 'Board') -> Optional[str]:
+    def get_firmware_version(self) -> Optional[str]:
         """Get the firmware version of the board."""
         return None
 

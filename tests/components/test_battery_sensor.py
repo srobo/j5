@@ -10,11 +10,11 @@ from j5.components.battery_sensor import BatterySensor, BatterySensorInterface
 class MockBatterySensorDriver(BatterySensorInterface):
     """A testing driver for the led."""
 
-    def get_battery_sensor_voltage(self, board: Board, identifier: int) -> float:
+    def get_battery_sensor_voltage(self, identifier: int) -> float:
         """Get the voltage of a battery sensor."""
         return 5.0
 
-    def get_battery_sensor_current(self, board: Board, identifier: int) -> float:
+    def get_battery_sensor_current(self, identifier: int) -> float:
         """Get the current of a battery sensor."""
         return 2.0
 
@@ -40,7 +40,7 @@ class MockBatterySensorBoard(Board):
     @property
     def firmware_version(self) -> Optional[str]:
         """Get the firmware version of this board."""
-        return self._backend.get_firmware_version(self)
+        return self._backend.get_firmware_version()
 
     def make_safe(self) -> None:
         """Make this board safe."""

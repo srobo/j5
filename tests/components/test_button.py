@@ -18,11 +18,11 @@ class MockButtonDriver(ButtonInterface):
         """Set the button state for testing purposes."""
         self.state = new_state
 
-    def get_button_state(self, board: Board, identifier: int) -> bool:
+    def get_button_state(self, identifier: int) -> bool:
         """Get the state of the button."""
         return self.state
 
-    def wait_until_button_pressed(self, board: Board, identifier: int) -> bool:
+    def wait_until_button_pressed(self, identifier: int) -> bool:
         """Wait until the button was pressed."""
         sleep(0.2)  # The mock driver always presses the button after 0.2s
 
@@ -43,7 +43,7 @@ class MockButtonBoard(Board):
     @property
     def firmware_version(self) -> Optional[str]:
         """Get the firmware version of this board."""
-        return self._backend.get_firmware_version(self)
+        return self._backend.get_firmware_version()
 
     def make_safe(self):
         """Make this board safe."""

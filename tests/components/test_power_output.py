@@ -12,17 +12,17 @@ class MockPowerOutputDriver(PowerOutputInterface):
     def __init__(self):
         self._enabled = False
 
-    def get_power_output_enabled(self, board: Board, identifier: int) -> bool:
+    def get_power_output_enabled(self, identifier: int) -> bool:
         """Get whether a power output is enabled."""
         return self._enabled
 
     def set_power_output_enabled(
-        self, board: Board, identifier: int, enabled: bool,
+        self, identifier: int, enabled: bool,
     ) -> None:
         """Set whether a power output is enabled."""
         self._enabled = enabled
 
-    def get_power_output_current(self, board: Board, identifier: int) -> float:
+    def get_power_output_current(self, identifier: int) -> float:
         """Get the current being drawn on a power output, in amperes."""
         return 8.1
 
@@ -43,7 +43,7 @@ class MockPowerOutputBoard(Board):
     @property
     def firmware_version(self) -> Optional[str]:
         """Get the firmware version of this board."""
-        return self._backend.get_firmware_version(self)
+        return self._backend.get_firmware_version()
 
     @property
     def supported_components(self) -> List[Type["Component"]]:
