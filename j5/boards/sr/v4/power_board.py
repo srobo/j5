@@ -122,8 +122,3 @@ class PowerBoard(Board):
     def supported_components() -> List["Type[Component]"]:
         """List the types of components supported by this board."""
         return [PowerOutput, Piezo, Button, BatterySensor, LED]
-
-    @staticmethod
-    def discover(backend: Backend) -> List["Board"]:
-        """Detect all connected power boards."""
-        return backend.discover()
