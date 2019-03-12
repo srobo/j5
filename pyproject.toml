@@ -35,6 +35,7 @@ pytest-cov = "^2.6"
 sphinx = "^1.8"
 sphinx-rtd-theme = "^0.4.3"
 rope = "^0.12.0"
+isort = {version = "^4.3",extras = ["pyproject"]}
 
 [build-system]
 requires = ["poetry>=0.12"]
