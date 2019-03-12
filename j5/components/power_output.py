@@ -11,19 +11,19 @@ class PowerOutputInterface(Interface):
     """An interface containing the methods required to control a power output channel."""
 
     @abstractmethod
-    def get_power_output_enabled(self, board: Board, identifier: int) -> bool:
+    def get_power_output_enabled(self, identifier: int) -> bool:
         """Get whether a power output is enabled."""
         raise NotImplementedError  # pragma: no cover
 
     @abstractmethod
     def set_power_output_enabled(
-        self, board: Board, identifier: int, enabled: bool,
+        self, identifier: int, enabled: bool,
     ) -> None:
         """Set whether a power output is enabled."""
         raise NotImplementedError  # pragma: no cover
 
     @abstractmethod
-    def get_power_output_current(self, board: Board, identifier: int) -> float:
+    def get_power_output_current(self, identifier: int) -> float:
         """Get the current being drawn on a power output, in amperes."""
         raise NotImplementedError  # pragma: no cover
 
@@ -51,17 +51,17 @@ class PowerOutput(Component):
     @property
     def is_enabled(self) -> bool:
         """Get whether the output is enabled."""
-        return self._backend.get_power_output_enabled(self._board, self._identifier)
+        return self._backend.get_power_output_enabled(self._identifier)
 
     @is_enabled.setter
     def is_enabled(self, new_state: bool) -> None:
         """Set whether the output is enabled."""
-        self._backend.set_power_output_enabled(self._board, self._identifier, new_state)
+        self._backend.set_power_output_enabled(self._identifier, new_state)
 
     @property
     def current(self) -> float:
         """Get the current being drawn on this power output, in amperes."""
-        return self._backend.get_power_output_current(self._board, self._identifier)
+        return self._backend.get_power_output_current(self._identifier)
 
 
 T = TypeVar('T')

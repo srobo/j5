@@ -33,7 +33,6 @@ class GPIOPinInterface(Interface):
 
     @abstractmethod
     def set_gpio_pin_mode(self,
-                          board: Board,
                           identifier: int,
                           pin_mode: GPIOPinMode,
                           ) -> None:
@@ -41,13 +40,12 @@ class GPIOPinInterface(Interface):
         raise NotImplementedError  # pragma: nocover
 
     @abstractmethod
-    def get_gpio_pin_mode(self, board: Board, identifier: int) -> GPIOPinMode:
+    def get_gpio_pin_mode(self, identifier: int) -> GPIOPinMode:
         """Get the hardware mode of a GPIO pin."""
         raise NotImplementedError  # pragma: nocover
 
     @abstractmethod
     def write_gpio_pin_digital_state(self,
-                                     board: Board,
                                      identifier: int,
                                      state: bool,
                                      ) -> None:
@@ -55,24 +53,23 @@ class GPIOPinInterface(Interface):
         raise NotImplementedError  # pragma: nocover
 
     @abstractmethod
-    def get_gpio_pin_digital_state(self, board: Board, identifier: int) -> bool:
+    def get_gpio_pin_digital_state(self, identifier: int) -> bool:
         """Get the last written state of the GPIO pin."""
         raise NotImplementedError  # pragma: nocover
 
     @abstractmethod
-    def read_gpio_pin_digital_state(self, board: Board, identifier: int) -> bool:
+    def read_gpio_pin_digital_state(self, identifier: int) -> bool:
         """Read the digital state of the GPIO pin."""
         raise NotImplementedError  # pragma: nocover
 
     @abstractmethod
-    def read_gpio_pin_analogue_value(self, board: Board, identifier: int) -> float:
+    def read_gpio_pin_analogue_value(self, identifier: int) -> float:
         """Read the scaled analogue value of the GPIO pin."""
         raise NotImplementedError  # pragma: nocover
 
     @abstractmethod
     def write_gpio_pin_dac_value(
             self,
-            board: Board,
             identifier: int,
             scaled_value: float,
     ) -> None:
@@ -82,7 +79,6 @@ class GPIOPinInterface(Interface):
     @abstractmethod
     def write_gpio_pin_pwm_value(
             self,
-            board: Board,
             identifier: int,
             duty_cycle: float,
     ) -> None:
@@ -129,7 +125,7 @@ class GPIOPin(Component):
     @property
     def mode(self) -> GPIOPinMode:
         """Get the hardware mode of this pin."""
-        return self._backend.get_gpio_pin_mode(self._board, self._identifier)
+        return self._backend.get_gpio_pin_mode(self._identifier)
 
     @mode.setter
     def mode(self, pin_mode: GPIOPinMode) -> None:
@@ -139,7 +135,7 @@ class GPIOPin(Component):
                 f"Pin {self._identifier} on {str(self._board)} \
                 does not support {str(pin_mode)}.",
             )
-        self._backend.set_gpio_pin_mode(self._board, self._identifier, pin_mode)
+        self._backend.set_gpio_pin_mode(self._identifier, pin_mode)
 
     @property
     def digital_state(self) -> bool:
@@ -153,21 +149,21 @@ class GPIOPin(Component):
 
         # Behave differently depending on the hardware mode.
         if self.mode is GPIOPinMode.DIGITAL_OUTPUT:
-            return self._backend.get_gpio_pin_digital_state(self._board, self._identifier)
+            return self._backend.get_gpio_pin_digital_state(self._identifier)
 
-        return self._backend.read_gpio_pin_digital_state(self._board, self._identifier)
+        return self._backend.read_gpio_pin_digital_state(self._identifier)
 
     @digital_state.setter
     def digital_state(self, state: bool) -> None:
         """Set the digital state of the pin."""
         self._require_pin_modes([GPIOPinMode.DIGITAL_OUTPUT])
-        self._backend.write_gpio_pin_digital_state(self._board, self._identifier, state)
+        self._backend.write_gpio_pin_digital_state(self._identifier, state)
 
     @property
     def analogue_value(self) -> float:
         """Get the scaled analogue reading of the pin."""
         self._require_pin_modes([GPIOPinMode.ANALOGUE_INPUT])
-        return self._backend.read_gpio_pin_analogue_value(self._board, self._identifier)
+        return self._backend.read_gpio_pin_analogue_value(self._identifier)
 
     @analogue_value.setter
     def analogue_value(self, new_value: float) -> None:
@@ -181,14 +177,12 @@ class GPIOPin(Component):
 
         if self.mode is GPIOPinMode.ANALOGUE_OUTPUT:
             self._backend.write_gpio_pin_dac_value(
-                self._board,
                 self._identifier,
                 new_value,
             )
         else:
             # We must be a PWM_OUTPUT
             self._backend.write_gpio_pin_pwm_value(
-                self._board,
                 self._identifier,
                 new_value,
             )

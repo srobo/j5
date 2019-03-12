@@ -46,7 +46,7 @@ class PiezoInterface(Interface):
     """An interface containing the methods required to control an piezo."""
 
     @abstractmethod
-    def buzz(self, board: Board, identifier: int,
+    def buzz(self, identifier: int,
              duration: timedelta, pitch: Pitch) -> None:
         """Queue a pitch to be played."""
         raise NotImplementedError  # pragma: no cover
@@ -77,4 +77,4 @@ class Piezo(Component):
         if frequency < 0:
             raise ValueError("Pitch must be greater than zero")
         else:
-            self._backend.buzz(self._board, self._identifier, duration, pitch)
+            self._backend.buzz(self._identifier, duration, pitch)

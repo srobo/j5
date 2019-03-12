@@ -14,14 +14,13 @@ class ServoInterface(Interface):
     """An interface containing the methods required to control a Servo."""
 
     @abstractmethod
-    def get_servo_position(self, board: Board, identifier: int) -> ServoPosition:
+    def get_servo_position(self, identifier: int) -> ServoPosition:
         """Get the position of a Servo."""
         raise NotImplementedError  # pragma: no cover
 
     @abstractmethod
     def set_servo_position(
             self,
-            board: Board,
             identifier: int,
             position: ServoPosition,
     ) -> None:
@@ -45,7 +44,7 @@ class Servo(Component):
     @property
     def position(self) -> ServoPosition:
         """Get the current position of the Servo."""
-        return self._backend.get_servo_position(self._board, self._identifier)
+        return self._backend.get_servo_position(self._identifier)
 
     @position.setter
     def position(self, new_position: ServoPosition) -> None:
@@ -53,4 +52,4 @@ class Servo(Component):
         if new_position is not None:
             if not -1 <= new_position <= 1:
                 raise ValueError
-        self._backend.set_servo_position(self._board, self._identifier, new_position)
+        self._backend.set_servo_position(self._identifier, new_position)

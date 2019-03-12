@@ -11,12 +11,12 @@ class LEDInterface(Interface):
     """An interface containing the methods required to control an LED."""
 
     @abstractmethod
-    def get_led_state(self, board: Board, identifier: int) -> bool:
+    def get_led_state(self, identifier: int) -> bool:
         """Get the state of an LED."""
         raise NotImplementedError  # pragma: no cover
 
     @abstractmethod
-    def set_led_state(self, board: Board, identifier: int, state: bool) -> None:
+    def set_led_state(self, identifier: int, state: bool) -> None:
         """Set the state of an LED."""
         raise NotImplementedError  # pragma: no cover
 
@@ -37,9 +37,9 @@ class LED(Component):
     @property
     def state(self) -> bool:
         """Get the current state of the LED."""
-        return self._backend.get_led_state(self._board, self._identifier)
+        return self._backend.get_led_state(self._identifier)
 
     @state.setter
     def state(self, new_state: bool) -> None:
         """Set the state of the LED."""
-        self._backend.set_led_state(self._board, self._identifier, new_state)
+        self._backend.set_led_state(self._identifier, new_state)
