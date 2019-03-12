@@ -1,8 +1,11 @@
 """This module contains components, which are the smallest logical element of hardware."""
 
+# We need to import these first as the other files depend on them.
+from .component import Component, Interface  # isort:skip
+
 from .battery_sensor import BatterySensor, BatterySensorInterface
 from .button import Button, ButtonInterface
-from .component import Component, Interface, NotSupportedByHardwareError
+from .component import NotSupportedByHardwareError
 from .gpio_pin import GPIOPin, GPIOPinInterface, GPIOPinMode
 from .led import LED, LEDInterface
 from .piezo import Piezo, PiezoInterface
