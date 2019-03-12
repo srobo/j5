@@ -67,9 +67,7 @@ class Piezo(Component):
 
     def buzz(self, duration: timedelta, pitch: Pitch) -> None:
         """Queue a note to be played."""
-        pitch_is_not_an_int = type(pitch) is not int
-        pitch_is_not_a_Note = type(pitch) is not Note
-        if pitch_is_not_an_int and pitch_is_not_a_Note:
+        if self.verify_pitch(pitch):
             raise TypeError("Pitch must be an integer or Note")
         if not isinstance(duration, timedelta):
             raise TypeError("duration must be a timedate.timedelta type")
@@ -80,3 +78,10 @@ class Piezo(Component):
             raise ValueError("Duration must be greater than zero")
         else:
             self._backend.buzz(self._board, self._identifier, duration, pitch)
+
+    @staticmethod
+    def verify_pitch(pitch: Pitch) -> bool:
+        """Verifies a pitch is either a int or Note."""
+        pitch_is_not_an_int = type(pitch) is not int
+        pitch_is_not_a_Note = type(pitch) is not Note
+        return pitch_is_not_an_int and pitch_is_not_a_Note
