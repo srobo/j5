@@ -3,7 +3,6 @@
 from abc import abstractmethod
 from datetime import timedelta
 from enum import IntEnum
-
 from typing import Generator, Type, Union
 
 from j5.boards import Board
@@ -40,6 +39,9 @@ class Note(IntEnum):
         yield from reversed(self.__members__.items())  # type: ignore
 
 
+Pitch = Union[int, Note]
+
+
 class PiezoInterface(Interface):
     """An interface containing the methods required to control an piezo."""
 
@@ -63,10 +65,10 @@ class Piezo(Component):
         """Get the interface class that is required to use this component."""
         return PiezoInterface
 
-    def buzz(self, duration: timedelta, pitch: int) -> None:
+    def buzz(self, duration: timedelta, pitch: Pitch) -> None:
         """Queue a note to be played."""
-        if not isinstance(pitch, int):
-            raise TypeError("Pitch must be an integer")
+        if type(pitch) is not int and type(pitch) is not Note:
+            raise TypeError("Pitch must be an integer or Note")
         if not isinstance(duration, timedelta):
             raise TypeError("duration must be a timedate.timedelta type")
 

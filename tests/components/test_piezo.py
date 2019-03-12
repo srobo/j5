@@ -71,22 +71,22 @@ def test_piezo_interface_class_method():
 def test_piezo_buzz_method():
     """Tests piezo's buzz method's input validation."""
     piezo = Piezo(0, MockPiezoBoard(), MockPiezoDriver())
-    piezo.buzz(MockPiezoBoard, 0, timedelta(seconds=1), 2093)
-    piezo.buzz(MockPiezoBoard, 0, timedelta(minutes=1), Note.D7)
-
+    piezo.buzz(timedelta(seconds=1), 2093)
+    piezo.buzz(timedelta(minutes=1), Note.D7)
 
 
 def test_piezo_buzz_invalid_value():
     """Test piezo's buzz method's input validation."""
     piezo = Piezo(0, MockPiezoBoard(), MockPiezoDriver())
     with pytest.raises(ValueError):
-        piezo.buzz(MockPiezoBoard, 0, timedelta(seconds=1), -42)
+        piezo.buzz(timedelta(seconds=1), -42)
     with pytest.raises(TypeError):
-        piezo.buzz(MockPiezoBoard, 0, timedelta(seconds=1), "j5")
+        piezo.buzz(timedelta(seconds=1), "j5")
     with pytest.raises(ValueError):
-        piezo.buzz(MockPiezoBoard, 0, timedelta(seconds=-2), Note.D7)
+        piezo.buzz(timedelta(seconds=-2), Note.D7)
     with pytest.raises(TypeError):
-        piezo.buzz(MockPiezoBoard, 0, 1, Note.D7)
+        piezo.buzz(1, Note.D7)
+
 
 def test_note_reversed():
     """Test Note reversed dunder method."""
