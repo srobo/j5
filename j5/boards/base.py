@@ -78,8 +78,8 @@ class Board(metaclass=ABCMeta):
 class BoardGroup:
     """A group of boards that can be accessed."""
 
-    def __init__(self, board: Board, backend: Backend):
-        self.board_class: Board = board
+    def __init__(self, board: Type[Board], backend: Backend):
+        self.board_class = board
         self._backend: Backend = backend
         self.boards: Dict[str, Board] = OrderedDict()
 
@@ -103,6 +103,13 @@ class BoardGroup:
         """Make all of the boards safe."""
         for board in self.boards.values():
             board.make_safe()
+
+    def __str__(self) -> str:
+        """A string representation of the board group."""
+
+        list_str = ' , '.join(map(str, self.boards.values()))
+
+        return f"Group of Boards - [{list_str}]"
 
     def __len__(self) -> int:
         """Get the number of boards in this group."""
