@@ -6,7 +6,7 @@ from enum import IntEnum
 from typing import Generator, Type, Union
 
 from j5.boards import Board
-from j5.components import Component, Interface
+from j5.components.component import Component, Interface
 
 
 class Note(IntEnum):
