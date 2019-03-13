@@ -82,7 +82,7 @@ class Piezo(Component):
 
         # Verify the length of the pitch is non-zero
         if pitch < 0:
-             raise ValueError("Frequency must be greater than zero")
+            raise ValueError("Frequency must be greater than zero")
 
     @staticmethod
     def verify_duration(duration: timedelta) -> None:
@@ -91,7 +91,3 @@ class Piezo(Component):
             raise TypeError("Duration must be of type datetime.timedelta")
         if duration < timedelta(seconds=0):
             raise ValueError("Duration must be greater than or equal to zero.")
-            """Verifies a pitch is either a int or Note."""
-            pitch_is_not_an_int = type(pitch) is not int
-            pitch_is_not_a_Note = type(pitch) is not Note
-            return pitch_is_not_an_int and pitch_is_not_a_Note
