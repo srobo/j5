@@ -4,7 +4,7 @@ from typing import List, Optional
 import pytest
 
 from j5.backends import Backend, Environment
-from j5.boards.base import Board, BoardGroup
+from j5.boards.board import Board, BoardGroup
 
 
 class MockBoard(Board):
