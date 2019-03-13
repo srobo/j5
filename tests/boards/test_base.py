@@ -195,7 +195,7 @@ def test_board_group_str():
     assert str(BoardGroup(MockBoard, OneBoardMockBackend())) == \
         "Group of Boards - [Testing Board - TESTSERIAL1]"
     assert str(BoardGroup(MockBoard, TwoBoardsMockBackend())) == \
-        "Group of Boards - [Testing Board - TESTSERIAL1 , Testing Board - TESTSERIAL2]"
+        "Group of Boards - [Testing Board - TESTSERIAL1, Testing Board - TESTSERIAL2]"
 
 
 def test_board_group_singular_but_multiple_boards():
