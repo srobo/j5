@@ -47,7 +47,7 @@ class PiezoInterface(Interface):
 
     @abstractmethod
     def buzz(self, board: Board, identifier: int,
-             duration: timedelta, pitch: Pitch) -> None:
+             duration: timedelta, pitch: int) -> None:
         """Queue a pitch to be played."""
         raise NotImplementedError  # pragma: no cover
 
@@ -67,14 +67,27 @@ class Piezo(Component):
 
     def buzz(self, duration: timedelta, pitch: Pitch) -> None:
         """Queue a note to be played."""
-        if isinstance(pitch, int):
-            frequency = pitch
-        elif isinstance(pitch, Note):
-            frequency = pitch.value
-        else:
-            raise TypeError("Pitch must be of either type int or Note")
+        self.verify_pitch(pitch)
+        self.verify_duration(duration)
+        self._backend.buzz(self._board, self._identifier, duration, pitch)
 
-        if frequency < 0:
-            raise ValueError("Pitch must be greater than zero")
-        else:
-            self._backend.buzz(self._board, self._identifier, duration, pitch)
+    @staticmethod
+    def verify_pitch(pitch: Pitch) -> None:
+        """Verify that a pitch is valid."""
+        # Verify that the type is correct.
+        pitch_is_int = type(pitch) is int
+        pitch_is_note = type(pitch) is Note
+        if not (pitch_is_int or pitch_is_note):
+            raise TypeError("Pitch must be int or Note")
+
+        # Verify the length of the pitch is non-zero
+        if pitch < 0:
+            raise ValueError("Frequency must be greater than zero")
+
+    @staticmethod
+    def verify_duration(duration: timedelta) -> None:
+        """Verify that a duration is valid."""
+        if not isinstance(duration, timedelta):
+            raise TypeError("Duration must be of type datetime.timedelta")
+        if duration < timedelta(seconds=0):
+            raise ValueError("Duration must be greater than or equal to zero.")
