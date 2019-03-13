@@ -67,39 +67,31 @@ class Piezo(Component):
 
     def buzz(self, duration: timedelta, pitch: Pitch) -> None:
         """Queue a note to be played."""
-        if self.verify_pitch(pitch):
-            raise TypeError("Pitch must be an integer or Note")
-        if not isinstance(duration, timedelta):
-            raise TypeError("duration must be a timedate.timedelta type")
-
-        if pitch < 0:
-            raise ValueError("Pitch must be greater than zero")
-        elif duration < timedelta(seconds=0):
-            raise ValueError("Duration must be greater than zero")
-        else:
-            self._backend.buzz(self._board, self._identifier, duration, pitch)
+        self.verify_pitch(pitch)
+        self.verify_duration(duration)
+        self._backend.buzz(self._board, self._identifier, duration, pitch)
 
     @staticmethod
-def verify_pitch(pitch: Pitch) -> None:
+    def verify_pitch(pitch: Pitch) -> None:
         """Verify that a pitch is valid."""
         # Verify that the type is correct.
-        pitch_is_int = type(pitch) is  int
+        pitch_is_int = type(pitch) is int
         pitch_is_note = type(pitch) is Note
         if not (pitch_is_int or pitch_is_note):
             raise TypeError("Pitch must be int or Note")
-       
-       # Verify the length of the pitch is non-zero
-       if pitch < 0:
-           raise ValueError("Frequency must be greater than zero")
-           
-@staticmethod
-def verify_duration(duration: timedelta) -> None:
-    """Verify that a duration is valid."""
-    if not instance(duration, timedelta):
-        raise TypeError("Duration must be of type datetime.timedelta")
-    if duration < timedelta(seconds=0):
-        raise ValueError("Duration must be greater than or equal to zero.")
-        """Verifies a pitch is either a int or Note."""
-        pitch_is_not_an_int = type(pitch) is not int
-        pitch_is_not_a_Note = type(pitch) is not Note
-        return pitch_is_not_an_int and pitch_is_not_a_Note
+
+        # Verify the length of the pitch is non-zero
+        if pitch < 0:
+             raise ValueError("Frequency must be greater than zero")
+
+    @staticmethod
+    def verify_duration(duration: timedelta) -> None:
+        """Verify that a duration is valid."""
+        if not isinstance(duration, timedelta):
+            raise TypeError("Duration must be of type datetime.timedelta")
+        if duration < timedelta(seconds=0):
+            raise ValueError("Duration must be greater than or equal to zero.")
+            """Verifies a pitch is either a int or Note."""
+            pitch_is_not_an_int = type(pitch) is not int
+            pitch_is_not_a_Note = type(pitch) is not Note
+            return pitch_is_not_an_int and pitch_is_not_a_Note
