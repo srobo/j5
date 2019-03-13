@@ -189,6 +189,15 @@ def test_board_group_singular():
     assert type(board_group.singular()) == MockBoard
 
 
+def test_board_group_str():
+    """Test that the board group can be represented as a string."""
+    assert str(BoardGroup(MockBoard, NoBoardMockBackend())) == "Group of Boards - []"
+    assert str(BoardGroup(MockBoard, OneBoardMockBackend())) == \
+        "Group of Boards - [Testing Board - TESTSERIAL1]"
+    assert str(BoardGroup(MockBoard, TwoBoardsMockBackend())) == \
+        "Group of Boards - [Testing Board - TESTSERIAL1, Testing Board - TESTSERIAL2]"
+
+
 def test_board_group_singular_but_multiple_boards():
     """Test that the singular function gets upset if there are multiple boards."""
     board_group = BoardGroup(MockBoard, TwoBoardsMockBackend())
