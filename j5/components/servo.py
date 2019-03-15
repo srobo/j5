@@ -4,7 +4,7 @@ from abc import abstractmethod
 from typing import Type, Union
 
 from j5.boards import Board
-from j5.components import Component, Interface
+from j5.components.component import Component, Interface
 
 # A servo can be powered down by setting its position to None.
 ServoPosition = Union[float, None]

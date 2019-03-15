@@ -4,7 +4,7 @@ from typing import List, Optional
 import pytest
 
 from j5.backends import Backend, Environment
-from j5.boards.base import Board, BoardGroup
+from j5.boards.board import Board, BoardGroup
 
 
 class MockBoard(Board):
@@ -170,6 +170,15 @@ def test_board_group_singular():
     board_group = BoardGroup(MockBoard, OneBoardMockBackend())
 
     assert type(board_group.singular()) == MockBoard
+
+
+def test_board_group_str():
+    """Test that the board group can be represented as a string."""
+    assert str(BoardGroup(MockBoard, NoBoardMockBackend())) == "Group of Boards - []"
+    assert str(BoardGroup(MockBoard, OneBoardMockBackend())) == \
+        "Group of Boards - [Testing Board - TESTSERIAL1]"
+    assert str(BoardGroup(MockBoard, TwoBoardsMockBackend())) == \
+        "Group of Boards - [Testing Board - TESTSERIAL1, Testing Board - TESTSERIAL2]"
 
 
 def test_board_group_singular_but_multiple_boards():

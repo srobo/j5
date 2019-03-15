@@ -5,7 +5,11 @@ from enum import IntEnum
 from typing import List, Optional, Type
 
 from j5.boards import Board
-from j5.components import Component, Interface, NotSupportedByHardwareError
+from j5.components.component import (
+    Component,
+    Interface,
+    NotSupportedByHardwareError,
+)
 
 
 class BadGPIOPinModeError(Exception):

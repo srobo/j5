@@ -29,7 +29,6 @@ from j5.components import (
     PiezoInterface,
     PowerOutputInterface,
 )
-from j5.components.piezo import Note, Pitch
 
 
 class ReadCommand(NamedTuple):
@@ -235,19 +234,15 @@ class SRV4PowerBoardHardwareBackend(
         return cast(int, current) / 1000  # convert milliamps to amps
 
     def buzz(self, identifier: int,
-             duration: timedelta, pitch: Pitch) -> None:
+             duration: timedelta, pitch: int) -> None:
         """Queue a pitch to be played."""
         if identifier != 0:
             raise ValueError(f"invalid piezo identifier {identifier!r}; "
                              f"the only valid identifier is 0")
-        if isinstance(pitch, Note):
-            frequency = pitch.value
-        else:
-            frequency = pitch
         duration_ms = round(duration / timedelta(milliseconds=1))
         if duration_ms > 65535:
             raise ValueError("Maximum piezo duration is 65535ms.")
-        data = struct.pack("<HH", frequency, duration_ms)
+        data = struct.pack("<HH", pitch, duration_ms)
         self._write(CMD_WRITE_PIEZO, data)
 
     def get_button_state(self, identifier: int) -> bool:
