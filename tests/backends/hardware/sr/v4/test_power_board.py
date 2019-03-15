@@ -2,12 +2,11 @@
 
 import struct
 from datetime import timedelta
-from typing import List, Optional, Type, Union
+from typing import List, Optional, Union
 
 import pytest
 import usb
 
-from j5.backends import Backend
 from j5.backends.hardware.sr.v4.power_board import (
     CMD_READ_5VRAIL,
     CMD_READ_BATTERY,
@@ -24,7 +23,6 @@ from j5.backends.hardware.sr.v4.power_board import (
     WriteCommand,
     handle_usb_error,
 )
-from j5.boards import Board
 from j5.boards.sr.v4.power_board import PowerBoard, PowerOutputPosition
 from j5.components.piezo import Note
 
@@ -131,43 +129,6 @@ def test_usb_error_handler_decorator():
 
     with pytest.raises(USBCommunicationError):
         test_func()
-
-
-class MockBoard(Board):
-    """
-    Never called.
-
-    To be removed after refactor. See #116.
-    """
-
-    @property
-    def name(self) -> str:
-        """Name of the board."""
-        pass
-
-    @property
-    def serial(self) -> str:
-        """The serial number."""
-        pass
-
-    @property
-    def firmware_version(self) -> Optional[str]:
-        """Firmware version."""
-        pass
-
-    def make_safe(self) -> None:
-        """Make everything safe."""
-        pass
-
-    @staticmethod
-    def supported_components() -> List[Type["Component"]]:
-        """The supported components."""
-        pass
-
-    @staticmethod
-    def discover(backend: Backend) -> List["Board"]:
-        """Discover boards."""
-        pass
 
 
 class MockUSBContext:
