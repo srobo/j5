@@ -72,9 +72,9 @@ class Board(metaclass=ABCMeta):
 class BoardGroup:
     """A group of boards that can be accessed."""
 
-    def __init__(self, board: Type[Board], backend: Backend):
+    def __init__(self, board: Type[Board], backend: Type[Backend]):
         self.board_class = board
-        self._backend: Backend = backend
+        self._backend = backend
         self.boards: Dict[str, Board] = OrderedDict()
 
         self.update_boards()
