@@ -71,6 +71,13 @@ class Backend(metaclass=BackendMeta):
 
     A backend is an implementation of a specific board for an environment.
 
+    It can hold data about the actual board it is controlling. There should be a ratio
+    of one instance of a Backend to one instance of a Board. The Backend object should
+    not hold any references to the Board, instead having it's methods executed by the
+    code for the individual Board.
+
+    A Backend usually also implements a number of ComponentInterfaces which thus allow
+    a physical component to be controlled by the abstract Component representation.
     """
 
     @classmethod
@@ -115,7 +122,7 @@ class Environment:
         """Register a new backend with this Backend Group."""
         self.board_backend_mapping[board] = backend
 
-    def get_backend(self, board: 'Type[Board]') -> Type[Backend]:
+    def get_backend(self, board: Type['Board']) -> Type[Backend]:
         """Get the backend for a board."""
         if board not in self.supported_boards:
             raise NotImplementedError(f"The {str(self)} does not support {str(board)}")
