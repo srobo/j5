@@ -124,3 +124,18 @@ class BoardGroup:
             if type(serial) != str:
                 raise TypeError("Serial must be a string")
             raise KeyError(f"Could not find a board with the serial {serial}")
+
+    @property
+    def board_class(self) -> Type[Board]:
+        """The type of board that this group contains."""
+        return self._board_class
+
+    @property
+    def backend_class(self) -> Type[Backend]:
+        """The Backend that this group uses for Boards."""
+        return self._backend_class
+
+    @property
+    def boards(self) -> List[Board]:
+        """Get an unordered list of boards in this group."""
+        return list(self._boards.values())
