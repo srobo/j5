@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Dict, Iterator, List, Optional, Type
 
 from j5.backends import Backend
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: nocover
     from j5.components import Component  # noqa
 
 
