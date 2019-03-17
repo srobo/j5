@@ -83,7 +83,7 @@ class BoardGroup:
         """Update the boards in this group to see if new boards have been added."""
         self.boards: Dict[str, Board] = OrderedDict()
         discovered_boards = self._backend.discover()
-        discovered_boards.sort(key=lambda board: board.serial)
+        discovered_boards.sort(key=lambda b: b.serial)
         for board in discovered_boards:
             self.boards.update({board.serial: board})
 
