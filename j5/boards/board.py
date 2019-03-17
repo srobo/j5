@@ -72,41 +72,41 @@ class Board(metaclass=ABCMeta):
 class BoardGroup:
     """A group of boards that can be accessed."""
 
-    def __init__(self, board: Type[Board], backend: Type[Backend]):
-        self.board_class = board
-        self._backend = backend
-        self.boards: Dict[str, Board] = OrderedDict()
+    def __init__(self, board_class: Type[Board], backend_class: Type[Backend]):
+        self._board_class = board_class
+        self._backend_class = backend_class
+        self._boards: Dict[str, Board] = OrderedDict()
 
         self.update_boards()
 
     def update_boards(self) -> None:
         """Update the boards in this group to see if new boards have been added."""
-        self.boards: Dict[str, Board] = OrderedDict()
-        discovered_boards = self._backend.discover()
+        self._boards: Dict[str, Board] = OrderedDict()
+        discovered_boards = self._backend_class.discover()
         discovered_boards.sort(key=lambda b: b.serial)
         for board in discovered_boards:
-            self.boards.update({board.serial: board})
+            self._boards.update({board.serial: board})
 
     def singular(self) -> Board:
         """If there is only a single board in the group, return that board."""
         if len(self) == 1:
-            return list(self.boards.values())[0]
+            return list(self._boards.values())[0]
         raise Exception("There is more than one or zero boards connected.")
 
     def make_safe(self) -> None:
         """Make all of the boards safe."""
-        for board in self.boards.values():
+        for board in self._boards.values():
             board.make_safe()
 
     def __str__(self) -> str:
         """A string representation of the board group."""
-        list_str = ', '.join(map(str, self.boards.values()))
+        list_str = ', '.join(map(str, self._boards.values()))
 
         return f"Group of Boards - [{list_str}]"
 
     def __len__(self) -> int:
         """Get the number of boards in this group."""
-        return len(self.boards)
+        return len(self._boards)
 
     def __iter__(self) -> Iterator[Board]:
         """
@@ -114,12 +114,12 @@ class BoardGroup:
 
         The boards are ordered lexiographically by serial number.
         """
-        return iter(self.boards.values())
+        return iter(self._boards.values())
 
     def __getitem__(self, serial: str) -> Board:
         """Get the board from serial."""
         try:
-            return self.boards[serial]
+            return self._boards[serial]
         except KeyError:
             if type(serial) != str:
                 raise TypeError("Serial must be a string")

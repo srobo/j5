@@ -193,8 +193,8 @@ def test_board_group_boards():
     """Test that the boards property works on a board group."""
     board_group = BoardGroup(MockBoard, OneBoardMockBackend())
 
-    assert len(board_group.boards) == 1
-    assert type(list(board_group.boards
+    assert len(board_group._boards) == 1
+    assert type(list(board_group._boards
                 .values())[0]) == MockBoard
 
 
@@ -202,8 +202,8 @@ def test_board_group_boards_multiple():
     """Test that the boards property works on multiple boards."""
     board_group = BoardGroup(MockBoard, TwoBoardsMockBackend())
 
-    assert len(board_group.boards) == 2
-    assert type(list(board_group.boards
+    assert len(board_group._boards) == 2
+    assert type(list(board_group._boards
                 .values())[0]) == MockBoard
 
 
@@ -211,10 +211,10 @@ def test_board_group_boards_zero():
     """Test that the boards property works with no boards."""
     board_group = BoardGroup(MockBoard, NoBoardMockBackend())
 
-    assert len(board_group.boards) == 0
+    assert len(board_group._boards) == 0
 
     with pytest.raises(KeyError):
-        board_group.boards["SERIAL0"]
+        board_group._boards["SERIAL0"]
 
 
 def test_board_group_board_by_serial():
@@ -222,7 +222,7 @@ def test_board_group_board_by_serial():
     board_group = BoardGroup(MockBoard, OneBoardMockBackend())
     BoardGroup(MockBoard, OneBoardMockBackend())
 
-    assert type(board_group[list(board_group.boards.values())[0].serial]) == MockBoard
+    assert type(board_group[list(board_group._boards.values())[0].serial]) == MockBoard
 
 
 def test_board_group_board_by_unknown():
