@@ -2,7 +2,7 @@
 
 from datetime import timedelta
 from time import sleep
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Type
 
 from j5.backends import Backend
 from j5.backends.console.env import Console, ConsoleEnvironment
@@ -35,7 +35,7 @@ class SRV4PowerBoardConsoleBackend(
         """Discover boards that this backend can control."""
         raise NotImplementedError("The Console Backend cannot discover boards.")
 
-    def __init__(self, serial: str) -> None:
+    def __init__(self, serial: str, console_class: Type[Console] = Console) -> None:
         self._serial = serial
         self._output_states: Dict[int, bool] = {
             output.value: False
@@ -47,7 +47,7 @@ class SRV4PowerBoardConsoleBackend(
         }
 
         # Setup console helper
-        self._console = Console(f"{self.board.__name__}({self._serial})")
+        self._console = console_class(f"{self.board.__name__}({self._serial})")
 
     @property
     def firmware_version(self) -> Optional[str]:
