@@ -1,6 +1,6 @@
 """The Console Environment."""
 
-from typing import Type, TypeVar
+from typing import Callable, Type, TypeVar
 
 from j5.backends import Environment
 
@@ -12,12 +12,19 @@ T = TypeVar("T")
 class Console:
     """A helper class for the comsole environment."""
 
-    def __init__(self, descriptor: str) -> None:
-        self. _descriptor = descriptor
+    def __init__(
+            self,
+            descriptor: str,
+            print_function: Callable = print,  # type: ignore
+            input_function: Callable = input,  # type: ignore
+    ) -> None:
+        self._descriptor = descriptor
+        self._print = print_function
+        self._input = input_function
 
     def info(self, message: str) -> None:
         """Print information to the user."""
-        print(f"{self._descriptor}: {message}")
+        self._print(f"{self._descriptor}: {message}")
 
     def read(self, prompt: str, return_type: Type[T] = str) -> T:  # type: ignore
         """
@@ -27,7 +34,7 @@ class Console:
         checking is not powerful enough to confirm that it is correct at runtime.
         """
         while True:
-            response = input(f"{self._descriptor}: {prompt}: ")
+            response = self._input(f"{self._descriptor}: {prompt}: ")
             try:
                 return return_type(response)  # type: ignore
             except ValueError:
