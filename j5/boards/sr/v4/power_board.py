@@ -81,7 +81,7 @@ class PowerBoard(Board):
     @property
     def firmware_version(self) -> Optional[str]:
         """Get the firmware version of the board."""
-        return self._backend.get_firmware_version(self)
+        return self._backend.get_firmware_version()
 
     @property
     def outputs(self) -> PowerOutputGroup:
@@ -122,8 +122,3 @@ class PowerBoard(Board):
     def supported_components() -> List["Type[Component]"]:
         """List the types of components supported by this board."""
         return [PowerOutput, Piezo, Button, BatterySensor, LED]
-
-    @staticmethod
-    def discover(backend: Backend) -> List["Board"]:
-        """Detect all connected power boards."""
-        return backend.discover()

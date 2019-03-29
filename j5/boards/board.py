@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Dict, Iterator, List, Optional, Type
 
 from j5.backends import Backend
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: nocover
     from j5.components import Component  # noqa
 
 
@@ -62,12 +62,6 @@ class Board(metaclass=ABCMeta):
         raise NotImplementedError  # pragma: no cover
 
     @staticmethod
-    @abstractmethod
-    def discover(backend: Backend) -> List['Board']:
-        """Detect and return a list of boards of this type."""
-        raise NotImplementedError  # pragma: no cover
-
-    @staticmethod
     @atexit.register
     def make_all_safe() -> None:
         """Make all boards safe."""
@@ -78,41 +72,41 @@ class Board(metaclass=ABCMeta):
 class BoardGroup:
     """A group of boards that can be accessed."""
 
-    def __init__(self, board: Type[Board], backend: Backend):
-        self.board_class = board
-        self._backend: Backend = backend
-        self.boards: Dict[str, Board] = OrderedDict()
+    def __init__(self, board_class: Type[Board], backend_class: Type[Backend]):
+        self._board_class = board_class
+        self._backend_class = backend_class
+        self._boards: Dict[str, Board] = OrderedDict()
 
         self.update_boards()
 
     def update_boards(self) -> None:
         """Update the boards in this group to see if new boards have been added."""
-        self.boards: Dict[str, Board] = OrderedDict()
-        discovered_boards = self.board_class.discover(self._backend)
-        discovered_boards.sort(key=lambda board: board.serial)
+        self._boards: Dict[str, Board] = OrderedDict()
+        discovered_boards = self._backend_class.discover()
+        discovered_boards.sort(key=lambda b: b.serial)
         for board in discovered_boards:
-            self.boards.update({board.serial: board})
+            self._boards.update({board.serial: board})
 
     def singular(self) -> Board:
         """If there is only a single board in the group, return that board."""
         if len(self) == 1:
-            return list(self.boards.values())[0]
+            return list(self._boards.values())[0]
         raise Exception("There is more than one or zero boards connected.")
 
     def make_safe(self) -> None:
         """Make all of the boards safe."""
-        for board in self.boards.values():
+        for board in self._boards.values():
             board.make_safe()
 
     def __str__(self) -> str:
         """A string representation of the board group."""
-        list_str = ', '.join(map(str, self.boards.values()))
+        list_str = ', '.join(map(str, self._boards.values()))
 
         return f"Group of Boards - [{list_str}]"
 
     def __len__(self) -> int:
         """Get the number of boards in this group."""
-        return len(self.boards)
+        return len(self._boards)
 
     def __iter__(self) -> Iterator[Board]:
         """
@@ -120,13 +114,28 @@ class BoardGroup:
 
         The boards are ordered lexiographically by serial number.
         """
-        return iter(self.boards.values())
+        return iter(self._boards.values())
 
     def __getitem__(self, serial: str) -> Board:
         """Get the board from serial."""
         try:
-            return self.boards[serial]
+            return self._boards[serial]
         except KeyError:
             if type(serial) != str:
                 raise TypeError("Serial must be a string")
             raise KeyError(f"Could not find a board with the serial {serial}")
+
+    @property
+    def board_class(self) -> Type[Board]:
+        """The type of board that this group contains."""
+        return self._board_class
+
+    @property
+    def backend_class(self) -> Type[Backend]:
+        """The Backend that this group uses for Boards."""
+        return self._backend_class
+
+    @property
+    def boards(self) -> List[Board]:
+        """Get an unordered list of boards in this group."""
+        return list(self._boards.values())
