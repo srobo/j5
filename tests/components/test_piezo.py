@@ -14,7 +14,7 @@ class MockPiezoDriver(PiezoInterface):
     """A testing driver for the piezo."""
 
     def buzz(self, identifier: int,
-             duration: timedelta, pitch: int) -> None:
+             duration: timedelta, frequency: int) -> None:
         """Queue a pitch to be played."""
         pass
 

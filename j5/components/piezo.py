@@ -47,7 +47,7 @@ class PiezoInterface(Interface):
 
     @abstractmethod
     def buzz(self, identifier: int,
-             duration: timedelta, pitch: int) -> None:
+             duration: timedelta, frequency: int) -> None:
         """Queue a pitch to be played."""
         raise NotImplementedError  # pragma: no cover
 
