@@ -9,11 +9,11 @@ from j5.components.led import LED, LEDInterface
 class MockLEDDriver(LEDInterface):
     """A testing driver for the led."""
 
-    def set_led_state(self, board: Board, identifier: int, state: bool) -> None:
+    def set_led_state(self, identifier: int, state: bool) -> None:
         """Set the state of an led."""
         pass
 
-    def get_led_state(self, board: Board, identifier: int) -> bool:
+    def get_led_state(self, identifier: int) -> bool:
         """Get the state of an LED."""
         return True
 
@@ -34,7 +34,7 @@ class MockLEDBoard(Board):
     @property
     def firmware_version(self) -> Optional[str]:
         """Get the firmware version of this board."""
-        return self._backend.get_firmware_version(self)
+        return self._backend.get_firmware_version()
 
     @property
     def supported_components(self) -> List[Type['Component']]:

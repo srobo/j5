@@ -2,12 +2,11 @@
 
 import struct
 from datetime import timedelta
-from typing import List, Optional, Type, Union
+from typing import List, Optional, Union
 
 import pytest
 import usb
 
-from j5.backends import Backend
 from j5.backends.hardware.sr.v4.power_board import (
     CMD_READ_5VRAIL,
     CMD_READ_BATTERY,
@@ -24,7 +23,6 @@ from j5.backends.hardware.sr.v4.power_board import (
     WriteCommand,
     handle_usb_error,
 )
-from j5.boards import Board
 from j5.boards.sr.v4.power_board import PowerBoard, PowerOutputPosition
 from j5.components.piezo import Note
 
@@ -131,43 +129,6 @@ def test_usb_error_handler_decorator():
 
     with pytest.raises(USBCommunicationError):
         test_func()
-
-
-class MockBoard(Board):
-    """
-    Never called.
-
-    To be removed after refactor. See #116.
-    """
-
-    @property
-    def name(self) -> str:
-        """Name of the board."""
-        pass
-
-    @property
-    def serial(self) -> str:
-        """The serial number."""
-        pass
-
-    @property
-    def firmware_version(self) -> Optional[str]:
-        """Firmware version."""
-        pass
-
-    def make_safe(self) -> None:
-        """Make everything safe."""
-        pass
-
-    @staticmethod
-    def supported_components() -> List[Type["Component"]]:
-        """The supported components."""
-        pass
-
-    @staticmethod
-    def discover(backend: Backend) -> List["Board"]:
-        """Discover boards."""
-        pass
 
 
 class MockUSBContext:
@@ -354,10 +315,10 @@ def test_backend_get_power_output_enabled():
     backend = SRV4PowerBoardHardwareBackend(device)
 
     for i in range(0, 6):
-        assert not backend.get_power_output_enabled(MockBoard(), i)
+        assert not backend.get_power_output_enabled(i)
 
     with pytest.raises(ValueError):
-        backend.get_power_output_enabled(MockBoard(), 6)
+        backend.get_power_output_enabled(6)
 
 
 def test_backend_set_power_output_enabled():
@@ -366,10 +327,10 @@ def test_backend_set_power_output_enabled():
     backend = SRV4PowerBoardHardwareBackend(device)
 
     for i in range(0, 6):
-        backend.set_power_output_enabled(MockBoard(), i, True)
+        backend.set_power_output_enabled(i, True)
 
     with pytest.raises(ValueError):
-        backend.set_power_output_enabled(MockBoard(), 6, True)
+        backend.set_power_output_enabled(6, True)
 
 
 def test_backend_get_power_output_current():
@@ -378,10 +339,10 @@ def test_backend_get_power_output_current():
     backend = SRV4PowerBoardHardwareBackend(device)
 
     for i in range(0, 6):
-        assert 1.2 == backend.get_power_output_current(MockBoard(), i)
+        assert 1.2 == backend.get_power_output_current(i)
 
     with pytest.raises(ValueError):
-        backend.get_power_output_current(MockBoard(), 6)
+        backend.get_power_output_current(6)
 
 
 def test_backend_piezo_buzz():
@@ -390,18 +351,18 @@ def test_backend_piezo_buzz():
     backend = SRV4PowerBoardHardwareBackend(device)
 
     # Buzz a Note
-    backend.buzz(MockBoard(), 0, timedelta(seconds=10), Note.D7)
+    backend.buzz(0, timedelta(seconds=10), Note.D7)
 
     # Buzz a frequency
-    backend.buzz(MockBoard(), 0, timedelta(seconds=10), 100)
+    backend.buzz(0, timedelta(seconds=10), 100)
 
     # Buzz for too long.
     with pytest.raises(ValueError):
-        backend.buzz(MockBoard(), 0, timedelta(seconds=100), 10)
+        backend.buzz(0, timedelta(seconds=100), 10)
 
     # Test non-existent buzzer
     with pytest.raises(ValueError):
-        backend.buzz(MockBoard(), 1, timedelta(seconds=10), 0)
+        backend.buzz(1, timedelta(seconds=10), 0)
 
 
 def test_backend_get_button_state():
@@ -409,10 +370,10 @@ def test_backend_get_button_state():
     device = MockUSBPowerBoardDevice("SERIAL0")
     backend = SRV4PowerBoardHardwareBackend(device)
 
-    assert not backend.get_button_state(MockBoard(), 0)
+    assert not backend.get_button_state(0)
 
     with pytest.raises(ValueError):
-        backend.get_button_state(MockBoard(), 1)
+        backend.get_button_state(1)
 
 
 def test_backend_get_battery_sensor_voltage():
@@ -420,10 +381,10 @@ def test_backend_get_battery_sensor_voltage():
     device = MockUSBPowerBoardDevice("SERIAL0")
     backend = SRV4PowerBoardHardwareBackend(device)
 
-    assert backend.get_battery_sensor_voltage(MockBoard(), 0) == 0.982
+    assert backend.get_battery_sensor_voltage(0) == 0.982
 
     with pytest.raises(ValueError):
-        backend.get_battery_sensor_voltage(MockBoard(), 1)
+        backend.get_battery_sensor_voltage(1)
 
 
 def test_backend_get_battery_sensor_current():
@@ -431,10 +392,10 @@ def test_backend_get_battery_sensor_current():
     device = MockUSBPowerBoardDevice("SERIAL0")
     backend = SRV4PowerBoardHardwareBackend(device)
 
-    assert backend.get_battery_sensor_current(MockBoard(), 0) == 0.567
+    assert backend.get_battery_sensor_current(0) == 0.567
 
     with pytest.raises(ValueError):
-        backend.get_battery_sensor_current(MockBoard(), 1)
+        backend.get_battery_sensor_current(1)
 
 
 def test_backend_get_led_states():
@@ -442,10 +403,10 @@ def test_backend_get_led_states():
     device = MockUSBPowerBoardDevice("SERIAL0")
     backend = SRV4PowerBoardHardwareBackend(device)
 
-    assert not any([backend.get_led_state(MockBoard(), i) for i in [0, 1]])  # noqa: C407
+    assert not any([backend.get_led_state(i) for i in [0, 1]])  # noqa: C407
 
     with pytest.raises(KeyError):
-        backend.get_led_state(MockBoard(), 7)
+        backend.get_led_state(7)
 
 
 def test_backend_set_led_states():
@@ -454,7 +415,7 @@ def test_backend_set_led_states():
     backend = SRV4PowerBoardHardwareBackend(device)
 
     for i in [0, 1]:
-        backend.set_led_state(MockBoard(), i, True)
+        backend.set_led_state(i, True)
 
     with pytest.raises(ValueError):
-        backend.set_led_state(MockBoard(), 8, True)
+        backend.set_led_state(8, True)

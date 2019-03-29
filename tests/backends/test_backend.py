@@ -28,7 +28,7 @@ class MockBoard(Board):
     @property
     def firmware_version(self) -> Optional[str]:
         """Get the firmware version of this board."""
-        return self._backend.get_firmware_version(self)
+        return self._backend.get_firmware_version()
 
     @staticmethod
     def supported_components():
@@ -61,7 +61,7 @@ class Mock2Board(Board):
     @property
     def firmware_version(self) -> Optional[str]:
         """Get the firmware version of this board."""
-        return self._backend.get_firmware_version(self)
+        return self._backend.get_firmware_version()
 
     @staticmethod
     def supported_components():
@@ -88,7 +88,7 @@ class MockBackend(Backend):
         """Discover boards available on this backend."""
         return []
 
-    def get_firmware_version(self, board: 'Board') -> Optional[str]:
+    def get_firmware_version(self) -> Optional[str]:
         """Get the firmware version of the board."""
         return None
 

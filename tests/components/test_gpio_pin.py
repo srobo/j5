@@ -32,33 +32,32 @@ class MockGPIOPinDriver(GPIOPinInterface):
             False for _ in range(0, self.pin_count)
         ]
 
-    def set_gpio_pin_mode(self, board: Board, identifier: int, pin_mode: GPIOPinMode):
+    def set_gpio_pin_mode(self, identifier: int, pin_mode: GPIOPinMode):
         """Set the hardware mode of a pin."""
         self._mode[identifier] = pin_mode
 
-    def get_gpio_pin_mode(self, board: Board, identifier: int) -> GPIOPinMode:
+    def get_gpio_pin_mode(self, identifier: int) -> GPIOPinMode:
         """Get the hardware mode of a GPIO pin."""
         return self._mode[identifier]
 
-    def write_gpio_pin_digital_state(self, board: Board, identifier: int, state: bool):
+    def write_gpio_pin_digital_state(self, identifier: int, state: bool):
         """Write to the digital state of a GPIO pin."""
         self._written_digital_state[identifier] = state
 
-    def get_gpio_pin_digital_state(self, board: Board, identifier: int):
+    def get_gpio_pin_digital_state(self, identifier: int):
         """Get the last written state of the GPIO pin."""
         return self._written_digital_state[identifier]
 
-    def read_gpio_pin_digital_state(self, board: Board, identifier: int):
+    def read_gpio_pin_digital_state(self, identifier: int):
         """Read the digital state of the GPIO pin."""
         return self._digital_state[identifier]
 
-    def read_gpio_pin_analogue_value(self, board: Board, identifier: int) -> float:
+    def read_gpio_pin_analogue_value(self, identifier: int) -> float:
         """Read the scaled analogue value of the GPIO pin."""
         return 0.6
 
     def write_gpio_pin_dac_value(
             self,
-            board: Board,
             identifier: int,
             scaled_value: float,
     ) -> None:
@@ -67,7 +66,6 @@ class MockGPIOPinDriver(GPIOPinInterface):
 
     def write_gpio_pin_pwm_value(
             self,
-            board: Board,
             identifier: int,
             duty_cycle: float,
     ) -> None:

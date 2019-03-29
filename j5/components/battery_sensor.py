@@ -11,12 +11,12 @@ class BatterySensorInterface(Interface):
     """An interface containing the methods required to read data from a BatterySensor."""
 
     @abstractmethod
-    def get_battery_sensor_voltage(self, board: Board, identifier: int) -> float:
+    def get_battery_sensor_voltage(self, identifier: int) -> float:
         """Get the voltage of a battery sensor."""
         raise NotImplementedError  # pragma: no cover
 
     @abstractmethod
-    def get_battery_sensor_current(self, board: Board, identifier: int) -> float:
+    def get_battery_sensor_current(self, identifier: int) -> float:
         """Get the current of a battery sensor."""
         raise NotImplementedError  # pragma: no cover
 
@@ -39,9 +39,9 @@ class BatterySensor(Component):
     @property
     def voltage(self) -> float:
         """Get the voltage of the battery sensor."""
-        return self._backend.get_battery_sensor_voltage(self._board, self._identifier)
+        return self._backend.get_battery_sensor_voltage(self._identifier)
 
     @property
     def current(self) -> float:
         """Get the current of the battery sensor."""
-        return self._backend.get_battery_sensor_current(self._board, self._identifier)
+        return self._backend.get_battery_sensor_current(self._identifier)

@@ -13,8 +13,8 @@ from j5.components.piezo import Note, Piezo, PiezoInterface
 class MockPiezoDriver(PiezoInterface):
     """A testing driver for the piezo."""
 
-    def buzz(self, board: Board, identifier: int,
-             duration: timedelta, pitch: int) -> None:
+    def buzz(self, identifier: int,
+             duration: timedelta, frequency: int) -> None:
         """Queue a pitch to be played."""
         pass
 
@@ -35,7 +35,7 @@ class MockPiezoBoard(Board):
     @property
     def firmware_version(self) -> Optional[str]:
         """Get the firmware version of this board."""
-        return self._backend.get_firmware_version(self)
+        return self._backend.get_firmware_version()
 
     @property
     def supported_components(self) -> List[Type['Component']]:

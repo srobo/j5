@@ -11,13 +11,12 @@ from j5.components.servo import Servo, ServoInterface, ServoPosition
 class MockServoDriver(ServoInterface):
     """A testing driver for servos."""
 
-    def get_servo_position(self, board: Board, identifier: int) -> ServoPosition:
+    def get_servo_position(self, identifier: int) -> ServoPosition:
         """Get the position of a Servo."""
         return 0.5
 
     def set_servo_position(
             self,
-            board: Board,
             identifier: int,
             position: ServoPosition,
     ) -> None:
@@ -41,7 +40,7 @@ class MockServoBoard(Board):
     @property
     def firmware_version(self) -> Optional[str]:
         """Get the firmware version of this board."""
-        return self._backend.get_firmware_version(self)
+        return self._backend.get_firmware_version()
 
     @property
     def supported_components(self) -> List[Type["Component"]]:
