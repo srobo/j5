@@ -8,7 +8,7 @@ from j5.components.power_output import PowerOutput, PowerOutputInterface
 class MockPowerOutputDriver(PowerOutputInterface):
     """A testing driver for power outputs."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._enabled = False
 
     def get_power_output_enabled(self, identifier: int) -> bool:

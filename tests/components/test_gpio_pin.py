@@ -16,7 +16,7 @@ from j5.components.gpio_pin import (
 class MockGPIOPinDriver(GPIOPinInterface):
     """A testing driver for the GPIO pin component."""
 
-    def __init__(self):
+    def __init__(self) -> None:
 
         self.pin_count: int = 10
         self._mode: List[GPIOPinMode] = [

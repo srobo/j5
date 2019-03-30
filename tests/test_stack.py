@@ -14,7 +14,7 @@ TestEnvironment = Environment("TestEnvironment")
 class Robot(BaseRobot):
     """A robot."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._env = TestEnvironment
 
 

@@ -10,7 +10,7 @@ from j5.components.button import Button, ButtonInterface
 class MockButtonDriver(ButtonInterface):
     """A testing driver for the button component."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.state = False
 
     def set_button_state(self, new_state: bool):
