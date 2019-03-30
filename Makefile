@@ -9,7 +9,7 @@ lint:
 	$(CMD) flake8 $(PYMODULE) tests
 
 type:
-	$(CMD) mypy $(PYMODULE)
+	$(CMD) mypy $(PYMODULE) tests
 
 test:
 	$(CMD) pytest --cov=$(PYMODULE) tests
