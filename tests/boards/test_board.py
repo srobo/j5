@@ -234,13 +234,13 @@ def test_board_group_board_by_unknown() -> None:
     board_group = BoardGroup(MockBoard, OneBoardMockBackend)
 
     with pytest.raises(TypeError):
-        board_group[0]
+        board_group[0]  # type: ignore
 
     with pytest.raises(KeyError):
         board_group[""]
 
     with pytest.raises(TypeError):
-        board_group[{}]
+        board_group[{}]  # type: ignore
 
     with pytest.raises(KeyError):
         board_group["ARGHHHJ"]
