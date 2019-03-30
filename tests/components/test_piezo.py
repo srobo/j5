@@ -46,30 +46,30 @@ class MockPiezoBoard(Board):
         pass
 
 
-def test_piezo_interface_implementation():
+def test_piezo_interface_implementation() -> None:
     """Test that we can implement the PiezoInterface."""
     MockPiezoDriver()
 
 
-def test_piezo_instantiation():
+def test_piezo_instantiation() -> None:
     """Test that we can instantiate an piezo."""
     Piezo(0, MockPiezoBoard(), MockPiezoDriver())
 
 
-def test_piezo_interface_class_method():
+def test_piezo_interface_class_method() -> None:
     """Tests piezo's interface_class method."""
     piezo = Piezo(0, MockPiezoBoard(), MockPiezoDriver())
     assert piezo.interface_class() is PiezoInterface
 
 
-def test_piezo_buzz_method():
+def test_piezo_buzz_method() -> None:
     """Tests piezo's buzz method's input validation."""
     piezo = Piezo(0, MockPiezoBoard(), MockPiezoDriver())
     piezo.buzz(timedelta(seconds=1), 2093)
     piezo.buzz(timedelta(minutes=1), Note.D7)
 
 
-def test_piezo_buzz_invalid_value():
+def test_piezo_buzz_invalid_value() -> None:
     """Test piezo's buzz method's input validation."""
     piezo = Piezo(0, MockPiezoBoard(), MockPiezoDriver())
     with pytest.raises(ValueError):
@@ -82,6 +82,6 @@ def test_piezo_buzz_invalid_value():
         piezo.buzz(1, Note.D7)
 
 
-def test_note_reversed():
+def test_note_reversed() -> None:
     """Test Note reversed dunder method."""
     assert list(reversed(list(Note))) == list(reversed(Note))

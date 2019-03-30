@@ -51,41 +51,41 @@ class MockServoBoard(Board):
         pass
 
 
-def test_servo_interface_implementation():
+def test_servo_interface_implementation() -> None:
     """Test that we can implement the ServoInterface."""
     MockServoDriver()
 
 
-def test_servo_interface_class():
+def test_servo_interface_class() -> None:
     """Test that the interface class is ServoInterface."""
     assert Servo.interface_class() is ServoInterface
 
 
-def test_servo_instantiation():
+def test_servo_instantiation() -> None:
     """Test that we can instantiate a Servo."""
     Servo(0, MockServoBoard(), MockServoDriver())
 
 
-def test_servo_get_position():
+def test_servo_get_position() -> None:
     """Test that we can get the position of a servo."""
     servo = Servo(2, MockServoBoard(), MockServoDriver())
     assert type(servo.position) is float
     assert servo.position == 0.5
 
 
-def test_servo_set_position():
+def test_servo_set_position() -> None:
     """Test that we can set the position of a servo."""
     servo = Servo(2, MockServoBoard(), MockServoDriver())
     servo.position = 0.6
 
 
-def test_servo_set_position_none():
+def test_servo_set_position_none() -> None:
     """Test that we can set the position of a servo to None."""
     servo = Servo(2, MockServoBoard(), MockServoDriver())
     servo.position = None
 
 
-def test_servo_set_position_out_of_bounds():
+def test_servo_set_position_out_of_bounds() -> None:
     """Test that we cannot set < -1 or > 1."""
     servo = Servo(2, MockServoBoard(), MockServoDriver())
 

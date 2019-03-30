@@ -54,17 +54,17 @@ class MockButtonBoard(Board):
         return [Button]
 
 
-def test_button_interface_implementation():
+def test_button_interface_implementation() -> None:
     """Test that we can implement the button interface."""
     MockButtonDriver()
 
 
-def test_button_instantiation():
+def test_button_instantiation() -> None:
     """Test that we can instantiate a button."""
     Button(0, MockButtonBoard(), MockButtonDriver())
 
 
-def test_button_state():
+def test_button_state() -> None:
     """Test that we can get the state of the button."""
     driver = MockButtonDriver()
     button = Button(0, MockButtonBoard(), driver)
@@ -74,7 +74,7 @@ def test_button_state():
     assert button.is_pressed is True
 
 
-def test_button_wait_until_pressed():
+def test_button_wait_until_pressed() -> None:
     """Test that the button takes at least 0.2 secs to be pressed."""
     button = Button(0, MockButtonBoard(), MockButtonDriver())
     start_time = time()
@@ -86,6 +86,6 @@ def test_button_wait_until_pressed():
     assert time_taken < 2
 
 
-def test_button_interface_class():
+def test_button_interface_class() -> None:
     """Test that the Button Interface class is a ButtonInterface."""
     assert Button.interface_class() is ButtonInterface

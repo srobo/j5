@@ -18,7 +18,7 @@ class Robot(BaseRobot):
         self._env = TestEnvironment
 
 
-def test_robot_lock():
+def test_robot_lock() -> None:
     """Test that we cannot have more than one Robot object."""
     r1 = Robot()
 

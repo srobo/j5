@@ -46,29 +46,29 @@ class MockBatterySensorBoard(Board):
         pass
 
 
-def test_battery_sensor_interface_implementation():
+def test_battery_sensor_interface_implementation() -> None:
     """Test that we can implement the BatterySensorInterface."""
     MockBatterySensorDriver()
 
 
-def test_battery_sensor_instantiation():
+def test_battery_sensor_instantiation() -> None:
     """Test that we can instantiate a BatterySensor."""
     BatterySensor(0, MockBatterySensorBoard(), MockBatterySensorDriver())
 
 
-def test_battery_sensor_interface_class():
+def test_battery_sensor_interface_class() -> None:
     """Test that the interface class is correct."""
     assert BatterySensor.interface_class() is BatterySensorInterface
 
 
-def test_battery_sensor_voltage():
+def test_battery_sensor_voltage() -> None:
     """Test that we can get the voltage of a battery sensor."""
     battery = BatterySensor(0, MockBatterySensorBoard(), MockBatterySensorDriver())
     assert type(battery.voltage) is float
     assert battery.voltage == 5.0
 
 
-def test_battery_sensor_current():
+def test_battery_sensor_current() -> None:
     """Test that we can get the current of a battery sensor."""
     battery = BatterySensor(0, MockBatterySensorBoard(), MockBatterySensorDriver())
     assert type(battery.current) is float

@@ -100,22 +100,22 @@ class MockGPIOPinBoard(Board):
         return [GPIOPin]
 
 
-def test_gpio_pin_interface_implementation():
+def test_gpio_pin_interface_implementation() -> None:
     """Test that we can implement the GPIO pin interface."""
     MockGPIOPinDriver()
 
 
-def test_gpio_pin_instantiation():
+def test_gpio_pin_instantiation() -> None:
     """Test that we can instantiate a GPIO pin."""
     GPIOPin(0, MockGPIOPinBoard(), MockGPIOPinDriver())
 
 
-def test_gpio_pin_interface_class():
+def test_gpio_pin_interface_class() -> None:
     """Test that the GPIO pin Interface class is a GPIOPinInterface."""
     assert GPIOPin.interface_class() is GPIOPinInterface
 
 
-def test_pin_mode_getter():
+def test_pin_mode_getter() -> None:
     """Test the mode getter."""
     driver = MockGPIOPinDriver()
 
@@ -132,7 +132,7 @@ def test_pin_mode_getter():
     assert pin.mode is GPIOPinMode.DIGITAL_OUTPUT
 
 
-def test_pin_mode_setter():
+def test_pin_mode_setter() -> None:
     """Test the setter for the pin mode."""
     driver = MockGPIOPinDriver()
 
@@ -152,7 +152,7 @@ def test_pin_mode_setter():
         pin.mode = GPIOPinMode.ANALOGUE_INPUT
 
 
-def test_initial_mode():
+def test_initial_mode() -> None:
     """Test that the initial mode of the pin is set correctly."""
     driver = MockGPIOPinDriver()
 
@@ -207,7 +207,7 @@ def test_initial_mode():
         )
 
 
-def test_supported_modes_length():
+def test_supported_modes_length() -> None:
     """Test that a pin cannot be created with zero supported modes."""
     driver = MockGPIOPinDriver()
 
@@ -220,7 +220,7 @@ def test_supported_modes_length():
         )
 
 
-def test_required_pin_modes():
+def test_required_pin_modes() -> None:
     """Test the runtime check for required pin modes."""
     driver = MockGPIOPinDriver()
     pin = GPIOPin(
@@ -249,7 +249,7 @@ def test_required_pin_modes():
     ])
 
 
-def test_digital_state_getter():
+def test_digital_state_getter() -> None:
     """Test that we can get the digital state correctly."""
     driver = MockGPIOPinDriver()
     pin = GPIOPin(
@@ -288,7 +288,7 @@ def test_digital_state_getter():
         _ = pin.digital_state
 
 
-def test_digital_state_setter():
+def test_digital_state_setter() -> None:
     """Test that we can set the digital state."""
     driver = MockGPIOPinDriver()
     pin = GPIOPin(
@@ -310,7 +310,7 @@ def test_digital_state_setter():
     assert not driver._written_digital_state[0]
 
 
-def test_analogue_value_getter():
+def test_analogue_value_getter() -> None:
     """Test that we can get a scaled analogue value."""
     driver = MockGPIOPinDriver()
     pin = GPIOPin(
@@ -332,7 +332,7 @@ def test_analogue_value_getter():
         _ = pin.analogue_value
 
 
-def test_analogue_value_setter():
+def test_analogue_value_setter() -> None:
     """Test that we can set a scaled analogue value."""
     driver = MockGPIOPinDriver()
     pin = GPIOPin(

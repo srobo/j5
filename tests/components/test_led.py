@@ -45,17 +45,17 @@ class MockLEDBoard(Board):
         pass
 
 
-def test_led_interface_implementation():
+def test_led_interface_implementation() -> None:
     """Test that we can implement the LEDInterface."""
     MockLEDDriver()
 
 
-def test_led_instantiation():
+def test_led_instantiation() -> None:
     """Test that we can instantiate an LED."""
     LED(0, MockLEDBoard(), MockLEDDriver())
 
 
-def test_led_state():
+def test_led_state() -> None:
     """Test the state property of an LED."""
     led = LED(0, MockLEDBoard(), MockLEDDriver())
 

@@ -54,22 +54,22 @@ class MockPowerOutputBoard(Board):
         pass
 
 
-def test_power_output_interface_implementation():
+def test_power_output_interface_implementation() -> None:
     """Test that we can implement the PowerOutputInterface."""
     MockPowerOutputDriver()
 
 
-def test_power_output_instantiation():
+def test_power_output_instantiation() -> None:
     """Test that we can instantiate a PowerOutput."""
     PowerOutput(0, MockPowerOutputBoard(), MockPowerOutputDriver())
 
 
-def test_power_output_interface():
+def test_power_output_interface() -> None:
     """Test that the class returns the correct interface."""
     assert PowerOutput.interface_class() is PowerOutputInterface
 
 
-def test_power_output_enabled():
+def test_power_output_enabled() -> None:
     """Test the is_enabled property of a PowerOutput."""
     power_output = PowerOutput(0, MockPowerOutputBoard(), MockPowerOutputDriver())
     assert power_output.is_enabled is False
@@ -77,7 +77,7 @@ def test_power_output_enabled():
     assert power_output.is_enabled is True
 
 
-def test_power_output_current():
+def test_power_output_current() -> None:
     """Test the current property of a PowerOutput."""
     power_output = PowerOutput(0, MockPowerOutputBoard(), MockPowerOutputDriver())
     assert type(power_output.current) is float
