@@ -33,7 +33,7 @@ class MockLEDBoard(Board):
     @property
     def firmware_version(self) -> Optional[str]:
         """Get the firmware version of this board."""
-        return self._backend.get_firmware_version()
+        return None
 
     @staticmethod
     def supported_components() -> List[Type['Component']]:
