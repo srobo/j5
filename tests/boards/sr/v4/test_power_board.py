@@ -1,6 +1,6 @@
 """Tests for the SR v4 Power Board and related classes."""
 from datetime import timedelta
-from typing import Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from j5.backends import Backend, Environment
 from j5.boards.sr.v4 import PowerBoard, PowerOutputGroup, PowerOutputPosition
@@ -17,6 +17,10 @@ from j5.components import (
     PowerOutputInterface,
 )
 from j5.components.piezo import Pitch
+
+if TYPE_CHECKING:  # pragma: nocover
+    from j5.boards import Board  # noqa
+
 
 MockEnvironment = Environment("MockEnvironment")
 

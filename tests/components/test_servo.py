@@ -1,10 +1,13 @@
 """Tests for the servo classes."""
-from typing import List, Optional, Type
+from typing import TYPE_CHECKING, List, Optional, Type
 
 import pytest
 
 from j5.boards import Board
 from j5.components.servo import Servo, ServoInterface, ServoPosition
+
+if TYPE_CHECKING:  # pragma: nocover
+    from j5.components import Component  # noqa
 
 
 class MockServoDriver(ServoInterface):

@@ -1,10 +1,13 @@
 """Test the base classes for boards."""
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional, Type
 
 import pytest
 
 from j5.backends import Backend, Environment
 from j5.boards.board import Board, BoardGroup
+
+if TYPE_CHECKING:  # pragma: nocover
+    from j5.components import Component  # noqa
 
 
 class MockBoard(Board):

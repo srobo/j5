@@ -1,11 +1,14 @@
 """Tests for the base backend classes."""
 
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional, Type
 
 import pytest
 
 from j5.backends import Backend, Environment
 from j5.boards import Board
+
+if TYPE_CHECKING:  # pragma: nocover
+    from j5.components import Component  # noqa
 
 
 class MockBoard(Board):

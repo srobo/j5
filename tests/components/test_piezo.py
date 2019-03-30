@@ -1,12 +1,15 @@
 """Tests for the Piezo Classes."""
 
 from datetime import timedelta
-from typing import List, Optional, Type
+from typing import TYPE_CHECKING, List, Optional, Type
 
 import pytest
 
 from j5.boards import Board
 from j5.components.piezo import Note, Piezo, PiezoInterface
+
+if TYPE_CHECKING:  # pragma: nocover
+    from j5.components import Component  # noqa
 
 
 class MockPiezoDriver(PiezoInterface):
