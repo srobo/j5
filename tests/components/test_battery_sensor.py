@@ -1,7 +1,6 @@
 """Tests for the Battery Sensor Classes."""
 from typing import List, Optional, Type
 
-from j5.backends import Backend
 from j5.boards import Board
 from j5.components import Component
 from j5.components.battery_sensor import BatterySensor, BatterySensorInterface
@@ -45,11 +44,6 @@ class MockBatterySensorBoard(Board):
     def make_safe(self) -> None:
         """Make this board safe."""
         pass
-
-    @staticmethod
-    def discover(backend: Backend) -> List['MockBatterySensorBoard']:
-        """Detect all of the boards on a given backend."""
-        return []
 
 
 def test_battery_sensor_interface_implementation():

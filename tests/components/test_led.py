@@ -1,7 +1,6 @@
 """Tests for the LED Classes."""
 from typing import List, Optional, Type
 
-from j5.backends import Backend
 from j5.boards import Board
 from j5.components.led import LED, LEDInterface
 
@@ -44,11 +43,6 @@ class MockLEDBoard(Board):
     def make_safe(self):
         """Make this board safe."""
         pass
-
-    @staticmethod
-    def discover(backend: Backend):
-        """Detect all of the boards on a given backend."""
-        return []
 
 
 def test_led_interface_implementation():

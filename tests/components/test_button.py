@@ -2,7 +2,6 @@
 from time import sleep, time
 from typing import List, Optional, Type
 
-from j5.backends import Backend
 from j5.boards import Board
 from j5.components import Component
 from j5.components.button import Button, ButtonInterface
@@ -53,11 +52,6 @@ class MockButtonBoard(Board):
     def supported_components() -> List[Type[Component]]:
         """List the types of component that this Board supports."""
         return [Button]
-
-    @staticmethod
-    def discover(backend: Backend) -> List[Board]:
-        """Detect all of the boards on a given backend."""
-        return []
 
 
 def test_button_interface_implementation():

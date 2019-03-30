@@ -35,11 +35,6 @@ class MockBoard(Board):
         """List the types of component supported by this Board."""
         return []
 
-    @staticmethod
-    def discover(backend: Backend):
-        """Get all boards of this type."""
-        return []
-
 
 class Mock2Board(Board):
     """A test board."""
@@ -66,11 +61,6 @@ class Mock2Board(Board):
     @staticmethod
     def supported_components():
         """List the types of component supported by this Board."""
-        return []
-
-    @staticmethod
-    def discover(backend: Backend):
-        """Get all boards of this type."""
         return []
 
 

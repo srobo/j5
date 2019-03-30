@@ -3,7 +3,6 @@ from typing import List, Optional, Type
 
 import pytest
 
-from j5.backends import Backend
 from j5.boards import Board
 from j5.components.servo import Servo, ServoInterface, ServoPosition
 
@@ -50,11 +49,6 @@ class MockServoBoard(Board):
     def make_safe(self):
         """Make this board safe."""
         pass
-
-    @staticmethod
-    def discover(backend: Backend):
-        """Detect all of the boards on a given backend."""
-        return []
 
 
 def test_servo_interface_implementation():

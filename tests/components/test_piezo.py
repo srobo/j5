@@ -5,7 +5,6 @@ from typing import List, Optional, Type
 
 import pytest
 
-from j5.backends import Backend
 from j5.boards import Board
 from j5.components.piezo import Note, Piezo, PiezoInterface
 
@@ -45,11 +44,6 @@ class MockPiezoBoard(Board):
     def make_safe(self):
         """Make this board safe."""
         pass
-
-    @staticmethod
-    def discover(backend: Backend):
-        """Detect all of the boards on a given backend."""
-        return []
 
 
 def test_piezo_interface_implementation():

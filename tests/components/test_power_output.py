@@ -1,7 +1,6 @@
 """Tests for the power output classes."""
 from typing import List, Optional, Type
 
-from j5.backends import Backend
 from j5.boards import Board
 from j5.components.power_output import PowerOutput, PowerOutputInterface
 
@@ -53,11 +52,6 @@ class MockPowerOutputBoard(Board):
     def make_safe(self):
         """Make this board safe."""
         pass
-
-    @staticmethod
-    def discover(backend: Backend):
-        """Detect all of the boards on a given backend."""
-        return []
 
 
 def test_power_output_interface_implementation():

@@ -3,7 +3,6 @@ from typing import List, Optional, Type
 
 import pytest
 
-from j5.backends import Backend
 from j5.boards import Board
 from j5.components import Component, NotSupportedByHardwareError
 from j5.components.gpio_pin import (
@@ -99,11 +98,6 @@ class MockGPIOPinBoard(Board):
     def supported_components() -> List[Type[Component]]:
         """List the types of component that this Board supports."""
         return [GPIOPin]
-
-    @staticmethod
-    def discover(backend: Backend) -> List[Board]:
-        """Detect all of the boards on a given backend."""
-        return []
 
 
 def test_gpio_pin_interface_implementation():
