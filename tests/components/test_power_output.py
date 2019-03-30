@@ -44,8 +44,8 @@ class MockPowerOutputBoard(Board):
         """Get the firmware version of this board."""
         return self._backend.get_firmware_version()
 
-    @property
-    def supported_components(self) -> List[Type["Component"]]:
+    @staticmethod
+    def supported_components() -> List[Type["Component"]]:
         """List the types of component that this Board supports."""
         return [PowerOutput]
 

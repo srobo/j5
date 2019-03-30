@@ -67,7 +67,7 @@ class MockPowerBoardBackend(
         """Get the state of a button."""
         return True
 
-    def wait_until_button_pressed(self, identifier: int) -> bool:
+    def wait_until_button_pressed(self, identifier: int) -> None:
         """Wait until the button is pressed."""
         pass
 

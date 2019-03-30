@@ -21,7 +21,7 @@ class MockButtonDriver(ButtonInterface):
         """Get the state of the button."""
         return self.state
 
-    def wait_until_button_pressed(self, identifier: int) -> bool:
+    def wait_until_button_pressed(self, identifier: int) -> None:
         """Wait until the button was pressed."""
         sleep(0.2)  # The mock driver always presses the button after 0.2s
 

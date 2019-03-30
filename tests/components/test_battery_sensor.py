@@ -31,8 +31,8 @@ class MockBatterySensorBoard(Board):
         """The serial number of this board."""
         return "SERIAL"
 
-    @property
-    def supported_components(self) -> List[Type[Component]]:
+    @staticmethod
+    def supported_components() -> List[Type['Component']]:
         """List the types of component that this Board supports."""
         return [BatterySensor]
 
