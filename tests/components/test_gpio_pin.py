@@ -75,6 +75,9 @@ class MockGPIOPinDriver(GPIOPinInterface):
 class MockGPIOPinBoard(Board):
     """A testing board for the GPIO pin."""
 
+    def __init__(self) -> None:
+        pass
+
     @property
     def name(self) -> str:
         """The name of this board."""

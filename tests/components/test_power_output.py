@@ -29,6 +29,9 @@ class MockPowerOutputDriver(PowerOutputInterface):
 class MockPowerOutputBoard(Board):
     """A testing board for the power output."""
 
+    def __init__(self) -> None:
+        pass
+
     @property
     def name(self) -> str:
         """The name of this board."""

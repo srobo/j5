@@ -21,6 +21,9 @@ class MockPiezoDriver(PiezoInterface):
 class MockPiezoBoard(Board):
     """A testing board for the piezo."""
 
+    def __init__(self) -> None:
+        pass
+
     @property
     def name(self) -> str:
         """The name of this board."""

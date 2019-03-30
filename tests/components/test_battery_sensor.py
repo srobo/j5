@@ -21,6 +21,9 @@ class MockBatterySensorDriver(BatterySensorInterface):
 class MockBatterySensorBoard(Board):
     """A testing board for the BatterySensor."""
 
+    def __init__(self) -> None:
+        pass
+
     @property
     def name(self) -> str:
         """The name of this board."""

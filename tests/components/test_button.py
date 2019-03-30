@@ -29,6 +29,9 @@ class MockButtonDriver(ButtonInterface):
 class MockButtonBoard(Board):
     """A testing board for the button."""
 
+    def __init__(self) -> None:
+        pass
+
     @property
     def name(self) -> str:
         """The name of this board."""

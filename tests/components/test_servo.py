@@ -26,6 +26,9 @@ class MockServoDriver(ServoInterface):
 class MockServoBoard(Board):
     """A testing board for servos."""
 
+    def __init__(self) -> None:
+        pass
+
     @property
     def name(self) -> str:
         """The name of this board."""
