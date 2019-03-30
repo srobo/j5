@@ -164,8 +164,10 @@ class MockUSBPowerBoardDevice:
         assert bRequest == 64  # This is the same for read and write.
 
         if bmRequestType == 0x80:
+            assert isinstance(data_or_wLength, int)
             return self.read_data(wValue, wIndex, data_or_wLength, timeout)
         if bmRequestType == 0x00:
+            assert isinstance(data_or_wLength, bytes)
             self.write_data(wValue, wIndex, data_or_wLength, timeout)
             return b""
 
@@ -175,73 +177,73 @@ class MockUSBPowerBoardDevice:
         self,
         wValue: int = 0,
         wIndex: int = 0,
-        data_or_wLength: Optional[Union[int, bytes]] = None,
+        wLength: int = 0,
         timeout: Optional[int] = None,
     ) -> bytes:
         """Mock reading data from a device."""
         assert wValue == 0  # Always 0 on read.
 
         if 0 <= wIndex < 6:
-            return self.read_output(data_or_wLength)
+            return self.read_output(wLength)
         if wIndex == 7:
-            return self.read_battery(data_or_wLength)
+            return self.read_battery(wLength)
         if wIndex == 8:
-            return self.read_button(data_or_wLength)
+            return self.read_button(wLength)
         if wIndex == 9:
-            return self.read_fw(data_or_wLength)
+            return self.read_fw(wLength)
 
         raise NotImplementedError
 
-    def read_output(self, data_or_wLength: Union[int, bytes]):
+    def read_output(self, wLength: int) -> bytes:
         """Mock reading the output current."""
-        assert int(data_or_wLength) == 4
+        assert wLength == 4
         return struct.pack("<I", 1200)
 
-    def read_battery(self, data_or_wLength: Union[int, bytes]):
+    def read_battery(self, wLength: int) -> bytes:
         """Mock reading the battery sensor."""
-        assert int(data_or_wLength) == 8
+        assert wLength == 8
         return struct.pack("<II", 567, 982)
 
-    def read_button(self, data_or_wLength: Union[int, bytes]):
+    def read_button(self, wLength: int) -> bytes:
         """Mock reading the button state."""
-        assert int(data_or_wLength) == 4
+        assert wLength == 4
         return struct.pack("<I", 0)  # Not Pressed
 
-    def read_fw(self, data_or_wLength: Union[int, bytes]):
+    def read_fw(self, wLength: int) -> bytes:
         """Mock reading the firmware number."""
-        assert int(data_or_wLength) == 4
+        assert wLength == 4
         return struct.pack("<I", self.firmware_version)
 
     def write_data(
         self,
         wValue: int = 0,
         wIndex: int = 0,
-        data_or_wLength: Optional[Union[int, bytes]] = None,
+        data: bytes = b"",
         timeout: Optional[int] = None,
     ) -> None:
         """Mock writing data to a device."""
         if 0 <= wIndex < 6:
             # Write Output.
-            return self.write_bool(wValue, data_or_wLength)
+            return self.write_bool(wValue, data)
         if wIndex == 6:
-            return self.write_bool(wValue, data_or_wLength)
+            return self.write_bool(wValue, data)
         if wIndex == 7:
-            return self.write_bool(wValue, data_or_wLength)
+            return self.write_bool(wValue, data)
         if wIndex == 8:
             # Buzz the Piezo
-            return self.write_buzz(wValue, data_or_wLength)
+            return self.write_buzz(wValue, data)
 
         raise NotImplementedError
 
-    def write_bool(self, wValue: int, data_or_wLength: Union[int, bytes]):
+    def write_bool(self, wValue: int, data: bytes) -> None:
         """Pretend to write a bool."""
         assert wValue == 1 or wValue == 0
-        assert data_or_wLength == b""
+        assert data == b""
 
-    def write_buzz(self, wValue: int, data_or_wLength: Union[int, bytes]):
+    def write_buzz(self, wValue: int, data: bytes) -> None:
         """Pretend to buzz."""
         assert wValue == 0
-        frequency, duration_ms = struct.unpack("<HH", data_or_wLength)
+        frequency, duration_ms = struct.unpack("<HH", data)
         assert frequency >= 0
         assert duration_ms >= 0
 
