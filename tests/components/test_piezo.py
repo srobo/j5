@@ -41,7 +41,7 @@ class MockPiezoBoard(Board):
         """List the components that this Board supports."""
         return [Piezo]
 
-    def make_safe(self):
+    def make_safe(self) -> None:
         """Make this board safe."""
         pass
 

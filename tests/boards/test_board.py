@@ -28,12 +28,12 @@ class MockBoard(Board):
         """Get the firmware version of this board."""
         return self._backend.get_firmware_version()
 
-    def make_safe(self):
+    def make_safe(self) -> None:
         """Make this board safe."""
         pass
 
     @staticmethod
-    def supported_components():
+    def supported_components() -> List[Type["Component"]]:
         """List the types of component supported by this Board."""
         return []
 
@@ -41,7 +41,8 @@ class MockBoard(Board):
 class MockBoardWithConstructor(MockBoard):
     """A testing board with a constructor."""
 
-    def __init__(self, test_param, another_param, one_that_defaults=True):
+    def __init__(self, test_param: str, another_param: str,
+                 one_that_defaults: bool = True) -> None:
         self.test_param = test_param
         self.another_param = another_param
         self.one_that_defaults = one_that_defaults

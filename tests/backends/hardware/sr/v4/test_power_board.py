@@ -124,7 +124,7 @@ def test_usb_communication_error() -> None:
 def test_usb_error_handler_decorator() -> None:
     """Test that the handle_usb_error decorator works."""
     @handle_usb_error
-    def test_func():
+    def test_func() -> None:
         raise usb.core.USBError("Test")
 
     with pytest.raises(USBCommunicationError):
@@ -134,7 +134,7 @@ def test_usb_error_handler_decorator() -> None:
 class MockUSBContext:
     """This class mocks the behaviour of usb.core.Context."""
 
-    def dispose(self, device: "MockUSBPowerBoardDevice"):
+    def dispose(self, device: "MockUSBPowerBoardDevice") -> None:
         """Dispose of the device."""
         pass
 
@@ -247,7 +247,7 @@ class MockUSBPowerBoardDevice:
 
 
 def mock_find(
-    find_all=True, *, idVendor: int, idProduct: int,
+    find_all: bool = True, *, idVendor: int, idProduct: int,
 ) -> List[MockUSBPowerBoardDevice]:
     """This function mocks the behaviour of usb.core.find."""
     assert idVendor == 0x1BDA

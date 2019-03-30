@@ -13,7 +13,7 @@ class MockButtonDriver(ButtonInterface):
     def __init__(self) -> None:
         self.state = False
 
-    def set_button_state(self, new_state: bool):
+    def set_button_state(self, new_state: bool) -> None:
         """Set the button state for testing purposes."""
         self.state = new_state
 
@@ -44,7 +44,7 @@ class MockButtonBoard(Board):
         """Get the firmware version of this board."""
         return self._backend.get_firmware_version()
 
-    def make_safe(self):
+    def make_safe(self) -> None:
         """Make this board safe."""
         pass
 

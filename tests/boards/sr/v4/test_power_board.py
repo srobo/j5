@@ -35,7 +35,7 @@ class MockPowerBoardBackend(
     board = PowerBoard
 
     @classmethod
-    def discover(cls):
+    def discover(cls) -> List["Board"]:
         """Discover the PowerBoards on this backend."""
         return []
 

@@ -21,7 +21,7 @@ class MockBoard(Board):
         """The serial number of the board."""
         return "TEST"
 
-    def make_safe(self):
+    def make_safe(self) -> None:
         """Make this board safe."""
         pass
 
@@ -31,7 +31,7 @@ class MockBoard(Board):
         return self._backend.get_firmware_version()
 
     @staticmethod
-    def supported_components():
+    def supported_components() -> List[Type["Component"]]:
         """List the types of component supported by this Board."""
         return []
 
@@ -49,7 +49,7 @@ class Mock2Board(Board):
         """The serial number of the board."""
         return "TEST2"
 
-    def make_safe(self):
+    def make_safe(self) -> None:
         """Make this board safe."""
         pass
 
@@ -59,7 +59,7 @@ class Mock2Board(Board):
         return self._backend.get_firmware_version()
 
     @staticmethod
-    def supported_components():
+    def supported_components() -> List[Type["Component"]]:
         """List the types of component supported by this Board."""
         return []
 

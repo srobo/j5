@@ -40,7 +40,7 @@ class MockLEDBoard(Board):
         """List the types of component that this Board supports."""
         return [LED]
 
-    def make_safe(self):
+    def make_safe(self) -> None:
         """Make this board safe."""
         pass
 

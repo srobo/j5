@@ -31,7 +31,7 @@ class MockGPIOPinDriver(GPIOPinInterface):
             False for _ in range(0, self.pin_count)
         ]
 
-    def set_gpio_pin_mode(self, identifier: int, pin_mode: GPIOPinMode):
+    def set_gpio_pin_mode(self, identifier: int, pin_mode: GPIOPinMode) -> None:
         """Set the hardware mode of a pin."""
         self._mode[identifier] = pin_mode
 
@@ -39,15 +39,15 @@ class MockGPIOPinDriver(GPIOPinInterface):
         """Get the hardware mode of a GPIO pin."""
         return self._mode[identifier]
 
-    def write_gpio_pin_digital_state(self, identifier: int, state: bool):
+    def write_gpio_pin_digital_state(self, identifier: int, state: bool) -> None:
         """Write to the digital state of a GPIO pin."""
         self._written_digital_state[identifier] = state
 
-    def get_gpio_pin_digital_state(self, identifier: int):
+    def get_gpio_pin_digital_state(self, identifier: int) -> bool:
         """Get the last written state of the GPIO pin."""
         return self._written_digital_state[identifier]
 
-    def read_gpio_pin_digital_state(self, identifier: int):
+    def read_gpio_pin_digital_state(self, identifier: int) -> bool:
         """Read the digital state of the GPIO pin."""
         return self._digital_state[identifier]
 
@@ -90,7 +90,7 @@ class MockGPIOPinBoard(Board):
         """Get the firmware version of this board."""
         return None
 
-    def make_safe(self):
+    def make_safe(self) -> None:
         """Make this board safe."""
         pass
 
