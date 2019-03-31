@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, List, Optional, Type
 from j5.boards import Board
 from j5.components.led import LED, LEDInterface
 
-if TYPE_CHECKING:  # pragma: nocover
+if TYPE_CHECKING:
     from j5.components import Component  # noqa
 
 

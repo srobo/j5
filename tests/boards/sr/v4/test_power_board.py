@@ -18,7 +18,7 @@ from j5.components import (
 )
 from j5.components.piezo import Pitch
 
-if TYPE_CHECKING:  # pragma: nocover
+if TYPE_CHECKING:
     from j5.boards import Board  # noqa
 
 

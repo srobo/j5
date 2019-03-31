@@ -6,7 +6,7 @@ import pytest
 from j5.boards import Board
 from j5.components.servo import Servo, ServoInterface, ServoPosition
 
-if TYPE_CHECKING:  # pragma: nocover
+if TYPE_CHECKING:
     from j5.components import Component  # noqa
 
 

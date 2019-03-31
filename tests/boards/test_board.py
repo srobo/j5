@@ -6,7 +6,7 @@ import pytest
 from j5.backends import Backend, Environment
 from j5.boards.board import Board, BoardGroup
 
-if TYPE_CHECKING:  # pragma: nocover
+if TYPE_CHECKING:
     from j5.components import Component  # noqa
 
 
