@@ -1,13 +1,15 @@
 """Tests for the Piezo Classes."""
 
 from datetime import timedelta
-from typing import List, Optional, Type
+from typing import TYPE_CHECKING, List, Optional, Type
 
 import pytest
 
-from j5.backends import Backend
 from j5.boards import Board
 from j5.components.piezo import Note, Piezo, PiezoInterface
+
+if TYPE_CHECKING:
+    from j5.components import Component  # noqa
 
 
 class MockPiezoDriver(PiezoInterface):
@@ -22,6 +24,9 @@ class MockPiezoDriver(PiezoInterface):
 class MockPiezoBoard(Board):
     """A testing board for the piezo."""
 
+    def __init__(self) -> None:
+        pass
+
     @property
     def name(self) -> str:
         """The name of this board."""
@@ -35,59 +40,54 @@ class MockPiezoBoard(Board):
     @property
     def firmware_version(self) -> Optional[str]:
         """Get the firmware version of this board."""
-        return self._backend.get_firmware_version()
+        return None
 
-    @property
-    def supported_components(self) -> List[Type['Component']]:
+    @staticmethod
+    def supported_components() -> List[Type['Component']]:
         """List the components that this Board supports."""
         return [Piezo]
 
-    def make_safe(self):
+    def make_safe(self) -> None:
         """Make this board safe."""
         pass
 
-    @staticmethod
-    def discover(backend: Backend):
-        """Detect all of the boards on a given backend."""
-        return []
 
-
-def test_piezo_interface_implementation():
+def test_piezo_interface_implementation() -> None:
     """Test that we can implement the PiezoInterface."""
     MockPiezoDriver()
 
 
-def test_piezo_instantiation():
+def test_piezo_instantiation() -> None:
     """Test that we can instantiate an piezo."""
     Piezo(0, MockPiezoBoard(), MockPiezoDriver())
 
 
-def test_piezo_interface_class_method():
+def test_piezo_interface_class_method() -> None:
     """Tests piezo's interface_class method."""
     piezo = Piezo(0, MockPiezoBoard(), MockPiezoDriver())
     assert piezo.interface_class() is PiezoInterface
 
 
-def test_piezo_buzz_method():
+def test_piezo_buzz_method() -> None:
     """Tests piezo's buzz method's input validation."""
     piezo = Piezo(0, MockPiezoBoard(), MockPiezoDriver())
     piezo.buzz(timedelta(seconds=1), 2093)
     piezo.buzz(timedelta(minutes=1), Note.D7)
 
 
-def test_piezo_buzz_invalid_value():
+def test_piezo_buzz_invalid_value() -> None:
     """Test piezo's buzz method's input validation."""
     piezo = Piezo(0, MockPiezoBoard(), MockPiezoDriver())
     with pytest.raises(ValueError):
         piezo.buzz(timedelta(seconds=1), -42)
     with pytest.raises(TypeError):
-        piezo.buzz(timedelta(seconds=1), "j5")
+        piezo.buzz(timedelta(seconds=1), "j5")  # type: ignore
     with pytest.raises(ValueError):
         piezo.buzz(timedelta(seconds=-2), Note.D7)
     with pytest.raises(TypeError):
-        piezo.buzz(1, Note.D7)
+        piezo.buzz(1, Note.D7)  # type: ignore
 
 
-def test_note_reversed():
+def test_note_reversed() -> None:
     """Test Note reversed dunder method."""
     assert list(reversed(list(Note))) == list(reversed(Note))

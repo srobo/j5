@@ -1,11 +1,14 @@
 """Tests for the base backend classes."""
 
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional, Type
 
 import pytest
 
 from j5.backends import Backend, Environment
 from j5.boards import Board
+
+if TYPE_CHECKING:
+    from j5.components import Component  # noqa
 
 
 class MockBoard(Board):
@@ -21,23 +24,18 @@ class MockBoard(Board):
         """The serial number of the board."""
         return "TEST"
 
-    def make_safe(self):
+    def make_safe(self) -> None:
         """Make this board safe."""
         pass
 
     @property
     def firmware_version(self) -> Optional[str]:
         """Get the firmware version of this board."""
-        return self._backend.get_firmware_version()
+        return None
 
     @staticmethod
-    def supported_components():
+    def supported_components() -> List[Type["Component"]]:
         """List the types of component supported by this Board."""
-        return []
-
-    @staticmethod
-    def discover(backend: Backend):
-        """Get all boards of this type."""
         return []
 
 
@@ -54,23 +52,18 @@ class Mock2Board(Board):
         """The serial number of the board."""
         return "TEST2"
 
-    def make_safe(self):
+    def make_safe(self) -> None:
         """Make this board safe."""
         pass
 
     @property
     def firmware_version(self) -> Optional[str]:
         """Get the firmware version of this board."""
-        return self._backend.get_firmware_version()
+        return None
 
     @staticmethod
-    def supported_components():
+    def supported_components() -> List[Type["Component"]]:
         """List the types of component supported by this Board."""
-        return []
-
-    @staticmethod
-    def discover(backend: Backend):
-        """Get all boards of this type."""
         return []
 
 
@@ -93,19 +86,19 @@ class MockBackend(Backend):
         return None
 
 
-def test_backend_instantiation():
+def test_backend_instantiation() -> None:
     """Test that we can instantiate a backend."""
     MockBackend()
 
 
-def test_environment_supported_boards():
+def test_environment_supported_boards() -> None:
     """Test that we can get the supported boards for a environment."""
     environment = MockEnvironment
     assert type(environment.supported_boards) == list
     assert len(environment.supported_boards) == 1
 
 
-def test_environment_board_backend_mapping():
+def test_environment_board_backend_mapping() -> None:
     """Test that the board_backend_mapping works."""
     environment = MockEnvironment
     assert type(environment.board_backend_mapping) == dict
@@ -113,13 +106,13 @@ def test_environment_board_backend_mapping():
     assert environment.board_backend_mapping[MockBoard] == MockBackend
 
 
-def test_environment_board_get_backend():
+def test_environment_board_get_backend() -> None:
     """Test that we can get the backend of a board."""
     environment = MockEnvironment
     assert issubclass(environment.get_backend(MockBoard), MockBackend)
 
 
-def test_environment_board_get_backend_unknown():
+def test_environment_board_get_backend_unknown() -> None:
     """Test that we can't get the backend of an unknown board."""
     environment = MockEnvironment
     with pytest.raises(NotImplementedError):

@@ -19,7 +19,7 @@ jobs:
             - pip-packages-
       - run: poetry install
       - run: poetry run flake8 j5 tests
-      - run: poetry run mypy j5
+      - run: poetry run mypy j5 tests
       - run: cc-test-reporter before-build
       - run: poetry run pytest --cov=j5 tests --cov-report xml
       - run: cc-test-reporter after-build -t coverage.py --exit-code $? coverage.xml

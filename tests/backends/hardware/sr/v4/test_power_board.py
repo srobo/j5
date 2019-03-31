@@ -27,7 +27,7 @@ from j5.boards.sr.v4.power_board import PowerBoard, PowerOutputPosition
 from j5.components.piezo import Note
 
 
-def test_read_command():
+def test_read_command() -> None:
     """Test that ReadCommand behaves as expected."""
     rc = ReadCommand(1, 2)
 
@@ -38,7 +38,7 @@ def test_read_command():
     assert rc.data_len == 2
 
 
-def test_write_command():
+def test_write_command() -> None:
     """Test that WriteCommand behaves as expected."""
     wc = WriteCommand(1)
 
@@ -47,7 +47,7 @@ def test_write_command():
     assert wc.code == 1
 
 
-def test_cmd_read_output():
+def test_cmd_read_output() -> None:
     """Test that CMD_READ_OUTPUT works."""
     assert len(CMD_READ_OUTPUT) == 6
 
@@ -58,35 +58,35 @@ def test_cmd_read_output():
         assert command.data_len == 4
 
 
-def test_cmd_read_5vrail():
+def test_cmd_read_5vrail() -> None:
     """Test that the CMD_READ_5VRAIL."""
     assert type(CMD_READ_5VRAIL) is ReadCommand
     assert CMD_READ_5VRAIL.code == 6
     assert CMD_READ_5VRAIL.data_len == 4
 
 
-def test_cmd_read_battery():
+def test_cmd_read_battery() -> None:
     """Test that the CMD_READ_BATTERY."""
     assert type(CMD_READ_BATTERY) is ReadCommand
     assert CMD_READ_BATTERY.code == 7
     assert CMD_READ_BATTERY.data_len == 8
 
 
-def test_cmd_read_button():
+def test_cmd_read_button() -> None:
     """Test that the CMD_READ_BUTTON."""
     assert type(CMD_READ_BUTTON) is ReadCommand
     assert CMD_READ_BUTTON.code == 8
     assert CMD_READ_BUTTON.data_len == 4
 
 
-def test_cmd_read_fwver():
+def test_cmd_read_fwver() -> None:
     """Test that the CMD_READ_FWVER."""
     assert type(CMD_READ_FWVER) is ReadCommand
     assert CMD_READ_FWVER.code == 9
     assert CMD_READ_FWVER.data_len == 4
 
 
-def test_cmd_write_output():
+def test_cmd_write_output() -> None:
     """Test that CMD_WRITE_OUTPUT works."""
     assert len(CMD_WRITE_OUTPUT) == 6
 
@@ -96,35 +96,35 @@ def test_cmd_write_output():
         assert pos.value == command.code
 
 
-def test_cmd_write_runled():
+def test_cmd_write_runled() -> None:
     """Test that the CMD_WRITE_RUNLED."""
     assert type(CMD_WRITE_RUNLED) is WriteCommand
     assert CMD_WRITE_RUNLED.code == 6
 
 
-def test_cmd_write_errorled():
+def test_cmd_write_errorled() -> None:
     """Test that the CMD_WRITE_ERRORLED."""
     assert type(CMD_WRITE_ERRORLED) is WriteCommand
     assert CMD_WRITE_ERRORLED.code == 7
 
 
-def test_cmd_write_piezo():
+def test_cmd_write_piezo() -> None:
     """Test that the CMD_WRITE_PIEZO."""
     assert type(CMD_WRITE_PIEZO) is WriteCommand
     assert CMD_WRITE_PIEZO.code == 8
 
 
-def test_usb_communication_error():
+def test_usb_communication_error() -> None:
     """Test that USBCommunicationError works."""
     u = USBCommunicationError(usb.core.USBError("Test."))
     assert str(u) == "Test."
     assert issubclass(USBCommunicationError, Exception)
 
 
-def test_usb_error_handler_decorator():
+def test_usb_error_handler_decorator() -> None:
     """Test that the handle_usb_error decorator works."""
     @handle_usb_error
-    def test_func():
+    def test_func() -> None:
         raise usb.core.USBError("Test")
 
     with pytest.raises(USBCommunicationError):
@@ -134,7 +134,7 @@ def test_usb_error_handler_decorator():
 class MockUSBContext:
     """This class mocks the behaviour of usb.core.Context."""
 
-    def dispose(self, device: "MockUSBPowerBoardDevice"):
+    def dispose(self, device: "MockUSBPowerBoardDevice") -> None:
         """Dispose of the device."""
         pass
 
@@ -164,8 +164,10 @@ class MockUSBPowerBoardDevice:
         assert bRequest == 64  # This is the same for read and write.
 
         if bmRequestType == 0x80:
+            assert isinstance(data_or_wLength, int)
             return self.read_data(wValue, wIndex, data_or_wLength, timeout)
         if bmRequestType == 0x00:
+            assert isinstance(data_or_wLength, bytes)
             self.write_data(wValue, wIndex, data_or_wLength, timeout)
             return b""
 
@@ -175,79 +177,79 @@ class MockUSBPowerBoardDevice:
         self,
         wValue: int = 0,
         wIndex: int = 0,
-        data_or_wLength: Optional[Union[int, bytes]] = None,
+        wLength: int = 0,
         timeout: Optional[int] = None,
     ) -> bytes:
         """Mock reading data from a device."""
         assert wValue == 0  # Always 0 on read.
 
         if 0 <= wIndex < 6:
-            return self.read_output(data_or_wLength)
+            return self.read_output(wLength)
         if wIndex == 7:
-            return self.read_battery(data_or_wLength)
+            return self.read_battery(wLength)
         if wIndex == 8:
-            return self.read_button(data_or_wLength)
+            return self.read_button(wLength)
         if wIndex == 9:
-            return self.read_fw(data_or_wLength)
+            return self.read_fw(wLength)
 
         raise NotImplementedError
 
-    def read_output(self, data_or_wLength: Union[int, bytes]):
+    def read_output(self, wLength: int) -> bytes:
         """Mock reading the output current."""
-        assert int(data_or_wLength) == 4
+        assert wLength == 4
         return struct.pack("<I", 1200)
 
-    def read_battery(self, data_or_wLength: Union[int, bytes]):
+    def read_battery(self, wLength: int) -> bytes:
         """Mock reading the battery sensor."""
-        assert int(data_or_wLength) == 8
+        assert wLength == 8
         return struct.pack("<II", 567, 982)
 
-    def read_button(self, data_or_wLength: Union[int, bytes]):
+    def read_button(self, wLength: int) -> bytes:
         """Mock reading the button state."""
-        assert int(data_or_wLength) == 4
+        assert wLength == 4
         return struct.pack("<I", 0)  # Not Pressed
 
-    def read_fw(self, data_or_wLength: Union[int, bytes]):
+    def read_fw(self, wLength: int) -> bytes:
         """Mock reading the firmware number."""
-        assert int(data_or_wLength) == 4
+        assert wLength == 4
         return struct.pack("<I", self.firmware_version)
 
     def write_data(
         self,
         wValue: int = 0,
         wIndex: int = 0,
-        data_or_wLength: Optional[Union[int, bytes]] = None,
+        data: bytes = b"",
         timeout: Optional[int] = None,
     ) -> None:
         """Mock writing data to a device."""
         if 0 <= wIndex < 6:
             # Write Output.
-            return self.write_bool(wValue, data_or_wLength)
+            return self.write_bool(wValue, data)
         if wIndex == 6:
-            return self.write_bool(wValue, data_or_wLength)
+            return self.write_bool(wValue, data)
         if wIndex == 7:
-            return self.write_bool(wValue, data_or_wLength)
+            return self.write_bool(wValue, data)
         if wIndex == 8:
             # Buzz the Piezo
-            return self.write_buzz(wValue, data_or_wLength)
+            return self.write_buzz(wValue, data)
 
         raise NotImplementedError
 
-    def write_bool(self, wValue: int, data_or_wLength: Union[int, bytes]):
+    def write_bool(self, wValue: int, data: bytes) -> None:
         """Pretend to write a bool."""
         assert wValue == 1 or wValue == 0
-        assert data_or_wLength == b""
+        assert data == b""
 
-    def write_buzz(self, wValue: int, data_or_wLength: Union[int, bytes]):
+    def write_buzz(self, wValue: int, data: bytes) -> None:
         """Pretend to buzz."""
         assert wValue == 0
-        frequency, duration_ms = struct.unpack("<HH", data_or_wLength)
+        frequency, duration_ms = struct.unpack("<HH", data)
         assert frequency >= 0
         assert duration_ms >= 0
 
 
 def mock_find(
-    find_all=True, *, idVendor: int, idProduct: int,
+    find_all: bool = True, *, idVendor: int, idProduct: int,
 ) -> List[MockUSBPowerBoardDevice]:
     """This function mocks the behaviour of usb.core.find."""
     assert idVendor == 0x1BDA
@@ -256,7 +258,7 @@ def mock_find(
     return [MockUSBPowerBoardDevice(f"SERIAL{n}") for n in range(0, 4)]
 
 
-def test_backend_initialisation():
+def test_backend_initialisation() -> None:
     """Test that we can initialise a Backend."""
     device = MockUSBPowerBoardDevice("SERIAL0")
     backend = SRV4PowerBoardHardwareBackend(device)
@@ -270,7 +272,7 @@ def test_backend_initialisation():
     assert not any(backend._led_states.values())  # Check initially all false.
 
 
-def test_backend_discover():
+def test_backend_discover() -> None:
     """Test that the backend can discover boards."""
     found_boards = SRV4PowerBoardHardwareBackend.discover(find=mock_find)
 
@@ -278,7 +280,7 @@ def test_backend_discover():
     assert type(found_boards[0]) is PowerBoard
 
 
-def test_backend_cleanup():
+def test_backend_cleanup() -> None:
     """Test that the backend cleans things up properly."""
     device = MockUSBPowerBoardDevice("SERIAL0")
     backend = SRV4PowerBoardHardwareBackend(device)
@@ -286,7 +288,7 @@ def test_backend_cleanup():
     del backend
 
 
-def test_backend_firmware_version():
+def test_backend_firmware_version() -> None:
     """Test that we can get the firmware version."""
     device = MockUSBPowerBoardDevice("SERIAL0")
     backend = SRV4PowerBoardHardwareBackend(device)
@@ -294,14 +296,14 @@ def test_backend_firmware_version():
     assert backend.firmware_version == 3
 
 
-def test_backend_bad_firmware_version():
+def test_backend_bad_firmware_version() -> None:
     """Test that we can get the firmware version."""
     device = MockUSBPowerBoardDevice("SERIAL0", fw_version=2)
     with pytest.raises(NotImplementedError):
         SRV4PowerBoardHardwareBackend(device)
 
 
-def test_backend_serial_number():
+def test_backend_serial_number() -> None:
     """Test that we can get the serial number."""
     device = MockUSBPowerBoardDevice("SERIAL0")
     backend = SRV4PowerBoardHardwareBackend(device)
@@ -309,7 +311,7 @@ def test_backend_serial_number():
     assert backend.serial() == "SERIAL0"
 
 
-def test_backend_get_power_output_enabled():
+def test_backend_get_power_output_enabled() -> None:
     """Test that we can read the enable status of a PowerOutput."""
     device = MockUSBPowerBoardDevice("SERIAL0")
     backend = SRV4PowerBoardHardwareBackend(device)
@@ -321,7 +323,7 @@ def test_backend_get_power_output_enabled():
         backend.get_power_output_enabled(6)
 
 
-def test_backend_set_power_output_enabled():
+def test_backend_set_power_output_enabled() -> None:
     """Test that we can read the enable status of a PowerOutput."""
     device = MockUSBPowerBoardDevice("SERIAL0")
     backend = SRV4PowerBoardHardwareBackend(device)
@@ -333,7 +335,7 @@ def test_backend_set_power_output_enabled():
         backend.set_power_output_enabled(6, True)
 
 
-def test_backend_get_power_output_current():
+def test_backend_get_power_output_current() -> None:
     """Test that we can read the current on a PowerOutput."""
     device = MockUSBPowerBoardDevice("SERIAL0")
     backend = SRV4PowerBoardHardwareBackend(device)
@@ -345,7 +347,7 @@ def test_backend_get_power_output_current():
         backend.get_power_output_current(6)
 
 
-def test_backend_piezo_buzz():
+def test_backend_piezo_buzz() -> None:
     """Test that we can buzz the Piezo."""
     device = MockUSBPowerBoardDevice("SERIAL0")
     backend = SRV4PowerBoardHardwareBackend(device)
@@ -365,7 +367,7 @@ def test_backend_piezo_buzz():
         backend.buzz(1, timedelta(seconds=10), 0)
 
 
-def test_backend_get_button_state():
+def test_backend_get_button_state() -> None:
     """Test that we can get the button state."""
     device = MockUSBPowerBoardDevice("SERIAL0")
     backend = SRV4PowerBoardHardwareBackend(device)
@@ -376,7 +378,7 @@ def test_backend_get_button_state():
         backend.get_button_state(1)
 
 
-def test_backend_get_battery_sensor_voltage():
+def test_backend_get_battery_sensor_voltage() -> None:
     """Test that we can get the battery sensor voltage."""
     device = MockUSBPowerBoardDevice("SERIAL0")
     backend = SRV4PowerBoardHardwareBackend(device)
@@ -387,7 +389,7 @@ def test_backend_get_battery_sensor_voltage():
         backend.get_battery_sensor_voltage(1)
 
 
-def test_backend_get_battery_sensor_current():
+def test_backend_get_battery_sensor_current() -> None:
     """Test that we can get the battery sensor current."""
     device = MockUSBPowerBoardDevice("SERIAL0")
     backend = SRV4PowerBoardHardwareBackend(device)
@@ -398,7 +400,7 @@ def test_backend_get_battery_sensor_current():
         backend.get_battery_sensor_current(1)
 
 
-def test_backend_get_led_states():
+def test_backend_get_led_states() -> None:
     """Get the LED states."""
     device = MockUSBPowerBoardDevice("SERIAL0")
     backend = SRV4PowerBoardHardwareBackend(device)
@@ -409,7 +411,7 @@ def test_backend_get_led_states():
         backend.get_led_state(7)
 
 
-def test_backend_set_led_states():
+def test_backend_set_led_states() -> None:
     """Set the LED states."""
     device = MockUSBPowerBoardDevice("SERIAL0")
     backend = SRV4PowerBoardHardwareBackend(device)
