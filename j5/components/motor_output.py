@@ -2,7 +2,7 @@
 
 from abc import abstractmethod
 from enum import Enum
-from typing import Optional, Type, Union
+from typing import Type, Union
 
 from j5.boards import Board
 from j5.components.component import Component, Interface
@@ -22,40 +22,25 @@ class MotorOutputInterface(Interface):
     """An interface containing the methods required to control a motor board."""
 
     @abstractmethod
-    def get_motor_output_power(self, board: Board, identifier: int) -> Optional[float]:
+    def get_motor_output_power(self, identifier: int) -> MotorOutputState:
         """Get the motor output power, if it is on."""
         pass
 
     @abstractmethod
-    def get_motor_output_power(self, board: Board, identifier: int, power: float) -> None:
+    def set_motor_output_power(self, identifier: int, power: MotorOutputState) -> None:
         """Set the motor output power."""
-        pass
-
-    @abstractmethod
-    def set_motor_output_brake(self, board: Board, identifier: int):
-        """Brake the motor output."""
-        pass
-
-    @abstractmethod
-    def get_motor_output_brake(self, board: Board, identifier: int):
-        """Get if the motor is braked."""
-        pass
-
-    @abstractmethod
-    def set_motor_output_coast(self, board: Board, identifier: int):
-        """Coast the motor output."""
-        pass
-
-    @abstractmethod
-    def get_motor_output_coast(self, board: Board, identifier: int):
-        """Get if the motor is coasting."""
         pass
 
 
 class MotorOutput(Component):
     """Brushed DC motor output."""
 
-    def __init__(self, identifier: int, board: Board, backend: MotorOutputInterface) -> None:
+    def __init__(
+            self,
+            identifier: int,
+            board: Board,
+            backend: MotorOutputInterface,
+    ) -> None:
         self._board = board
         self._backend = backend
         self._identifier = identifier
@@ -68,8 +53,12 @@ class MotorOutput(Component):
     @property
     def power(self) -> MotorOutputState:
         """Get the current power of this output."""
-        return
+        return self._backend.get_motor_output_power(self._identifier)
 
     @power.setter
-    def power(self, new_state: MotorOutputState):
+    def power(self, new_state: MotorOutputState) -> None:
         """Set the current power of this output."""
+        if isinstance(new_state, float):
+            if new_state < -1 or new_state > 1:
+                raise ValueError("Motor Power must be between 1 and -1.")
+        self._backend.set_motor_output_power(self._identifier, new_state)
