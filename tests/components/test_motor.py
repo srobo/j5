@@ -112,6 +112,9 @@ def test_motor_set_state() -> None:
     motor = Motor(0, MockMotorBoard(), MockMotorDriver())
 
     motor.state = 0
+    motor.state = 1
+    motor.state = -1
+    motor.state = 0.123
 
     motor.state = MotorSpecialState.COAST
     motor.state = MotorSpecialState.BRAKE
