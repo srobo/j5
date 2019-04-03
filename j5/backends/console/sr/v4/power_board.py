@@ -88,7 +88,7 @@ class SRV4PowerBoardConsoleBackend(
         """Get the current being drawn on a power output, in amperes."""
         if identifier in self._output_states:
 
-            return self._console.read(f"Power Output current for {identifier}")
+            return self._console.read(f"Current for power output {identifier} [amps]", float)
         else:
             raise ValueError(f"Invalid power output identifier {identifier!r}; "
                              f"valid identifiers are "
@@ -110,7 +110,7 @@ class SRV4PowerBoardConsoleBackend(
         if identifier != 0:
             raise ValueError(f"invalid button identifier {identifier!r}; "
                              f"the only valid identifier is 0")
-        return self._console.read("Start button state", bool)
+        return self._console.read("Start button state [true/false]", bool)
 
     def wait_until_button_pressed(self, identifier: int) -> None:
         """Halt the program until this button is pushed."""
@@ -123,14 +123,14 @@ class SRV4PowerBoardConsoleBackend(
         if identifier != 0:
             raise ValueError(f"invalid battery sensor identifier {identifier!r}; "
                              f"the only valid identifier is 0")
-        return self._console.read("Battery Sensor Voltage", float)
+        return self._console.read("Battery voltage [volts]", float)
 
     def get_battery_sensor_current(self, identifier: int) -> float:
         """Get the current of a battery sensor."""
         if identifier != 0:
             raise ValueError(f"invalid battery sensor identifier {identifier!r}; "
                              f"the only valid identifier is 0")
-        return self._console.read("Battery Sensor Current", float)
+        return self._console.read("Battery current [amps]", float)
 
     def get_led_state(self, identifier: int) -> bool:
         """Get the state of an LED."""

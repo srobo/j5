@@ -4,8 +4,8 @@ from j5.backends import Environment
 from j5.backends.console import Console, ConsoleEnvironment
 
 
-def test_hardware_environment():
-    """Test that the Hardware Environment works."""
+def test_console_environment():
+    """Test that the Console Environment works."""
     assert type(ConsoleEnvironment) is Environment
 
     assert ConsoleEnvironment.name == "ConsoleEnvironment"

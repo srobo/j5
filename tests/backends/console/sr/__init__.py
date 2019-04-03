@@ -1,1 +1,1 @@
-"""Test SR sonsole backends."""
+"""Test SR console backends."""
