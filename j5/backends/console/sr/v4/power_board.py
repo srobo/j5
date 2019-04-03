@@ -1,7 +1,6 @@
 """Console Backend for the SR V4 power board."""
 
 from datetime import timedelta
-from time import sleep
 from typing import Dict, List, Optional, Type
 
 from j5.backends import Backend
@@ -88,7 +87,10 @@ class SRV4PowerBoardConsoleBackend(
         """Get the current being drawn on a power output, in amperes."""
         if identifier in self._output_states:
 
-            return self._console.read(f"Current for power output {identifier} [amps]", float)
+            return self._console.read(
+                f"Current for power output {identifier} [amps]",
+                float,
+            )
         else:
             raise ValueError(f"Invalid power output identifier {identifier!r}; "
                              f"valid identifiers are "
@@ -115,8 +117,7 @@ class SRV4PowerBoardConsoleBackend(
     def wait_until_button_pressed(self, identifier: int) -> None:
         """Halt the program until this button is pushed."""
         self._console.info("Waiting for start button press.")
-        while not self.get_button_state(identifier):
-            sleep(0.05)
+        self._console.read("Hit return to press start button", None)
 
     def get_battery_sensor_voltage(self, identifier: int) -> float:
         """Get the voltage of a battery sensor."""
