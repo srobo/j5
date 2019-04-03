@@ -25,7 +25,7 @@ class SRV4PowerBoardConsoleBackend(
     LEDInterface,
     Backend,
 ):
-    """The hardware implementation of the SR V4 power board."""
+    """The console implementation of the SR V4 power board."""
 
     environment = ConsoleEnvironment
     board = PowerBoard

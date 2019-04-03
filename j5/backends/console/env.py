@@ -10,7 +10,7 @@ T = TypeVar("T")
 
 
 class Console:
-    """A helper class for the comsole environment."""
+    """A helper class for the console environment."""
 
     def __init__(
             self,
@@ -28,14 +28,14 @@ class Console:
 
     def read(self, prompt: str, return_type: Type[T] = str) -> T:  # type: ignore
         """
-        Get a value of type 'return_type'.
-
-        We have to ignore the types on this function unfortunately, as static type
-        checking is not powerful enough to confirm that it is correct at runtime.
+        Get a value of type 'return_type' from the user.
         """
         while True:
             response = self._input(f"{self._descriptor}: {prompt}: ")
             try:
+                # We have to ignore the types on this function unfortunately,
+                # as static type checking is not powerful enough to confirm
+                # that it is correct at runtime.
                 return return_type(response)  # type: ignore
             except ValueError:
                 self.info(f"Unable to construct a {return_type.__name__}"
