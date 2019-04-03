@@ -62,5 +62,3 @@ class Motor(Component):
             if new_state < -1 or new_state > 1:
                 raise ValueError("Motor state must be between 1 and -1.")
         self._backend.set_motor_state(self._identifier, new_state)
-
-    power = state
