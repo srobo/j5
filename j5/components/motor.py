@@ -1,4 +1,4 @@
-"""Classes for Motor Output support."""
+"""Classes for Motor support."""
 
 from abc import abstractmethod
 from enum import Enum
@@ -22,13 +22,13 @@ class MotorInterface(Interface):
     """An interface containing the methods required to control a motor board."""
 
     @abstractmethod
-    def get_motor_power(self, identifier: int) -> MotorState:
-        """Get the motor power, if it is on."""
+    def get_motor_state(self, identifier: int) -> MotorState:
+        """Get the motor state."""
         raise NotImplementedError  # pragma: no cover
 
     @abstractmethod
-    def set_motor_power(self, identifier: int, power: MotorState) -> None:
-        """Set the motor power."""
+    def set_motor_state(self, identifier: int, power: MotorState) -> None:
+        """Set the motor state."""
         raise NotImplementedError  # pragma: no cover
 
 
@@ -51,14 +51,16 @@ class Motor(Component):
         return MotorInterface
 
     @property
-    def power(self) -> MotorState:
-        """Get the current power of this output."""
-        return self._backend.get_motor_power(self._identifier)
+    def state(self) -> MotorState:
+        """Get the current state of this output."""
+        return self._backend.get_motor_state(self._identifier)
 
-    @power.setter
-    def power(self, new_state: MotorState) -> None:
-        """Set the current power of this output."""
+    @state.setter
+    def state(self, new_state: MotorState) -> None:
+        """Set the current state of this output."""
         if isinstance(new_state, float):
             if new_state < -1 or new_state > 1:
-                raise ValueError("Motor Power must be between 1 and -1.")
-        self._backend.set_motor_power(self._identifier, new_state)
+                raise ValueError("Motor state must be between 1 and -1.")
+        self._backend.set_motor_state(self._identifier, new_state)
+
+    power = state
