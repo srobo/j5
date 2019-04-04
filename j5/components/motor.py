@@ -60,5 +60,5 @@ class Motor(Component):
         """Set the current state of this output."""
         if isinstance(new_state, float):
             if new_state < -1 or new_state > 1:
-                raise ValueError("Motor state must be between 1 and -1.")
+                raise ValueError("Motor speed must be between 1 and -1.")
         self._backend.set_motor_state(self._identifier, new_state)
