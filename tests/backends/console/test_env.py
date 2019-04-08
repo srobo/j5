@@ -13,10 +13,10 @@ def test_console_environment():
 
 def test_console_instantiation():
     """Test that we can create a console."""
-    console = Console("TestConsole")
+    console = Console("MockConsole")
 
     assert type(console) is Console
-    assert console._descriptor == "TestConsole"
+    assert console._descriptor == "MockConsole"
     assert console._print is print
     assert console._input is input
 

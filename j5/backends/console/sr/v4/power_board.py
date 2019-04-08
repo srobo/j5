@@ -77,8 +77,9 @@ class SRV4PowerBoardConsoleBackend(
         """Set whether a power output is enabled."""
         try:
             self._console.info(f"Setting output {identifier} to {enabled}")
+            assert identifier in self._output_states.keys()
             self._output_states[identifier] = enabled
-        except KeyError:
+        except AssertionError:
             raise ValueError(f"Invalid power output identifier {identifier!r}; "
                              f"valid identifiers are "
                              f"{self._output_states.keys()}") from None
