@@ -1,0 +1,29 @@
+j5.boards package
+=================
+
+Subpackages
+-----------
+
+.. toctree::
+
+    j5.boards.sr
+
+Submodules
+----------
+
+j5.boards.board module
+----------------------
+
+.. automodule:: j5.boards.board
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: j5.boards
+    :members:
+    :undoc-members:
+    :show-inheritance:

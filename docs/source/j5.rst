@@ -1,0 +1,31 @@
+j5 package
+==========
+
+Subpackages
+-----------
+
+.. toctree::
+
+    j5.backends
+    j5.boards
+    j5.components
+
+Submodules
+----------
+
+j5.base\_robot module
+---------------------
+
+.. automodule:: j5.base_robot
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: j5
+    :members:
+    :undoc-members:
+    :show-inheritance:

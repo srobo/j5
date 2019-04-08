@@ -1,0 +1,17 @@
+j5.boards.sr package
+====================
+
+Subpackages
+-----------
+
+.. toctree::
+
+    j5.boards.sr.v4
+
+Module contents
+---------------
+
+.. automodule:: j5.boards.sr
+    :members:
+    :undoc-members:
+    :show-inheritance:
