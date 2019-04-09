@@ -71,6 +71,8 @@ def test_backend_firmware_version():
 
     assert backend.firmware_version is None
 
+    assert backend.get_firmware_version() is None
+
 
 def test_backend_serial_number():
     """Test that we can get the serial number."""
@@ -156,6 +158,19 @@ def test_backend_get_button_state():
 
     with pytest.raises(ValueError):
         backend.get_button_state(1)
+
+
+def test_backend_wait_start_button_pressed():
+    """Test that we can wait until the start button is pressed."""
+    backend = SRV4PowerBoardConsoleBackend(
+        "TestBoard",
+        console_class=MockConsole,
+    )
+
+    backend._console.expects = "Waiting for start button press."
+    backend._console.next_input = ""
+
+    backend.wait_until_button_pressed(0)
 
 
 def test_backend_get_battery_sensor_voltage():
