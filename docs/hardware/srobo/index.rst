@@ -12,6 +12,14 @@ Student Robotics is currently on it's fourth generation of robotics kit, which i
 and some custom designed hardware that's based on STM32 microcontrollers. The kit communicates with the ODROID using
 USB, which has proven to be a more reliable communication method than their previous kits.
 
+.. toctree::
+   :maxdepth: 1
+   :caption: Supported Boards:
+
+   mbv4
+   pbv4
+   sbv4
+
 .. _Student Robotics: https://studentrobotics.org
 .. _ODROID U3: https://en.wikipedia.org/wiki/ODROID
 
