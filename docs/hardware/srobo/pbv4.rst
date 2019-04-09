@@ -84,6 +84,8 @@ START   Intended to start the robot. The state is accessible over USB.
 USB Interface
 -------------
 
+The Vendor ID is ``1bda`` (University of Southampton) and the product ID is ``0010``.
+
 The Power Board is controlled over USB by sending requests to the control endpoint.
 
 .. code-block:: python
@@ -110,6 +112,17 @@ It is recommended to read the source to further understand how to control this d
 
 It should also be noted that as the control endpoint ``0x00`` is used to send data to this device, it is not actually
 compliant with the USB 2.0 specification.
+
+udev Rule
+---------
+
+If you are connecting the Power Board to a Linux computer with udev, the following rule can be added in order to access
+the Power Board interface without root privileges:
+
+.. parsed-literal::
+    SUBSYSTEM=="usb", ATTRS{idVendor}=="1bda", ATTRS{idProduct}=="0010", GROUP="plugdev", MODE="0666"
+
+It should be noted that ``plugdev`` can be changed to any Unix group of your preference.
 
 Case Dimensions
 ---------------
