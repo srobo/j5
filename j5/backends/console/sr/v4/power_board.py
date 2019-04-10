@@ -75,14 +75,12 @@ class SRV4PowerBoardConsoleBackend(
         self, identifier: int, enabled: bool,
     ) -> None:
         """Set whether a power output is enabled."""
-        try:
-            self._console.info(f"Setting output {identifier} to {enabled}")
-            assert identifier in self._output_states.keys()
-            self._output_states[identifier] = enabled
-        except AssertionError:
+        self._console.info(f"Setting output {identifier} to {enabled}")
+        if identifier not in self._output_states.keys():
             raise ValueError(f"Invalid power output identifier {identifier!r}; "
                              f"valid identifiers are "
-                             f"{self._output_states.keys()}") from None
+                             f"{self._output_states.keys()}")
+        self._output_states[identifier] = enabled
 
     def get_power_output_current(self, identifier: int) -> float:
         """Get the current being drawn on a power output, in amperes."""
