@@ -1,14 +1,12 @@
 """Classes for the SR v4 Motor Board."""
-from typing import TYPE_CHECKING, List, Mapping, Optional, Type, cast
+from typing import TYPE_CHECKING, List, Optional, Type, cast
 
 from j5.backends import Backend
 from j5.boards import Board
-from j5.components import Motor
-from j5.components.motor import MotorSpecialState
+from j5.components.motor import Motor, MotorInterface, MotorSpecialState
 
 if TYPE_CHECKING:  # pragma: no cover
     from j5.components import (  # noqa: F401
-        MotorInterface,
         Component,
     )
 
@@ -20,10 +18,10 @@ class MotorBoard(Board):
         self._serial = serial
         self._backend = backend
 
-        self._outputs: Mapping[int, Motor] = {
-            output: Motor(output, self, cast(MotorInterface, self._backend))
+        self._outputs: List[Motor] = [
+            Motor(output, self, cast(MotorInterface, self._backend))
             for output in range(0, 2)
-        }
+        ]
 
     @property
     def name(self) -> str:
@@ -40,9 +38,14 @@ class MotorBoard(Board):
         """Get the firmware version of the board."""
         return self._backend.get_firmware_version()
 
+    @property
+    def motors(self) -> List[Motor]:
+        """Get the motors on this board."""
+        return self._outputs
+
     def make_safe(self) -> None:
         """Make this board safe."""
-        for output in self._outputs.values():
+        for output in self._outputs:
             # Brake both motors.
             output.state = MotorSpecialState.BRAKE
 
