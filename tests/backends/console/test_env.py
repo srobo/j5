@@ -4,14 +4,14 @@ from j5.backends import Environment
 from j5.backends.console import Console, ConsoleEnvironment
 
 
-def test_console_environment():
+def test_console_environment() -> None:
     """Test that the Console Environment works."""
     assert type(ConsoleEnvironment) is Environment
 
     assert ConsoleEnvironment.name == "ConsoleEnvironment"
 
 
-def test_console_instantiation():
+def test_console_instantiation() -> None:
     """Test that we can create a console."""
     console = Console("MockConsole")
 
@@ -21,10 +21,10 @@ def test_console_instantiation():
     assert console._input is input
 
 
-def test_console_info():
+def test_console_info() -> None:
     """Test that the console can output information."""
     # Define a testing print function
-    def mock_print(text: str):
+    def mock_print(text: str) -> None:
         """Mock printing function."""
         assert text == "TestBoard: Test the console info"
 
@@ -33,12 +33,12 @@ def test_console_info():
     console.info("Test the console info")
 
 
-def test_console_read():
+def test_console_read() -> None:
     """Test that we can read from the console."""
     # Define a testing input function
-    def mock_input(prompt: str):
+    def mock_input(prompt: str) -> str:
         """Mock some input."""
-        return reversed(prompt)
+        return str(reversed(prompt))
 
     console = Console("TestBoard", input_function=mock_input)
 

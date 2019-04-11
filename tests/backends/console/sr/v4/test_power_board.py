@@ -16,9 +16,10 @@ class MockConsole(Console):
     """Test Console for testing the board."""
 
     def __init__(self, descriptor: str):
-        super(Console, self).__init__()
-        self.next_input = ""
-        self.expects = ""
+        super(Console, self).__init__()  # type: ignore
+        self._descriptor = descriptor
+        self.next_input: str = ""
+        self.expects: str = ""
 
     def info(self, message: str) -> None:
         """Mock writing to the terminal."""
@@ -28,7 +29,7 @@ class MockConsole(Console):
             self,
             prompt: str,
             return_type: Optional[Type[T]] = str,
-    ) -> T:
+    ) -> Optional[T]:
         """Get a value of type 'return_type' from the user."""
         if return_type is not None:
             try:
@@ -43,7 +44,7 @@ class MockConsole(Console):
             return None
 
 
-def test_backend_initialisation():
+def test_backend_initialisation() -> None:
     """Test that we can initialise a Backend."""
     backend = SRV4PowerBoardConsoleBackend("Test")
     assert type(backend) is SRV4PowerBoardConsoleBackend
@@ -55,7 +56,7 @@ def test_backend_initialisation():
     assert not any(backend._led_states.values())  # Check initially all false.
 
 
-def test_backend_discover():
+def test_backend_discover() -> None:
     """
     Test that the backend can not discover boards.
 
@@ -65,7 +66,7 @@ def test_backend_discover():
         SRV4PowerBoardConsoleBackend.discover()
 
 
-def test_backend_firmware_version():
+def test_backend_firmware_version() -> None:
     """Test that we can get the firmware version."""
     backend = SRV4PowerBoardConsoleBackend("TestBoard")
 
@@ -74,14 +75,14 @@ def test_backend_firmware_version():
     assert backend.get_firmware_version() is None
 
 
-def test_backend_serial_number():
+def test_backend_serial_number() -> None:
     """Test that we can get the serial number."""
     backend = SRV4PowerBoardConsoleBackend("TestBoard")
 
     assert backend.serial == "TestBoard"
 
 
-def test_backend_get_power_output_enabled():
+def test_backend_get_power_output_enabled() -> None:
     """Test that we can read the enable status of a PowerOutput."""
     backend = SRV4PowerBoardConsoleBackend("TestBoard")
 
@@ -92,7 +93,7 @@ def test_backend_get_power_output_enabled():
         backend.get_power_output_enabled(6)
 
 
-def test_backend_set_power_output_enabled():
+def test_backend_set_power_output_enabled() -> None:
     """Test that we can read the enable status of a PowerOutput."""
     backend = SRV4PowerBoardConsoleBackend(
         "TestBoard",
@@ -100,15 +101,15 @@ def test_backend_set_power_output_enabled():
     )
 
     for i in range(0, 6):
-        backend._console.expects = f"Setting output {i} to True"
+        backend._console.expects = f"Setting output {i} to True"  # type: ignore
         backend.set_power_output_enabled(i, True)
 
     with pytest.raises(ValueError):
-        backend._console.expects = "Setting output 6 to True"
+        backend._console.expects = "Setting output 6 to True"  # type: ignore
         backend.set_power_output_enabled(6, True)
 
 
-def test_backend_get_power_output_current():
+def test_backend_get_power_output_current() -> None:
     """Test that we can read the current on a PowerOutput."""
     backend = SRV4PowerBoardConsoleBackend(
         "TestBoard",
@@ -116,14 +117,14 @@ def test_backend_get_power_output_current():
     )
 
     for i in range(0, 6):
-        backend._console.next_input = "1.2"
+        backend._console.next_input = "1.2"  # type: ignore
         assert 1.2 == backend.get_power_output_current(i)
 
     with pytest.raises(ValueError):
         backend.get_power_output_current(6)
 
 
-def test_backend_piezo_buzz():
+def test_backend_piezo_buzz() -> None:
     """Test that we can buzz the Piezo."""
     backend = SRV4PowerBoardConsoleBackend(
         "TestBoard",
@@ -131,11 +132,11 @@ def test_backend_piezo_buzz():
     )
 
     # Buzz a Note
-    backend._console.expects = "Buzzing at 2349Hz for 10000ms"
+    backend._console.expects = "Buzzing at 2349Hz for 10000ms"  # type: ignore
     backend.buzz(0, timedelta(seconds=10), Note.D7)
 
     # Buzz a frequency
-    backend._console.expects = "Buzzing at 100Hz for 10000ms"
+    backend._console.expects = "Buzzing at 100Hz for 10000ms"  # type: ignore
     backend.buzz(0, timedelta(seconds=10), 100)
 
     # Buzz for too long.
@@ -147,7 +148,7 @@ def test_backend_piezo_buzz():
         backend.buzz(1, timedelta(seconds=10), 0)
 
 
-def test_backend_get_button_state():
+def test_backend_get_button_state() -> None:
     """Test that we can get the button state."""
     backend = SRV4PowerBoardConsoleBackend(
         "TestBoard",
@@ -160,48 +161,48 @@ def test_backend_get_button_state():
         backend.get_button_state(1)
 
 
-def test_backend_wait_start_button_pressed():
+def test_backend_wait_start_button_pressed() -> None:
     """Test that we can wait until the start button is pressed."""
     backend = SRV4PowerBoardConsoleBackend(
         "TestBoard",
         console_class=MockConsole,
     )
 
-    backend._console.expects = "Waiting for start button press."
-    backend._console.next_input = ""
+    backend._console.expects = "Waiting for start button press."  # type: ignore
+    backend._console.next_input = ""  # type: ignore
 
     backend.wait_until_button_pressed(0)
 
 
-def test_backend_get_battery_sensor_voltage():
+def test_backend_get_battery_sensor_voltage() -> None:
     """Test that we can get the battery sensor voltage."""
     backend = SRV4PowerBoardConsoleBackend(
         "TestBoard",
         console_class=MockConsole,
     )
 
-    backend._console.next_input = "0.982"
+    backend._console.next_input = "0.982"  # type: ignore
     assert backend.get_battery_sensor_voltage(0) == 0.982
 
     with pytest.raises(ValueError):
         backend.get_battery_sensor_voltage(1)
 
 
-def test_backend_get_battery_sensor_current():
+def test_backend_get_battery_sensor_current() -> None:
     """Test that we can get the battery sensor current."""
     backend = SRV4PowerBoardConsoleBackend(
         "TestBoard",
         console_class=MockConsole,
     )
 
-    backend._console.next_input = "0.567"
+    backend._console.next_input = "0.567"  # type: ignore
     assert backend.get_battery_sensor_current(0) == 0.567
 
     with pytest.raises(ValueError):
         backend.get_battery_sensor_current(1)
 
 
-def test_backend_get_led_states():
+def test_backend_get_led_states() -> None:
     """Get the LED states."""
     backend = SRV4PowerBoardConsoleBackend(
         "TestBoard",
@@ -214,7 +215,7 @@ def test_backend_get_led_states():
         backend.get_led_state(7)
 
 
-def test_backend_set_led_states():
+def test_backend_set_led_states() -> None:
     """Set the LED states."""
     backend = SRV4PowerBoardConsoleBackend(
         "TestBoard",
@@ -222,7 +223,7 @@ def test_backend_set_led_states():
     )
 
     for i in [0, 1]:
-        backend._console.expects = f"Set LED {i} to True"
+        backend._console.expects = f"Set LED {i} to True"  # type: ignore
         backend.set_led_state(i, True)
 
     with pytest.raises(ValueError):
