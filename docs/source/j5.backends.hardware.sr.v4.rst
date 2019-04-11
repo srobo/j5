@@ -1,0 +1,22 @@
+j5.backends.hardware.sr.v4 package
+==================================
+
+Submodules
+----------
+
+j5.backends.hardware.sr.v4.power\_board module
+----------------------------------------------
+
+.. automodule:: j5.backends.hardware.sr.v4.power_board
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: j5.backends.hardware.sr.v4
+    :members:
+    :undoc-members:
+    :show-inheritance:

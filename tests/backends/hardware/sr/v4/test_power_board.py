@@ -293,7 +293,7 @@ def test_backend_firmware_version() -> None:
     device = MockUSBPowerBoardDevice("SERIAL0")
     backend = SRV4PowerBoardHardwareBackend(device)
 
-    assert backend.firmware_version == 3
+    assert backend.firmware_version == "3"
 
 
 def test_backend_bad_firmware_version() -> None:

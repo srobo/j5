@@ -24,6 +24,8 @@ Please note that this documentation is not aimed at the average competitor. It i
 
    concepts/index
 
+   hardware/index
+
    development/index
 
    source/modules

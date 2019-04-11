@@ -6,15 +6,15 @@ Subpackages
 
 .. toctree::
 
-    j5.boards.j5
+    j5.boards.sr
 
 Submodules
 ----------
 
-j5.boards.base module
----------------------
+j5.boards.board module
+----------------------
 
-.. automodule:: j5.boards.base
+.. automodule:: j5.boards.board
     :members:
     :undoc-members:
     :show-inheritance:

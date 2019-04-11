@@ -5,7 +5,7 @@ Installation
 
 You will need the following installed on your machine:
 
-- Python_ 3.7 or higher
+- Python_ 3.6 or higher
 - python3-pip (for package management)
 - pipenv_ (optional)
 

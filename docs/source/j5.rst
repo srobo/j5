@@ -1,4 +1,4 @@
-j5 Module
+j5 package
 ==========
 
 Subpackages
@@ -9,6 +9,18 @@ Subpackages
     j5.backends
     j5.boards
     j5.components
+
+Submodules
+----------
+
+j5.base\_robot module
+---------------------
+
+.. automodule:: j5.base_robot
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------

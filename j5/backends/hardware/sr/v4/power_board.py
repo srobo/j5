@@ -182,15 +182,15 @@ class SRV4PowerBoardHardwareBackend(
     def check_firmware_version_supported(self) -> None:
         """Raises an exception if the firmware version is not supported."""
         v = self.firmware_version
-        if v != 3:
+        if v != "3":
             raise NotImplementedError(f"this power board is running firmware "
                                       f"version {v}, but only version 3 is supported")
 
     @property
-    def firmware_version(self) -> int:
+    def firmware_version(self) -> str:
         """The firmware version reported by the board."""
         version, = struct.unpack("<I", self._read(CMD_READ_FWVER))
-        return cast(int, version)
+        return str(cast(int, version))
 
     @property  # type: ignore # https://github.com/python/mypy/issues/1362
     @handle_usb_error
