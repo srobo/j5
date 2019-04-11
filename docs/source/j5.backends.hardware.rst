@@ -1,0 +1,29 @@
+j5.backends.hardware package
+============================
+
+Subpackages
+-----------
+
+.. toctree::
+
+    j5.backends.hardware.sr
+
+Submodules
+----------
+
+j5.backends.hardware.env module
+-------------------------------
+
+.. automodule:: j5.backends.hardware.env
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: j5.backends.hardware
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -6,15 +6,15 @@ Subpackages
 
 .. toctree::
 
-    j5.backends.dummy
+    j5.backends.hardware
 
 Submodules
 ----------
 
-j5.backends.base module
------------------------
+j5.backends.backend module
+--------------------------
 
-.. automodule:: j5.backends.base
+.. automodule:: j5.backends.backend
     :members:
     :undoc-members:
     :show-inheritance:
