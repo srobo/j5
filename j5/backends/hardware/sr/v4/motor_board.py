@@ -1,7 +1,8 @@
 """Hardware Backend for the SR v4 motor board."""
-from typing import List, Optional, cast
+from functools import wraps
+from typing import Callable, List, Optional, TypeVar, cast
 
-from serial import Serial
+from serial import Serial, SerialException, SerialTimeoutException
 from serial.tools.list_ports import comports
 
 from j5.backends import Backend, CommunicationError
@@ -17,6 +18,27 @@ CMD_BOOTLOADER = 4
 
 SPEED_COAST = 1
 SPEED_BRAKE = 2
+
+RT = TypeVar("RT")
+
+
+def handle_serial_error(func: Callable[..., RT]) -> Callable[..., RT]:  # type: ignore
+    """
+    Wrap functions that use the serial port, and rethrow the errors.
+
+    This is a decorator that should be used to wrap any functions that call the serial
+    interface. It will catch and rethrow the errors as a CommunicationError, so that it
+    is more explicit what is going wrong.
+    """
+    @wraps(func)
+    def catch_exceptions(*args, **kwargs):  # type: ignore
+        try:
+            return func(*args, **kwargs)
+        except SerialException as e:
+            raise CommunicationError(f"Serial Error: {e}")
+        except SerialTimeoutException as e:
+            raise CommunicationError(f"Serial Timout Error: {e}")
+    return catch_exceptions
 
 
 class SRV4MotorBoardHardwareBackend(
@@ -52,6 +74,7 @@ class SRV4MotorBoardHardwareBackend(
 
         return boards
 
+    @handle_serial_error
     def __init__(self, serial_port: str) -> None:
         self._serial = Serial(
             port=serial_port,
@@ -85,6 +108,7 @@ class SRV4MotorBoardHardwareBackend(
         self._serial.flush()
         self._serial.close()
 
+    @handle_serial_error
     def send_command(self, command: int, data: Optional[int] = None) -> None:
         """Send a serial command to the board."""
         command_bytes = chr(command).encode('utf-8')
@@ -102,9 +126,17 @@ class SRV4MotorBoardHardwareBackend(
                     "Mismatch in data bytes written to serial interface.",
                 )
 
+    @handle_serial_error
     def read_serial_line(self) -> str:
         """Read a line from the serial interface."""
         bdata = self._serial.readline()
+
+        if len(bdata) == 0:
+            raise CommunicationError(
+                "Unable to communicate with motor board. ",
+                "Is it correctly powered?",
+            )
+
         ldata = bdata.decode('utf-8')
         return ldata.rstrip()
 
