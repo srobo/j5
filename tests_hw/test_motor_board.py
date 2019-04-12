@@ -5,7 +5,7 @@ from time import sleep
 
 from j5 import BaseRobot, BoardGroup
 from j5.backends.hardware import HardwareEnvironment
-from j5.backends.hardware.sr.v4 import *  # noqa: F401
+import j5.backends.hardware.sr.v4 # noqa: F401
 from j5.boards.sr.v4 import MotorBoard, PowerBoard
 from j5.components.motor import MotorSpecialState
 from j5.components.piezo import Note

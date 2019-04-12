@@ -57,10 +57,10 @@ class SRV4MotorBoardHardwareBackend(
         ports = comports()
 
         # Filter down to just motor boards.
-        ports = list(filter(lambda x: x.manufacturer == "Student Robotics", ports))
-        ports = list(filter(lambda x: x.product == "MCV4B", ports))
         ports = list(filter(lambda x: x.vid == 0x403, ports))  # FTDI, Ltd
         ports = list(filter(lambda x: x.pid == 0x6001, ports))  # FT232 Serial (UART) IC
+        ports = list(filter(lambda x: x.manufacturer == "Student Robotics", ports))
+        ports = list(filter(lambda x: x.product == "MCV4B", ports))
 
         # Get a list of boards from the ports.
         boards: List[Board] = []
@@ -76,6 +76,12 @@ class SRV4MotorBoardHardwareBackend(
 
     @handle_serial_error
     def __init__(self, serial_port: str) -> None:
+        # Initialise our stored values for the state.
+        self._state: List[MotorState] = [
+            MotorSpecialState.BRAKE
+            for _ in range(0, 2)
+        ]
+
         self._serial = Serial(
             port=serial_port,
             baudrate=1000000,
@@ -88,12 +94,6 @@ class SRV4MotorBoardHardwareBackend(
             raise CommunicationError(
                 f"Unexpected firmware version: {version}, expected: 3.",
             )
-
-        # Initialise our stored values for the state.
-        self._state: List[MotorState] = [
-            MotorSpecialState.BRAKE
-            for _ in range(0, 2)
-        ]
 
         # Brake both of the motors
         for i, val in enumerate(self._state):
