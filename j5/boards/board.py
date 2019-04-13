@@ -14,9 +14,9 @@ if TYPE_CHECKING:  # pragma: nocover
 class Board(metaclass=ABCMeta):
     """A collection of hardware that has an implementation."""
 
-    # BOARDS is a list of currently instantiated boards.
+    # BOARDS is a set of currently instantiated boards.
     # This is useful to know so that we can make them safe in a crash.
-    BOARDS: List['Board'] = []
+    BOARDS: Set['Board'] = set()
 
     def __str__(self) -> str:
         """A string representation of this board."""
@@ -25,7 +25,7 @@ class Board(metaclass=ABCMeta):
     def __new__(cls, *args, **kwargs):  # type: ignore
         """Ensure any instantiated board is added to the boards list."""
         instance = super().__new__(cls)
-        Board.BOARDS.append(instance)
+        Board.BOARDS.add(instance)
         return instance
 
     def __repr__(self) -> str:
