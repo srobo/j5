@@ -1,5 +1,5 @@
 """Test the base classes for boards."""
-from typing import TYPE_CHECKING, List, Optional, Set, Type
+from typing import TYPE_CHECKING, Optional, Set, Type
 
 import pytest
 
@@ -62,9 +62,9 @@ class NoBoardMockBackend(Backend):
         return None
 
     @classmethod
-    def discover(cls) -> List[Board]:
+    def discover(cls) -> Set[Board]:
         """Discover boards available on this backend."""
-        return []
+        return set()
 
 
 class OneBoardMockBackend(Backend):
@@ -78,9 +78,9 @@ class OneBoardMockBackend(Backend):
         return None
 
     @classmethod
-    def discover(cls) -> List[Board]:
+    def discover(cls) -> Set[Board]:
         """Discover boards available on this backend."""
-        return [MockBoard("TESTSERIAL1")]
+        return {MockBoard("TESTSERIAL1")}
 
 
 class TwoBoardsMockBackend(Backend):
@@ -94,12 +94,9 @@ class TwoBoardsMockBackend(Backend):
         return None
 
     @classmethod
-    def discover(cls) -> List[Board]:
+    def discover(cls) -> Set[Board]:
         """Discover boards available on this backend."""
-        # These serial numbers are deliberately in reverse lexiographic order, to ensure
-        # that sorting the boards (as tested by
-        # test_board_group_iteration_sorted_by_serial) actually has an effect.
-        return [MockBoard("TESTSERIAL2"), MockBoard("TESTSERIAL1")]
+        return {MockBoard("TESTSERIAL1"), MockBoard("TESTSERIAL2")}
 
 
 def test_testing_board_instantiation() -> None:
@@ -146,7 +143,7 @@ def test_testing_board_repr() -> None:
 
 def test_discover() -> None:
     """Test that the detect all static method works."""
-    assert NoBoardMockBackend.discover() == []
+    assert NoBoardMockBackend.discover() == set()
     assert len(OneBoardMockBackend.discover()) == 1
     assert len(TwoBoardsMockBackend.discover()) == 2
 

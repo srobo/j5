@@ -7,10 +7,10 @@ from time import sleep
 from typing import (
     Callable,
     Dict,
-    List,
     Mapping,
     NamedTuple,
     Optional,
+    Set,
     TypeVar,
     Union,
     cast,
@@ -123,14 +123,14 @@ class SRV4PowerBoardHardwareBackend(
 
     @classmethod
     @handle_usb_error
-    def discover(cls, find: Callable = usb.core.find) -> List[Board]:
+    def discover(cls, find: Callable = usb.core.find) -> Set[Board]:
         """Discover boards that this backend can control."""
-        boards: List[Board] = []
+        boards: Set[Board] = set()
         device_list = find(idVendor=0x1bda, idProduct=0x0010, find_all=True)
         for device in device_list:
             backend = cls(device)
             board = PowerBoard(backend.serial, backend)
-            boards.append(cast(Board, board))
+            boards.add(cast(Board, board))
         return boards
 
     @handle_usb_error

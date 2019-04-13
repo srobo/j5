@@ -1,7 +1,7 @@
 """The base classes for backends."""
 
 from abc import ABCMeta, abstractmethod
-from typing import TYPE_CHECKING, Dict, List, Optional, Type
+from typing import TYPE_CHECKING, Dict, List, Optional, Set, Type
 
 if TYPE_CHECKING:
     from j5.boards import Board  # noqa
@@ -82,7 +82,7 @@ class Backend(metaclass=BackendMeta):
 
     @classmethod
     @abstractmethod
-    def discover(cls) -> List['Board']:
+    def discover(cls) -> Set['Board']:
         """Discover boards that this backend can control."""
         raise NotImplementedError  # pragma: no cover
 

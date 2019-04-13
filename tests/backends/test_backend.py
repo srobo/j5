@@ -1,6 +1,6 @@
 """Tests for the base backend classes."""
 
-from typing import TYPE_CHECKING, List, Optional, Set, Type
+from typing import TYPE_CHECKING, Optional, Set, Type
 
 import pytest
 
@@ -77,9 +77,9 @@ class MockBackend(Backend):
     board = MockBoard
 
     @classmethod
-    def discover(cls) -> List[Board]:
+    def discover(cls) -> Set[Board]:
         """Discover boards available on this backend."""
-        return []
+        return set()
 
     def get_firmware_version(self) -> Optional[str]:
         """Get the firmware version of the board."""
