@@ -94,7 +94,7 @@ def test_backend_instantiation() -> None:
 def test_environment_supported_boards() -> None:
     """Test that we can get the supported boards for a environment."""
     environment = MockEnvironment
-    assert type(environment.supported_boards) == list
+    assert type(environment.supported_boards) is set
     assert len(environment.supported_boards) == 1
 
 
