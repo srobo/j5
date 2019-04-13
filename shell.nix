@@ -10,11 +10,6 @@ in
   pkgs ? import pkgsSrc { overlays = [python37ByDefault]; },
 }:
 
-# Note that as of 2019-03-11, poetry is not currently available in any nixpkgs release.
-# To work around, invoke with:
-# nix-shell --arg pkgsSrc 'fetchTarball https://github.com/NixOS/nixpkgs/archive/master.tar.gz'
-# It should appear in NixOS/nixpkgs 19.03.
-
 with pkgs;
 
 stdenv.mkDerivation {
