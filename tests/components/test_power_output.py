@@ -1,5 +1,5 @@
 """Tests for the power output classes."""
-from typing import TYPE_CHECKING, List, Optional, Type
+from typing import TYPE_CHECKING, Optional, Set, Type
 
 from j5.boards import Board
 from j5.components.power_output import PowerOutput, PowerOutputInterface
@@ -51,9 +51,9 @@ class MockPowerOutputBoard(Board):
         return None
 
     @staticmethod
-    def supported_components() -> List[Type["Component"]]:
+    def supported_components() -> Set[Type["Component"]]:
         """List the types of component that this Board supports."""
-        return [PowerOutput]
+        return {PowerOutput}
 
     def make_safe(self) -> None:
         """Make this board safe."""

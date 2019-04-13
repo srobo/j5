@@ -3,7 +3,7 @@
 import atexit
 from abc import ABCMeta, abstractmethod
 from collections import OrderedDict
-from typing import TYPE_CHECKING, Dict, Iterator, List, Optional, Type
+from typing import TYPE_CHECKING, Dict, Iterator, List, Optional, Set, Type
 
 from j5.backends import Backend
 
@@ -57,7 +57,7 @@ class Board(metaclass=ABCMeta):
 
     @staticmethod
     @abstractmethod
-    def supported_components() -> List[Type['Component']]:
+    def supported_components() -> Set[Type['Component']]:
         """The types of component supported by this board."""
         raise NotImplementedError  # pragma: no cover
 

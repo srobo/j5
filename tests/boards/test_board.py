@@ -1,5 +1,5 @@
 """Test the base classes for boards."""
-from typing import TYPE_CHECKING, List, Optional, Type
+from typing import TYPE_CHECKING, List, Optional, Set, Type
 
 import pytest
 
@@ -36,9 +36,9 @@ class MockBoard(Board):
         pass
 
     @staticmethod
-    def supported_components() -> List[Type["Component"]]:
+    def supported_components() -> Set[Type["Component"]]:
         """List the types of component supported by this Board."""
-        return []
+        return set()
 
 
 class MockBoardWithConstructor(MockBoard):

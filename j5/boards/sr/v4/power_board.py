@@ -2,7 +2,7 @@
 
 from enum import Enum
 from time import sleep
-from typing import TYPE_CHECKING, List, Mapping, Optional, cast
+from typing import TYPE_CHECKING, Mapping, Optional, Set, cast
 
 from j5.backends import Backend
 from j5.boards import Board
@@ -119,6 +119,6 @@ class PowerBoard(Board):
             counter += 1
 
     @staticmethod
-    def supported_components() -> List["Type[Component]"]:
+    def supported_components() -> Set["Type[Component]"]:
         """List the types of components supported by this board."""
-        return [PowerOutput, Piezo, Button, BatterySensor, LED]
+        return {PowerOutput, Piezo, Button, BatterySensor, LED}

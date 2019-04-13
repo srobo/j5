@@ -1,6 +1,6 @@
 """Tests for the base backend classes."""
 
-from typing import TYPE_CHECKING, List, Optional, Type
+from typing import TYPE_CHECKING, List, Optional, Set, Type
 
 import pytest
 
@@ -34,9 +34,9 @@ class MockBoard(Board):
         return None
 
     @staticmethod
-    def supported_components() -> List[Type["Component"]]:
+    def supported_components() -> Set[Type["Component"]]:
         """List the types of component supported by this Board."""
-        return []
+        return set()
 
 
 class Mock2Board(Board):
@@ -62,9 +62,9 @@ class Mock2Board(Board):
         return None
 
     @staticmethod
-    def supported_components() -> List[Type["Component"]]:
+    def supported_components() -> Set[Type["Component"]]:
         """List the types of component supported by this Board."""
-        return []
+        return set()
 
 
 MockEnvironment = Environment("TestBackendGroup")
