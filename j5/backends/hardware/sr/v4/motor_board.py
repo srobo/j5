@@ -1,9 +1,10 @@
 """Hardware Backend for the SR v4 motor board."""
 from functools import wraps
-from typing import Callable, List, Optional, TypeVar, cast
+from typing import Callable, List, Optional, Type, TypeVar, cast
 
 from serial import Serial, SerialException, SerialTimeoutException
 from serial.tools.list_ports import comports
+from serial.tools.list_ports_common import ListPortInfo
 
 from j5.backends import Backend, CommunicationError
 from j5.backends.hardware.env import HardwareEnvironment
@@ -19,7 +20,7 @@ CMD_BOOTLOADER = 4
 SPEED_COAST = 1
 SPEED_BRAKE = 2
 
-RT = TypeVar("RT")
+RT = TypeVar("RT")  # pragma: nocover
 
 
 def handle_serial_error(func: Callable[..., RT]) -> Callable[..., RT]:  # type: ignore
@@ -34,10 +35,10 @@ def handle_serial_error(func: Callable[..., RT]) -> Callable[..., RT]:  # type: 
     def catch_exceptions(*args, **kwargs):  # type: ignore
         try:
             return func(*args, **kwargs)
+        except SerialTimeoutException as e:
+            raise CommunicationError(f"Serial Timeout Error: {e}")
         except SerialException as e:
             raise CommunicationError(f"Serial Error: {e}")
-        except SerialTimeoutException as e:
-            raise CommunicationError(f"Serial Timout Error: {e}")
     return catch_exceptions
 
 
@@ -51,10 +52,14 @@ class SRV4MotorBoardHardwareBackend(
     board = MotorBoard
 
     @classmethod
-    def discover(cls) -> List[Board]:
+    def discover(
+            cls,
+            find: Callable = comports,
+            serial_class: Type[Serial] = Serial,
+    ) -> List[Board]:
         """Discover all connected motor boards."""
         # Find all serial ports.
-        ports = comports()
+        ports: List[ListPortInfo] = find()
 
         # Filter down to just motor boards.
         ports = list(filter(lambda x: x.vid == 0x403, ports))  # FTDI, Ltd
@@ -68,21 +73,21 @@ class SRV4MotorBoardHardwareBackend(
             boards.append(
                 MotorBoard(
                     port.serial_number,
-                    SRV4MotorBoardHardwareBackend(port.device),
+                    SRV4MotorBoardHardwareBackend(port.device, serial_class),
                 ),
             )
 
         return boards
 
     @handle_serial_error
-    def __init__(self, serial_port: str) -> None:
+    def __init__(self, serial_port: str, serial_class: Type[Serial] = Serial) -> None:
         # Initialise our stored values for the state.
         self._state: List[MotorState] = [
             MotorSpecialState.BRAKE
             for _ in range(0, 2)
         ]
 
-        self._serial = Serial(
+        self._serial = serial_class(
             port=serial_port,
             baudrate=1000000,
             timeout=0.25,
@@ -121,7 +126,8 @@ class SRV4MotorBoardHardwareBackend(
         if data is not None:
             data_bytes = chr(data).encode()
             bytes_written = self._serial.write(data_bytes)
-            if len(data_bytes) != bytes_written:
+            # It is not possible to test the following if statement without refactor.
+            if len(data_bytes) != bytes_written:  # pragma: nocover
                 raise CommunicationError(
                     "Mismatch in data bytes written to serial interface.",
                 )

@@ -4,7 +4,6 @@ class ListPortInfo:
     """Info collection base class for serial ports"""
 
     device: str
-    description: str
     vid: int
     pid: int
     serial_number: str
