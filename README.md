@@ -4,6 +4,7 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/54e440aba5a51c9ee133/test_coverage)](https://codeclimate.com/github/j5api/j5/test_coverage)
 [![Maintainability](https://api.codeclimate.com/v1/badges/54e440aba5a51c9ee133/maintainability)](https://codeclimate.com/github/j5api/j5/maintainability)
 [![Documentation Status](https://readthedocs.org/projects/j5/badge/?version=master)](https://j5.readthedocs.io/en/master/?badge=master)
+[![PyPI version](https://badge.fury.io/py/j5.svg)](https://badge.fury.io/py/j5)
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](http://opensource.org/licenses/MIT)
 ![Bees](https://img.shields.io/badge/bees-110%25-yellow.svg)
 
