@@ -174,3 +174,11 @@ def test_power_board_error_led() -> None:
     pb = PowerBoard("SERIAL0", MockPowerBoardBackend())
 
     assert type(pb._error_led) is LED
+
+
+def test_power_board_wait_start() -> None:
+    """Test the wait_for_start_flash method."""
+    pb = PowerBoard("SERIAL0", MockPowerBoardBackend())
+
+    # Note: This isn't a great test, but ensures that the code runs at least.
+    pb.wait_for_start_flash()
