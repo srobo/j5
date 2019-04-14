@@ -6,7 +6,7 @@ PYMODULE:=j5
 all: lint type test
 
 lint:
-	$(CMD) flake8 $(PYMODULE) tests
+	$(CMD) flake8 $(PYMODULE) tests tests_hw
 
 type:
 	$(CMD) mypy $(PYMODULE) tests

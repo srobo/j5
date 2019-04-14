@@ -3,9 +3,9 @@
 from datetime import timedelta
 from time import sleep
 
+import j5.backends.hardware.sr.v4  # noqa: F401
 from j5 import BaseRobot, BoardGroup
 from j5.backends.hardware import HardwareEnvironment
-import j5.backends.hardware.sr.v4 # noqa: F401
 from j5.boards.sr.v4 import MotorBoard, PowerBoard
 from j5.components.motor import MotorSpecialState
 from j5.components.piezo import Note
@@ -25,7 +25,7 @@ class Robot(BaseRobot):
 
         self.motor_boards = BoardGroup(
             MotorBoard,
-            HardwareEnvironment.get_backend(MotorBoard)
+            HardwareEnvironment.get_backend(MotorBoard),
         )
 
         self.motor_board: MotorBoard = self.motor_boards.singular()
