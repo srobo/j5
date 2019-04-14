@@ -43,3 +43,14 @@ def test_console_read() -> None:
     console = Console("TestBoard", input_function=mock_input)
 
     assert str(console.read("Enter Test Input")) == str(reversed("Enter Test Input"))
+
+
+def test_console_read_bad_type() -> None:
+    """Test that a ValueError is thrown if we can't construct the right type."""
+    # Define a testing input function
+    def mock_input(prompt: str) -> str:
+        """Mock some input."""
+        return "string"
+
+    console = Console("TestBoard", input_function=mock_input)
+    assert console.read("Enter test input", None) is None
