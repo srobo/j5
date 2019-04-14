@@ -39,6 +39,16 @@ class SRV4MotorBoardConsoleBackend(
         """The firmware version reported by the board."""
         return None  # Console, so no firmware
 
+    @property
+    def serial(self) -> str:
+        """The serial number reported by the board."""
+        return self._serial
+
+    @property
+    def firmware_version(self) -> Optional[str]:
+        """The firmware version reported by the board."""
+        return self.get_firmware_version()
+
     def get_motor_state(self, identifier: int) -> MotorState:
         """Get the current motor state."""
         # We are unable to read the state from the motor board, in hardware
@@ -52,4 +62,8 @@ class SRV4MotorBoardConsoleBackend(
                 f"Invalid motor identifier: {identifier}, valid values are: 0, 1",
             )
         self._state[identifier] = power
-        self._console.info(f"Setting motor {identifier} to {power}.")
+        if isinstance(power, MotorSpecialState):
+            power_human_name = power.name
+        else:
+            power_human_name = str(power)
+        self._console.info(f"Setting motor {identifier} to {power_human_name}.")
