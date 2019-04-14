@@ -116,6 +116,12 @@ def test_power_board_serial() -> None:
     assert pb.serial == "SERIAL0"
 
 
+def test_firmware_version() -> None:
+    """Test the firmware_version attribute of the PowerBoard."""
+    pb = PowerBoard("SERIAL0", MockPowerBoardBackend())
+    assert pb.firmware_version is None
+
+
 def test_power_board_make_safe() -> None:
     """Test the make_safe method of the PowerBoard."""
     pb = PowerBoard("SERIAL0", MockPowerBoardBackend())
