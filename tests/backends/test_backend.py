@@ -1,6 +1,6 @@
 """Tests for the base backend classes."""
 
-from typing import TYPE_CHECKING, List, Optional, Type
+from typing import TYPE_CHECKING, Optional, Set, Type
 
 import pytest
 
@@ -34,9 +34,9 @@ class MockBoard(Board):
         return None
 
     @staticmethod
-    def supported_components() -> List[Type["Component"]]:
+    def supported_components() -> Set[Type["Component"]]:
         """List the types of component supported by this Board."""
-        return []
+        return set()
 
 
 class Mock2Board(Board):
@@ -62,9 +62,9 @@ class Mock2Board(Board):
         return None
 
     @staticmethod
-    def supported_components() -> List[Type["Component"]]:
+    def supported_components() -> Set[Type["Component"]]:
         """List the types of component supported by this Board."""
-        return []
+        return set()
 
 
 MockEnvironment = Environment("TestBackendGroup")
@@ -77,9 +77,9 @@ class MockBackend(Backend):
     board = MockBoard
 
     @classmethod
-    def discover(cls) -> List[Board]:
+    def discover(cls) -> Set[Board]:
         """Discover boards available on this backend."""
-        return []
+        return set()
 
     def get_firmware_version(self) -> Optional[str]:
         """Get the firmware version of the board."""
@@ -94,7 +94,7 @@ def test_backend_instantiation() -> None:
 def test_environment_supported_boards() -> None:
     """Test that we can get the supported boards for a environment."""
     environment = MockEnvironment
-    assert type(environment.supported_boards) == list
+    assert type(environment.supported_boards) is set
     assert len(environment.supported_boards) == 1
 
 

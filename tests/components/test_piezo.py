@@ -1,7 +1,7 @@
 """Tests for the Piezo Classes."""
 
 from datetime import timedelta
-from typing import TYPE_CHECKING, List, Optional, Type
+from typing import TYPE_CHECKING, Optional, Set, Type
 
 import pytest
 
@@ -43,9 +43,9 @@ class MockPiezoBoard(Board):
         return None
 
     @staticmethod
-    def supported_components() -> List[Type['Component']]:
+    def supported_components() -> Set[Type['Component']]:
         """List the components that this Board supports."""
-        return [Piezo]
+        return {Piezo}
 
     def make_safe(self) -> None:
         """Make this board safe."""

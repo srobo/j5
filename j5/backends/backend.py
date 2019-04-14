@@ -1,7 +1,7 @@
 """The base classes for backends."""
 
 from abc import ABCMeta, abstractmethod
-from typing import TYPE_CHECKING, Dict, List, Optional, Type
+from typing import TYPE_CHECKING, Dict, Optional, Set, Type
 
 if TYPE_CHECKING:
     from j5.boards import Board  # noqa
@@ -82,7 +82,7 @@ class Backend(metaclass=BackendMeta):
 
     @classmethod
     @abstractmethod
-    def discover(cls) -> List['Board']:
+    def discover(cls) -> Set['Board']:
         """Discover boards that this backend can control."""
         raise NotImplementedError  # pragma: no cover
 
@@ -110,9 +110,9 @@ class Environment:
         self.board_backend_mapping: Dict[Type['Board'], Type[Backend]] = {}
 
     @property
-    def supported_boards(self) -> List[Type['Board']]:
+    def supported_boards(self) -> Set[Type['Board']]:
         """The boards that are supported by this backend group."""
-        return list(self.board_backend_mapping.keys())
+        return set(self.board_backend_mapping.keys())
 
     def __str__(self) -> str:
         """Get a string representation of this group."""

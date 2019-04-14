@@ -1,5 +1,5 @@
 """Tests for the GPIO Pin Classes."""
-from typing import List, Optional, Type
+from typing import List, Optional, Set, Type
 
 import pytest
 
@@ -98,9 +98,9 @@ class MockGPIOPinBoard(Board):
         pass
 
     @staticmethod
-    def supported_components() -> List[Type[Component]]:
+    def supported_components() -> Set[Type[Component]]:
         """List the types of component that this Board supports."""
-        return [GPIOPin]
+        return {GPIOPin}
 
 
 def test_gpio_pin_interface_implementation() -> None:

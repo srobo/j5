@@ -277,7 +277,7 @@ def test_backend_discover() -> None:
     found_boards = SRV4PowerBoardHardwareBackend.discover(find=mock_find)
 
     assert len(found_boards) == 4
-    assert type(found_boards[0]) is PowerBoard
+    assert all(type(board) is PowerBoard for board in found_boards)
 
 
 def test_backend_cleanup() -> None:

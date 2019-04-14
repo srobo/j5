@@ -3,7 +3,7 @@
 import atexit
 from abc import ABCMeta, abstractmethod
 from collections import OrderedDict
-from typing import TYPE_CHECKING, Dict, Iterator, List, Optional, Type
+from typing import TYPE_CHECKING, Dict, Iterator, List, Optional, Set, Type
 
 from j5.backends import Backend
 
@@ -14,9 +14,9 @@ if TYPE_CHECKING:  # pragma: nocover
 class Board(metaclass=ABCMeta):
     """A collection of hardware that has an implementation."""
 
-    # BOARDS is a list of currently instantiated boards.
+    # BOARDS is a set of currently instantiated boards.
     # This is useful to know so that we can make them safe in a crash.
-    BOARDS: List['Board'] = []
+    BOARDS: Set['Board'] = set()
 
     def __str__(self) -> str:
         """A string representation of this board."""
@@ -25,7 +25,7 @@ class Board(metaclass=ABCMeta):
     def __new__(cls, *args, **kwargs):  # type: ignore
         """Ensure any instantiated board is added to the boards list."""
         instance = super().__new__(cls)
-        Board.BOARDS.append(instance)
+        Board.BOARDS.add(instance)
         return instance
 
     def __repr__(self) -> str:
@@ -57,7 +57,7 @@ class Board(metaclass=ABCMeta):
 
     @staticmethod
     @abstractmethod
-    def supported_components() -> List[Type['Component']]:
+    def supported_components() -> Set[Type['Component']]:
         """The types of component supported by this board."""
         raise NotImplementedError  # pragma: no cover
 
@@ -83,8 +83,7 @@ class BoardGroup:
         """Update the boards in this group to see if new boards have been added."""
         self._boards: Dict[str, Board] = OrderedDict()
         discovered_boards = self._backend_class.discover()
-        discovered_boards.sort(key=lambda b: b.serial)
-        for board in discovered_boards:
+        for board in sorted(discovered_boards, key=lambda b: b.serial):
             self._boards.update({board.serial: board})
 
     def singular(self) -> Board:
