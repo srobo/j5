@@ -116,21 +116,14 @@ class SRV4MotorBoardHardwareBackend(
     @handle_serial_error
     def send_command(self, command: int, data: Optional[int] = None) -> None:
         """Send a serial command to the board."""
-        command_bytes = chr(command).encode('utf-8')
-        bytes_written = self._serial.write(command_bytes)
-        if len(command_bytes) != bytes_written:
+        message: List[int] = [command]
+        if data is not None:
+            message += [data]
+        bytes_written = self._serial.write(bytes(message))
+        if len(message) != bytes_written:
             raise CommunicationError(
                 "Mismatch in command bytes written to serial interface.",
             )
-
-        if data is not None:
-            data_bytes = chr(data).encode()
-            bytes_written = self._serial.write(data_bytes)
-            # It is not possible to test the following if statement without refactor.
-            if len(data_bytes) != bytes_written:  # pragma: nocover
-                raise CommunicationError(
-                    "Mismatch in data bytes written to serial interface.",
-                )
 
     @handle_serial_error
     def read_serial_line(self) -> str:

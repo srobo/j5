@@ -279,15 +279,15 @@ def test_get_set_motor_state() -> None:
     assert backend.get_motor_state(0) == MotorSpecialState.BRAKE
     assert backend.get_motor_state(1) == MotorSpecialState.BRAKE
 
-    backend._serial.expects_prepend(b'\x02\xc3\x91')
+    backend._serial.expects_prepend(b'\x02\xd1')
     backend.set_motor_state(0, 0.65)
     assert backend.get_motor_state(0) == 0.65
 
-    backend._serial.expects_prepend(b'\x02\xc3\xbd')
+    backend._serial.expects_prepend(b'\x02\xfd')
     backend.set_motor_state(0, 1.0)
     assert backend.get_motor_state(0) == 1.0
 
-    backend._serial.expects_prepend(b'\x02\x03\xbd')
+    backend._serial.expects_prepend(b'\x02\x03')
     backend.set_motor_state(0, -1.0)
     assert backend.get_motor_state(0) == -1.0
 
