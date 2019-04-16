@@ -96,7 +96,7 @@ class SRV4PowerBoardConsoleBackend(
                              f"{self._output_states.keys()}") from None
 
     def buzz(self, identifier: int,
-             duration: timedelta, pitch: int) -> None:
+             duration: timedelta, pitch: float) -> None:
         """Queue a pitch to be played."""
         if identifier != 0:
             raise ValueError(f"invalid piezo identifier {identifier!r}; "

@@ -2,14 +2,14 @@
 
 from abc import abstractmethod
 from datetime import timedelta
-from enum import IntEnum
+from enum import Enum
 from typing import Generator, Type, Union
 
 from j5.boards import Board
 from j5.components.component import Component, Interface
 
 
-class Note(IntEnum):
+class Note(float, Enum):
     """An enumeration of notes.
 
     An enumeration of notes from scientific pitch
@@ -39,7 +39,7 @@ class Note(IntEnum):
         yield from reversed(self.__members__.items())  # type: ignore
 
 
-Pitch = Union[int, Note]
+Pitch = Union[int, float, Note]
 
 
 class PiezoInterface(Interface):
@@ -47,7 +47,7 @@ class PiezoInterface(Interface):
 
     @abstractmethod
     def buzz(self, identifier: int,
-             duration: timedelta, frequency: int) -> None:
+             duration: timedelta, frequency: float) -> None:
         """Queue a pitch to be played."""
         raise NotImplementedError  # pragma: no cover
 
@@ -67,6 +67,9 @@ class Piezo(Component):
 
     def buzz(self, duration: timedelta, pitch: Pitch) -> None:
         """Queue a note to be played."""
+        if type(pitch) is int:
+            pitch = float(pitch)
+
         self.verify_pitch(pitch)
         self.verify_duration(duration)
         self._backend.buzz(self._identifier, duration, pitch)
@@ -75,10 +78,10 @@ class Piezo(Component):
     def verify_pitch(pitch: Pitch) -> None:
         """Verify that a pitch is valid."""
         # Verify that the type is correct.
-        pitch_is_int = type(pitch) is int
+        pitch_is_float = type(pitch) is float
         pitch_is_note = type(pitch) is Note
-        if not (pitch_is_int or pitch_is_note):
-            raise TypeError("Pitch must be int or Note")
+        if not (pitch_is_float or pitch_is_note):
+            raise TypeError("Pitch must be float or Note")
 
         # Verify the length of the pitch is non-zero
         if pitch < 0:

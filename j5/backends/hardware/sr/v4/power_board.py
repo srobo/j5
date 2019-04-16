@@ -234,7 +234,7 @@ class SRV4PowerBoardHardwareBackend(
         return cast(int, current) / 1000  # convert milliamps to amps
 
     def buzz(self, identifier: int,
-             duration: timedelta, frequency: int) -> None:
+             duration: timedelta, frequency: float) -> None:
         """Queue a pitch to be played."""
         if identifier != 0:
             raise ValueError(f"invalid piezo identifier {identifier!r}; "
@@ -242,7 +242,7 @@ class SRV4PowerBoardHardwareBackend(
         duration_ms = round(duration / timedelta(milliseconds=1))
         if duration_ms > 65535:
             raise ValueError("Maximum piezo duration is 65535ms.")
-        data = struct.pack("<HH", frequency, duration_ms)
+        data = struct.pack("<HH", int(frequency), duration_ms)
         self._write(CMD_WRITE_PIEZO, data)
 
     def get_button_state(self, identifier: int) -> bool:
