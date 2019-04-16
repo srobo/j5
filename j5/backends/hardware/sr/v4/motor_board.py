@@ -97,7 +97,7 @@ class SRV4MotorBoardHardwareBackend(
         version = self.get_firmware_version()
         if version != "3":
             raise CommunicationError(
-                f"Unexpected firmware version: {version}, expected: 3.",
+                f"Unexpected firmware version: {version}, expected: \"3\".",
             )
 
         # Brake both of the motors
