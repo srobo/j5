@@ -42,6 +42,12 @@ def handle_serial_error(func: Callable[..., RT]) -> Callable[..., RT]:  # type: 
     return catch_exceptions
 
 
+def is_motor_board(port: ListPortInfo) -> bool:
+    """Check if a ListPortInfo represents a MCV4B."""
+    return port.manufacturer == "Student Robotics" and port.product == "MCV4B" \
+        and port.vid == 0x0403 and port.pid == 0x6001
+
+
 class SRV4MotorBoardHardwareBackend(
     MotorInterface,
     Backend,
@@ -61,15 +67,9 @@ class SRV4MotorBoardHardwareBackend(
         # Find all serial ports.
         ports: List[ListPortInfo] = find()
 
-        # Filter down to just motor boards.
-        ports = list(filter(lambda x: x.vid == 0x403, ports))  # FTDI, Ltd
-        ports = list(filter(lambda x: x.pid == 0x6001, ports))  # FT232 Serial (UART) IC
-        ports = list(filter(lambda x: x.manufacturer == "Student Robotics", ports))
-        ports = list(filter(lambda x: x.product == "MCV4B", ports))
-
         # Get a list of boards from the ports.
         boards: List[Board] = []
-        for port in ports:
+        for port in filter(is_motor_board, ports):
             boards.append(
                 MotorBoard(
                     port.serial_number,
