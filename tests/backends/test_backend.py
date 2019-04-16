@@ -124,7 +124,7 @@ def test_backend_check_has_environment() -> None:
     """Test that an error is thrown if a backend is defined without an environment."""
     with pytest.raises(ValueError):
         class NoEnvironmentBackend(Backend):
-            """I have no environment."""
+            """Backend definition with no environment."""
 
             board = MockBoard
 
@@ -142,8 +142,6 @@ def test_backend_check_multiple_backends_same_env() -> None:
 
     with pytest.raises(RuntimeError):
         class BackendOne(Backend):
-            """I have no environment."""
-
             board = MockBoard
             environment = test_environment
 
@@ -155,8 +153,6 @@ def test_backend_check_multiple_backends_same_env() -> None:
                 return None
 
         class BackendTwo(Backend):
-            """I have no environment."""
-
             board = MockBoard
             environment = test_environment
 
@@ -201,8 +197,6 @@ def test_backend_has_required_interface() -> None:
 
     with pytest.raises(TypeError):
         class BackendTwo(Backend):
-            """I have no environment."""
-
             board = LEDMockBoard
             environment = test_environment
 
