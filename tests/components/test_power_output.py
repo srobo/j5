@@ -97,7 +97,8 @@ def test_power_output_current() -> None:
 def test_power_output_group_instantiation() -> None:
     """Test that we can instantiate a PowerOutput group."""
     board = MockPowerOutputBoard()
-    outputs = {i: PowerOutput(i, board, MockPowerOutputDriver()) for i in range(0, 5)}
+    backend = MockPowerOutputDriver(5)
+    outputs = {i: PowerOutput(i, board, backend) for i in range(0, 5)}
     group = PowerOutputGroup(outputs)
     assert type(group) is PowerOutputGroup
 
