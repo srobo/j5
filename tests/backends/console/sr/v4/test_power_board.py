@@ -132,8 +132,7 @@ def test_backend_piezo_buzz() -> None:
     )
 
     # Buzz a Note.
-    # Note.D7 is defined as a float, so output is 2349.0
-    backend._console.expects = "Buzzing at 2349.0Hz for 10000ms"  # type: ignore
+    backend._console.expects = "Buzzing at 2349.3Hz for 10000ms"  # type: ignore
     backend.buzz(0, timedelta(seconds=10), Note.D7)
 
     # Buzz a frequency
