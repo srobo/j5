@@ -1,5 +1,5 @@
 """Tests for the motor classes."""
-from typing import TYPE_CHECKING, List, Mapping, Optional, Type
+from typing import TYPE_CHECKING, Mapping, Optional, Set, Type
 
 import pytest
 
@@ -59,9 +59,9 @@ class MockMotorBoard(Board):
         return None
 
     @staticmethod
-    def supported_components() -> List[Type["Component"]]:
+    def supported_components() -> Set[Type["Component"]]:
         """List the types of component that this Board supports."""
-        return [Motor]
+        return {Motor}
 
     def make_safe(self) -> None:
         """Make this board safe."""

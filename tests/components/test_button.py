@@ -1,6 +1,6 @@
 """Tests for the Button Classes."""
 from time import sleep, time
-from typing import List, Optional, Type
+from typing import Optional, Set, Type
 
 from j5.boards import Board
 from j5.components import Component
@@ -52,9 +52,9 @@ class MockButtonBoard(Board):
         pass
 
     @staticmethod
-    def supported_components() -> List[Type[Component]]:
+    def supported_components() -> Set[Type[Component]]:
         """List the types of component that this Board supports."""
-        return [Button]
+        return {Button}
 
 
 def test_button_interface_implementation() -> None:
