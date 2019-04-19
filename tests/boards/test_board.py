@@ -58,8 +58,9 @@ class NoBoardMockBackend(Backend):
     environment = Environment("MockEnvironment")
     board = MockBoard
 
-    def get_firmware_version(self) -> Optional[str]:
-        """Get the firmware version of the board."""
+    @property
+    def firmware_version(self) -> Optional[str]:
+        """The firmware version of the board."""
         return None
 
     @classmethod
@@ -74,8 +75,9 @@ class OneBoardMockBackend(Backend):
     environment = Environment("MockEnvironment")
     board = MockBoard
 
-    def get_firmware_version(self) -> Optional[str]:
-        """Get the firmware version of the board."""
+    @property
+    def firmware_version(self) -> Optional[str]:
+        """The firmware version of the board."""
         return None
 
     @classmethod
@@ -90,8 +92,9 @@ class TwoBoardsMockBackend(Backend):
     environment = Environment("MockEnvironment")
     board = MockBoard
 
-    def get_firmware_version(self) -> Optional[str]:
-        """Get the firmware version of the board."""
+    @property
+    def firmware_version(self) -> Optional[str]:
+        """The firmware version of the board."""
         return None
 
     @classmethod

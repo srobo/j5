@@ -43,8 +43,9 @@ class MockPowerBoardBackend(
         """Discover the PowerBoards on this backend."""
         return set()
 
-    def get_firmware_version(self) -> Optional[str]:
-        """Get the firmware version reported by the board."""
+    @property
+    def firmware_version(self) -> Optional[str]:
+        """The firmware version of the board."""
         return None
 
     def get_power_output_enabled(self, identifier: int) -> bool:
