@@ -12,6 +12,13 @@ jobs:
       - image: j5api/ci:3.6
     steps:
       - checkout
+      - run:
+          name: Merge with master
+          command: |
+            git config user.name "dummy"
+            git config user.email "dummy@example.org"
+            git fetch origin master
+            git merge --squash origin/master
       - restore_cache:
           keys:
             - pip-packages-{{ .Branch }}-{{ checksum "poetry.lock" }}
