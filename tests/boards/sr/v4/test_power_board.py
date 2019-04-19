@@ -1,6 +1,6 @@
 """Tests for the SR v4 Power Board and related classes."""
 from datetime import timedelta
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, Optional, Set
 
 from j5.backends import Backend, Environment
 from j5.boards.sr.v4 import PowerBoard, PowerOutputGroup, PowerOutputPosition
@@ -39,9 +39,9 @@ class MockPowerBoardBackend(
     board = PowerBoard
 
     @classmethod
-    def discover(cls) -> List["Board"]:
+    def discover(cls) -> Set["Board"]:
         """Discover the PowerBoards on this backend."""
-        return []
+        return set()
 
     def get_firmware_version(self) -> Optional[str]:
         """Get the firmware version reported by the board."""
@@ -99,7 +99,7 @@ def test_power_board_instantiation() -> None:
 
 def test_power_board_discover() -> None:
     """Test that we can discover PowerBoards."""
-    assert MockPowerBoardBackend.discover() == []
+    assert MockPowerBoardBackend.discover() == set()
 
 
 def test_power_board_name() -> None:
@@ -114,6 +114,12 @@ def test_power_board_serial() -> None:
     pb = PowerBoard("SERIAL0", MockPowerBoardBackend())
 
     assert pb.serial == "SERIAL0"
+
+
+def test_firmware_version() -> None:
+    """Test the firmware_version attribute of the PowerBoard."""
+    pb = PowerBoard("SERIAL0", MockPowerBoardBackend())
+    assert pb.firmware_version is None
 
 
 def test_power_board_make_safe() -> None:
@@ -168,3 +174,11 @@ def test_power_board_error_led() -> None:
     pb = PowerBoard("SERIAL0", MockPowerBoardBackend())
 
     assert type(pb._error_led) is LED
+
+
+def test_power_board_wait_start() -> None:
+    """Test the wait_for_start_flash method."""
+    pb = PowerBoard("SERIAL0", MockPowerBoardBackend())
+
+    # Note: This isn't a great test, but ensures that the code runs at least.
+    pb.wait_for_start_flash()

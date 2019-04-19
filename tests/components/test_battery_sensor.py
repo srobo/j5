@@ -1,5 +1,5 @@
 """Tests for the Battery Sensor Classes."""
-from typing import TYPE_CHECKING, List, Optional, Type
+from typing import TYPE_CHECKING, Optional, Set, Type
 
 from j5.boards import Board
 from j5.components.battery_sensor import BatterySensor, BatterySensorInterface
@@ -37,9 +37,9 @@ class MockBatterySensorBoard(Board):
         return "SERIAL"
 
     @staticmethod
-    def supported_components() -> List[Type['Component']]:
+    def supported_components() -> Set[Type['Component']]:
         """List the types of component that this Board supports."""
-        return [BatterySensor]
+        return {BatterySensor}
 
     @property
     def firmware_version(self) -> Optional[str]:

@@ -1,5 +1,5 @@
 """Tests for the LED Classes."""
-from typing import TYPE_CHECKING, List, Optional, Type
+from typing import TYPE_CHECKING, Optional, Set, Type
 
 from j5.boards import Board
 from j5.components.led import LED, LEDInterface
@@ -42,9 +42,9 @@ class MockLEDBoard(Board):
         return None
 
     @staticmethod
-    def supported_components() -> List[Type['Component']]:
+    def supported_components() -> Set[Type['Component']]:
         """List the types of component that this Board supports."""
-        return [LED]
+        return {LED}
 
     def make_safe(self) -> None:
         """Make this board safe."""

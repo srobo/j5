@@ -1,7 +1,7 @@
 """Console Backend for the SR V4 power board."""
 
 from datetime import timedelta
-from typing import Dict, List, Optional, Type
+from typing import Dict, Optional, Set, Type
 
 from j5.backends import Backend
 from j5.backends.console.env import Console, ConsoleEnvironment
@@ -30,7 +30,7 @@ class SRV4PowerBoardConsoleBackend(
     board = PowerBoard
 
     @classmethod
-    def discover(cls) -> List[Board]:
+    def discover(cls) -> Set[Board]:
         """Discover boards that this backend can control."""
         raise NotImplementedError("The Console Backend cannot discover boards.")
 

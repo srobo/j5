@@ -1,5 +1,5 @@
 """Test the base classes for boards."""
-from typing import TYPE_CHECKING, List, Optional, Type
+from typing import TYPE_CHECKING, Optional, Set, Type
 
 import pytest
 
@@ -15,6 +15,7 @@ class MockBoard(Board):
 
     def __init__(self, serial: str):
         self._serial = serial
+        self._safe = False
 
     @property
     def name(self) -> str:
@@ -33,12 +34,12 @@ class MockBoard(Board):
 
     def make_safe(self) -> None:
         """Make this board safe."""
-        pass
+        self._safe = True
 
     @staticmethod
-    def supported_components() -> List[Type["Component"]]:
+    def supported_components() -> Set[Type["Component"]]:
         """List the types of component supported by this Board."""
-        return []
+        return set()
 
 
 class MockBoardWithConstructor(MockBoard):
@@ -62,9 +63,9 @@ class NoBoardMockBackend(Backend):
         return None
 
     @classmethod
-    def discover(cls) -> List[Board]:
+    def discover(cls) -> Set[Board]:
         """Discover boards available on this backend."""
-        return []
+        return set()
 
 
 class OneBoardMockBackend(Backend):
@@ -78,9 +79,9 @@ class OneBoardMockBackend(Backend):
         return None
 
     @classmethod
-    def discover(cls) -> List[Board]:
+    def discover(cls) -> Set[Board]:
         """Discover boards available on this backend."""
-        return [MockBoard("TESTSERIAL1")]
+        return {MockBoard("TESTSERIAL1")}
 
 
 class TwoBoardsMockBackend(Backend):
@@ -94,12 +95,9 @@ class TwoBoardsMockBackend(Backend):
         return None
 
     @classmethod
-    def discover(cls) -> List[Board]:
+    def discover(cls) -> Set[Board]:
         """Discover boards available on this backend."""
-        # These serial numbers are deliberately in reverse lexiographic order, to ensure
-        # that sorting the boards (as tested by
-        # test_board_group_iteration_sorted_by_serial) actually has an effect.
-        return [MockBoard("TESTSERIAL2"), MockBoard("TESTSERIAL1")]
+        return {MockBoard("TESTSERIAL1"), MockBoard("TESTSERIAL2")}
 
 
 def test_testing_board_instantiation() -> None:
@@ -146,7 +144,7 @@ def test_testing_board_repr() -> None:
 
 def test_discover() -> None:
     """Test that the detect all static method works."""
-    assert NoBoardMockBackend.discover() == []
+    assert NoBoardMockBackend.discover() == set()
     assert len(OneBoardMockBackend.discover()) == 1
     assert len(TwoBoardsMockBackend.discover()) == 2
 
@@ -320,3 +318,12 @@ def test_board_group_simultaneous_iteration() -> None:
     assert next(iter2) is board_group["TESTSERIAL1"]
     assert next(iter1) is board_group["TESTSERIAL2"]
     assert next(iter2) is board_group["TESTSERIAL2"]
+
+
+def test_board_group_make_safe() -> None:
+    """Test that the make_safe function is called on all Boards in a BoardGroup."""
+    board_group = BoardGroup(MockBoard, TwoBoardsMockBackend)
+
+    assert not any(board._safe for board in board_group)  # type: ignore
+    board_group.make_safe()
+    assert all(board._safe for board in board_group)  # type: ignore
