@@ -14,8 +14,9 @@ TestEnvironment = Environment("TestEnvironment")
 class Robot(BaseRobot):
     """A robot."""
 
-    def __init__(self) -> None:
+    def __init__(self, debug: bool = False) -> None:
         self._env = TestEnvironment
+        self.debug = debug
 
 
 def test_robot_lock() -> None:
@@ -29,3 +30,10 @@ def test_robot_lock() -> None:
 
     with pytest.raises(UnableToObtainLock):
         Robot()
+
+
+def test_robot_with_args() -> None:
+    """Test that a Robot can accept additional args."""
+    r = Robot(debug=True)
+
+    assert r.debug
