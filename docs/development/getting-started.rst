@@ -8,7 +8,15 @@ repository and pull request from there.
 If you are working on something that has an existing issue open on the `j5` repository, please ensure that you assign
 the issue to yourself such that duplication of work does not accidentally occur.
 
-If you need help with Git, there are plenty of good tutorials online.
+If you need help with Git, there are some good tutorial resources here:
+
+- `Git - The Simple Guide`_
+- `GitHub - Learning Git`_
+- `Atlassian Git Tutorial`_
+
+.. _`Git - The Simple Guide`: https://rogerdudler.github.io/git-guide/
+.. _`GitHub - Learning Git`: https://try.github.io/
+.. _`Atlassian Git Tutorial`: https://www.atlassian.com/git
 
 Setting Up
 ----------
