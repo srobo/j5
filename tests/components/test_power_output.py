@@ -1,15 +1,9 @@
 """Tests for the power output classes."""
-from typing import TYPE_CHECKING, Optional, Set, Type
-
-from j5.boards import Board
 from j5.components.power_output import (
     PowerOutput,
     PowerOutputGroup,
     PowerOutputInterface,
 )
-
-if TYPE_CHECKING:
-    from j5.components import Component  # noqa
 
 
 class MockPowerOutputDriver(PowerOutputInterface):
@@ -33,37 +27,6 @@ class MockPowerOutputDriver(PowerOutputInterface):
         return 8.1
 
 
-class MockPowerOutputBoard(Board):
-    """A testing board for the power output."""
-
-    def __init__(self) -> None:
-        pass
-
-    @property
-    def name(self) -> str:
-        """The name of this board."""
-        return "Testing Power Output Board"
-
-    @property
-    def serial(self) -> str:
-        """The serial number of this board."""
-        return "SERIAL"
-
-    @property
-    def firmware_version(self) -> Optional[str]:
-        """Get the firmware version of this board."""
-        return None
-
-    @staticmethod
-    def supported_components() -> Set[Type["Component"]]:
-        """List the types of component that this Board supports."""
-        return {PowerOutput}
-
-    def make_safe(self) -> None:
-        """Make this board safe."""
-        pass
-
-
 def test_power_output_interface_implementation() -> None:
     """Test that we can implement the PowerOutputInterface."""
     MockPowerOutputDriver()
@@ -71,7 +34,7 @@ def test_power_output_interface_implementation() -> None:
 
 def test_power_output_instantiation() -> None:
     """Test that we can instantiate a PowerOutput."""
-    PowerOutput(0, MockPowerOutputBoard(), MockPowerOutputDriver())
+    PowerOutput(0, MockPowerOutputDriver())
 
 
 def test_power_output_interface() -> None:
@@ -81,7 +44,7 @@ def test_power_output_interface() -> None:
 
 def test_power_output_enabled() -> None:
     """Test the is_enabled property of a PowerOutput."""
-    power_output = PowerOutput(0, MockPowerOutputBoard(), MockPowerOutputDriver())
+    power_output = PowerOutput(0, MockPowerOutputDriver())
     assert power_output.is_enabled is False
     power_output.is_enabled = True
     assert power_output.is_enabled is True
@@ -89,24 +52,22 @@ def test_power_output_enabled() -> None:
 
 def test_power_output_current() -> None:
     """Test the current property of a PowerOutput."""
-    power_output = PowerOutput(0, MockPowerOutputBoard(), MockPowerOutputDriver())
+    power_output = PowerOutput(0, MockPowerOutputDriver())
     assert type(power_output.current) is float
     assert power_output.current == 8.1
 
 
 def test_power_output_group_instantiation() -> None:
     """Test that we can instantiate a PowerOutput group."""
-    board = MockPowerOutputBoard()
     backend = MockPowerOutputDriver(5)
-    outputs = {i: PowerOutput(i, board, backend) for i in range(0, 5)}
+    outputs = {i: PowerOutput(i, backend) for i in range(0, 5)}
     group = PowerOutputGroup(outputs)
     assert type(group) is PowerOutputGroup
 
 
 def test_power_output_group_power_toggle() -> None:
     """Test that we can toggle a PowerOutputGroup."""
-    board = MockPowerOutputBoard()
-    outputs = {i: PowerOutput(i, board, MockPowerOutputDriver()) for i in range(0, 5)}
+    outputs = {i: PowerOutput(i, MockPowerOutputDriver()) for i in range(0, 5)}
     group = PowerOutputGroup(outputs)
 
     assert not any(output.is_enabled for output in group)
@@ -120,8 +81,7 @@ def test_power_output_group_power_toggle() -> None:
 
 def test_power_output_group_len() -> None:
     """Test the length attribute of PowerOutputGroup."""
-    board = MockPowerOutputBoard()
-    outputs = {i: PowerOutput(i, board, MockPowerOutputDriver()) for i in range(0, 5)}
+    outputs = {i: PowerOutput(i, MockPowerOutputDriver()) for i in range(0, 5)}
     group = PowerOutputGroup(outputs)
 
     assert len(group) == 5

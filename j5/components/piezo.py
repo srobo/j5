@@ -5,7 +5,6 @@ from datetime import timedelta
 from enum import IntEnum
 from typing import Generator, Type, Union
 
-from j5.boards import Board
 from j5.components.component import Component, Interface
 
 
@@ -55,8 +54,7 @@ class PiezoInterface(Interface):
 class Piezo(Component):
     """A standard piezo."""
 
-    def __init__(self, identifier: int, board: Board, backend: PiezoInterface) -> None:
-        self._board = board
+    def __init__(self, identifier: int, backend: PiezoInterface) -> None:
         self._backend = backend
         self._identifier = identifier
 

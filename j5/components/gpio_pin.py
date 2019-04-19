@@ -4,7 +4,6 @@ from abc import abstractmethod
 from enum import IntEnum
 from typing import List, Optional, Type
 
-from j5.boards import Board
 from j5.components.component import (
     Component,
     Interface,
@@ -96,12 +95,10 @@ class GPIOPin(Component):
     def __init__(
             self,
             identifier: int,
-            board: Board,
             backend: GPIOPinInterface,
             supported_modes: List[GPIOPinMode] = [GPIOPinMode.DIGITAL_OUTPUT],
             initial_mode: Optional[GPIOPinMode] = None,
     ) -> None:
-        self._board = board
         self._backend = backend
         self._identifier = identifier
         self._supported_modes = supported_modes
@@ -136,8 +133,7 @@ class GPIOPin(Component):
         """Set the hardware mode of this pin."""
         if pin_mode not in self._supported_modes:
             raise NotSupportedByHardwareError(
-                f"Pin {self._identifier} on {str(self._board)} \
-                does not support {str(pin_mode)}.",
+                f"Pin {self._identifier} does not support {str(pin_mode)}.",
             )
         self._backend.set_gpio_pin_mode(self._identifier, pin_mode)
 

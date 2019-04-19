@@ -1,18 +1,14 @@
 """Tests for the motor classes."""
-from typing import TYPE_CHECKING, Mapping, Optional, Set, Type
+from typing import Mapping
 
 import pytest
 
-from j5.boards import Board
 from j5.components.motor import (
     Motor,
     MotorInterface,
     MotorSpecialState,
     MotorState,
 )
-
-if TYPE_CHECKING:
-    from j5.components import Component  # noqa
 
 
 class MockMotorDriver(MotorInterface):
@@ -37,37 +33,6 @@ class MockMotorDriver(MotorInterface):
         pass
 
 
-class MockMotorBoard(Board):
-    """A testing board for motors."""
-
-    def __init__(self) -> None:
-        pass
-
-    @property
-    def name(self) -> str:
-        """The name of this board."""
-        return "Testing Motor Board"
-
-    @property
-    def serial(self) -> str:
-        """The serial number of this board."""
-        return "SERIAL"
-
-    @property
-    def firmware_version(self) -> Optional[str]:
-        """Get the firmware version of this board."""
-        return None
-
-    @staticmethod
-    def supported_components() -> Set[Type["Component"]]:
-        """List the types of component that this Board supports."""
-        return {Motor}
-
-    def make_safe(self) -> None:
-        """Make this board safe."""
-        pass
-
-
 def test_motor_interface_implementation() -> None:
     """Test that we can implement the MotorInterface."""
     MockMotorDriver()
@@ -80,13 +45,13 @@ def test_motor_interface_class() -> None:
 
 def test_motor_instantiation() -> None:
     """Test that we can instantiate a Motor."""
-    Motor(0, MockMotorBoard(), MockMotorDriver())
+    Motor(0, MockMotorDriver())
 
 
 def test_motor_get_state_float() -> None:
     """Test that we can get the state of a motor."""
-    motor0 = Motor(0, MockMotorBoard(), MockMotorDriver())
-    motor1 = Motor(1, MockMotorBoard(), MockMotorDriver())
+    motor0 = Motor(0, MockMotorDriver())
+    motor1 = Motor(1, MockMotorDriver())
 
     assert type(motor0.state) is float
     assert type(motor1.state) is float
@@ -97,8 +62,8 @@ def test_motor_get_state_float() -> None:
 
 def test_motor_get_state_special() -> None:
     """Test that we can get the special state of a motor."""
-    motor0 = Motor(2, MockMotorBoard(), MockMotorDriver())
-    motor1 = Motor(3, MockMotorBoard(), MockMotorDriver())
+    motor0 = Motor(2, MockMotorDriver())
+    motor1 = Motor(3, MockMotorDriver())
 
     assert type(motor0.state) is MotorSpecialState
     assert type(motor1.state) is MotorSpecialState
@@ -109,7 +74,7 @@ def test_motor_get_state_special() -> None:
 
 def test_motor_set_state() -> None:
     """Test that we can set the state of a motor."""
-    motor = Motor(0, MockMotorBoard(), MockMotorDriver())
+    motor = Motor(0, MockMotorDriver())
 
     motor.state = 0
     motor.state = 1
@@ -122,7 +87,7 @@ def test_motor_set_state() -> None:
 
 def test_motor_set_state_out_of_bounds() -> None:
     """Test that an error is thrown when the state is out of bounds."""
-    motor = Motor(0, MockMotorBoard(), MockMotorDriver())
+    motor = Motor(0, MockMotorDriver())
 
     with pytest.raises(ValueError):
         motor.state = 1.1

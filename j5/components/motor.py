@@ -4,7 +4,6 @@ from abc import abstractmethod
 from enum import Enum
 from typing import Type, Union
 
-from j5.boards import Board
 from j5.components.component import Component, Interface
 
 
@@ -38,10 +37,8 @@ class Motor(Component):
     def __init__(
             self,
             identifier: int,
-            board: Board,
             backend: MotorInterface,
     ) -> None:
-        self._board = board
         self._backend = backend
         self._identifier = identifier
 

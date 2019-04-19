@@ -1,15 +1,10 @@
 """Tests for the Piezo Classes."""
 
 from datetime import timedelta
-from typing import TYPE_CHECKING, Optional, Set, Type
 
 import pytest
 
-from j5.boards import Board
 from j5.components.piezo import Note, Piezo, PiezoInterface
-
-if TYPE_CHECKING:
-    from j5.components import Component  # noqa
 
 
 class MockPiezoDriver(PiezoInterface):
@@ -21,37 +16,6 @@ class MockPiezoDriver(PiezoInterface):
         pass
 
 
-class MockPiezoBoard(Board):
-    """A testing board for the piezo."""
-
-    def __init__(self) -> None:
-        pass
-
-    @property
-    def name(self) -> str:
-        """The name of this board."""
-        return "Mock Piezo Board"
-
-    @property
-    def serial(self) -> str:
-        """The serial number of this board."""
-        return "SERIAL"
-
-    @property
-    def firmware_version(self) -> Optional[str]:
-        """Get the firmware version of this board."""
-        return None
-
-    @staticmethod
-    def supported_components() -> Set[Type['Component']]:
-        """List the components that this Board supports."""
-        return {Piezo}
-
-    def make_safe(self) -> None:
-        """Make this board safe."""
-        pass
-
-
 def test_piezo_interface_implementation() -> None:
     """Test that we can implement the PiezoInterface."""
     MockPiezoDriver()
@@ -59,25 +23,25 @@ def test_piezo_interface_implementation() -> None:
 
 def test_piezo_instantiation() -> None:
     """Test that we can instantiate an piezo."""
-    Piezo(0, MockPiezoBoard(), MockPiezoDriver())
+    Piezo(0, MockPiezoDriver())
 
 
 def test_piezo_interface_class_method() -> None:
     """Tests piezo's interface_class method."""
-    piezo = Piezo(0, MockPiezoBoard(), MockPiezoDriver())
+    piezo = Piezo(0, MockPiezoDriver())
     assert piezo.interface_class() is PiezoInterface
 
 
 def test_piezo_buzz_method() -> None:
     """Tests piezo's buzz method's input validation."""
-    piezo = Piezo(0, MockPiezoBoard(), MockPiezoDriver())
+    piezo = Piezo(0, MockPiezoDriver())
     piezo.buzz(timedelta(seconds=1), 2093)
     piezo.buzz(timedelta(minutes=1), Note.D7)
 
 
 def test_piezo_buzz_invalid_value() -> None:
     """Test piezo's buzz method's input validation."""
-    piezo = Piezo(0, MockPiezoBoard(), MockPiezoDriver())
+    piezo = Piezo(0, MockPiezoDriver())
     with pytest.raises(ValueError):
         piezo.buzz(timedelta(seconds=1), -42)
     with pytest.raises(TypeError):

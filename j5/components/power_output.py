@@ -3,7 +3,6 @@
 from abc import abstractmethod
 from typing import Iterator, Mapping, Type, TypeVar
 
-from j5.boards import Board
 from j5.components.component import Component, Interface
 
 
@@ -37,10 +36,9 @@ class PowerOutput(Component):
     """
 
     def __init__(
-        self, identifier: int, board: Board, backend: PowerOutputInterface,
+        self, identifier: int, backend: PowerOutputInterface,
     ) -> None:
         self._identifier = identifier
-        self._board = board
         self._backend = backend
 
     @staticmethod
