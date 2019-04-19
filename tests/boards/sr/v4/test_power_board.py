@@ -116,6 +116,12 @@ def test_power_board_serial() -> None:
     assert pb.serial == "SERIAL0"
 
 
+def test_firmware_version() -> None:
+    """Test the firmware_version attribute of the PowerBoard."""
+    pb = PowerBoard("SERIAL0", MockPowerBoardBackend())
+    assert pb.firmware_version is None
+
+
 def test_power_board_make_safe() -> None:
     """Test the make_safe method of the PowerBoard."""
     pb = PowerBoard("SERIAL0", MockPowerBoardBackend())
@@ -168,3 +174,11 @@ def test_power_board_error_led() -> None:
     pb = PowerBoard("SERIAL0", MockPowerBoardBackend())
 
     assert type(pb._error_led) is LED
+
+
+def test_power_board_wait_start() -> None:
+    """Test the wait_for_start_flash method."""
+    pb = PowerBoard("SERIAL0", MockPowerBoardBackend())
+
+    # Note: This isn't a great test, but ensures that the code runs at least.
+    pb.wait_for_start_flash()

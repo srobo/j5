@@ -15,6 +15,7 @@ class MockBoard(Board):
 
     def __init__(self, serial: str):
         self._serial = serial
+        self._safe = False
 
     @property
     def name(self) -> str:
@@ -33,7 +34,7 @@ class MockBoard(Board):
 
     def make_safe(self) -> None:
         """Make this board safe."""
-        pass
+        self._safe = True
 
     @staticmethod
     def supported_components() -> Set[Type["Component"]]:
@@ -317,3 +318,12 @@ def test_board_group_simultaneous_iteration() -> None:
     assert next(iter2) is board_group["TESTSERIAL1"]
     assert next(iter1) is board_group["TESTSERIAL2"]
     assert next(iter2) is board_group["TESTSERIAL2"]
+
+
+def test_board_group_make_safe() -> None:
+    """Test that the make_safe function is called on all Boards in a BoardGroup."""
+    board_group = BoardGroup(MockBoard, TwoBoardsMockBackend)
+
+    assert not any(board._safe for board in board_group)  # type: ignore
+    board_group.make_safe()
+    assert all(board._safe for board in board_group)  # type: ignore

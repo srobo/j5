@@ -3,7 +3,7 @@
 from abc import ABCMeta, abstractmethod
 from typing import TYPE_CHECKING, Dict, Optional, Set, Type
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: nocover
     from j5.boards import Board  # noqa
 
 
@@ -41,7 +41,10 @@ class BackendMeta(ABCMeta):
                 cls.environment.register_backend(cls.board, cls)
                 return cls
 
-        raise RuntimeError(f"The {str(cls)} has no environment attribute")
+        # The following line should never run, as _check_compatibility should fail first.
+        raise RuntimeError(  # pragma: nocover
+            f"The {str(cls)} has no environment attribute",
+        )
 
     def _check_compatibility(cls):  # type: ignore
         """Check that the backend and environment are compatible."""

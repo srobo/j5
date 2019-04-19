@@ -6,6 +6,7 @@ import pytest
 
 from j5.backends import Backend, Environment
 from j5.boards import Board
+from j5.components import LED
 
 if TYPE_CHECKING:
     from j5.components import Component  # noqa
@@ -117,3 +118,91 @@ def test_environment_board_get_backend_unknown() -> None:
     environment = MockEnvironment
     with pytest.raises(NotImplementedError):
         assert environment.get_backend(Mock2Board)
+
+
+def test_backend_check_has_environment() -> None:
+    """Test that an error is thrown if a backend is defined without an environment."""
+    with pytest.raises(ValueError):
+        class NoEnvironmentBackend(Backend):
+            """Backend definition with no environment."""
+
+            board = MockBoard
+
+            @classmethod
+            def discover(cls) -> Set['Board']:
+                return set()
+
+            def get_firmware_version(self) -> Optional[str]:
+                return None
+
+
+def test_backend_check_multiple_backends_same_env() -> None:
+    """Test that we can't define two backends for the same board/environment combo."""
+    test_environment = Environment("test_environment")
+
+    with pytest.raises(RuntimeError):
+        class BackendOne(Backend):
+            board = MockBoard
+            environment = test_environment
+
+            @classmethod
+            def discover(cls) -> Set['Board']:
+                return set()
+
+            def get_firmware_version(self) -> Optional[str]:
+                return None
+
+        class BackendTwo(Backend):
+            board = MockBoard
+            environment = test_environment
+
+            @classmethod
+            def discover(cls) -> Set['Board']:
+                return set()
+
+            def get_firmware_version(self) -> Optional[str]:
+                return None
+
+
+def test_backend_has_required_interface() -> None:
+    """Test that the backend has to have the required interfaces."""
+    test_environment = Environment("test_environment")
+
+    class LEDMockBoard(Board):
+        """A test board."""
+
+        @property
+        def name(self) -> str:
+            """The name of the board."""
+            return "Test Board 2"
+
+        @property
+        def serial(self) -> str:
+            """The serial number of the board."""
+            return "TEST2"
+
+        def make_safe(self) -> None:
+            """Make this board safe."""
+            pass
+
+        @property
+        def firmware_version(self) -> Optional[str]:
+            """Get the firmware version of this board."""
+            return None
+
+        @staticmethod
+        def supported_components() -> Set[Type["Component"]]:
+            """List the types of component supported by this Board."""
+            return {LED}
+
+    with pytest.raises(TypeError):
+        class BackendTwo(Backend):
+            board = LEDMockBoard
+            environment = test_environment
+
+            @classmethod
+            def discover(cls) -> Set['Board']:
+                return set()
+
+            def get_firmware_version(self) -> Optional[str]:
+                return None
