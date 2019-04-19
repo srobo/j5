@@ -1,6 +1,6 @@
 """Hardware Backend for the SR v4 motor board."""
 from functools import wraps
-from typing import Callable, List, Optional, Type, TypeVar, cast
+from typing import Callable, List, Optional, Set, Type, TypeVar, cast
 
 from serial import Serial, SerialException, SerialTimeoutException
 from serial.tools.list_ports import comports
@@ -62,15 +62,15 @@ class SRV4MotorBoardHardwareBackend(
             cls,
             find: Callable = comports,
             serial_class: Type[Serial] = Serial,
-    ) -> List[Board]:
+    ) -> Set[Board]:
         """Discover all connected motor boards."""
         # Find all serial ports.
         ports: List[ListPortInfo] = find()
 
         # Get a list of boards from the ports.
-        boards: List[Board] = []
+        boards: Set[Board] = set()
         for port in filter(is_motor_board, ports):
-            boards.append(
+            boards.add(
                 MotorBoard(
                     port.serial_number,
                     SRV4MotorBoardHardwareBackend(port.device, serial_class),

@@ -1,5 +1,5 @@
 """Tests for the SR v4 Motor Board."""
-from typing import List, Optional
+from typing import List, Optional, Set
 
 from j5.backends import Backend, Environment
 from j5.boards import Board
@@ -21,9 +21,9 @@ class MockMotorBoardBackend(MotorInterface, Backend):
     board = MotorBoard
 
     @classmethod
-    def discover(cls) -> List[Board]:
+    def discover(cls) -> Set[Board]:
         """Discover the Motor Boards on this backend."""
-        return []
+        return set()
 
     def __init__(self) -> None:
         self._states: List[MotorState] = [
@@ -46,12 +46,12 @@ class MockMotorBoardBackend(MotorInterface, Backend):
 
 def test_motor_board_supported_components() -> None:
     """Test the supported components on the motor board."""
-    assert MotorBoard.supported_components() == [Motor]
+    assert MotorBoard.supported_components() == {Motor}
 
 
 def test_motor_board_discover() -> None:
     """Test that we can discover motor boards."""
-    assert MockMotorBoardBackend.discover() == []
+    assert MockMotorBoardBackend.discover() == set()
 
 
 def test_motor_board_instantiation() -> None:

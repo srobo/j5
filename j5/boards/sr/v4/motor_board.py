@@ -1,5 +1,5 @@
 """Classes for the SR v4 Motor Board."""
-from typing import TYPE_CHECKING, List, Optional, Type, cast
+from typing import TYPE_CHECKING, List, Optional, Set, Type, cast
 
 from j5.backends import Backend
 from j5.boards import Board
@@ -50,6 +50,6 @@ class MotorBoard(Board):
             output.state = MotorSpecialState.BRAKE
 
     @staticmethod
-    def supported_components() -> List[Type['Component']]:
+    def supported_components() -> Set[Type['Component']]:
         """List the types of components supported by this board."""
-        return [Motor]
+        return {Motor}
