@@ -19,7 +19,7 @@ class MotorBoard(Board):
         self._backend = backend
 
         self._outputs: List[Motor] = [
-            Motor(output, self, cast(MotorInterface, self._backend))
+            Motor(output, cast(MotorInterface, self._backend))
             for output in range(0, 2)
         ]
 
