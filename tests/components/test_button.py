@@ -1,9 +1,6 @@
 """Tests for the Button Classes."""
 from time import sleep, time
-from typing import Optional, Set, Type
 
-from j5.boards import Board
-from j5.components import Component
 from j5.components.button import Button, ButtonInterface
 
 
@@ -26,37 +23,6 @@ class MockButtonDriver(ButtonInterface):
         sleep(0.2)  # The mock driver always presses the button after 0.2s
 
 
-class MockButtonBoard(Board):
-    """A testing board for the button."""
-
-    def __init__(self) -> None:
-        pass
-
-    @property
-    def name(self) -> str:
-        """The name of this board."""
-        return "Testing Button Board"
-
-    @property
-    def serial(self) -> str:
-        """The serial number of this board."""
-        return "SERIAL"
-
-    @property
-    def firmware_version(self) -> Optional[str]:
-        """Get the firmware version of this board."""
-        return None
-
-    def make_safe(self) -> None:
-        """Make this board safe."""
-        pass
-
-    @staticmethod
-    def supported_components() -> Set[Type[Component]]:
-        """List the types of component that this Board supports."""
-        return {Button}
-
-
 def test_button_interface_implementation() -> None:
     """Test that we can implement the button interface."""
     MockButtonDriver()
@@ -64,13 +30,13 @@ def test_button_interface_implementation() -> None:
 
 def test_button_instantiation() -> None:
     """Test that we can instantiate a button."""
-    Button(0, MockButtonBoard(), MockButtonDriver())
+    Button(0, MockButtonDriver())
 
 
 def test_button_state() -> None:
     """Test that we can get the state of the button."""
     driver = MockButtonDriver()
-    button = Button(0, MockButtonBoard(), driver)
+    button = Button(0, driver)
 
     assert button.is_pressed is False
     driver.set_button_state(True)
@@ -79,7 +45,7 @@ def test_button_state() -> None:
 
 def test_button_wait_until_pressed() -> None:
     """Test that the button takes at least 0.2 secs to be pressed."""
-    button = Button(0, MockButtonBoard(), MockButtonDriver())
+    button = Button(0, MockButtonDriver())
     start_time = time()
     button.wait_until_pressed()
     end_time = time()

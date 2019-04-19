@@ -3,7 +3,6 @@
 from abc import abstractmethod
 from typing import Type
 
-from j5.boards import Board
 from j5.components.component import Component, Interface
 
 
@@ -24,8 +23,7 @@ class ButtonInterface(Interface):
 class Button(Component):
     """A button."""
 
-    def __init__(self, identifier: int, board: Board, backend: ButtonInterface) -> None:
-        self._board = board
+    def __init__(self, identifier: int, backend: ButtonInterface) -> None:
         self._backend = backend
         self._identifier = identifier
 

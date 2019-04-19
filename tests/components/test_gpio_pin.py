@@ -1,10 +1,9 @@
 """Tests for the GPIO Pin Classes."""
-from typing import List, Optional, Set, Type
+from typing import List
 
 import pytest
 
-from j5.boards import Board
-from j5.components import Component, NotSupportedByHardwareError
+from j5.components import NotSupportedByHardwareError
 from j5.components.gpio_pin import (
     BadGPIOPinModeError,
     GPIOPin,
@@ -72,37 +71,6 @@ class MockGPIOPinDriver(GPIOPinInterface):
         pass
 
 
-class MockGPIOPinBoard(Board):
-    """A testing board for the GPIO pin."""
-
-    def __init__(self) -> None:
-        pass
-
-    @property
-    def name(self) -> str:
-        """The name of this board."""
-        return "Testing GPIO Pin Board"
-
-    @property
-    def serial(self) -> str:
-        """The serial number of this board."""
-        return "SERIAL"
-
-    @property
-    def firmware_version(self) -> Optional[str]:
-        """Get the firmware version of this board."""
-        return None
-
-    def make_safe(self) -> None:
-        """Make this board safe."""
-        pass
-
-    @staticmethod
-    def supported_components() -> Set[Type[Component]]:
-        """List the types of component that this Board supports."""
-        return {GPIOPin}
-
-
 def test_gpio_pin_interface_implementation() -> None:
     """Test that we can implement the GPIO pin interface."""
     MockGPIOPinDriver()
@@ -110,7 +78,7 @@ def test_gpio_pin_interface_implementation() -> None:
 
 def test_gpio_pin_instantiation() -> None:
     """Test that we can instantiate a GPIO pin."""
-    GPIOPin(0, MockGPIOPinBoard(), MockGPIOPinDriver())
+    GPIOPin(0, MockGPIOPinDriver())
 
 
 def test_gpio_pin_interface_class() -> None:
@@ -124,7 +92,6 @@ def test_pin_mode_getter() -> None:
 
     pin = GPIOPin(
         0,
-        MockGPIOPinBoard(),
         driver,
         initial_mode=GPIOPinMode.DIGITAL_INPUT,
         supported_modes=[GPIOPinMode.DIGITAL_INPUT, GPIOPinMode.DIGITAL_OUTPUT],
@@ -141,7 +108,6 @@ def test_pin_mode_setter() -> None:
 
     pin = GPIOPin(
         0,
-        MockGPIOPinBoard(),
         driver,
         initial_mode=GPIOPinMode.DIGITAL_INPUT,
         supported_modes=[GPIOPinMode.DIGITAL_INPUT, GPIOPinMode.DIGITAL_OUTPUT],
@@ -160,13 +126,12 @@ def test_initial_mode() -> None:
     driver = MockGPIOPinDriver()
 
     # Implicit initial mode with default supported modes
-    GPIOPin(0, MockGPIOPinBoard(), driver)
+    GPIOPin(0, driver)
     assert driver._mode[0] is GPIOPinMode.DIGITAL_OUTPUT
 
     # Implicit initial mode with specified supported modes
     GPIOPin(
         1,
-        MockGPIOPinBoard(),
         driver,
         supported_modes=[GPIOPinMode.DIGITAL_INPUT],
     )
@@ -175,7 +140,6 @@ def test_initial_mode() -> None:
     # Explicit initial mode with default supported modes
     GPIOPin(
         2,
-        MockGPIOPinBoard(),
         driver,
         initial_mode=GPIOPinMode.DIGITAL_OUTPUT,
     )
@@ -184,7 +148,6 @@ def test_initial_mode() -> None:
     # Explicit initial mode with specified supported modes
     GPIOPin(
         2,
-        MockGPIOPinBoard(),
         driver,
         initial_mode=GPIOPinMode.DIGITAL_INPUT,
         supported_modes=[GPIOPinMode.DIGITAL_INPUT],
@@ -195,7 +158,6 @@ def test_initial_mode() -> None:
     with pytest.raises(NotSupportedByHardwareError):
         GPIOPin(
             2,
-            MockGPIOPinBoard(),
             driver,
             initial_mode=GPIOPinMode.DIGITAL_INPUT,
         )
@@ -203,7 +165,6 @@ def test_initial_mode() -> None:
     with pytest.raises(NotSupportedByHardwareError):
         GPIOPin(
             2,
-            MockGPIOPinBoard(),
             driver,
             initial_mode=GPIOPinMode.DIGITAL_INPUT,
             supported_modes=[GPIOPinMode.DIGITAL_OUTPUT],
@@ -217,7 +178,6 @@ def test_supported_modes_length() -> None:
     with pytest.raises(ValueError):
         GPIOPin(
             0,
-            MockGPIOPinBoard(),
             driver,
             supported_modes=[],
         )
@@ -228,7 +188,6 @@ def test_required_pin_modes() -> None:
     driver = MockGPIOPinDriver()
     pin = GPIOPin(
         0,
-        MockGPIOPinBoard(),
         driver,
         supported_modes=[
             GPIOPinMode.DIGITAL_OUTPUT,
@@ -257,7 +216,6 @@ def test_digital_state_getter() -> None:
     driver = MockGPIOPinDriver()
     pin = GPIOPin(
         0,
-        MockGPIOPinBoard(),
         driver,
         supported_modes=[
             GPIOPinMode.DIGITAL_OUTPUT,
@@ -296,7 +254,6 @@ def test_digital_state_setter() -> None:
     driver = MockGPIOPinDriver()
     pin = GPIOPin(
         0,
-        MockGPIOPinBoard(),
         driver,
         supported_modes=[
             GPIOPinMode.DIGITAL_OUTPUT,
@@ -318,7 +275,6 @@ def test_analogue_value_getter() -> None:
     driver = MockGPIOPinDriver()
     pin = GPIOPin(
         0,
-        MockGPIOPinBoard(),
         driver,
         supported_modes=[
             GPIOPinMode.DIGITAL_OUTPUT,
@@ -340,7 +296,6 @@ def test_analogue_value_setter() -> None:
     driver = MockGPIOPinDriver()
     pin = GPIOPin(
         0,
-        MockGPIOPinBoard(),
         driver,
         supported_modes=[
             GPIOPinMode.ANALOGUE_OUTPUT,

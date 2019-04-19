@@ -3,7 +3,6 @@
 from abc import abstractmethod
 from typing import Type
 
-from j5.boards import Board
 from j5.components.component import Component, Interface
 
 
@@ -25,9 +24,8 @@ class BatterySensor(Component):
     """A sensor capable of monitoring a battery."""
 
     def __init__(
-        self, identifier: int, board: Board, backend: BatterySensorInterface,
+        self, identifier: int, backend: BatterySensorInterface,
     ) -> None:
-        self._board = board
         self._backend = backend
         self._identifier = identifier
 

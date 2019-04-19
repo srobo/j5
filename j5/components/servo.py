@@ -3,7 +3,6 @@
 from abc import abstractmethod
 from typing import Type, Union
 
-from j5.boards import Board
 from j5.components.component import Component, Interface
 
 # A servo can be powered down by setting its position to None.
@@ -31,8 +30,7 @@ class ServoInterface(Interface):
 class Servo(Component):
     """A standard servomotor."""
 
-    def __init__(self, identifier: int, board: Board, backend: ServoInterface) -> None:
-        self._board = board
+    def __init__(self, identifier: int, backend: ServoInterface) -> None:
         self._backend = backend
         self._identifier = identifier
 

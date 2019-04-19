@@ -51,7 +51,7 @@ class PowerBoard(Board):
 
         self._outputs: Mapping[PowerOutputPosition, PowerOutput] = {
             output: PowerOutput(
-                output.value, self, cast("PowerOutputInterface", self._backend),
+                output.value, cast("PowerOutputInterface", self._backend),
             )
             for output in PowerOutputPosition
             # Note that in Python 3, Enums are ordered.
@@ -59,14 +59,14 @@ class PowerBoard(Board):
 
         self._output_group = PowerOutputGroup(self._outputs)
 
-        self._piezo = Piezo(0, self, cast("PiezoInterface", self._backend))
-        self._start_button = Button(0, self, cast("ButtonInterface", self._backend))
+        self._piezo = Piezo(0, cast("PiezoInterface", self._backend))
+        self._start_button = Button(0, cast("ButtonInterface", self._backend))
         self._battery_sensor = BatterySensor(
-            0, self, cast("BatterySensorInterface", self._backend),
+            0, cast("BatterySensorInterface", self._backend),
         )
 
-        self._run_led = LED(0, self, cast("LEDInterface", self._backend))
-        self._error_led = LED(1, self, cast("LEDInterface", self._backend))
+        self._run_led = LED(0, cast("LEDInterface", self._backend))
+        self._error_led = LED(1, cast("LEDInterface", self._backend))
 
     @property
     def name(self) -> str:

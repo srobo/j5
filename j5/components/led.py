@@ -3,7 +3,6 @@
 from abc import abstractmethod
 from typing import Type
 
-from j5.boards import Board
 from j5.components.component import Component, Interface
 
 
@@ -24,8 +23,7 @@ class LEDInterface(Interface):
 class LED(Component):
     """A standard Light Emitting Diode."""
 
-    def __init__(self, identifier: int, board: Board, backend: LEDInterface) -> None:
-        self._board = board
+    def __init__(self, identifier: int, backend: LEDInterface) -> None:
         self._backend = backend
         self._identifier = identifier
 
