@@ -35,10 +35,6 @@ class SRV4MotorBoardConsoleBackend(
         # Setup console helper
         self._console = console_class(f"{self.board.__name__}({self._serial})")
 
-    def get_firmware_version(self) -> Optional[str]:
-        """The firmware version reported by the board."""
-        return None  # Console, so no firmware
-
     @property
     def serial(self) -> str:
         """The serial number reported by the board."""
@@ -47,7 +43,7 @@ class SRV4MotorBoardConsoleBackend(
     @property
     def firmware_version(self) -> Optional[str]:
         """The firmware version reported by the board."""
-        return self.get_firmware_version()
+        return None  # Console, so no firmware
 
     def get_motor_state(self, identifier: int) -> MotorState:
         """Get the current motor state."""

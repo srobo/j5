@@ -94,7 +94,7 @@ class SRV4MotorBoardHardwareBackend(
         )
 
         # Check we have the correct firmware version.
-        version = self.get_firmware_version()
+        version = self.firmware_version
         if version != "3":
             raise CommunicationError(
                 f"Unexpected firmware version: {version}, expected: \"3\".",
@@ -139,8 +139,9 @@ class SRV4MotorBoardHardwareBackend(
         ldata = bdata.decode('utf-8')
         return ldata.rstrip()
 
-    def get_firmware_version(self) -> Optional[str]:
-        """Get the firmware version of the board."""
+    @property
+    def firmware_version(self) -> Optional[str]:
+        """The firmware version of the board."""
         self.send_command(CMD_VERSION)
         firmware_data = self.read_serial_line()
         model = firmware_data[:5]

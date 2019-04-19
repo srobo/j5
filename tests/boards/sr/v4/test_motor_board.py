@@ -31,8 +31,9 @@ class MockMotorBoardBackend(MotorInterface, Backend):
             for _ in range(0, 2)
         ]
 
-    def get_firmware_version(self) -> Optional[str]:
-        """Get the firmware version reported by the board."""
+    @property
+    def firmware_version(self) -> Optional[str]:
+        """The firmware version of the board."""
         return None
 
     def get_motor_state(self, identifier: int) -> MotorState:

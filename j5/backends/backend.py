@@ -95,9 +95,10 @@ class Backend(metaclass=BackendMeta):
         """Environment the backend belongs too."""
         raise NotImplementedError  # pragma: no cover
 
+    @property
     @abstractmethod
-    def get_firmware_version(self) -> Optional[str]:
-        """Get the firmware version of the board."""
+    def firmware_version(self) -> Optional[str]:
+        """The firmware version of the board."""
         raise NotImplementedError  # pragma: no cover
 
 

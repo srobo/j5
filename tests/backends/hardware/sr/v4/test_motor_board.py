@@ -263,13 +263,13 @@ def test_get_firmware_version() -> None:
     backend = SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerial)
     backend._serial.flush()
     backend._serial.expects_prepend(b'\x01')
-    assert backend.get_firmware_version() == "3"
+    assert backend.firmware_version == "3"
 
     backend._serial.flush()
     backend._serial.expects_prepend(b'\x01')
     backend._serial.buffer_append(b'PBV4C:5', newline=True)
     with pytest.raises(CommunicationError):
-        backend.get_firmware_version()
+        backend.firmware_version
 
 
 def test_get_set_motor_state() -> None:

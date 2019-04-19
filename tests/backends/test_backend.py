@@ -82,8 +82,9 @@ class MockBackend(Backend):
         """Discover boards available on this backend."""
         return set()
 
-    def get_firmware_version(self) -> Optional[str]:
-        """Get the firmware version of the board."""
+    @property
+    def firmware_version(self) -> Optional[str]:
+        """The firmware version of the board."""
         return None
 
 

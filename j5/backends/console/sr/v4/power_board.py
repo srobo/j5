@@ -58,10 +58,6 @@ class SRV4PowerBoardConsoleBackend(
         """The serial number reported by the board."""
         return self._serial
 
-    def get_firmware_version(self) -> Optional[str]:
-        """Get the firmware version reported by the board."""
-        return None
-
     def get_power_output_enabled(self, identifier: int) -> bool:
         """Get whether a power output is enabled."""
         try:

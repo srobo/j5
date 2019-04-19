@@ -81,7 +81,7 @@ class PowerBoard(Board):
     @property
     def firmware_version(self) -> Optional[str]:
         """Get the firmware version of the board."""
-        return self._backend.get_firmware_version()
+        return self._backend.firmware_version
 
     @property
     def outputs(self) -> PowerOutputGroup:

@@ -37,8 +37,6 @@ def test_backend_firmware_version() -> None:
 
     assert backend.firmware_version is None
 
-    assert backend.get_firmware_version() is None
-
 
 def test_backend_serial_number() -> None:
     """Test that we can get the serial number."""

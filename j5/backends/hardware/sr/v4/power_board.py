@@ -9,7 +9,6 @@ from typing import (
     Dict,
     Mapping,
     NamedTuple,
-    Optional,
     Set,
     TypeVar,
     Union,
@@ -198,10 +197,6 @@ class SRV4PowerBoardHardwareBackend(
         """The serial number reported by the board."""
         # https://github.com/python/mypy/issues/1362
         return self._usb_device.serial_number  # type: ignore
-
-    def get_firmware_version(self) -> Optional[str]:
-        """Get the firmware version reported by the board."""
-        return str(self.firmware_version)
 
     def get_power_output_enabled(self, identifier: int) -> bool:
         """Get whether a power output is enabled."""
