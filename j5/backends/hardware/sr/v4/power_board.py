@@ -242,7 +242,8 @@ class SRV4PowerBoardHardwareBackend(
         duration_ms = round(duration / timedelta(milliseconds=1))
         if duration_ms > 65535:
             raise ValueError("Maximum piezo duration is 65535ms.")
-        data = struct.pack("<HH", int(frequency), duration_ms)
+        frequency_int = int(round(frequency))
+        data = struct.pack("<HH", frequency_int, duration_ms)
         self._write(CMD_WRITE_PIEZO, data)
 
     def get_button_state(self, identifier: int) -> bool:
