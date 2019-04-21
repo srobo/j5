@@ -160,7 +160,6 @@ use the board but it may be of interest to some people.
 .. _Hardware designs: https://www.studentrobotics.org/cgit/boards/power-v4-hw.git/
 
 
-.. Note:: Some of the above documentation has been taken and modified from the `Student Robotics`_ docs, which can be found here_.
+.. Note:: Some of the documentation in this section has been taken and modified from `Student Robotics`_. See here_ for more information.
 
-.. _Student Robotics: https://studentrobotics.org/
-.. _here: https://github.com/srobo/docs/blob/master/kit/power_board.md
+.. _here: LICENSE.html

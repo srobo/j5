@@ -162,7 +162,6 @@ You do not need this information to use the board but it may be of interest to s
 .. _Firmware source: https://github.com/j5api/sr-motor-v4-fw
 .. _Hardware designs: https://www.studentrobotics.org/cgit/boards/motor-v4-hw.git/
 
-.. Note:: Some of the above documentation has been taken and modified from the `Student Robotics`_ docs, which can be found here_.
+.. Note:: Some of the documentation in this section has been modified from Student Robotics. See here_ for more information.
 
-.. _Student Robotics: https://studentrobotics.org/
-.. _here: https://github.com/srobo/docs/blob/master/kit/motor_board.md
+.. _here: LICENSE
