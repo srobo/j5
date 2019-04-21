@@ -87,6 +87,8 @@ Setting Motor Speeds
 
 The value of a motor can be set by sending the appropriate command, and then a second byte as follows:
 
+The argument byte is a standard 8-bit signed number, where a few values are reserved for the special cases of no-op, coast and brake.
+
 +---------------+-------------------------------------------------------------+
 | Decimal Value | Purpose                                                     |
 +===============+=============================================================+
@@ -95,12 +97,6 @@ The value of a motor can be set by sending the appropriate command, and then a s
 | 1             | Coast the motor                                             |
 +---------------+-------------------------------------------------------------+
 | 2             | Brake the motor                                             |
-+---------------+-------------------------------------------------------------+
-| 3 - 127       | Set speed of motor to negative.                             |
-+---------------+-------------------------------------------------------------+
-| 128           | Set speed of motor to 0                                     |
-+---------------+-------------------------------------------------------------+
-| 129 - 255     | Set speed of motor positive. Subtract 128 to get the value. |
 +---------------+-------------------------------------------------------------+
 
 Firmware String
