@@ -160,4 +160,4 @@ You do not need this information to use the board but it may be of interest to s
 
 .. Note:: Some of the documentation in this section has been modified from Student Robotics. See here_ for more information.
 
-.. _here: LICENSE
+.. _here: LICENSE.html

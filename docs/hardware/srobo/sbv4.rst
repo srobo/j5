@@ -5,4 +5,4 @@ Servo Board v4
 
 .. Note:: Some of the documentation in this section has been modified from Student Robotics. See here_ for more information.
 
-.. _here: LICENSE
+.. _here: LICENSE.html
