@@ -20,6 +20,10 @@ USB, which has proven to be a more reliable communication method than their prev
    pbv4
    sbv4
 
+.. Note:: Some of the documentation in this section has been taken and modified from `Student Robotics`_. See here_ for more information.
+
+.. _here: LICENSE.html
+
 .. _Student Robotics: https://studentrobotics.org
 .. _ODROID U3: https://en.wikipedia.org/wiki/ODROID
 
