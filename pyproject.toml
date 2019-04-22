@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "j5"
-version = "0.2.0"
+version = "0.3.0"
 description = "J5 Robotics API"
 authors = ["j5 contributors <sro@soton.ac.uk>"]
 license = "MIT"
