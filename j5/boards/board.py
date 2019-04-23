@@ -120,6 +120,10 @@ class BoardGroup(Generic[T]):
         """Get the number of boards in this group."""
         return len(self._boards)
 
+    def __contains__(self, serial: str) -> bool:
+        """Check if a board is in this group."""
+        return serial in self._boards
+
     def __iter__(self) -> Iterator[T]:
         """
         Iterate over the boards in the group.

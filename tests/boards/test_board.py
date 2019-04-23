@@ -284,6 +284,14 @@ def test_board_group_get_boards() -> None:
     assert type(board_group.boards[0]) is MockBoard
 
 
+def test_board_group_contains() -> None:
+    """Test that __contains__ behaves as expected."""
+    board_group = BoardGroup[MockBoard](TwoBoardsMockBackend)
+    assert "TESTSERIAL1" in board_group
+    assert "TESTSERIAL2" in board_group
+    assert "TESTSERIAL3" not in board_group
+
+
 def test_board_group_iteration() -> None:
     """Test that we can iterate over a BoardGroup."""
     board_group = BoardGroup[MockBoard](TwoBoardsMockBackend)
