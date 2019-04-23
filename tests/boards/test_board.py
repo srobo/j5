@@ -160,35 +160,35 @@ def test_testing_board_added_to_boards_list() -> None:
 
 def test_create_boardgroup() -> None:
     """Test that we can create a board group of testing boards."""
-    board_group = BoardGroup(MockBoard, NoBoardMockBackend)
+    board_group = BoardGroup[MockBoard](NoBoardMockBackend)
     assert type(board_group) == BoardGroup
 
 
 def test_board_group_update() -> None:
     """Test that we can create a board group of testing boards."""
-    board_group = BoardGroup(MockBoard, NoBoardMockBackend)
+    board_group = BoardGroup[MockBoard](NoBoardMockBackend)
     board_group.update_boards()
 
 
 def test_board_group_singular() -> None:
     """Test that the singular function works on a board group."""
-    board_group = BoardGroup(MockBoard, OneBoardMockBackend)
+    board_group = BoardGroup[MockBoard](OneBoardMockBackend)
 
     assert type(board_group.singular()) == MockBoard
 
 
 def test_board_group_str() -> None:
     """Test that the board group can be represented as a string."""
-    assert str(BoardGroup(MockBoard, NoBoardMockBackend)) == "Group of Boards - []"
-    assert str(BoardGroup(MockBoard, OneBoardMockBackend)) == \
+    assert str(BoardGroup[MockBoard](NoBoardMockBackend)) == "Group of Boards - []"
+    assert str(BoardGroup[MockBoard](OneBoardMockBackend)) == \
         "Group of Boards - [Testing Board - TESTSERIAL1]"
-    assert str(BoardGroup(MockBoard, TwoBoardsMockBackend)) == \
+    assert str(BoardGroup[MockBoard](TwoBoardsMockBackend)) == \
         "Group of Boards - [Testing Board - TESTSERIAL1, Testing Board - TESTSERIAL2]"
 
 
 def test_board_group_singular_but_multiple_boards() -> None:
     """Test that the singular function gets upset if there are multiple boards."""
-    board_group = BoardGroup(MockBoard, TwoBoardsMockBackend)
+    board_group = BoardGroup[MockBoard](TwoBoardsMockBackend)
 
     with pytest.raises(Exception):
         board_group.singular()
@@ -196,7 +196,7 @@ def test_board_group_singular_but_multiple_boards() -> None:
 
 def test_board_group_boards() -> None:
     """Test that the boards property works on a board group."""
-    board_group = BoardGroup(MockBoard, OneBoardMockBackend)
+    board_group = BoardGroup[MockBoard](OneBoardMockBackend)
 
     assert len(board_group._boards) == 1
     assert type(list(board_group._boards
@@ -205,7 +205,7 @@ def test_board_group_boards() -> None:
 
 def test_board_group_boards_multiple() -> None:
     """Test that the boards property works on multiple boards."""
-    board_group = BoardGroup(MockBoard, TwoBoardsMockBackend)
+    board_group = BoardGroup[MockBoard](TwoBoardsMockBackend)
 
     assert len(board_group._boards) == 2
     assert type(list(board_group._boards
@@ -214,7 +214,7 @@ def test_board_group_boards_multiple() -> None:
 
 def test_board_group_boards_zero() -> None:
     """Test that the boards property works with no boards."""
-    board_group = BoardGroup(MockBoard, NoBoardMockBackend)
+    board_group = BoardGroup[MockBoard](NoBoardMockBackend)
 
     assert len(board_group._boards) == 0
 
@@ -224,15 +224,15 @@ def test_board_group_boards_zero() -> None:
 
 def test_board_group_board_by_serial() -> None:
     """Test that the boards property works with serial indices."""
-    board_group = BoardGroup(MockBoard, OneBoardMockBackend)
-    BoardGroup(MockBoard, OneBoardMockBackend)
+    board_group = BoardGroup[MockBoard](OneBoardMockBackend)
+    BoardGroup[MockBoard](OneBoardMockBackend)
 
     assert type(board_group[list(board_group._boards.values())[0].serial]) == MockBoard
 
 
 def test_board_group_board_by_unknown() -> None:
     """Test that the boards property throws an exception with unknown indices."""
-    board_group = BoardGroup(MockBoard, OneBoardMockBackend)
+    board_group = BoardGroup[MockBoard](OneBoardMockBackend)
 
     with pytest.raises(TypeError):
         board_group[0]  # type: ignore
@@ -249,42 +249,35 @@ def test_board_group_board_by_unknown() -> None:
 
 def test_board_group_length_zero() -> None:
     """Test that the length operator works with no boards."""
-    board_group = BoardGroup(MockBoard, NoBoardMockBackend)
+    board_group = BoardGroup[MockBoard](NoBoardMockBackend)
 
     assert len(board_group) == 0
 
 
 def test_board_group_length() -> None:
     """Test that the length operator works on a board group."""
-    board_group = BoardGroup(MockBoard, OneBoardMockBackend)
+    board_group = BoardGroup[MockBoard](OneBoardMockBackend)
 
     assert len(board_group) == 1
 
 
 def test_board_group_length_multiple() -> None:
     """Test that the length operator works on multiple boards."""
-    board_group = BoardGroup(MockBoard, TwoBoardsMockBackend)
+    board_group = BoardGroup[MockBoard](TwoBoardsMockBackend)
 
     assert len(board_group) == 2
 
 
-def test_board_group_get_board_class() -> None:
-    """Test that the Board class getter works."""
-    board_group = BoardGroup(MockBoard, TwoBoardsMockBackend)
-
-    assert board_group.board_class is MockBoard
-
-
 def test_board_group_get_backend_class() -> None:
     """Test that the Backend class getter works."""
-    board_group = BoardGroup(MockBoard, TwoBoardsMockBackend)
+    board_group = BoardGroup[MockBoard](TwoBoardsMockBackend)
 
     assert board_group.backend_class is TwoBoardsMockBackend
 
 
 def test_board_group_get_boards() -> None:
     """Test that the boards list getter works."""
-    board_group = BoardGroup(MockBoard, TwoBoardsMockBackend)
+    board_group = BoardGroup[MockBoard](TwoBoardsMockBackend)
 
     assert type(board_group.boards) is list
     assert len(board_group.boards) == 2
@@ -293,7 +286,7 @@ def test_board_group_get_boards() -> None:
 
 def test_board_group_iteration() -> None:
     """Test that we can iterate over a BoardGroup."""
-    board_group = BoardGroup(MockBoard, TwoBoardsMockBackend)
+    board_group = BoardGroup[MockBoard](TwoBoardsMockBackend)
 
     count = 0
 
@@ -306,7 +299,7 @@ def test_board_group_iteration() -> None:
 
 def test_board_group_iteration_sorted_by_serial() -> None:
     """Test that the boards yielded by iterating over a BoardGroup are sorted."""
-    board_group = BoardGroup(MockBoard, TwoBoardsMockBackend)
+    board_group = BoardGroup[MockBoard](TwoBoardsMockBackend)
     serials = [board.serial for board in board_group]
     assert len(serials) == 2
     assert serials[0] < serials[1]
@@ -314,7 +307,7 @@ def test_board_group_iteration_sorted_by_serial() -> None:
 
 def test_board_group_simultaneous_iteration() -> None:
     """Test that iterators returned by iter(BoardGroup) are independent."""
-    board_group = BoardGroup(MockBoard, TwoBoardsMockBackend)
+    board_group = BoardGroup[MockBoard](TwoBoardsMockBackend)
     iter1 = iter(board_group)
     iter2 = iter(board_group)
     assert next(iter1) is board_group["TESTSERIAL1"]
@@ -325,8 +318,8 @@ def test_board_group_simultaneous_iteration() -> None:
 
 def test_board_group_make_safe() -> None:
     """Test that the make_safe function is called on all Boards in a BoardGroup."""
-    board_group = BoardGroup(MockBoard, TwoBoardsMockBackend)
+    board_group = BoardGroup[MockBoard](TwoBoardsMockBackend)
 
-    assert not any(board._safe for board in board_group)  # type: ignore
+    assert not any(board._safe for board in board_group)
     board_group.make_safe()
-    assert all(board._safe for board in board_group)  # type: ignore
+    assert all(board._safe for board in board_group)

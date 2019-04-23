@@ -3,7 +3,18 @@
 import atexit
 from abc import ABCMeta, abstractmethod
 from collections import OrderedDict
-from typing import TYPE_CHECKING, Dict, Iterator, List, Optional, Set, Type
+from typing import (
+    TYPE_CHECKING,
+    Dict,
+    Generic,
+    Iterator,
+    List,
+    Optional,
+    Set,
+    Type,
+    TypeVar,
+    cast,
+)
 
 from j5.backends import Backend
 
@@ -69,24 +80,26 @@ class Board(metaclass=ABCMeta):
             board.make_safe()
 
 
-class BoardGroup:
+T = TypeVar('T', bound='Board')
+
+
+class BoardGroup(Generic[T]):
     """A group of boards that can be accessed."""
 
-    def __init__(self, board_class: Type[Board], backend_class: Type[Backend]):
-        self._board_class = board_class
+    def __init__(self, backend_class: Type[Backend]):
         self._backend_class = backend_class
-        self._boards: Dict[str, Board] = OrderedDict()
+        self._boards: Dict[str, T] = OrderedDict()
 
         self.update_boards()
 
     def update_boards(self) -> None:
         """Update the boards in this group to see if new boards have been added."""
-        self._boards: Dict[str, Board] = OrderedDict()
+        self._boards: Dict[str, T] = OrderedDict()
         discovered_boards = self._backend_class.discover()
         for board in sorted(discovered_boards, key=lambda b: b.serial):
-            self._boards.update({board.serial: board})
+            self._boards.update({board.serial: cast(T, board)})
 
-    def singular(self) -> Board:
+    def singular(self) -> T:
         """If there is only a single board in the group, return that board."""
         if len(self) == 1:
             return list(self._boards.values())[0]
@@ -107,7 +120,7 @@ class BoardGroup:
         """Get the number of boards in this group."""
         return len(self._boards)
 
-    def __iter__(self) -> Iterator[Board]:
+    def __iter__(self) -> Iterator[T]:
         """
         Iterate over the boards in the group.
 
@@ -115,7 +128,7 @@ class BoardGroup:
         """
         return iter(self._boards.values())
 
-    def __getitem__(self, serial: str) -> Board:
+    def __getitem__(self, serial: str) -> T:
         """Get the board from serial."""
         try:
             return self._boards[serial]
@@ -125,16 +138,11 @@ class BoardGroup:
             raise KeyError(f"Could not find a board with the serial {serial}")
 
     @property
-    def board_class(self) -> Type[Board]:
-        """The type of board that this group contains."""
-        return self._board_class
-
-    @property
     def backend_class(self) -> Type[Backend]:
         """The Backend that this group uses for Boards."""
         return self._backend_class
 
     @property
-    def boards(self) -> List[Board]:
+    def boards(self) -> List[T]:
         """Get an unordered list of boards in this group."""
         return list(self._boards.values())
