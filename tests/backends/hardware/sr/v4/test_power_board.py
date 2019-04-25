@@ -7,6 +7,7 @@ from typing import List, Optional, Union
 import pytest
 import usb
 
+from j5.backends.hardware.j5.raw_usb import USBCommunicationError
 from j5.backends.hardware.sr.v4.power_board import (
     CMD_READ_5VRAIL,
     CMD_READ_BATTERY,
@@ -19,7 +20,6 @@ from j5.backends.hardware.sr.v4.power_board import (
     CMD_WRITE_RUNLED,
     ReadCommand,
     SRV4PowerBoardHardwareBackend,
-    USBCommunicationError,
     WriteCommand,
     handle_usb_error,
 )
