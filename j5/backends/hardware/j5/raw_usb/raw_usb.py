@@ -98,6 +98,11 @@ class RawUSBHardwareBackend(metaclass=BackendMeta):
         return self._usb_device.serial_number  # type: ignore
 
     @handle_usb_error
+    def __del__(self) -> None:
+        """Clean up device on destruction of object."""
+        usb.util.dispose_resources(self._usb_device)
+
+    @handle_usb_error
     def _read(self, command: ReadCommand) -> bytes:
         return self._usb_device.ctrl_transfer(
             0x80,

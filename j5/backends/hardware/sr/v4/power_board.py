@@ -83,11 +83,6 @@ class SRV4PowerBoardHardwareBackend(
         }
         self.check_firmware_version_supported()
 
-    @handle_usb_error
-    def __del__(self) -> None:
-        """Clean up device on destruction of object."""
-        usb.util.dispose_resources(self._usb_device)
-
     def check_firmware_version_supported(self) -> None:
         """Raises an exception if the firmware version is not supported."""
         v = self.firmware_version
