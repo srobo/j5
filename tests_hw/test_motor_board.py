@@ -42,9 +42,11 @@ if __name__ == '__main__':
     print("Waiting for start button...")
     r.power_board.wait_for_start_flash()
 
+    print(f"Serial number: {r.motor_board.serial}")
     print(f"Firmware version: {r.motor_board.firmware_version}")
 
     for m in r.motor_board.motors:
+        print(f"Testing output {m._identifier}")
         for v in range(-10, 10):
             m.state = v / 10
             sleep(0.1)
