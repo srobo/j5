@@ -80,12 +80,7 @@ def test_servo_board_make_safe() -> None:
     """Test the make_safe method of the servo board."""
     sb = ServoBoard("SERIAL0", MockServoBoardBackend())
 
-    for s in sb.servos:
-        s.position = 1
-
     sb.make_safe()
-
-    assert all(s.position is None for s in sb.servos)
 
 
 def test_servo_board_servos() -> None:

@@ -39,10 +39,12 @@ class ServoBoard(Board):
         return self._backend.firmware_version
 
     def make_safe(self) -> None:
-        """Make this board safe."""
-        for servo in self._servos:
-            # Brake both motors.
-            servo.position = None
+        """
+        Make this board safe.
+
+        It is safest to leave the servos where they are, so do nothing.
+        """
+        pass
 
     @staticmethod
     def supported_components() -> Set[Type['Component']]:
