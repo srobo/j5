@@ -44,7 +44,7 @@ class SRV4ServoBoardConsoleBackend(
 
     def get_servo_position(self, identifier: int) -> ServoPosition:
         """Get the servo position."""
-        # We are unable to read the state from the motor board, in hardware
+        # We are unable to read the state from the servo board, in hardware
         # so instead of asking, we'll get the last set value.
         return self._positions[identifier]
 
@@ -56,7 +56,7 @@ class SRV4ServoBoardConsoleBackend(
             )
         self._positions[identifier] = position
         if position is None:
-            position_human_name = "unpowered"
+            position_human_name = "Unpowered"
         else:
             position_human_name = str(position)
         self._console.info(f"Setting servo {identifier} to {position_human_name}.")
