@@ -6,7 +6,7 @@ authors = ["j5 contributors <sro@soton.ac.uk>"]
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/j5api/j5"
-homepage = "https://j5.readthedocs.io"
+homepage = "https://j5.org.uk"
 documentation = "https://j5.readthedocs.io"
 classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
