@@ -44,7 +44,7 @@ class SRV4ServoBoardConsoleBackend(
 
     def get_servo_position(self, identifier: int) -> ServoPosition:
         """Get the servo position."""
-        # We are unable to read the state from the motor board, in hardware
+        # We are unable to read the state from the servo board, in hardware
         # so instead of asking, we'll get the last set value.
         return self._positions[identifier]
 
