@@ -56,7 +56,7 @@ class SRV4ServoBoardConsoleBackend(
             )
         self._positions[identifier] = position
         if position is None:
-            position_human_name = "Unpowered"
+            position_human_name = "unpowered"
         else:
             position_human_name = str(position)
         self._console.info(f"Setting servo {identifier} to {position_human_name}.")
