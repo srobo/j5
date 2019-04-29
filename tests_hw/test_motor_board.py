@@ -46,7 +46,7 @@ if __name__ == '__main__':
     print(f"Firmware version: {r.motor_board.firmware_version}")
 
     for m in r.motor_board.motors:
-        print(f"Testing output {m._identifier}")
+        print(f"Testing output {m.identifier}")
         for v in range(-10, 10):
             m.state = v / 10
             sleep(0.1)
