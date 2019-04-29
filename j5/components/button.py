@@ -33,6 +33,11 @@ class Button(Component):
         return ButtonInterface
 
     @property
+    def identifier(self) -> int:
+        """An integer to identify the component on a board."""
+        return self._identifier
+
+    @property
     def is_pressed(self) -> bool:
         """Get the current pushed state of the button."""
         return self._backend.get_button_state(self._identifier)

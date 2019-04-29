@@ -63,6 +63,11 @@ class Piezo(Component):
         """Get the interface class that is required to use this component."""
         return PiezoInterface
 
+    @property
+    def identifier(self) -> int:
+        """An integer to identify the component on a board."""
+        return self._identifier
+
     def buzz(self, duration: timedelta, pitch: Pitch) -> None:
         """Queue a note to be played."""
         if type(pitch) is int:

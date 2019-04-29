@@ -35,6 +35,11 @@ class BatterySensor(Component):
         return BatterySensorInterface
 
     @property
+    def identifier(self) -> int:
+        """An integer to identify the component on a board."""
+        return self._identifier
+
+    @property
     def voltage(self) -> float:
         """Get the voltage of the battery sensor."""
         return self._backend.get_battery_sensor_voltage(self._identifier)

@@ -32,6 +32,12 @@ def test_piezo_interface_class_method() -> None:
     assert piezo.interface_class() is PiezoInterface
 
 
+def test_piezo_identifier() -> None:
+    """Test the identifier attribute of the component."""
+    component = Piezo(0, MockPiezoDriver())
+    assert component.identifier == 0
+
+
 def test_piezo_buzz_method() -> None:
     """Tests piezo's buzz method's input validation."""
     piezo = Piezo(0, MockPiezoDriver())

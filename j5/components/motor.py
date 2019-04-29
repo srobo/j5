@@ -48,6 +48,11 @@ class Motor(Component):
         return MotorInterface
 
     @property
+    def identifier(self) -> int:
+        """An integer to identify the component on a board."""
+        return self._identifier
+
+    @property
     def state(self) -> MotorState:
         """Get the current state of this output."""
         return self._backend.get_motor_state(self._identifier)

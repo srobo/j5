@@ -47,6 +47,11 @@ class PowerOutput(Component):
         return PowerOutputInterface
 
     @property
+    def identifier(self) -> int:
+        """An integer to identify the component on a board."""
+        return self._identifier
+
+    @property
     def is_enabled(self) -> bool:
         """Get whether the output is enabled."""
         return self._backend.get_power_output_enabled(self._identifier)

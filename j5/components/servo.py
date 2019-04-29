@@ -40,6 +40,11 @@ class Servo(Component):
         return ServoInterface
 
     @property
+    def identifier(self) -> int:
+        """An integer to identify the component on a board."""
+        return self._identifier
+
+    @property
     def position(self) -> ServoPosition:
         """Get the current position of the Servo."""
         return self._backend.get_servo_position(self._identifier)

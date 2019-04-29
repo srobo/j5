@@ -86,6 +86,12 @@ def test_gpio_pin_interface_class() -> None:
     assert GPIOPin.interface_class() is GPIOPinInterface
 
 
+def test_gpio_pin_identifier() -> None:
+    """Test the identifier attribute of the component."""
+    component = GPIOPin(0, MockGPIOPinDriver())
+    assert component.identifier == 0
+
+
 def test_pin_mode_getter() -> None:
     """Test the mode getter."""
     driver = MockGPIOPinDriver()
