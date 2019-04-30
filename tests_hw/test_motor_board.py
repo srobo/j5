@@ -15,16 +15,14 @@ class Robot(BaseRobot):
     """A basic robot with a power board."""
 
     def __init__(self):
-        self.power_boards = BoardGroup(
-            PowerBoard,
+        self.power_boards = BoardGroup[PowerBoard](
             HardwareEnvironment.get_backend(PowerBoard),
         )
         self.power_board: PowerBoard = self.power_boards.singular()
 
         self.power_board.outputs.power_on()
 
-        self.motor_boards = BoardGroup(
-            MotorBoard,
+        self.motor_boards = BoardGroup[MotorBoard](
             HardwareEnvironment.get_backend(MotorBoard),
         )
 
