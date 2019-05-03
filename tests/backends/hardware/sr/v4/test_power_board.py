@@ -5,8 +5,8 @@ from datetime import timedelta
 from typing import List, Optional, Union
 
 import pytest
-import usb
 
+from j5.backends.hardware.j5.raw_usb import ReadCommand, WriteCommand
 from j5.backends.hardware.sr.v4.power_board import (
     CMD_READ_5VRAIL,
     CMD_READ_BATTERY,
@@ -17,34 +17,10 @@ from j5.backends.hardware.sr.v4.power_board import (
     CMD_WRITE_OUTPUT,
     CMD_WRITE_PIEZO,
     CMD_WRITE_RUNLED,
-    ReadCommand,
     SRV4PowerBoardHardwareBackend,
-    USBCommunicationError,
-    WriteCommand,
-    handle_usb_error,
 )
 from j5.boards.sr.v4.power_board import PowerBoard, PowerOutputPosition
 from j5.components.piezo import Note
-
-
-def test_read_command() -> None:
-    """Test that ReadCommand behaves as expected."""
-    rc = ReadCommand(1, 2)
-
-    assert type(rc) is ReadCommand
-    assert type(rc.code) is int
-    assert type(rc.data_len) is int
-    assert rc.code == 1
-    assert rc.data_len == 2
-
-
-def test_write_command() -> None:
-    """Test that WriteCommand behaves as expected."""
-    wc = WriteCommand(1)
-
-    assert type(wc) is WriteCommand
-    assert type(wc.code) is int
-    assert wc.code == 1
 
 
 def test_cmd_read_output() -> None:
@@ -112,23 +88,6 @@ def test_cmd_write_piezo() -> None:
     """Test that the CMD_WRITE_PIEZO."""
     assert type(CMD_WRITE_PIEZO) is WriteCommand
     assert CMD_WRITE_PIEZO.code == 8
-
-
-def test_usb_communication_error() -> None:
-    """Test that USBCommunicationError works."""
-    u = USBCommunicationError(usb.core.USBError("Test."))
-    assert str(u) == "Test."
-    assert issubclass(USBCommunicationError, Exception)
-
-
-def test_usb_error_handler_decorator() -> None:
-    """Test that the handle_usb_error decorator works."""
-    @handle_usb_error
-    def test_func() -> None:
-        raise usb.core.USBError("Test")
-
-    with pytest.raises(USBCommunicationError):
-        test_func()
 
 
 class MockUSBContext:

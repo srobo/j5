@@ -32,6 +32,10 @@ class BackendMeta(ABCMeta):
         if cls.__name__ == "Backend":
             return cls
 
+        # Check if this is an abstract Backend.
+        if len(cls.__bases__) == 1 and cls.__base__.__name__ != "Backend":
+            return cls
+
         if hasattr(cls, "environment"):
             if cls.environment is not None and cls.board is not None:
 

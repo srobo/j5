@@ -4,10 +4,13 @@ Type stubs for usb.core
 Note that stubs are only written for the parts that we use.
 """
 
-from typing import Generator, Optional, Union
+from typing import Generator, Optional, Tuple, Union
 
 
 class Device:
+
+    _langids: Tuple[int, ...]
+
     def serial_number(self) -> str: ...
 
     def ctrl_transfer(
