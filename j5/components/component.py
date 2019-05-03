@@ -11,6 +11,12 @@ class Interface(metaclass=ABCMeta):
 class Component(metaclass=ABCMeta):
     """A component is the smallest logical part of some hardware."""
 
+    @property
+    @abstractmethod
+    def identifier(self) -> int:
+        """An integer to identify the component on a board."""
+        raise NotImplementedError  # pragma: no cover
+
     @staticmethod
     @abstractmethod
     def interface_class() -> Type[Interface]:

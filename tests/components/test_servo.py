@@ -35,6 +35,12 @@ def test_servo_instantiation() -> None:
     Servo(0, MockServoDriver())
 
 
+def test_servo_identifier() -> None:
+    """Test the identifier attribute of the component."""
+    component = Servo(0, MockServoDriver())
+    assert component.identifier == 0
+
+
 def test_servo_get_position() -> None:
     """Test that we can get the position of a servo."""
     servo = Servo(2, MockServoDriver())

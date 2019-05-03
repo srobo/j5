@@ -33,6 +33,17 @@ def test_button_instantiation() -> None:
     Button(0, MockButtonDriver())
 
 
+def test_button_interface_class() -> None:
+    """Test that the Button Interface class is a ButtonInterface."""
+    assert Button.interface_class() is ButtonInterface
+
+
+def test_button_identifier() -> None:
+    """Test the identifier attribute of the component."""
+    component = Button(0, MockButtonDriver())
+    assert component.identifier == 0
+
+
 def test_button_state() -> None:
     """Test that we can get the state of the button."""
     driver = MockButtonDriver()
@@ -53,8 +64,3 @@ def test_button_wait_until_pressed() -> None:
 
     assert time_taken > 0.2
     assert time_taken < 2
-
-
-def test_button_interface_class() -> None:
-    """Test that the Button Interface class is a ButtonInterface."""
-    assert Button.interface_class() is ButtonInterface

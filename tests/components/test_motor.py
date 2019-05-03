@@ -48,6 +48,12 @@ def test_motor_instantiation() -> None:
     Motor(0, MockMotorDriver())
 
 
+def test_motor_identifier() -> None:
+    """Test the identifier attribute of the component."""
+    component = Motor(0, MockMotorDriver())
+    assert component.identifier == 0
+
+
 def test_motor_get_state_float() -> None:
     """Test that we can get the state of a motor."""
     motor0 = Motor(0, MockMotorDriver())

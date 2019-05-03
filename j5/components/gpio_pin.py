@@ -124,6 +124,11 @@ class GPIOPin(Component):
             )
 
     @property
+    def identifier(self) -> int:
+        """An integer to identify the component on a board."""
+        return self._identifier
+
+    @property
     def mode(self) -> GPIOPinMode:
         """Get the hardware mode of this pin."""
         return self._backend.get_gpio_pin_mode(self._identifier)

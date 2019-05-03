@@ -42,6 +42,12 @@ def test_power_output_interface() -> None:
     assert PowerOutput.interface_class() is PowerOutputInterface
 
 
+def test_power_output_identifier() -> None:
+    """Test the identifier attribute of the component."""
+    component = PowerOutput(0, MockPowerOutputDriver())
+    assert component.identifier == 0
+
+
 def test_power_output_enabled() -> None:
     """Test the is_enabled property of a PowerOutput."""
     power_output = PowerOutput(0, MockPowerOutputDriver())

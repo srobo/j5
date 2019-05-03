@@ -33,6 +33,11 @@ class LED(Component):
         return LEDInterface
 
     @property
+    def identifier(self) -> int:
+        """An integer to identify the component on a board."""
+        return self._identifier
+
+    @property
     def state(self) -> bool:
         """Get the current state of the LED."""
         return self._backend.get_led_state(self._identifier)

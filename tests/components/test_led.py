@@ -24,6 +24,12 @@ def test_led_instantiation() -> None:
     LED(0, MockLEDDriver())
 
 
+def test_led_identifier() -> None:
+    """Test the identifier attribute of the component."""
+    component = LED(0, MockLEDDriver())
+    assert component.identifier == 0
+
+
 def test_led_state() -> None:
     """Test the state property of an LED."""
     led = LED(0, MockLEDDriver())

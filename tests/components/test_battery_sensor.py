@@ -30,6 +30,12 @@ def test_battery_sensor_interface_class() -> None:
     assert BatterySensor.interface_class() is BatterySensorInterface
 
 
+def test_battery_sensor_identifier() -> None:
+    """Test the identifier attribute of the component."""
+    component = BatterySensor(0, MockBatterySensorDriver())
+    assert component.identifier == 0
+
+
 def test_battery_sensor_voltage() -> None:
     """Test that we can get the voltage of a battery sensor."""
     battery = BatterySensor(0, MockBatterySensorDriver())
