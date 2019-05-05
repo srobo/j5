@@ -111,7 +111,7 @@ class PowerBoard(Board):
         """
         Wait for the start button to be pressed and flash.
 
-        The LED will remain on at the end of the flashing.
+        The LED will remain on once the start button has been pressed.
         """
         counter = 0
         led_state = False
