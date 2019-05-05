@@ -7,7 +7,7 @@ from typing import List, Optional, Type
 from j5.components.component import (
     Component,
     Interface,
-    NotSupportedByHardwareError,
+    NotSupportedByComponentError,
 )
 
 
@@ -137,7 +137,7 @@ class GPIOPin(Component):
     def mode(self, pin_mode: GPIOPinMode) -> None:
         """Set the hardware mode of this pin."""
         if pin_mode not in self._supported_modes:
-            raise NotSupportedByHardwareError(
+            raise NotSupportedByComponentError(
                 f"Pin {self._identifier} does not support {str(pin_mode)}.",
             )
         self._backend.set_gpio_pin_mode(self._identifier, pin_mode)

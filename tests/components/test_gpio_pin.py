@@ -3,7 +3,7 @@ from typing import List
 
 import pytest
 
-from j5.components import NotSupportedByHardwareError
+from j5.components import NotSupportedByComponentError
 from j5.components.gpio_pin import (
     BadGPIOPinModeError,
     GPIOPin,
@@ -123,7 +123,7 @@ def test_pin_mode_setter() -> None:
     pin.mode = GPIOPinMode.DIGITAL_OUTPUT
     assert driver._mode[0] is GPIOPinMode.DIGITAL_OUTPUT
 
-    with pytest.raises(NotSupportedByHardwareError):
+    with pytest.raises(NotSupportedByComponentError):
         pin.mode = GPIOPinMode.ANALOGUE_INPUT
 
 
@@ -161,14 +161,14 @@ def test_initial_mode() -> None:
     assert driver._mode[2] is GPIOPinMode.DIGITAL_INPUT
 
     # Unsupported explicit initial mode with default supported modes
-    with pytest.raises(NotSupportedByHardwareError):
+    with pytest.raises(NotSupportedByComponentError):
         GPIOPin(
             2,
             driver,
             initial_mode=GPIOPinMode.DIGITAL_INPUT,
         )
     # Unsupported explicit initial mode with specified supported modes
-    with pytest.raises(NotSupportedByHardwareError):
+    with pytest.raises(NotSupportedByComponentError):
         GPIOPin(
             2,
             driver,

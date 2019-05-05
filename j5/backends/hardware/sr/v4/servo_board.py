@@ -5,7 +5,10 @@ from typing import Callable, List, Set, cast
 
 import usb
 
-from j5.backends.hardware.env import HardwareEnvironment
+from j5.backends.hardware.env import (
+    HardwareEnvironment,
+    NotSupportedByHardwareError,
+)
 from j5.backends.hardware.j5.raw_usb import (
     RawUSBHardwareBackend,
     ReadCommand,
@@ -14,7 +17,6 @@ from j5.backends.hardware.j5.raw_usb import (
 )
 from j5.boards import Board
 from j5.boards.sr.v4 import ServoBoard
-from j5.components import NotSupportedByHardwareError
 from j5.components.servo import ServoInterface, ServoPosition
 
 CMD_READ_FWVER = ReadCommand(9, 4)
