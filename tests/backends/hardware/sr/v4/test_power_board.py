@@ -6,6 +6,7 @@ from typing import List, Optional, Union
 
 import pytest
 
+from j5.backends.hardware import NotSupportedByHardwareError
 from j5.backends.hardware.j5.raw_usb import ReadCommand, WriteCommand
 from j5.backends.hardware.sr.v4.power_board import (
     CMD_READ_5VRAIL,
@@ -318,8 +319,12 @@ def test_backend_piezo_buzz() -> None:
     backend.buzz(0, timedelta(seconds=10), 100)
 
     # Buzz for too long.
-    with pytest.raises(ValueError):
+    with pytest.raises(NotSupportedByHardwareError):
         backend.buzz(0, timedelta(seconds=100), 10)
+
+    # Buzz at a too high pitch.
+    with pytest.raises(NotSupportedByHardwareError):
+        backend.buzz(0, timedelta(seconds=10), 65536)
 
     # Test non-existent buzzer
     with pytest.raises(ValueError):

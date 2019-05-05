@@ -7,7 +7,10 @@ from typing import Callable, Dict, Mapping, Set, cast
 
 import usb
 
-from j5.backends.hardware.env import HardwareEnvironment
+from j5.backends.hardware.env import (
+    HardwareEnvironment,
+    NotSupportedByHardwareError,
+)
 from j5.backends.hardware.j5.raw_usb import (
     RawUSBHardwareBackend,
     ReadCommand,
@@ -132,10 +135,15 @@ class SRV4PowerBoardHardwareBackend(
         if identifier != 0:
             raise ValueError(f"invalid piezo identifier {identifier!r}; "
                              f"the only valid identifier is 0")
+
         duration_ms = round(duration / timedelta(milliseconds=1))
         if duration_ms > 65535:
-            raise ValueError("Maximum piezo duration is 65535ms.")
+            raise NotSupportedByHardwareError("Maximum piezo duration is 65535ms.")
+
         frequency_int = int(round(frequency))
+        if frequency_int > 65535:
+            raise NotSupportedByHardwareError("Maximum piezo frequency is 65535Hz.")
+
         data = struct.pack("<HH", frequency_int, duration_ms)
         self._write(CMD_WRITE_PIEZO, data)
 
