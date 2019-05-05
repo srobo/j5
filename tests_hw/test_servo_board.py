@@ -13,17 +13,16 @@ from j5.components.piezo import Note
 class Robot(BaseRobot):
     """A basic robot with a power board."""
 
-    def __init__(self):
-        self.power_boards = BoardGroup(
-            PowerBoard,
+    def __init__(self) -> None:
+        self.power_boards = BoardGroup[PowerBoard](
             HardwareEnvironment.get_backend(PowerBoard),
         )
         self.power_board: PowerBoard = self.power_boards.singular()
 
         self.power_board.outputs.power_on()
+        sleep(0.2)  # Give time for servo board to initialise.
 
-        self.servo_boards = BoardGroup(
-            ServoBoard,
+        self.servo_boards = BoardGroup[ServoBoard](
             HardwareEnvironment.get_backend(ServoBoard),
         )
 
@@ -45,16 +44,16 @@ if __name__ == '__main__':
     print(f"Firmware version: {r.servo_board.firmware_version}")
 
     for servo in r.servo_board.servos:
-        print(f"Set servo {servo._identifier} to 1")
+        print(f"Set servo {servo.identifier} to 1")
         servo.position = 1
         sleep(0.1)
 
     for servo in r.servo_board.servos:
-        print(f"Set servo {servo._identifier} to 0")
+        print(f"Set servo {servo.identifier} to 0")
         servo.position = -1
         sleep(0.1)
 
     for servo in r.servo_board.servos:
-        print(f"Set servo {servo._identifier} to -1")
+        print(f"Set servo {servo.identifier} to -1")
         servo.position = -1
         sleep(0.1)
