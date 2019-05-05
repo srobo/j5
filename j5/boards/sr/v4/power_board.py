@@ -108,7 +108,11 @@ class PowerBoard(Board):
         self._output_group.power_off()
 
     def wait_for_start_flash(self) -> None:
-        """Wait for the start button to be pressed and flash."""
+        """
+        Wait for the start button to be pressed and flash.
+
+        The LED will remain on at the end of the flashing.
+        """
         counter = 0
         led_state = False
         while not self.start_button.is_pressed:
@@ -117,6 +121,9 @@ class PowerBoard(Board):
                 self._run_led.state = led_state
             sleep(0.05)
             counter += 1
+
+        # Turn on the LED now the button has been pressed.
+        self._run_led.state = True
 
     @staticmethod
     def supported_components() -> Set["Type[Component]"]:
