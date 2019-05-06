@@ -157,7 +157,7 @@ use the board but it may be of interest to some people.
 
 .. _Full Schematics: https://www.studentrobotics.org/resources/kit/power-schematic.pdf
 .. _Firmware source: https://github.com/j5api/sr-power-v4-fw
-.. _Hardware designs: https://www.studentrobotics.org/cgit/boards/power-v4-hw.git/
+.. _Hardware designs: https://github.com/srobo/power-v4-hw
 
 
 .. Note:: Some of the documentation in this section has been taken and modified from `Student Robotics`_. See here_ for more information.
