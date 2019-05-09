@@ -183,3 +183,5 @@ def test_power_board_wait_start() -> None:
 
     # Note: This isn't a great test, but ensures that the code runs at least.
     pb.wait_for_start_flash()
+
+    assert pb._run_led.state
