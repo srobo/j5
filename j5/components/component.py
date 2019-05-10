@@ -24,7 +24,7 @@ class Component(metaclass=ABCMeta):
         raise NotImplementedError  # pragma: no cover
 
 
-class NotSupportedByHardwareError(Exception):
+class NotSupportedByComponentError(Exception):
     """This is thrown when hardware does not support the action that is attempted."""
 
     pass
