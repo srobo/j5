@@ -15,7 +15,7 @@ from j5.components.piezo import Note
 class Robot(BaseRobot):
     """A basic robot with a power board."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.power_boards = BoardGroup[PowerBoard](
             HardwareEnvironment.get_backend(PowerBoard),
         )
