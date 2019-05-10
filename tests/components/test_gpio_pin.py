@@ -78,7 +78,7 @@ def test_gpio_pin_interface_implementation() -> None:
 
 def test_gpio_pin_instantiation() -> None:
     """Test that we can instantiate a GPIO pin."""
-    GPIOPin(0, MockGPIOPinDriver())
+    GPIOPin(0, MockGPIOPinDriver(), initial_mode=GPIOPinMode.DIGITAL_OUTPUT)
 
 
 def test_gpio_pin_interface_class() -> None:
@@ -88,7 +88,7 @@ def test_gpio_pin_interface_class() -> None:
 
 def test_gpio_pin_identifier() -> None:
     """Test the identifier attribute of the component."""
-    component = GPIOPin(0, MockGPIOPinDriver())
+    component = GPIOPin(0, MockGPIOPinDriver(), initial_mode=GPIOPinMode.DIGITAL_OUTPUT)
     assert component.identifier == 0
 
 
@@ -100,7 +100,7 @@ def test_pin_mode_getter() -> None:
         0,
         driver,
         initial_mode=GPIOPinMode.DIGITAL_INPUT,
-        supported_modes=[GPIOPinMode.DIGITAL_INPUT, GPIOPinMode.DIGITAL_OUTPUT],
+        supported_modes={GPIOPinMode.DIGITAL_INPUT, GPIOPinMode.DIGITAL_OUTPUT},
     )
 
     assert pin.mode is GPIOPinMode.DIGITAL_INPUT
@@ -116,7 +116,7 @@ def test_pin_mode_setter() -> None:
         0,
         driver,
         initial_mode=GPIOPinMode.DIGITAL_INPUT,
-        supported_modes=[GPIOPinMode.DIGITAL_INPUT, GPIOPinMode.DIGITAL_OUTPUT],
+        supported_modes={GPIOPinMode.DIGITAL_INPUT, GPIOPinMode.DIGITAL_OUTPUT},
     )
 
     assert driver._mode[0] is GPIOPinMode.DIGITAL_INPUT
@@ -132,16 +132,8 @@ def test_initial_mode() -> None:
     driver = MockGPIOPinDriver()
 
     # Implicit initial mode with default supported modes
-    GPIOPin(0, driver)
+    GPIOPin(0, driver, initial_mode=GPIOPinMode.DIGITAL_OUTPUT)
     assert driver._mode[0] is GPIOPinMode.DIGITAL_OUTPUT
-
-    # Implicit initial mode with specified supported modes
-    GPIOPin(
-        1,
-        driver,
-        supported_modes=[GPIOPinMode.DIGITAL_INPUT],
-    )
-    assert driver._mode[1] is GPIOPinMode.DIGITAL_INPUT
 
     # Explicit initial mode with default supported modes
     GPIOPin(
@@ -156,7 +148,7 @@ def test_initial_mode() -> None:
         2,
         driver,
         initial_mode=GPIOPinMode.DIGITAL_INPUT,
-        supported_modes=[GPIOPinMode.DIGITAL_INPUT],
+        supported_modes={GPIOPinMode.DIGITAL_INPUT},
     )
     assert driver._mode[2] is GPIOPinMode.DIGITAL_INPUT
 
@@ -173,7 +165,7 @@ def test_initial_mode() -> None:
             2,
             driver,
             initial_mode=GPIOPinMode.DIGITAL_INPUT,
-            supported_modes=[GPIOPinMode.DIGITAL_OUTPUT],
+            supported_modes={GPIOPinMode.DIGITAL_OUTPUT},
         )
 
 
@@ -185,7 +177,8 @@ def test_supported_modes_length() -> None:
         GPIOPin(
             0,
             driver,
-            supported_modes=[],
+            initial_mode=GPIOPinMode.DIGITAL_INPUT,
+            supported_modes=set(),
         )
 
 
@@ -195,10 +188,11 @@ def test_required_pin_modes() -> None:
     pin = GPIOPin(
         0,
         driver,
-        supported_modes=[
+        initial_mode=GPIOPinMode.DIGITAL_OUTPUT,
+        supported_modes={
             GPIOPinMode.DIGITAL_OUTPUT,
             GPIOPinMode.DIGITAL_INPUT,
-        ],
+        },
     )
 
     # 0
@@ -223,13 +217,14 @@ def test_digital_state_getter() -> None:
     pin = GPIOPin(
         0,
         driver,
-        supported_modes=[
+        initial_mode=GPIOPinMode.DIGITAL_INPUT,
+        supported_modes={
             GPIOPinMode.DIGITAL_OUTPUT,
             GPIOPinMode.DIGITAL_INPUT,
             GPIOPinMode.DIGITAL_INPUT_PULLUP,
             GPIOPinMode.DIGITAL_INPUT_PULLDOWN,
             GPIOPinMode.ANALOGUE_INPUT,
-        ],
+        },
     )
 
     # Digital Output
@@ -261,12 +256,13 @@ def test_digital_state_setter() -> None:
     pin = GPIOPin(
         0,
         driver,
-        supported_modes=[
+        initial_mode=GPIOPinMode.DIGITAL_INPUT,
+        supported_modes={
             GPIOPinMode.DIGITAL_OUTPUT,
             GPIOPinMode.DIGITAL_INPUT,
             GPIOPinMode.DIGITAL_INPUT_PULLUP,
             GPIOPinMode.ANALOGUE_INPUT,
-        ],
+        },
     )
 
     pin.mode = GPIOPinMode.DIGITAL_OUTPUT
@@ -282,12 +278,13 @@ def test_analogue_value_getter() -> None:
     pin = GPIOPin(
         0,
         driver,
-        supported_modes=[
+        initial_mode=GPIOPinMode.DIGITAL_INPUT,
+        supported_modes={
             GPIOPinMode.DIGITAL_OUTPUT,
             GPIOPinMode.DIGITAL_INPUT,
             GPIOPinMode.DIGITAL_INPUT_PULLUP,
             GPIOPinMode.ANALOGUE_INPUT,
-        ],
+        },
     )
     pin.mode = GPIOPinMode.ANALOGUE_INPUT
     assert pin.analogue_value == 0.6
@@ -303,10 +300,11 @@ def test_analogue_value_setter() -> None:
     pin = GPIOPin(
         0,
         driver,
-        supported_modes=[
+        initial_mode=GPIOPinMode.ANALOGUE_OUTPUT,
+        supported_modes={
             GPIOPinMode.ANALOGUE_OUTPUT,
             GPIOPinMode.PWM_OUTPUT,
-        ],
+        },
     )
 
     pin.mode = GPIOPinMode.ANALOGUE_OUTPUT

@@ -2,7 +2,7 @@
 
 from abc import abstractmethod
 from enum import IntEnum
-from typing import List, Optional, Type
+from typing import List, Set, Type
 
 from j5.components.component import (
     Component,
@@ -96,8 +96,9 @@ class GPIOPin(Component):
             self,
             identifier: int,
             backend: GPIOPinInterface,
-            supported_modes: List[GPIOPinMode] = [GPIOPinMode.DIGITAL_OUTPUT],
-            initial_mode: Optional[GPIOPinMode] = None,
+            *,
+            initial_mode: GPIOPinMode,
+            supported_modes: Set[GPIOPinMode] = {GPIOPinMode.DIGITAL_OUTPUT},
     ) -> None:
         self._backend = backend
         self._identifier = identifier
@@ -106,9 +107,6 @@ class GPIOPin(Component):
         if len(supported_modes) < 1:
             raise ValueError("A GPIO pin must support at least one GPIOPinMode.")
 
-        if initial_mode is None:
-            # If no initial mode is set, choose the first supported mode.
-            initial_mode = self._supported_modes[0]
         self.mode = initial_mode
 
     @staticmethod
