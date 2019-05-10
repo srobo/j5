@@ -5,5 +5,5 @@ from .boards import BoardGroup
 
 __all__ = ["BoardGroup", "BaseRobot", "__version__", "__version_short__"]
 
-__version__ = "0.3.0"
-__version_short__ = "0.3.0"
+__version__ = "0.4.0"
+__version_short__ = "0.4.0"
