@@ -44,7 +44,7 @@ The servo board is largely controlled over the USB interface. There is one physi
 USB Interface
 -------------
 
-The Vendor ID is ``1bda`` (University of Southampton) and the product ID is ``0011``.
+The vendor ID is ``1bda`` (University of Southampton) and the product ID is ``0011``.
 
 The Servo Board is controlled over USB by sending requests to the control endpoint.
 
@@ -68,7 +68,7 @@ The Servo Board is controlled over USB by sending requests to the control endpoi
 
 There are a list of ids defined in the firmware of the servo board that will let you read and write values to it.
 
-It is recommended to read the source to further understand how to control this device.
+It is recommended to read the `firmware source`_ to further understand how to control this device.
 
 It should also be noted that as the control endpoint ``0x00`` is used to send data to this device, it is not actually
 compliant with the USB 2.0 specification.
