@@ -1,4 +1,4 @@
-.PHONY: all lint type test test-cov
+.PHONY: all clean lint type test test-cov
 
 CMD:=poetry run
 PYMODULE:=j5
@@ -16,3 +16,6 @@ test:
 
 test-cov:
 	$(CMD) pytest --cov=$(PYMODULE) tests --cov-report html
+
+clean:
+	git clean -Xdf # Delete all files in .gitignore
