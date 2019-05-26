@@ -1,7 +1,8 @@
 """Arduino Boards."""
 
-from .uno import ArduinoUnoBoard
+from .uno import AnaloguePin, ArduinoUnoBoard
 
 __all__ = [
     'ArduinoUnoBoard',
+    'AnaloguePin',
 ]

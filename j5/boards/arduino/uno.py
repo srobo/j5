@@ -39,11 +39,7 @@ class ArduinoUnoBoard(Board):
         self._serial = serial
         self._backend = backend
 
-        self.setup_arduino()
-
-    def setup_arduino(self) -> None:
-        """Setup the arduino components."""
-        self._led = LED(0, cast(self._backend, LEDInterface))  # type: ignore
+        self._led = LED(0, cast(LEDInterface, self._backend))
 
         # Digital Pins
         # Note that pins 0 and 1 are used for serial comms.
