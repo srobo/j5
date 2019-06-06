@@ -2,7 +2,12 @@
 
 from .battery_sensor import BatterySensor, BatterySensorInterface
 from .button import Button, ButtonInterface
-from .component import Component, Interface, NotSupportedByComponentError
+from .component import (
+    Component,
+    DerivedComponent,
+    Interface,
+    NotSupportedByComponentError,
+)
 from .gpio_pin import GPIOPin, GPIOPinInterface, GPIOPinMode
 from .led import LED, LEDInterface
 from .motor import Motor, MotorInterface, MotorSpecialState
@@ -16,6 +21,7 @@ __all__ = [
     "Button",
     "ButtonInterface",
     "Component",
+    "DerivedComponent",
     "GPIOPin",
     "GPIOPinInterface",
     "GPIOPinMode",
