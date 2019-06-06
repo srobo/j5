@@ -2,10 +2,11 @@
 
 from abc import abstractmethod
 from enum import IntEnum
-from typing import List, Set, Type
+from typing import List, Set, Type, Union
 
 from j5.components.component import (
     Component,
+    DerivedComponent,
     Interface,
     NotSupportedByComponentError,
 )
@@ -29,6 +30,12 @@ class GPIOPinMode(IntEnum):
     ANALOGUE_OUTPUT = 5  #: The analogue voltage of the pin can be set using a DAC.
 
     PWM_OUTPUT = 6  #: A PWM output signal can be created on the pin.
+
+
+Mode = Union[
+    GPIOPinMode,  # Hardware modes
+    Type[DerivedComponent],  # Derived Components
+]
 
 
 class GPIOPinInterface(Interface):
@@ -97,15 +104,15 @@ class GPIOPin(Component):
             identifier: int,
             backend: GPIOPinInterface,
             *,
-            initial_mode: GPIOPinMode,
-            supported_modes: Set[GPIOPinMode] = {GPIOPinMode.DIGITAL_OUTPUT},
+            initial_mode: Mode,
+            supported_modes: Set[Mode] = {GPIOPinMode.DIGITAL_OUTPUT},
     ) -> None:
         self._backend = backend
         self._identifier = identifier
         self._supported_modes = supported_modes
 
         if len(supported_modes) < 1:
-            raise ValueError("A GPIO pin must support at least one GPIOPinMode.")
+            raise ValueError("A GPIO pin must support at least one mode.")
 
         self.mode = initial_mode
 

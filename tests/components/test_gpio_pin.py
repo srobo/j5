@@ -3,7 +3,7 @@ from typing import List
 
 import pytest
 
-from j5.components import NotSupportedByComponentError
+from j5.components import DerivedComponent, NotSupportedByComponentError
 from j5.components.gpio_pin import (
     BadGPIOPinModeError,
     GPIOPin,
@@ -315,3 +315,22 @@ def test_analogue_value_setter() -> None:
 
     with pytest.raises(ValueError):
         pin.analogue_value = -1
+
+
+class Peripheral(DerivedComponent):
+    """A mock derived component."""
+
+
+def test_derived_mode_is_possible() -> None:
+    """Check that it is possible to support a derived component."""
+    driver = MockGPIOPinDriver()
+    GPIOPin(
+        0,
+        driver,
+        initial_mode=GPIOPinMode.ANALOGUE_OUTPUT,
+        supported_modes={
+            GPIOPinMode.ANALOGUE_OUTPUT,
+            GPIOPinMode.PWM_OUTPUT,
+            Peripheral,
+        },
+    )
