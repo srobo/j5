@@ -48,7 +48,7 @@ class ArduinoUnoBoard(Board):
                 i,
                 cast(GPIOPinInterface, self._backend),
                 initial_mode=GPIOPinMode.DIGITAL_INPUT,
-                supported_modes={
+                hardware_modes={
                     GPIOPinMode.DIGITAL_INPUT,
                     GPIOPinMode.DIGITAL_INPUT_PULLUP,
                     GPIOPinMode.DIGITAL_OUTPUT,
@@ -62,7 +62,7 @@ class ArduinoUnoBoard(Board):
                 i,
                 cast(GPIOPinInterface, self._backend),
                 initial_mode=GPIOPinMode.ANALOGUE_INPUT,
-                supported_modes={
+                hardware_modes={
                     GPIOPinMode.ANALOGUE_INPUT,
                     GPIOPinMode.DIGITAL_INPUT,
                     GPIOPinMode.DIGITAL_INPUT_PULLUP,

@@ -9,6 +9,7 @@ from abc import abstractmethod
 from datetime import timedelta
 from typing import Optional, Type
 
+from j5.components import NotSupportedByComponentError
 from j5.components.component import DerivedComponent, Interface
 from j5.components.gpio_pin import GPIOPin
 
@@ -47,6 +48,14 @@ class UltrasoundSensor(DerivedComponent):
         *,
         distance_mode: bool = True,
     ) -> None:
+
+        if self.__class__ not in gpio_tx.firmware_modes or \
+                self.__class__ not in gpio_tx.firmware_modes:
+            raise NotSupportedByComponentError(
+                f"Pins {gpio_tx.identifier} and {gpio_rx.identifier}",
+                f" must support Ultrasound.",
+            )
+
         self._gpio_tx = gpio_tx
         self._gpio_rx = gpio_rx
         self._backend = backend

@@ -49,13 +49,13 @@ def test_ultrasound_sensor() -> None:
         0,
         MockGPIOPinDriver(),
         initial_mode=UltrasoundSensor,
-        supported_modes={UltrasoundSensor},
+        firmware_modes={UltrasoundSensor},
     )
     rx = GPIOPin(
-        0,
+        1,
         MockGPIOPinDriver(),
         initial_mode=UltrasoundSensor,
-        supported_modes={UltrasoundSensor},
+        firmware_modes={UltrasoundSensor},
     )
 
     u = UltrasoundSensor(tx, rx, MockUltrasoundSensorDriver())
@@ -78,13 +78,13 @@ def test_ultrasound_no_distance() -> None:
         0,
         MockGPIOPinDriver(),
         initial_mode=UltrasoundSensor,
-        supported_modes={UltrasoundSensor},
+        firmware_modes={UltrasoundSensor},
     )
     rx = GPIOPin(
-        0,
+        1,
         MockGPIOPinDriver(),
         initial_mode=UltrasoundSensor,
-        supported_modes={UltrasoundSensor},
+        firmware_modes={UltrasoundSensor},
     )
 
     u = UltrasoundSensor(
