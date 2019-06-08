@@ -5,11 +5,12 @@ from typing import Optional
 import pytest
 from tests.components.test_gpio_pin import MockGPIOPinDriver
 
+from j5.components import NotSupportedByComponentError
 from j5.components.derived.ultrasound import (
     UltrasoundInterface,
     UltrasoundSensor,
 )
-from j5.components.gpio_pin import GPIOPin
+from j5.components.gpio_pin import GPIOPin, GPIOPinMode
 
 
 class MockUltrasoundSensorDriver(UltrasoundInterface):
@@ -49,6 +50,11 @@ class MockUltrasoundSensorDriver(UltrasoundInterface):
 def test_ultrasound_sensor_interface_instantiation() -> None:
     """Test that we can implement an ultrasound interface."""
     MockUltrasoundSensorDriver()
+
+
+def test_ultrasound_interface() -> None:
+    """Test that the ultrasound sensor uses the right interface."""
+    assert UltrasoundSensor.interface_class() is UltrasoundInterface
 
 
 def test_ultrasound_sensor() -> None:
@@ -104,3 +110,26 @@ def test_ultrasound_no_distance() -> None:
 
     with pytest.raises(Exception):
         u.distance()
+
+
+def test_ultrasound_no_support() -> None:
+    """Test that we throw an error on an unsupported pin."""
+    trigger = GPIOPin(
+        0,
+        MockGPIOPinDriver(),
+        initial_mode=GPIOPinMode.DIGITAL_OUTPUT,
+    )
+    echo = GPIOPin(
+        1,
+        MockGPIOPinDriver(),
+        initial_mode=UltrasoundSensor,
+        firmware_modes={UltrasoundSensor},
+    )
+
+    with pytest.raises(NotSupportedByComponentError):
+        UltrasoundSensor(
+            trigger,
+            echo,
+            MockUltrasoundSensorDriver(),
+            distance_mode=False,
+        )
