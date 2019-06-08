@@ -15,7 +15,11 @@ from j5.components.gpio_pin import GPIOPin
 class MockUltrasoundSensorDriver(UltrasoundInterface):
     """A testing driver for the ultrasound sensor."""
 
-    def get_ultrasound_pulse(self, pin_tx: int, pin_rx: int) -> Optional[timedelta]:
+    def get_ultrasound_pulse(
+            self,
+            pin_trigger: int,
+            pin_echo: int,
+    ) -> Optional[timedelta]:
         """
         Send a pulse and return the time taken.
 
@@ -23,7 +27,11 @@ class MockUltrasoundSensorDriver(UltrasoundInterface):
         """
         return timedelta(milliseconds=20)
 
-    def get_ultrasound_distance(self, pin_tx: int, pin_rx: int) -> Optional[float]:
+    def get_ultrasound_distance(
+            self,
+            pin_trigger: int,
+            pin_echo: int,
+    ) -> Optional[float]:
         """
         Send a pulse and return the distance to the object.
 
@@ -31,7 +39,7 @@ class MockUltrasoundSensorDriver(UltrasoundInterface):
         """
         const = 1e-6 * 343.0 * 0.5 * 1e3
 
-        time = self.get_ultrasound_pulse(pin_tx, pin_rx)
+        time = self.get_ultrasound_pulse(pin_trigger, pin_echo)
 
         if time is None:
             return None
@@ -45,20 +53,20 @@ def test_ultrasound_sensor_interface_instantiation() -> None:
 
 def test_ultrasound_sensor() -> None:
     """Test that we can instantiate an ultrasound sensor."""
-    tx = GPIOPin(
+    trigger = GPIOPin(
         0,
         MockGPIOPinDriver(),
         initial_mode=UltrasoundSensor,
         firmware_modes={UltrasoundSensor},
     )
-    rx = GPIOPin(
+    echo = GPIOPin(
         1,
         MockGPIOPinDriver(),
         initial_mode=UltrasoundSensor,
         firmware_modes={UltrasoundSensor},
     )
 
-    u = UltrasoundSensor(tx, rx, MockUltrasoundSensorDriver())
+    u = UltrasoundSensor(trigger, echo, MockUltrasoundSensorDriver())
 
     time = u.pulse()
 
@@ -74,13 +82,13 @@ def test_ultrasound_sensor() -> None:
 
 def test_ultrasound_no_distance() -> None:
     """Test that we can't get the distance if it's disabled."""
-    tx = GPIOPin(
+    trigger = GPIOPin(
         0,
         MockGPIOPinDriver(),
         initial_mode=UltrasoundSensor,
         firmware_modes={UltrasoundSensor},
     )
-    rx = GPIOPin(
+    echo = GPIOPin(
         1,
         MockGPIOPinDriver(),
         initial_mode=UltrasoundSensor,
@@ -88,8 +96,8 @@ def test_ultrasound_no_distance() -> None:
     )
 
     u = UltrasoundSensor(
-        tx,
-        rx,
+        trigger,
+        echo,
         MockUltrasoundSensorDriver(),
         distance_mode=False,
     )

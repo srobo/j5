@@ -18,7 +18,11 @@ class UltrasoundInterface(Interface):
     """An interface containing the methods required for an UltrasoundSensor."""
 
     @abstractmethod
-    def get_ultrasound_pulse(self, pin_tx: int, pin_rx: int) -> Optional[timedelta]:
+    def get_ultrasound_pulse(
+            self,
+            pin_trigger: int,
+            pin_echo: int,
+    ) -> Optional[timedelta]:
         """
         Get a timedelta for the ultrasound time.
 
@@ -27,7 +31,11 @@ class UltrasoundInterface(Interface):
         raise NotImplementedError  # pragma: no cover
 
     @abstractmethod
-    def get_ultrasound_distance(self, pin_tx: int, pin_rx: int) -> Optional[float]:
+    def get_ultrasound_distance(
+            self,
+            pin_trigger: int,
+            pin_echo: int,
+    ) -> Optional[float]:
         """Get a distance in metres."""
         raise NotImplementedError  # pragma: no cover
 
@@ -42,22 +50,22 @@ class UltrasoundSensor(DerivedComponent):
 
     def __init__(
         self,
-        gpio_tx: GPIOPin,
-        gpio_rx: GPIOPin,
+        gpio_trigger: GPIOPin,
+        gpio_echo: GPIOPin,
         backend: UltrasoundInterface,
         *,
         distance_mode: bool = True,
     ) -> None:
 
-        if self.__class__ not in gpio_tx.firmware_modes or \
-                self.__class__ not in gpio_tx.firmware_modes:
+        if self.__class__ not in gpio_trigger.firmware_modes or \
+                self.__class__ not in gpio_trigger.firmware_modes:
             raise NotSupportedByComponentError(
-                f"Pins {gpio_tx.identifier} and {gpio_rx.identifier}",
+                f"Pins {gpio_trigger.identifier} and {gpio_echo.identifier}",
                 f" must support Ultrasound.",
             )
 
-        self._gpio_tx = gpio_tx
-        self._gpio_rx = gpio_rx
+        self._gpio_trigger = gpio_trigger
+        self._gpio_echo = gpio_echo
         self._backend = backend
         self._distance_mode = distance_mode
 
@@ -73,8 +81,8 @@ class UltrasoundSensor(DerivedComponent):
         Returns None if timeout occurred.
         """
         return self._backend.get_ultrasound_pulse(
-            self._gpio_tx.identifier,
-            self._gpio_rx.identifier,
+            self._gpio_trigger.identifier,
+            self._gpio_echo.identifier,
         )
 
     def distance(self) -> Optional[float]:
@@ -87,6 +95,6 @@ class UltrasoundSensor(DerivedComponent):
             raise Exception("Distance mode is disabled. Use pulse() to get the time.")
 
         return self._backend.get_ultrasound_distance(
-            self._gpio_tx.identifier,
-            self._gpio_rx.identifier,
+            self._gpio_trigger.identifier,
+            self._gpio_echo.identifier,
         )
