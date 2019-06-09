@@ -186,6 +186,13 @@ def test_board_group_str() -> None:
         "Group of Boards - [Testing Board - TESTSERIAL1, Testing Board - TESTSERIAL2]"
 
 
+def test_board_group_repr() -> None:
+    """Test the representation of the BoardGroup."""
+    board_group = BoardGroup[MockBoard](NoBoardMockBackend)
+
+    assert repr(board_group) == "BoardGroup(backend_class=NoBoardMockBackend)"
+
+
 def test_board_group_singular_but_multiple_boards() -> None:
     """Test that the singular function gets upset if there are multiple boards."""
     board_group = BoardGroup[MockBoard](TwoBoardsMockBackend)

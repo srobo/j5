@@ -116,6 +116,10 @@ class BoardGroup(Generic[T]):
 
         return f"Group of Boards - [{list_str}]"
 
+    def __repr__(self) -> str:
+        """A representation of this board."""
+        return f"BoardGroup(backend_class={self._backend_class.__name__})"
+
     def __len__(self) -> int:
         """Get the number of boards in this group."""
         return len(self._boards)
