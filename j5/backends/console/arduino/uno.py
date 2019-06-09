@@ -50,7 +50,7 @@ class ArduinoUnoConsoleBackend(GPIOPinInterface, LEDInterface, Backend):
 
     def set_gpio_pin_mode(self, identifier: int, pin_mode: GPIOPinMode) -> None:
         """Set the hardware mode of a GPIO pin."""
-        self._console.info(f"Set pin {identifier} to {pin_mode}")
+        self._console.info(f"Set pin {identifier} to {pin_mode.name}")
         self._pins[identifier].mode = pin_mode
 
     def get_gpio_pin_mode(self, identifier: int) -> GPIOPinMode:
@@ -93,21 +93,21 @@ class ArduinoUnoConsoleBackend(GPIOPinInterface, LEDInterface, Backend):
     def write_gpio_pin_dac_value(self, identifier: int, scaled_value: float) -> None:
         """Write a scaled analogue value to the DAC on the GPIO pin."""
         # Uno doesn't have any of these.
-        raise NotImplementedError  # pragma: nocover
+        raise NotImplementedError
 
     def write_gpio_pin_pwm_value(self, identifier: int, duty_cycle: float) -> None:
         """Write a scaled analogue value to the PWM on the GPIO pin."""
         # Not implemented on ArduinoUnoBoard yet.
-        raise NotImplementedError  # pragma: nocover
+        raise NotImplementedError
 
     def get_led_state(self, identifier: int) -> bool:
         """Get the state of an LED."""
-        if identifier != 13:
-            raise ValueError("Arduino Uno only has an LED on pin D13.")
-        return self.read_gpio_pin_digital_state(13)
+        if identifier != 0:
+            raise ValueError("Arduino Uno only has LED 0 (D13).")
+        return self.get_gpio_pin_digital_state(13)
 
     def set_led_state(self, identifier: int, state: bool) -> None:
         """Set the state of an LED."""
-        if identifier != 13:
-            raise ValueError("Arduino Uno only has an LED on pin D13.")
+        if identifier != 0:
+            raise ValueError("Arduino Uno only has LED 0 (D13)")
         self.write_gpio_pin_digital_state(13, state)
