@@ -1,9 +1,13 @@
 """Tests for the GPIO Pin Classes."""
-from typing import List
+from typing import List, Type
 
 import pytest
 
-from j5.components import DerivedComponent, NotSupportedByComponentError
+from j5.components import (
+    DerivedComponent,
+    Interface,
+    NotSupportedByComponentError,
+)
 from j5.components.gpio_pin import (
     BadGPIOPinModeError,
     GPIOPin,
@@ -320,6 +324,11 @@ def test_analogue_value_setter() -> None:
 class Peripheral(DerivedComponent):
     """A mock derived component."""
 
+    @staticmethod
+    def interface_class() -> Type[Interface]:
+        """Return an interface."""
+        return Interface
+
 
 def test_derived_mode_is_possible() -> None:
     """Check that it is possible to support a derived component."""
@@ -331,5 +340,8 @@ def test_derived_mode_is_possible() -> None:
         hardware_modes={
             GPIOPinMode.ANALOGUE_OUTPUT,
             GPIOPinMode.PWM_OUTPUT,
+        },
+        firmware_modes={
+            Peripheral,
         },
     )
