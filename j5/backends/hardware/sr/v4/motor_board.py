@@ -1,13 +1,16 @@
 """Hardware Backend for the SR v4 motor board."""
-from functools import wraps
-from typing import Callable, List, Optional, Set, Type, TypeVar, cast
+from typing import Callable, List, Optional, Set, Type, cast
 
-from serial import Serial, SerialException, SerialTimeoutException
+from serial import Serial
 from serial.tools.list_ports import comports
 from serial.tools.list_ports_common import ListPortInfo
 
-from j5.backends import Backend, CommunicationError
+from j5.backends import CommunicationError
 from j5.backends.hardware.env import HardwareEnvironment
+from j5.backends.hardware.j5.serial import (
+    SerialHardwareBackend,
+    handle_serial_error,
+)
 from j5.boards import Board
 from j5.boards.sr.v4.motor_board import MotorBoard
 from j5.components.motor import MotorInterface, MotorSpecialState, MotorState
@@ -20,27 +23,6 @@ CMD_BOOTLOADER = 4
 SPEED_COAST = 1
 SPEED_BRAKE = 2
 
-RT = TypeVar("RT")  # pragma: nocover
-
-
-def handle_serial_error(func: Callable[..., RT]) -> Callable[..., RT]:  # type: ignore
-    """
-    Wrap functions that use the serial port, and rethrow the errors.
-
-    This is a decorator that should be used to wrap any functions that call the serial
-    interface. It will catch and rethrow the errors as a CommunicationError, so that it
-    is more explicit what is going wrong.
-    """
-    @wraps(func)
-    def catch_exceptions(*args, **kwargs):  # type: ignore
-        try:
-            return func(*args, **kwargs)
-        except SerialTimeoutException as e:
-            raise CommunicationError(f"Serial Timeout Error: {e}")
-        except SerialException as e:
-            raise CommunicationError(f"Serial Error: {e}")
-    return catch_exceptions
-
 
 def is_motor_board(port: ListPortInfo) -> bool:
     """Check if a ListPortInfo represents a MCV4B."""
@@ -50,7 +32,7 @@ def is_motor_board(port: ListPortInfo) -> bool:
 
 class SRV4MotorBoardHardwareBackend(
     MotorInterface,
-    Backend,
+    SerialHardwareBackend,
 ):
     """The hardware implementation of the SR v4 motor board."""
 
@@ -81,17 +63,17 @@ class SRV4MotorBoardHardwareBackend(
 
     @handle_serial_error
     def __init__(self, serial_port: str, serial_class: Type[Serial] = Serial) -> None:
+        super(SRV4MotorBoardHardwareBackend, self).__init__(
+            serial_port=serial_port,
+            serial_class=serial_class,
+            baud=1000000,
+        )
+
         # Initialise our stored values for the state.
         self._state: List[MotorState] = [
             MotorSpecialState.BRAKE
             for _ in range(0, 2)
         ]
-
-        self._serial = serial_class(
-            port=serial_port,
-            baudrate=1000000,
-            timeout=0.25,
-        )
 
         # Check we have the correct firmware version.
         version = self.firmware_version
@@ -124,20 +106,6 @@ class SRV4MotorBoardHardwareBackend(
             raise CommunicationError(
                 "Mismatch in command bytes written to serial interface.",
             )
-
-    @handle_serial_error
-    def read_serial_line(self) -> str:
-        """Read a line from the serial interface."""
-        bdata = self._serial.readline()
-
-        if len(bdata) == 0:
-            raise CommunicationError(
-                "Unable to communicate with motor board. ",
-                "Is it correctly powered?",
-            )
-
-        ldata = bdata.decode('utf-8')
-        return ldata.rstrip()
 
     @property
     def firmware_version(self) -> Optional[str]:
