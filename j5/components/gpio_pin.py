@@ -113,7 +113,7 @@ class GPIOPin(Component):
         self._firmware_modes = firmware_modes
 
         if len(hardware_modes) < 1:
-            raise ValueError("A GPIO pin must support at least one mode.")
+            raise ValueError("A GPIO pin must support at least one hardware mode.")
 
         self.mode = initial_mode
 

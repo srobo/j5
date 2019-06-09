@@ -36,7 +36,7 @@ class MockUltrasoundSensorDriver(UltrasoundInterface):
         """
         Send a pulse and return the distance to the object.
 
-        Returns none if a timeout occurred.
+        Returns None if a timeout occurred.
         """
         const = 1e-6 * 343.0 * 0.5 * 1e3
 
