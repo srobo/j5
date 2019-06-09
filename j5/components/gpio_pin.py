@@ -2,10 +2,11 @@
 
 from abc import abstractmethod
 from enum import IntEnum
-from typing import List, Set, Type
+from typing import List, Set, Type, Union
 
 from j5.components.component import (
     Component,
+    DerivedComponent,
     Interface,
     NotSupportedByComponentError,
 )
@@ -29,6 +30,11 @@ class GPIOPinMode(IntEnum):
     ANALOGUE_OUTPUT = 5  #: The analogue voltage of the pin can be set using a DAC.
 
     PWM_OUTPUT = 6  #: A PWM output signal can be created on the pin.
+
+
+FirmwareMode = Type[DerivedComponent]
+
+PinMode = Union[FirmwareMode, GPIOPinMode]
 
 
 class GPIOPinInterface(Interface):
@@ -97,15 +103,17 @@ class GPIOPin(Component):
             identifier: int,
             backend: GPIOPinInterface,
             *,
-            initial_mode: GPIOPinMode,
-            supported_modes: Set[GPIOPinMode] = {GPIOPinMode.DIGITAL_OUTPUT},
+            initial_mode: PinMode,
+            hardware_modes: Set[GPIOPinMode] = {GPIOPinMode.DIGITAL_OUTPUT},
+            firmware_modes: Set[FirmwareMode] = set(),
     ) -> None:
         self._backend = backend
         self._identifier = identifier
-        self._supported_modes = supported_modes
+        self._supported_modes = hardware_modes
+        self._firmware_modes = firmware_modes
 
-        if len(supported_modes) < 1:
-            raise ValueError("A GPIO pin must support at least one GPIOPinMode.")
+        if len(hardware_modes) < 1:
+            raise ValueError("A GPIO pin must support at least one hardware mode.")
 
         self.mode = initial_mode
 
@@ -114,7 +122,7 @@ class GPIOPin(Component):
         """Get the interface class that is required to use this component."""
         return GPIOPinInterface
 
-    def _require_pin_modes(self, pin_modes: List[GPIOPinMode]) -> None:
+    def _require_pin_modes(self, pin_modes: List[PinMode]) -> None:
         """Ensure that this pin is in the specified hardware mode."""
         if not any(self.mode == mode for mode in pin_modes) and not len(pin_modes) == 0:
             raise BadGPIOPinModeError(
@@ -127,18 +135,19 @@ class GPIOPin(Component):
         return self._identifier
 
     @property
-    def mode(self) -> GPIOPinMode:
-        """Get the hardware mode of this pin."""
+    def mode(self) -> PinMode:
+        """Get the mode of this pin."""
         return self._backend.get_gpio_pin_mode(self._identifier)
 
     @mode.setter
-    def mode(self, pin_mode: GPIOPinMode) -> None:
-        """Set the hardware mode of this pin."""
-        if pin_mode not in self._supported_modes:
+    def mode(self, pin_mode: PinMode) -> None:
+        """Set the mode of this pin."""
+        if pin_mode not in self._supported_modes | self._firmware_modes:
             raise NotSupportedByComponentError(
                 f"Pin {self._identifier} does not support {str(pin_mode)}.",
             )
-        self._backend.set_gpio_pin_mode(self._identifier, pin_mode)
+        if isinstance(pin_mode, GPIOPinMode):
+            self._backend.set_gpio_pin_mode(self._identifier, pin_mode)
 
     @property
     def digital_state(self) -> bool:
@@ -189,3 +198,13 @@ class GPIOPin(Component):
                 self._identifier,
                 new_value,
             )
+
+    @property
+    def firmware_modes(self) -> Set[FirmwareMode]:
+        """Get the supported firmware modes."""
+        return self._firmware_modes
+
+    @firmware_modes.setter
+    def firmware_modes(self, modes: Set[FirmwareMode]) -> None:
+        """Set the supported firmware modes."""
+        self.firmware_modes = modes

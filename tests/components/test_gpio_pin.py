@@ -1,9 +1,13 @@
 """Tests for the GPIO Pin Classes."""
-from typing import List
+from typing import List, Type
 
 import pytest
 
-from j5.components import NotSupportedByComponentError
+from j5.components import (
+    DerivedComponent,
+    Interface,
+    NotSupportedByComponentError,
+)
 from j5.components.gpio_pin import (
     BadGPIOPinModeError,
     GPIOPin,
@@ -100,7 +104,7 @@ def test_pin_mode_getter() -> None:
         0,
         driver,
         initial_mode=GPIOPinMode.DIGITAL_INPUT,
-        supported_modes={GPIOPinMode.DIGITAL_INPUT, GPIOPinMode.DIGITAL_OUTPUT},
+        hardware_modes={GPIOPinMode.DIGITAL_INPUT, GPIOPinMode.DIGITAL_OUTPUT},
     )
 
     assert pin.mode is GPIOPinMode.DIGITAL_INPUT
@@ -116,7 +120,7 @@ def test_pin_mode_setter() -> None:
         0,
         driver,
         initial_mode=GPIOPinMode.DIGITAL_INPUT,
-        supported_modes={GPIOPinMode.DIGITAL_INPUT, GPIOPinMode.DIGITAL_OUTPUT},
+        hardware_modes={GPIOPinMode.DIGITAL_INPUT, GPIOPinMode.DIGITAL_OUTPUT},
     )
 
     assert driver._mode[0] is GPIOPinMode.DIGITAL_INPUT
@@ -148,7 +152,7 @@ def test_initial_mode() -> None:
         2,
         driver,
         initial_mode=GPIOPinMode.DIGITAL_INPUT,
-        supported_modes={GPIOPinMode.DIGITAL_INPUT},
+        hardware_modes={GPIOPinMode.DIGITAL_INPUT},
     )
     assert driver._mode[2] is GPIOPinMode.DIGITAL_INPUT
 
@@ -165,7 +169,7 @@ def test_initial_mode() -> None:
             2,
             driver,
             initial_mode=GPIOPinMode.DIGITAL_INPUT,
-            supported_modes={GPIOPinMode.DIGITAL_OUTPUT},
+            hardware_modes={GPIOPinMode.DIGITAL_OUTPUT},
         )
 
 
@@ -178,7 +182,7 @@ def test_supported_modes_length() -> None:
             0,
             driver,
             initial_mode=GPIOPinMode.DIGITAL_INPUT,
-            supported_modes=set(),
+            hardware_modes=set(),
         )
 
 
@@ -189,7 +193,7 @@ def test_required_pin_modes() -> None:
         0,
         driver,
         initial_mode=GPIOPinMode.DIGITAL_OUTPUT,
-        supported_modes={
+        hardware_modes={
             GPIOPinMode.DIGITAL_OUTPUT,
             GPIOPinMode.DIGITAL_INPUT,
         },
@@ -218,7 +222,7 @@ def test_digital_state_getter() -> None:
         0,
         driver,
         initial_mode=GPIOPinMode.DIGITAL_INPUT,
-        supported_modes={
+        hardware_modes={
             GPIOPinMode.DIGITAL_OUTPUT,
             GPIOPinMode.DIGITAL_INPUT,
             GPIOPinMode.DIGITAL_INPUT_PULLUP,
@@ -257,7 +261,7 @@ def test_digital_state_setter() -> None:
         0,
         driver,
         initial_mode=GPIOPinMode.DIGITAL_INPUT,
-        supported_modes={
+        hardware_modes={
             GPIOPinMode.DIGITAL_OUTPUT,
             GPIOPinMode.DIGITAL_INPUT,
             GPIOPinMode.DIGITAL_INPUT_PULLUP,
@@ -279,7 +283,7 @@ def test_analogue_value_getter() -> None:
         0,
         driver,
         initial_mode=GPIOPinMode.DIGITAL_INPUT,
-        supported_modes={
+        hardware_modes={
             GPIOPinMode.DIGITAL_OUTPUT,
             GPIOPinMode.DIGITAL_INPUT,
             GPIOPinMode.DIGITAL_INPUT_PULLUP,
@@ -301,7 +305,7 @@ def test_analogue_value_setter() -> None:
         0,
         driver,
         initial_mode=GPIOPinMode.ANALOGUE_OUTPUT,
-        supported_modes={
+        hardware_modes={
             GPIOPinMode.ANALOGUE_OUTPUT,
             GPIOPinMode.PWM_OUTPUT,
         },
@@ -315,3 +319,29 @@ def test_analogue_value_setter() -> None:
 
     with pytest.raises(ValueError):
         pin.analogue_value = -1
+
+
+class Peripheral(DerivedComponent):
+    """A mock derived component."""
+
+    @staticmethod
+    def interface_class() -> Type[Interface]:
+        """Return an interface."""
+        return Interface
+
+
+def test_derived_mode_is_possible() -> None:
+    """Check that it is possible to support a derived component."""
+    driver = MockGPIOPinDriver()
+    GPIOPin(
+        0,
+        driver,
+        initial_mode=GPIOPinMode.ANALOGUE_OUTPUT,
+        hardware_modes={
+            GPIOPinMode.ANALOGUE_OUTPUT,
+            GPIOPinMode.PWM_OUTPUT,
+        },
+        firmware_modes={
+            Peripheral,
+        },
+    )

@@ -24,6 +24,32 @@ class Component(metaclass=ABCMeta):
         raise NotImplementedError  # pragma: no cover
 
 
+class DerivedComponent(Component):
+    """
+    A derived component is a component that can take another component as a parameter.
+
+    For example, a device may be attached to various pins on the board, and this could
+    vary depending on what the user wants. We solve this by passing the pins to the
+    derived component.
+
+    >>> u = Ultrasound(pin_0, pin_1)
+    """
+
+    @property
+    def identifier(self) -> int:
+        """An integer to identify the component on a board."""
+        raise NotSupportedByComponentError(
+            "The identifier of a derived component is a ",
+            "function of the components that it consists of",
+        )
+
+    @staticmethod
+    @abstractmethod
+    def interface_class() -> Type[Interface]:
+        """Get the interface class that is required to use this component."""
+        raise NotImplementedError  # pragma: no cover
+
+
 class NotSupportedByComponentError(Exception):
     """This is thrown when hardware does not support the action that is attempted."""
 
