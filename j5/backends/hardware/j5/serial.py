@@ -66,11 +66,13 @@ class SerialHardwareBackend(metaclass=BackendMeta):
         raise NotImplementedError  # pragma: no cover
 
     @handle_serial_error
-    def read_serial_line(self) -> str:
+    def read_serial_line(self, empty: bool = False) -> str:
         """Read a line from the serial interface."""
         bdata = self._serial.readline()
 
         if len(bdata) == 0:
+            if empty:
+                return ""
             raise CommunicationError(
                 "Unable to communicate with motor board. ",
                 "Is it correctly powered?",
