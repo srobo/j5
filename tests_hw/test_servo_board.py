@@ -50,7 +50,7 @@ if __name__ == '__main__':
 
     for servo in r.servo_board.servos:
         print(f"Set servo {servo.identifier} to 0")
-        servo.position = -1
+        servo.position = 0
         sleep(0.1)
 
     for servo in r.servo_board.servos:
