@@ -94,7 +94,7 @@ class BoardGroup(Generic[T]):
 
     def update_boards(self) -> None:
         """Update the boards in this group to see if new boards have been added."""
-        self._boards: Dict[str, T] = OrderedDict()
+        self._boards.clear()
         discovered_boards = self._backend_class.discover()
         for board in sorted(discovered_boards, key=lambda b: b.serial):
             self._boards.update({board.serial: cast(T, board)})
