@@ -81,7 +81,7 @@ class ArduinoUnoConsoleBackend(GPIOPinInterface, LEDInterface, Backend):
         ]:
             raise ValueError(f"Pin {identifier} mode needs to be DIGITAL_INPUT_*"
                              f"in order to read the digital state.")
-        return self._console.read(f"Pin {identifier} digital state [bool]", bool)
+        return self._console.read(f"Pin {identifier} digital state [true/false]", bool)
 
     def read_gpio_pin_analogue_value(self, identifier: int) -> float:
         """Read the scaled analogue value of the GPIO pin."""
@@ -103,11 +103,11 @@ class ArduinoUnoConsoleBackend(GPIOPinInterface, LEDInterface, Backend):
     def get_led_state(self, identifier: int) -> bool:
         """Get the state of an LED."""
         if identifier != 0:
-            raise ValueError("Arduino Uno only has LED 0 (D13).")
+            raise ValueError("Arduino Uno only has LED 0 (digital pin 13).")
         return self.get_gpio_pin_digital_state(13)
 
     def set_led_state(self, identifier: int, state: bool) -> None:
         """Set the state of an LED."""
         if identifier != 0:
-            raise ValueError("Arduino Uno only has LED 0 (D13)")
+            raise ValueError("Arduino Uno only has LED 0 (digital pin 13)")
         self.write_gpio_pin_digital_state(13, state)
