@@ -16,7 +16,7 @@ from j5.boards import Board
 from j5.boards.arduino.uno import ArduinoUnoBoard
 from j5.components import GPIOPinInterface, GPIOPinMode, LEDInterface
 
-USB_ID: Set[Tuple[int, int]] = {
+USB_IDS: Set[Tuple[int, int]] = {
     (0x2341, 0x0043),  # Fake Uno
     (0x2a03, 0x0043),  # Fake Uno
     (0x1a86, 0x7523),  # Real Uno
@@ -25,7 +25,7 @@ USB_ID: Set[Tuple[int, int]] = {
 
 def is_arduino_uno(port: ListPortInfo) -> bool:
     """Check if a ListPortInfo represents an Arduino Uno."""
-    return (port.vid, port.pid) in USB_ID
+    return (port.vid, port.pid) in USB_IDS
 
 
 class ArduinoUnoHardwareBackend(

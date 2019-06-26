@@ -31,7 +31,7 @@ def handle_serial_error(func: Callable[..., RT]) -> Callable[..., RT]:  # type: 
 
 
 class SerialHardwareBackend(metaclass=BackendMeta):
-    """An abstract class for creating backends that use Raw USB communication."""
+    """An abstract class for creating backends that use USB serial communication."""
 
     @handle_serial_error
     def __init__(
@@ -74,7 +74,7 @@ class SerialHardwareBackend(metaclass=BackendMeta):
             if empty:
                 return ""
             raise CommunicationError(
-                "Unable to communicate with motor board. ",
+                "Unable to communicate with board. ",
                 "Is it correctly powered?",
             )
 
