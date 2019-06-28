@@ -218,6 +218,18 @@ def test_set_led_state() -> None:
     assert backend.get_led_state(0)
 
 
+def test_that_led_is_pin_13() -> None:
+    """Test that the LED has the same state as Pin 13."""
+    backend = ArduinoUnoConsoleBackend(
+        "TestBoard",
+        console_class=MockConsole,
+    )
+    backend._console.expects = "Set pin 13 state to False"  # type: ignore
+    backend.set_led_state(0, False)
+
+    assert not backend.get_led_state(0)
+
+
 def test_one_led() -> None:
     """Test that we can only control LED 0."""
     backend = ArduinoUnoConsoleBackend("test")
