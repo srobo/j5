@@ -95,7 +95,7 @@ class RawUSBHardwareBackend(metaclass=BackendMeta):
     def serial(self) -> str:
         """The serial number reported by the board."""
         # https://github.com/python/mypy/issues/1362
-        return self._usb_device.serial_number  # type: ignore
+        return self._usb_device.serial_number()
 
     @handle_usb_error
     def __del__(self) -> None:
