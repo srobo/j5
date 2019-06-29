@@ -92,22 +92,13 @@ class Spherical(NamedTuple):
 Coordinate = Union[Cylindrical, Spherical, Cartesian]
 
 
-class Orientation(NamedTuple):
-    """The orientation of the tuple represented as a quarternion."""
-
-    x: float
-    y: float
-    z: float
-    w: float
-
-
 class Markers():
     """Markers Class.
 
     The position is stored in self.__position.
     This is a multi-dementional numpy array.
-    The first dimension is the axis.
-    the second dimesion is the marker index.
+    The first dimesion is the marker index.
+    The second dimension is the axis.
     Example:
         [ [x1, y1, z1],
           [x2, y2, z2],
