@@ -1,7 +1,5 @@
 """Markers Class."""
 
-from __future__ import annotations
-
 from typing import List, NamedTuple, Union
 
 import numpy as np
@@ -14,17 +12,17 @@ class Cartesian(NamedTuple):
     y: float
     z: float
 
-    def as_cartesian(self) -> Cartesian:
+    def as_cartesian(self) -> 'Cartesian':
         """Provides the coordiante in the form of a cartesian coordinate."""
         return self
 
-    def as_cylindrical(self) -> Cylindrical:
+    def as_cylindrical(self) -> 'Cylindrical':
         """Provides the coordiante in the form of a cylindrical coordinate."""
         return Cylindrical(np.sqrt(self.x**2 + self.y**2),
                            np.arctan2(self.y, self.x),
                            self.z)
 
-    def as_spherical(self) -> Spherical:
+    def as_spherical(self) -> 'Spherical':
         """Provides the coordiante in the form of a spherical coordinate."""
         return Spherical(np.sqrt(self.x**2 + self.y**2 + self.z**2),
                          np.arctan2(self.y, self.x),
@@ -43,17 +41,17 @@ class Cylindrical(NamedTuple):
     phi: float
     z: float
 
-    def as_cartesian(self) -> Cartesian:
+    def as_cartesian(self) -> 'Cartesian':
         """Provides the coordiante in the form of a cartesian coordinate."""
         return Cartesian(self.p * np.cos(self.phi),
                          self.p * np.sin(self.phi),
                          self.z)
 
-    def as_cylindrical(self) -> Cylindrical:
+    def as_cylindrical(self) -> 'Cylindrical':
         """Provides the coordiante in the form of a cylindrical coordinate."""
         return self
 
-    def as_spherical(self) -> Spherical:
+    def as_spherical(self) -> 'Spherical':
         """Provides the coordiante in the form of a spherical coordinate."""
         return Spherical(np.sqrt(self.p**2 + self.z**2),
                          np.arctan2(self.p, self.z),
@@ -72,19 +70,19 @@ class Spherical(NamedTuple):
     theta: float
     phi: float
 
-    def as_cartesian(self) -> Cartesian:
+    def as_cartesian(self) -> 'Cartesian':
         """Provides the coordiante in the form of a cartesian coordinate."""
         return Cartesian(self.r * np.cos(self.phi) * np.sin(self.theta),
                          self.r * np.sin(self.phi) * np.sin(self.theta),
                          self.r * np.cos(self.theta))
 
-    def as_cylindrical(self) -> Cylindrical:
+    def as_cylindrical(self) -> 'Cylindrical':
         """Provides the coordiante in the form of a cylindrical coordinate."""
         return Cylindrical(self.r * np.sin(self.theta),
                            self.phi,
                            self.r * np.cos(self.theta))
 
-    def as_spherical(self) -> Spherical:
+    def as_spherical(self) -> 'Spherical':
         """Provides the coordiante in the form of a spherical coordinate."""
         return self
 
