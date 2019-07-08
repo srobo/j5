@@ -1,8 +1,50 @@
 """Markers Class."""
 
+from abc import ABCMeta
 from typing import List, NamedTuple, Union
 
 import numpy as np
+
+
+class Coordinate(metaclass=ABCMeta):
+    """A position in space."""
+
+    _cart: 'Cartesian'
+    _cyl: 'Cylindrical'
+    _sph: 'Spherical'
+
+    def __init__(self, x: float, y: float, z: float):
+        self._cart = Cartesian(x, y, z)
+
+    @property
+    def cartesian(self):
+        """Cartesian representation."""
+        return self._cart
+
+    @property
+    def cylindrical(self):
+        """Cylindrical representation."""
+        if self._cyl is None:
+            self._cyl = Cylindrical(
+                p=np.sqrt(self._cart.x**2 + self._cart.y**2),
+                phi=np.arctan2(self._cart.y, self._cart.x),
+                z=self._cart.z
+            )
+        return self._cyl
+
+    @property
+    def spherical(self):
+        """Spherical representation."""
+        if self._sph is None:
+            self._sph = Spherical(
+                np.sqrt(self._cart.x**2 + self._cart.y**2 + self._cart.z**2),
+                np.arctan2(self._cart.y, self._cart.x),
+                np.arctan2(
+                    np.sqrt(self._cart.x**2 + self._cart.y**2),
+                    self._cart.z
+                )
+            )
+        return self._sph
 
 
 class Cartesian(NamedTuple):
@@ -11,22 +53,6 @@ class Cartesian(NamedTuple):
     x: float
     y: float
     z: float
-
-    def as_cartesian(self) -> 'Cartesian':
-        """Provides the coordiante in the form of a cartesian coordinate."""
-        return self
-
-    def as_cylindrical(self) -> 'Cylindrical':
-        """Provides the coordiante in the form of a cylindrical coordinate."""
-        return Cylindrical(np.sqrt(self.x**2 + self.y**2),
-                           np.arctan2(self.y, self.x),
-                           self.z)
-
-    def as_spherical(self) -> 'Spherical':
-        """Provides the coordiante in the form of a spherical coordinate."""
-        return Spherical(np.sqrt(self.x**2 + self.y**2 + self.z**2),
-                         np.arctan2(self.y, self.x),
-                         np.arctan2(np.sqrt(self.x**2 + self.y**2), self.z))
 
 
 class Cylindrical(NamedTuple):
@@ -41,22 +67,6 @@ class Cylindrical(NamedTuple):
     phi: float
     z: float
 
-    def as_cartesian(self) -> 'Cartesian':
-        """Provides the coordiante in the form of a cartesian coordinate."""
-        return Cartesian(self.p * np.cos(self.phi),
-                         self.p * np.sin(self.phi),
-                         self.z)
-
-    def as_cylindrical(self) -> 'Cylindrical':
-        """Provides the coordiante in the form of a cylindrical coordinate."""
-        return self
-
-    def as_spherical(self) -> 'Spherical':
-        """Provides the coordiante in the form of a spherical coordinate."""
-        return Spherical(np.sqrt(self.p**2 + self.z**2),
-                         np.arctan2(self.p, self.z),
-                         self.phi)
-
 
 class Spherical(NamedTuple):
     """A Spherical Coordinate.
@@ -69,25 +79,6 @@ class Spherical(NamedTuple):
     r: float
     theta: float
     phi: float
-
-    def as_cartesian(self) -> 'Cartesian':
-        """Provides the coordiante in the form of a cartesian coordinate."""
-        return Cartesian(self.r * np.cos(self.phi) * np.sin(self.theta),
-                         self.r * np.sin(self.phi) * np.sin(self.theta),
-                         self.r * np.cos(self.theta))
-
-    def as_cylindrical(self) -> 'Cylindrical':
-        """Provides the coordiante in the form of a cylindrical coordinate."""
-        return Cylindrical(self.r * np.sin(self.theta),
-                           self.phi,
-                           self.r * np.cos(self.theta))
-
-    def as_spherical(self) -> 'Spherical':
-        """Provides the coordiante in the form of a spherical coordinate."""
-        return self
-
-
-Coordinate = Union[Cylindrical, Spherical, Cartesian]
 
 
 class Markers():
@@ -157,45 +148,3 @@ class Markers():
                                [np.sin(rot_z), np.cos(rot_z), 0],
                                [0, 0, 1]])
         self.__positions = np.multiply(self.__positions, z_rotation)
-
-    @staticmethod
-    def cartesian_to_cylindrical(cart: Cartesian) -> Cylindrical:
-        """Converts a cartesian coordinate to a cylindrical coordinate."""
-        return Cylindrical(np.sqrt(cart.x**2 + cart.y**2),
-                           np.arctan2(cart.y, cart.x),
-                           cart.z)
-
-    @staticmethod
-    def cartesian_to_spherical(cart: Cartesian) -> Spherical:
-        """Converts a cartesian coordinate to a spherical coordinate."""
-        return Spherical(np.sqrt(cart.x**2 + cart.y**2 + cart.z**2),
-                         np.arctan2(cart.y, cart.x),
-                         np.arctan2(np.sqrt(cart.x**2 + cart.y**2), cart.z))
-
-    @staticmethod
-    def cylindrical_to_cartesian(cyl: Cylindrical) -> Cartesian:
-        """Converts a cylindrical coordinate to a cartesian coordinate."""
-        return Cartesian(cyl.p * np.cos(cyl.phi),
-                         cyl.p * np.sin(cyl.phi),
-                         cyl.z)
-
-    @staticmethod
-    def cylindrical_to_spherical(cyl: Cylindrical) -> Spherical:
-        """Converts a cylindrical coordinate to a spherical coordinate."""
-        return Spherical(np.sqrt(cyl.p**2 + cyl.z**2),
-                         np.arctan2(cyl.p, cyl.z),
-                         cyl.phi)
-
-    @staticmethod
-    def spherical_to_cylindrical(sph: Spherical) -> Cylindrical:
-        """Converts a spherical coordinate to a cylindrical coordinate."""
-        return Cylindrical(sph.r * np.sin(sph.theta),
-                           sph.phi,
-                           sph.r * np.cos(sph.theta))
-
-    @staticmethod
-    def spherical_to_cartesian(sph: Spherical) -> Cartesian:
-        """Converts a spherical coordinate to a cartesian coordinate."""
-        return Cartesian(sph.r * np.cos(sph.phi) * np.sin(sph.theta),
-                         sph.r * np.sin(sph.phi) * np.sin(sph.theta),
-                         sph.r * np.cos(sph.theta))
