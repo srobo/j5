@@ -1,6 +1,5 @@
 """Test the SR v4 motor board hardware backend and associated classes."""
 
-from functools import partial
 from typing import List, Optional, Type
 
 import pytest
@@ -181,15 +180,29 @@ def mock_comports(include_links: bool = False) -> List[MockListPortInfo]:
     ]
 
 
-# MotorSerial is the same as MockSerial, but includes some data we expect to receive.
-MotorSerial = partial(
-    MockSerial,
-    expects=b'\x01'  # Version Check
-            b'\x02\x02'  # Brake Motor 0 at init
-            b'\x03\x02'  # Brake Motor 1 at init
-            b'\x02\x02'  # Brake Motor 0 at del
-            b'\x03\x02',  # Brake Motor 1 at del
-)
+class MotorSerial(MockSerial):
+    """MotorSerial is the same as MockSerial, but includes data we expect to receive."""
+
+    def __init__(self,
+                 port: Optional[str] = None,
+                 baudrate: int = 9600,
+                 bytesize: int = 8,
+                 parity: str = 'N',
+                 stopbits: float = 1,
+                 timeout: Optional[float] = None):
+        super().__init__(
+            port=port,
+            baudrate=baudrate,
+            bytesize=bytesize,
+            parity=parity,
+            stopbits=stopbits,
+            timeout=timeout,
+            expects=b'\x01'  # Version Check
+                    b'\x02\x02'  # Brake Motor 0 at init
+                    b'\x03\x02'  # Brake Motor 1 at init
+                    b'\x02\x02'  # Brake Motor 0 at del
+                    b'\x03\x02',  # Brake Motor 1 at del
+        )
 
 
 def test_backend_initialisation() -> None:
@@ -197,7 +210,7 @@ def test_backend_initialisation() -> None:
     backend = SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerial)
 
     assert type(backend) is SRV4MotorBoardHardwareBackend
-    assert type(backend._serial) is MockSerial
+    assert type(backend._serial) is MotorSerial
 
     assert len(backend._state) == 2
     assert all(state == MotorSpecialState.BRAKE for state in backend._state)
