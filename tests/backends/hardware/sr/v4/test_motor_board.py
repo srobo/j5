@@ -1,6 +1,6 @@
 """Test the SR v4 motor board hardware backend and associated classes."""
 
-from typing import List, Optional, Type
+from typing import List, Optional, Type, cast
 
 import pytest
 from serial import SerialException, SerialTimeoutException
@@ -235,11 +235,12 @@ def test_backend_discover() -> None:
 def test_backend_send_command() -> None:
     """Test that the backend can send commands."""
     backend = SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerial)
+    serial = cast(MotorSerial, backend._serial)
 
-    backend._serial.expects_prepend(b'\x04')
+    serial.expects_prepend(b'\x04')
     backend.send_command(4)
 
-    backend._serial.expects_prepend(b'\x02d')
+    serial.expects_prepend(b'\x02d')
     backend.send_command(2, 100)
 
 
@@ -256,8 +257,9 @@ def test_backend_send_command_bad_write() -> None:
 def test_read_serial_line() -> None:
     """Test that we can we lines from the serial interface."""
     backend = SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerial)
-    backend._serial.flush()
-    backend._serial.buffer_append(b"Green Beans", newline=True)
+    serial = cast(MotorSerial, backend._serial)
+    serial.flush()
+    serial.buffer_append(b"Green Beans", newline=True)
     data = backend.read_serial_line()
     assert data == "Green Beans"
 
@@ -274,13 +276,14 @@ def test_read_serial_line_no_data() -> None:
 def test_get_firmware_version() -> None:
     """Test that we can get the firmware version from the serial interface."""
     backend = SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerial)
-    backend._serial.flush()
-    backend._serial.expects_prepend(b'\x01')
+    serial = cast(MotorSerial, backend._serial)
+    serial.flush()
+    serial.expects_prepend(b'\x01')
     assert backend.firmware_version == "3"
 
-    backend._serial.flush()
-    backend._serial.expects_prepend(b'\x01')
-    backend._serial.buffer_append(b'PBV4C:5', newline=True)
+    serial.flush()
+    serial.expects_prepend(b'\x01')
+    serial.buffer_append(b'PBV4C:5', newline=True)
     with pytest.raises(CommunicationError):
         backend.firmware_version
 
@@ -288,27 +291,28 @@ def test_get_firmware_version() -> None:
 def test_get_set_motor_state() -> None:
     """Test that we can get and set the motor state."""
     backend = SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerial)
+    serial = cast(MotorSerial, backend._serial)
 
     assert backend.get_motor_state(0) == MotorSpecialState.BRAKE
     assert backend.get_motor_state(1) == MotorSpecialState.BRAKE
 
-    backend._serial.expects_prepend(b'\x02\xd1')
+    serial.expects_prepend(b'\x02\xd1')
     backend.set_motor_state(0, 0.65)
     assert backend.get_motor_state(0) == 0.65
 
-    backend._serial.expects_prepend(b'\x02\xfd')
+    serial.expects_prepend(b'\x02\xfd')
     backend.set_motor_state(0, 1.0)
     assert backend.get_motor_state(0) == 1.0
 
-    backend._serial.expects_prepend(b'\x02\x03')
+    serial.expects_prepend(b'\x02\x03')
     backend.set_motor_state(0, -1.0)
     assert backend.get_motor_state(0) == -1.0
 
-    backend._serial.expects_prepend(b'\x02\x02')
+    serial.expects_prepend(b'\x02\x02')
     backend.set_motor_state(0, MotorSpecialState.BRAKE)
     assert backend.get_motor_state(0) == MotorSpecialState.BRAKE
 
-    backend._serial.expects_prepend(b'\x02\x01')
+    serial.expects_prepend(b'\x02\x01')
     backend.set_motor_state(0, MotorSpecialState.COAST)
     assert backend.get_motor_state(0) == MotorSpecialState.COAST
 
