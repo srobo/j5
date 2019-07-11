@@ -1,6 +1,15 @@
 """Hardware Backend for the SR v4 motor board."""
 from functools import wraps
-from typing import Callable, List, Optional, Set, Type, TypeVar, cast
+from typing import (
+    TYPE_CHECKING,
+    Callable,
+    List,
+    Optional,
+    Set,
+    Type,
+    TypeVar,
+    cast,
+)
 
 from serial import Serial, SerialException, SerialTimeoutException
 from serial.tools.list_ports import comports
@@ -11,6 +20,14 @@ from j5.backends.hardware.env import HardwareEnvironment
 from j5.boards import Board
 from j5.boards.sr.v4.motor_board import MotorBoard
 from j5.components.motor import MotorInterface, MotorSpecialState, MotorState
+
+if TYPE_CHECKING:
+    from typing_extensions import Protocol
+else:
+    class Protocol:
+        """Dummy class since typing_extensions is not available at runtime."""
+
+        pass
 
 CMD_RESET = 0
 CMD_VERSION = 1
@@ -48,6 +65,39 @@ def is_motor_board(port: ListPortInfo) -> bool:
         and port.vid == 0x0403 and port.pid == 0x6001
 
 
+class Seriallike(Protocol):
+    """
+    Something that walks like a Serial and quacks like a Serial.
+
+    This is used instead of hardcoding the Serial class to allow it to be mocked out.
+    """
+
+    def __init__(self,
+                 port: Optional[str] = None,
+                 baudrate: int = 9600,
+                 bytesize: int = 8,
+                 parity: str = 'N',
+                 stopbits: float = 1,
+                 timeout: Optional[float] = None):
+        ...
+
+    def close(self) -> None:
+        """Close the connection."""
+        ...
+
+    def flush(self) -> None:
+        """Flush all pending write operations."""
+        ...
+
+    def readline(self) -> bytes:
+        """Read a line from the serial port."""
+        ...
+
+    def write(self, data: bytes) -> int:
+        """Write data to the serial port."""
+        ...
+
+
 class SRV4MotorBoardHardwareBackend(
     MotorInterface,
     Backend,
@@ -61,7 +111,7 @@ class SRV4MotorBoardHardwareBackend(
     def discover(
             cls,
             find: Callable = comports,
-            serial_class: Type[Serial] = Serial,
+            serial_class: Type[Seriallike] = Serial,
     ) -> Set[Board]:
         """Discover all connected motor boards."""
         # Find all serial ports.
@@ -80,7 +130,7 @@ class SRV4MotorBoardHardwareBackend(
         return boards
 
     @handle_serial_error
-    def __init__(self, serial_port: str, serial_class: Type[Serial] = Serial) -> None:
+    def __init__(self, serial_port: str, serial_class: Type[Seriallike] = Serial) -> None:
         # Initialise our stored values for the state.
         self._state: List[MotorState] = [
             MotorSpecialState.BRAKE
