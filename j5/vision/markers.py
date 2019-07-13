@@ -1,7 +1,8 @@
 """Markers Class."""
 
 from abc import ABCMeta
-from typing import List, NamedTuple, Union
+from math import cos, sin
+from typing import List, NamedTuple
 
 import numpy as np
 
@@ -16,6 +17,29 @@ class Coordinate(metaclass=ABCMeta):
     def __init__(self, x: float, y: float, z: float):
         self._cart = Cartesian(x, y, z)
 
+    @classmethod
+    def from_cartesian(cls, x: float, y: float, z: float):
+        """Create a coordinate from a cartesian position."""
+        return cls(x, y, z)
+
+    @classmethod
+    def from_spherical(cls, r: float, theta: float, phi: float):
+        """Create a coordinate from a spherical position."""
+        return cls(
+            r * cos(phi) * sin(theta),
+            r * sin(phi) * sin(theta),
+            r * cos(theta),
+        )
+
+    @classmethod
+    def from_cylindrical(cls, p: float, phi: float, z: float):
+        """Create a coordinate from a cylindrical position."""
+        return cls(
+            p * cos(phi),
+            p * sin(phi),
+            z,
+        )
+
     @property
     def cartesian(self):
         """Cartesian representation."""
@@ -28,7 +52,7 @@ class Coordinate(metaclass=ABCMeta):
             self._cyl = Cylindrical(
                 p=np.sqrt(self._cart.x**2 + self._cart.y**2),
                 phi=np.arctan2(self._cart.y, self._cart.x),
-                z=self._cart.z
+                z=self._cart.z,
             )
         return self._cyl
 
@@ -41,8 +65,8 @@ class Coordinate(metaclass=ABCMeta):
                 np.arctan2(self._cart.y, self._cart.x),
                 np.arctan2(
                     np.sqrt(self._cart.x**2 + self._cart.y**2),
-                    self._cart.z
-                )
+                    self._cart.z,
+                ),
             )
         return self._sph
 
@@ -85,8 +109,8 @@ class Markers():
     """Markers Class.
 
     The position is stored in self.__position.
-    This is a multi-dementional numpy array.
-    The first dimesion is the marker index.
+    This is a multi-dimensional numpy array.
+    The first dimension is the marker index.
     The second dimension is the axis.
     Example:
         [ [x1, y1, z1],
