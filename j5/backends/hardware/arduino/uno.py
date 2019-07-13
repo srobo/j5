@@ -45,12 +45,12 @@ class ArduinoUnoHardwareBackend(
     @classmethod
     def discover(
             cls,
-            find: Callable = comports,
+            comports: Callable = comports,
             serial_class: Type[Serial] = Serial,
     ) -> Set[Board]:
         """Discover all connected motor boards."""
         # Find all serial ports.
-        ports: List[ListPortInfo] = find()
+        ports: List[ListPortInfo] = comports()
 
         # Get a list of boards from the ports.
         boards: Set[Board] = set()
