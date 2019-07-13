@@ -3,7 +3,7 @@
 CMD:=poetry run
 PYMODULE:=j5
 
-all: lint type test
+all: type test lint
 
 lint:
 	$(CMD) flake8 $(PYMODULE) tests tests_hw
