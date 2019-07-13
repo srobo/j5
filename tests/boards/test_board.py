@@ -217,6 +217,14 @@ def test_board_group_singular_but_multiple_boards() -> None:
         board_group.singular()
 
 
+def test_board_group_singular_but_no_boards() -> None:
+    """Test that the singular function gets upset if there are no boards."""
+    board_group = BoardGroup[MockBoard](NoBoardMockBackend)
+
+    with pytest.raises(CommunicationError):
+        board_group.singular()
+
+
 def test_board_group_boards() -> None:
     """Test that the boards property works on a board group."""
     board_group = BoardGroup[MockBoard](OneBoardMockBackend)
