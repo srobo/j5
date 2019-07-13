@@ -117,7 +117,7 @@ class SerialHardwareBackend(metaclass=BackendMeta):
             if empty:
                 return ""
             raise CommunicationError(
-                "Unable to communicate with board. ",
+                "No response from board. "
                 "Is it correctly powered?",
             )
 
