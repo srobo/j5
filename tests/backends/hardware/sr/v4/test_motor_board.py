@@ -88,15 +88,15 @@ def mock_comports(include_links: bool = False) -> List[MockListPortInfo]:
 class MotorSerial(MockSerial):
     """MotorSerial is the same as MockSerial, but includes data we expect to receive."""
 
-    initial_expects = (
-        b'\x01'  # Version Check
-        b'\x02\x02'  # Brake Motor 0 at init
-        b'\x03\x02'  # Brake Motor 1 at init
-        b'\x02\x02'  # Brake Motor 0 at del
-        b'\x03\x02'  # Brake Motor 1 at del
-    )
-
     expected_baudrate = 1000000
+
+    def check_data_sent_by_constructor(self) -> None:
+        """Check that the backend constructor sent expected data to the serial port."""
+        self.check_sent_data(
+            b'\x01'  # Version Check
+            b'\x02\x02'  # Brake Motor 0 at init
+            b'\x03\x02',  # Brake Motor 1 at init
+        )
 
 
 class MotorSerialBadWrite(MotorSerial):
@@ -113,7 +113,7 @@ class MotorSerialBadFirmware(MotorSerial):
     def write(self, data: bytes) -> int:
         """Write data to the serial, but with the wrong fw version."""
         if data == b'\x01':  # Version Command
-            self.buffer_append(b'MCV4B:5', newline=True)
+            self.append_received_data(b'MCV4B:5', newline=True)
         return len(data)
 
 
@@ -148,12 +148,13 @@ def test_backend_send_command() -> None:
     """Test that the backend can send commands."""
     backend = SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerial)
     serial = cast(MotorSerial, backend._serial)
+    serial.check_data_sent_by_constructor()
 
-    serial.expects_prepend(b'\x04')
     backend.send_command(4)
+    serial.check_sent_data(b"\x04")
 
-    serial.expects_prepend(b'\x02d')
     backend.send_command(2, 100)
+    serial.check_sent_data(b'\x02d')
 
 
 def test_backend_send_command_bad_write() -> None:
@@ -170,8 +171,8 @@ def test_read_serial_line() -> None:
     """Test that we can we lines from the serial interface."""
     backend = SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerial)
     serial = cast(MotorSerial, backend._serial)
-    serial.flush()
-    serial.buffer_append(b"Green Beans", newline=True)
+    serial.check_data_sent_by_constructor()
+    serial.append_received_data(b"Green Beans", newline=True)
     data = backend.read_serial_line()
     assert data == "Green Beans"
 
@@ -179,7 +180,8 @@ def test_read_serial_line() -> None:
 def test_read_serial_line_no_data() -> None:
     """Check that a communication error is thrown if we get no data."""
     backend = SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerial)
-    backend._serial.flush()
+    serial = cast(MotorSerial, backend._serial)
+    serial.check_data_sent_by_constructor()
 
     with pytest.raises(CommunicationError):
         backend.read_serial_line()
@@ -189,47 +191,61 @@ def test_get_firmware_version() -> None:
     """Test that we can get the firmware version from the serial interface."""
     backend = SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerial)
     serial = cast(MotorSerial, backend._serial)
-    serial.flush()
-    serial.expects_prepend(b'\x01')
+    serial.check_data_sent_by_constructor()
     assert backend.firmware_version == "3"
+    serial.check_sent_data(b'\x01')
 
-    serial.flush()
-    serial.expects_prepend(b'\x01')
-    serial.buffer_append(b'PBV4C:5', newline=True)
+    serial.append_received_data(b'PBV4C:5', newline=True)
     with pytest.raises(CommunicationError):
         backend.firmware_version
+    serial.check_sent_data(b'\x01')
 
 
 def test_get_set_motor_state() -> None:
     """Test that we can get and set the motor state."""
     backend = SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerial)
     serial = cast(MotorSerial, backend._serial)
+    serial.check_data_sent_by_constructor()
 
     assert backend.get_motor_state(0) == MotorSpecialState.BRAKE
     assert backend.get_motor_state(1) == MotorSpecialState.BRAKE
 
-    serial.expects_prepend(b'\x02\xd1')
     backend.set_motor_state(0, 0.65)
+    serial.check_sent_data(b'\x02\xd1')
     assert backend.get_motor_state(0) == 0.65
 
-    serial.expects_prepend(b'\x02\xfd')
     backend.set_motor_state(0, 1.0)
+    serial.check_sent_data(b'\x02\xfd')
     assert backend.get_motor_state(0) == 1.0
 
-    serial.expects_prepend(b'\x02\x03')
     backend.set_motor_state(0, -1.0)
+    serial.check_sent_data(b'\x02\x03')
     assert backend.get_motor_state(0) == -1.0
 
-    serial.expects_prepend(b'\x02\x02')
     backend.set_motor_state(0, MotorSpecialState.BRAKE)
+    serial.check_sent_data(b'\x02\x02')
     assert backend.get_motor_state(0) == MotorSpecialState.BRAKE
 
-    serial.expects_prepend(b'\x02\x01')
     backend.set_motor_state(0, MotorSpecialState.COAST)
+    serial.check_sent_data(b'\x02\x01')
     assert backend.get_motor_state(0) == MotorSpecialState.COAST
 
     with pytest.raises(ValueError):
         backend.set_motor_state(0, 20.0)
+    serial.check_sent_data(b'')
 
     with pytest.raises(ValueError):
         backend.set_motor_state(2, 0.0)
+    serial.check_sent_data(b'')
+
+
+def test_brake_motors_at_deletion() -> None:
+    """Test that both motors are set to BRAKE when the backend is garbage collected."""
+    backend = SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerial)
+    serial = cast(MotorSerial, backend._serial)
+    serial.check_data_sent_by_constructor()
+    del backend
+    serial.check_sent_data(
+        b'\x02\x02'  # Brake motor 0
+        b'\x03\x02',  # Brake motor 1
+    )

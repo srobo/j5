@@ -6,8 +6,8 @@ from typing import Optional
 class MockSerial:
     """This class mocks the behaviour of serial.Serial."""
 
-    initial_expects = b""
     expected_baudrate = 9600
+    initial_received_data = b""
 
     def __init__(self,
                  port: Optional[str] = None,
@@ -18,9 +18,9 @@ class MockSerial:
                  timeout: Optional[float] = None,
                  ):
         self._is_open: bool = True
-        self._buffer: bytes = b''
+        self._receive_buffer: bytes = self.initial_received_data
+        self._send_buffer: bytes = b""
         self.port = port
-        self._expects = self.initial_expects
 
         assert baudrate == self.expected_baudrate
         assert bytesize == 8
@@ -35,49 +35,44 @@ class MockSerial:
         self._is_open = False
 
     def flush(self) -> None:
-        """Flush the buffer on the serial port."""
-        self._buffer = b''
+        """Ensure all data written to the serial port has been sent."""
+        pass
 
     def read(self, size: int = 1) -> bytes:
         """Read size bytes from the input buffer."""
-        assert len(self._buffer) >= size
+        assert len(self._receive_buffer) >= size
 
-        data = self._buffer[:size]
-        self._buffer = self._buffer[size:]
+        data = self._receive_buffer[:size]
+        self._receive_buffer = self._receive_buffer[size:]
         return data
 
     def readline(self) -> bytes:
         """Read up to a newline on the serial port."""
         try:
-            pos = self._buffer.index(b'\n')
+            pos = self._receive_buffer.index(b'\n')
         except ValueError:
             return b''
-        return self.read(pos)
+        return self.read(pos + 1)
 
     def write(self, data: bytes) -> int:
         """Write the data to the serial port."""
-        self.check_expects(data)
+        self._send_buffer += data
 
         # We only end up returning data once, check for that here.
         if data == b'\x01':  # Version Command
-            self.buffer_append(b'MCV4B:3', newline=True)
+            self.append_received_data(b'MCV4B:3', newline=True)
 
         return len(data)
 
     # Functions for helping us mock.
 
-    def buffer_append(self, data: bytes, newline: bool = False) -> None:
+    def append_received_data(self, data: bytes, newline: bool = False) -> None:
         """Append some data to the receive buffer."""
-        self._buffer += data
+        self._receive_buffer += data
         if newline:
-            self._buffer += b'\n'
+            self._receive_buffer += b'\n'
 
-    def expects_prepend(self, data: bytes) -> None:
-        """Prepend some bytes to the output buffer that we expect to see."""
-        self._expects = data + self._expects
-
-    def check_expects(self, data: bytes) -> None:
-        """Check that the given data is what we expect to see on the output buffer."""
-        length = len(data)
-        assert data == self._expects[:length]
-        self._expects = self._expects[length:]
+    def check_sent_data(self, data: bytes) -> None:
+        """Check that the given data is what was written to the serial port."""
+        assert data == self._send_buffer, f"{data!r} != {self._send_buffer!r}"
+        self._send_buffer = b""

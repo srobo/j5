@@ -9,6 +9,10 @@ class UnoSerial(MockSerial):
     """UnoSerial is the same as MockSerial, but includes data we expect to receive."""
 
     expected_baudrate = 115200
+    initial_received_data = (
+        b"# Booted\n"
+        b"# SBDuino GPIO v2019.6.0\n"
+    )
 
 
 def test_backend_initialisation() -> None:
