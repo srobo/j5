@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Optional, Set, Type
 
 import pytest
 
-from j5.backends import Backend, Environment
+from j5.backends import Backend, CommunicationError, Environment
 from j5.boards.board import Board, BoardGroup
 
 if TYPE_CHECKING:
@@ -213,7 +213,7 @@ def test_board_group_singular_but_multiple_boards() -> None:
     """Test that the singular function gets upset if there are multiple boards."""
     board_group = BoardGroup[MockBoard](TwoBoardsMockBackend)
 
-    with pytest.raises(Exception):
+    with pytest.raises(CommunicationError):
         board_group.singular()
 
 
