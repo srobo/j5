@@ -251,11 +251,12 @@ class SBArduinoHardwareBackend(
             )
         analogue_pin_num = identifier - 14
         results = self._command("A")
-        if len(results) != 4:
-            raise CommunicationError(f"Invalid response from Arduino: {results}")
-        reading = int(results[analogue_pin_num])
-        voltage = (reading / 1024.0) * 5.0
-        return voltage
+        for result in results:
+            pin_name, reading = result.split(None, 1)
+            if pin_name == f"a{analogue_pin_num}":
+                voltage = (int(reading) / 1024.0) * 5.0
+                return voltage
+        raise CommunicationError(f"Invalid response from Arduino: {results}")
 
     def write_gpio_pin_dac_value(self, identifier: int, scaled_value: float) -> None:
         """Write a scaled analogue value to the DAC on the GPIO pin."""

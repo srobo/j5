@@ -317,8 +317,8 @@ def test_backend_read_analogue() -> None:
     for i, expected_reading in enumerate(readings):
         # "read analogue" command reads all four pins at once.
         identifier = 14 + i
-        for reading in readings:
-            serial.append_received_data(f"> {reading}".encode("utf-8"), newline=True)
+        for j, reading in enumerate(readings):
+            serial.append_received_data(f"> a{j} {reading}".encode("utf-8"), newline=True)
         expected_voltage = (expected_reading / 1024.0) * 5.0
         measured_voltage = backend.read_gpio_pin_analogue_value(identifier)
         assert isclose(measured_voltage, expected_voltage)
