@@ -17,5 +17,8 @@ test:
 test-cov:
 	$(CMD) pytest --cov=$(PYMODULE) tests --cov-report html
 
+isort:
+	$(CMD) isort --recursive $(PYMODULE) tests tests_hw
+
 clean:
 	git clean -Xdf # Delete all files in .gitignore
