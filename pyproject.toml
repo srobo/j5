@@ -20,7 +20,6 @@ classifiers = [
 python = "^3.6"
 pyusb = "^1.0"
 pyserial = "^3.4"
-numpy = "^1.16"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.7"
