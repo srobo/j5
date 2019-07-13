@@ -11,6 +11,7 @@ class Device:
 
     _langids: Tuple[int, ...]
 
+    @property
     def serial_number(self) -> str: ...
 
     def ctrl_transfer(
