@@ -165,9 +165,25 @@ def test_create_boardgroup() -> None:
 
 
 def test_board_group_update() -> None:
-    """Test that we can create a board group of testing boards."""
-    board_group = BoardGroup[MockBoard](NoBoardMockBackend)
+    """Test that we can refresh the list of boards."""
+    board_group = BoardGroup[MockBoard](OneBoardMockBackend)
+    assert len(board_group._boards) == 1
+    old_board = list(board_group._boards.values())[0]
+
     board_group.update_boards()
+    assert len(board_group._boards) == 1
+    new_board = list(board_group._boards.values())[0]
+    assert new_board is not old_board
+
+
+def test_board_group_update_removes_old_boards() -> None:
+    """Test that boards that are no longer discovered are removed from the board group."""
+    board_group = BoardGroup[MockBoard](OneBoardMockBackend)
+    assert len(board_group._boards) == 1
+
+    board_group._backend_class = NoBoardMockBackend
+    board_group.update_boards()
+    assert len(board_group._boards) == 0
 
 
 def test_board_group_singular() -> None:

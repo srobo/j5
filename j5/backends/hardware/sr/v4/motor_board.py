@@ -9,6 +9,7 @@ from j5.backends import CommunicationError
 from j5.backends.hardware.env import HardwareEnvironment
 from j5.backends.hardware.j5.serial import (
     SerialHardwareBackend,
+    Seriallike,
     handle_serial_error,
 )
 from j5.boards import Board
@@ -43,7 +44,7 @@ class SRV4MotorBoardHardwareBackend(
     def discover(
             cls,
             find: Callable = comports,
-            serial_class: Type[Serial] = Serial,
+            serial_class: Type[Seriallike] = Serial,
     ) -> Set[Board]:
         """Discover all connected motor boards."""
         # Find all serial ports.
@@ -62,7 +63,7 @@ class SRV4MotorBoardHardwareBackend(
         return boards
 
     @handle_serial_error
-    def __init__(self, serial_port: str, serial_class: Type[Serial] = Serial) -> None:
+    def __init__(self, serial_port: str, serial_class: Type[Seriallike] = Serial) -> None:
         super(SRV4MotorBoardHardwareBackend, self).__init__(
             serial_port=serial_port,
             serial_class=serial_class,

@@ -1,7 +1,7 @@
 """Abstract hardware backend implementation provided by j5 for serial comms."""
 from abc import abstractmethod
 from functools import wraps
-from typing import Callable, Optional, Set, Type, TypeVar
+from typing import TYPE_CHECKING, Callable, Optional, Set, Type, TypeVar
 
 from serial import Serial, SerialException, SerialTimeoutException
 
@@ -9,6 +9,14 @@ from j5.backends import BackendMeta, CommunicationError, Environment
 from j5.boards import Board
 
 RT = TypeVar("RT")  # pragma: nocover
+
+if TYPE_CHECKING:
+    from typing_extensions import Protocol
+else:
+    class Protocol:
+        """Dummy class since typing_extensions is not available at runtime."""
+
+        pass
 
 
 def handle_serial_error(func: Callable[..., RT]) -> Callable[..., RT]:  # type: ignore
@@ -30,6 +38,39 @@ def handle_serial_error(func: Callable[..., RT]) -> Callable[..., RT]:  # type: 
     return catch_exceptions
 
 
+class Seriallike(Protocol):
+    """
+    Something that walks like a Serial and quacks like a Serial.
+
+    This is used instead of hardcoding the Serial class to allow it to be mocked out.
+    """
+
+    def __init__(self,
+                 port: Optional[str] = None,
+                 baudrate: int = 9600,
+                 bytesize: int = 8,
+                 parity: str = 'N',
+                 stopbits: float = 1,
+                 timeout: Optional[float] = None):
+        ...
+
+    def close(self) -> None:
+        """Close the connection."""
+        ...
+
+    def flush(self) -> None:
+        """Flush all pending write operations."""
+        ...
+
+    def readline(self) -> bytes:
+        """Read a line from the serial port."""
+        ...
+
+    def write(self, data: bytes) -> int:
+        """Write data to the serial port."""
+        ...
+
+
 class SerialHardwareBackend(metaclass=BackendMeta):
     """An abstract class for creating backends that use USB serial communication."""
 
@@ -37,7 +78,7 @@ class SerialHardwareBackend(metaclass=BackendMeta):
     def __init__(
             self,
             serial_port: str,
-            serial_class: Type[Serial] = Serial,
+            serial_class: Type[Seriallike] = Serial,
             baud: int = 115200,
             timeout: float = 0.25,
     ) -> None:

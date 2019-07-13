@@ -62,7 +62,7 @@ class SRV4ServoBoardHardwareBackend(
 
         # Initialise servos.
 
-        # self._usb_device.ctrl_transfer(0, 64, 0, 12, b"")
+        self._usb_device.ctrl_transfer(0, 64, 0, 12, b"")
 
         for s in range(0, 12):
             self.set_servo_position(s, 0.0)
