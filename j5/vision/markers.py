@@ -1,4 +1,4 @@
-"""Markers Class."""
+"""Marker Class."""
 
 from math import atan2, cos, sin, sqrt
 from typing import List, NamedTuple
@@ -11,16 +11,16 @@ class Coordinate:
     _cyl: 'Cylindrical' = None
     _sph: 'Spherical' = None
 
-    def __init__(self, x: float, y: float, z: float):
+    def __init__(self, x: float, y: float, z: float) -> None:
         self._cart = Cartesian(x, y, z)
 
     @classmethod
-    def from_cartesian(cls, x: float, y: float, z: float):
+    def from_cartesian(cls, x: float, y: float, z: float) -> None:
         """Create a coordinate from a cartesian position."""
         return cls(x, y, z)
 
     @classmethod
-    def from_spherical(cls, r: float, theta: float, phi: float):
+    def from_spherical(cls, r: float, theta: float, phi: float) -> None:
         """Create a coordinate from a spherical position."""
         return cls(
             r * sin(phi) * cos(theta),
@@ -29,7 +29,7 @@ class Coordinate:
         )
 
     @classmethod
-    def from_cylindrical(cls, p: float, theta: float, z: float):
+    def from_cylindrical(cls, p: float, theta: float, z: float) -> None:
         """Create a coordinate from a cylindrical position."""
         return cls(
             p * cos(theta),
@@ -38,12 +38,12 @@ class Coordinate:
         )
 
     @property
-    def cartesian(self):
+    def cartesian(self) -> 'Cartesian':
         """Cartesian representation."""
         return self._cart
 
     @property
-    def cylindrical(self):
+    def cylindrical(self) -> 'Cylindrical':
         """Cylindrical representation."""
         if self._cyl is None:
             self._cyl = Cylindrical(
@@ -54,7 +54,7 @@ class Coordinate:
         return self._cyl
 
     @property
-    def spherical(self):
+    def spherical(self) -> 'Spherical':
         """Spherical representation."""
         if self._sph is None:
             self._sph = Spherical(
@@ -67,7 +67,7 @@ class Coordinate:
             )
         return self._sph
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Coordinate(x={self._cart.x}, y={self._cart.y}, z={self._cart.z})"
 
 
@@ -105,28 +105,25 @@ class Spherical(NamedTuple):
     phi: float
 
 
-class Markers():
-    """Markers Class.
+class Marker():
+    """Marker Class.
 
-    The position is stored in self.__position.
-    This is a list of coodinates.
-    Example:
-        [ Coordinate(x1, y1, z1),
-          Coordinate(x2, y2, z2),
-          Coordinate(x3, y3, z3),
-          Coordinate(x4, y4, z4) ]
+    Holds a maker's position and id.
     """
 
-    __positions: List[Coordinate]
+    __position: Coordinate
+    __id: int
 
-    def __init__(self, positions=[]):
-        self.__positions = positions
+    def __init__(self, id: int, position: Coordinate):
+        self.__id = id
+        self.__position = position
 
     @property
-    def positions(self) -> List[Coordinate]:
-        """Returns the makers positions."""
-        return self.__positions
+    def id(self) -> List[Coordinate]:
+        """Returns the id of the marker."""
+        return self.__id
 
-    def add_markers(self, given_positions: List[Coordinate]) -> None:
-        """Add marker(s) by providing their coordinates."""
-        self.__positions += given_positions
+    @property
+    def position(self) -> Coordinate:
+        """Returns the position of the marker."""
+        return self.__position

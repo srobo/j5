@@ -1,8 +1,8 @@
-"""Tests for the Markers Class."""
+"""Tests for the Marker Class."""
 
 from math import isclose
 
-from j5.vision.markers import Coordinate, Cylindrical, Markers, Spherical
+from j5.vision.markers import Coordinate, Cylindrical, Marker, Spherical
 
 
 def assert_coordinate_isclose(coord1: Coordinate, coord2: Coordinate):
@@ -118,30 +118,19 @@ def test_coordinate_represenation() -> None:
 
 
 def test_markers_instantiates() -> None:
-    """Test that the markers class can be instantiated."""
-    Markers()
+    """Test that the marker class can be instantiated."""
+    Marker(1, Coordinate(1., 2., 3.))
 
 
 def test_markers_positions() -> None:
-    """Test that we can instantiate the markers class."""
-    markers = Markers(positions=[
-        Coordinate(1., 2., 3.),
-    ])
+    """Test the properties of the marker class."""
+    given_id = 13
+    given_position = Coordinate(4., 5., 6.)
 
-    markers.add_markers([
-        Coordinate(4., 5., 6.),
-        Coordinate(7., 8., 9.),
-    ])
+    marker = Marker(
+        given_id,
+        given_position,
+    )
 
-    given_positions = markers.positions
-    expected_positions = [
-        Coordinate(1., 2., 3.),
-        Coordinate(4., 5., 6.),
-        Coordinate(7., 8., 9.),
-    ]
-
-    for idx in range(0, 3):
-        assert_coordinate_isclose(
-            given_positions[idx],
-            expected_positions[idx],
-        )
+    assert(given_id == marker.id)
+    assert(given_position == marker.position)
