@@ -3,6 +3,7 @@
 from tests.backends.hardware.j5.mock_serial import MockSerial
 
 from j5.backends.hardware.arduino.uno import ArduinoUnoHardwareBackend
+from j5.components import GPIOPinMode
 
 
 class UnoSerial(MockSerial):
@@ -17,6 +18,7 @@ class UnoSerial(MockSerial):
 
 def test_backend_initialisation() -> None:
     """Test that we can initialise a ArduinoUnoHardwareBackend."""
-    backend = ArduinoUnoHardwareBackend("/dev/ttyUSB1", UnoSerial)
+    backend = ArduinoUnoHardwareBackend("COM0", UnoSerial)
     assert type(backend) is ArduinoUnoHardwareBackend
     assert type(backend._serial) is UnoSerial
+    assert all(mode is GPIOPinMode.DIGITAL_INPUT for mode in backend._pins.values())
