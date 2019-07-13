@@ -227,9 +227,6 @@ version = "4.3.21"
 [package.dependencies]
 toml = "*"
 
-[package.dependencies]
-toml = "*"
-
 [[package]]
 category = "dev"
 description = "A small but fast and easy to use stand-alone template engine written in pure python."
