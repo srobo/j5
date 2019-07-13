@@ -90,6 +90,12 @@ class MotorSerial(MockSerial):
 
     expected_baudrate = 1000000
 
+    def respond_to_write(self, data: bytes) -> None:
+        """Hook that can be overriden by subclasses to respond to sent data."""
+        # We only end up returning data once, check for that here.
+        if data == b'\x01':  # Version Command
+            self.append_received_data(b'MCV4B:3', newline=True)
+
     def check_data_sent_by_constructor(self) -> None:
         """Check that the backend constructor sent expected data to the serial port."""
         self.check_sent_data(

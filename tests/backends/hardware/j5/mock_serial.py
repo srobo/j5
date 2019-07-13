@@ -56,14 +56,14 @@ class MockSerial:
     def write(self, data: bytes) -> int:
         """Write the data to the serial port."""
         self._send_buffer += data
-
-        # We only end up returning data once, check for that here.
-        if data == b'\x01':  # Version Command
-            self.append_received_data(b'MCV4B:3', newline=True)
-
+        self.respond_to_write(data)
         return len(data)
 
     # Functions for helping us mock.
+
+    def respond_to_write(self, data: bytes) -> None:
+        """Hook that can be overriden by subclasses to respond to sent data."""
+        pass
 
     def append_received_data(self, data: bytes, newline: bool = False) -> None:
         """Append some data to the receive buffer."""
@@ -75,3 +75,8 @@ class MockSerial:
         """Check that the given data is what was written to the serial port."""
         assert data == self._send_buffer, f"{data!r} != {self._send_buffer!r}"
         self._send_buffer = b""
+
+    def check_all_received_data_consumed(self) -> None:
+        """Check all data queued by append_received_data was consumed by backend."""
+        assert self._receive_buffer == b"", \
+            "Backend didn't consume all expected incoming data"
