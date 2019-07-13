@@ -7,7 +7,6 @@ class MockSerial:
     """This class mocks the behaviour of serial.Serial."""
 
     expected_baudrate = 9600
-    initial_received_data = b""
 
     def __init__(self,
                  port: Optional[str] = None,
@@ -18,7 +17,7 @@ class MockSerial:
                  timeout: Optional[float] = None,
                  ):
         self._is_open: bool = True
-        self._receive_buffer: bytes = self.initial_received_data
+        self._receive_buffer: bytes = b""
         self._send_buffer: bytes = b""
         self.port = port
 
