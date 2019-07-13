@@ -93,11 +93,11 @@ class ArduinoUnoHardwareBackend(
         self._version_line = self.read_serial_line()
 
         if self.firmware_version is not None:
-            version_ids = self.firmware_version.split(".")
+            version_ids = tuple(map(int, self.firmware_version.split(".")))
         else:
-            version_ids = ["0", "0", "0"]
+            version_ids = (0, 0, 0)
 
-        if int(version_ids[0]) < 2019 or int(version_ids[1]) < 6:
+        if version_ids < (2019, 6, 0):
             raise CommunicationError(
                 f"Unexpected firmware version: {self.firmware_version},",
                 f" expected at least: \"2019.6.0\".",
