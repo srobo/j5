@@ -16,7 +16,7 @@ from typing import (
     cast,
 )
 
-from j5.backends import Backend
+from j5.backends import Backend, CommunicationError
 
 if TYPE_CHECKING:  # pragma: nocover
     from j5.components import Component  # noqa
@@ -101,9 +101,14 @@ class BoardGroup(Generic[T]):
 
     def singular(self) -> T:
         """If there is only a single board in the group, return that board."""
-        if len(self) == 1:
+        num = len(self)
+        if num == 1:
             return list(self._boards.values())[0]
-        raise Exception("There is more than one or zero boards connected.")
+        else:
+            name = self._backend_class.board.__name__
+            raise CommunicationError(
+                f"expected exactly one {name} to be connected, but found {num}",
+            )
 
     def make_safe(self) -> None:
         """Make all of the boards safe."""
