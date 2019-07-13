@@ -1,4 +1,4 @@
-"""Arduino Uno Hardware Implementation."""
+"""SourceBots Arduino Hardware Implementation."""
 
 from typing import Callable, List, Mapping, Optional, Set, Tuple, Type
 
@@ -16,7 +16,7 @@ from j5.backends.hardware.j5.serial import (
     handle_serial_error,
 )
 from j5.boards import Board
-from j5.boards.arduino.uno import ArduinoUnoBoard
+from j5.boards.sb.arduino import SBArduinoBoard
 from j5.components import GPIOPinInterface, GPIOPinMode, LEDInterface
 
 USB_IDS: Set[Tuple[int, int]] = {
@@ -44,7 +44,7 @@ class DigitalPinData:
         self.state = state
 
 
-class ArduinoUnoHardwareBackend(
+class SBArduinoHardwareBackend(
     LEDInterface,
     GPIOPinInterface,
     SerialHardwareBackend,
@@ -56,7 +56,7 @@ class ArduinoUnoHardwareBackend(
     """
 
     environment = HardwareEnvironment
-    board = ArduinoUnoBoard
+    board = SBArduinoBoard
 
     @classmethod
     def discover(
@@ -72,7 +72,7 @@ class ArduinoUnoHardwareBackend(
         boards: Set[Board] = set()
         for port in filter(is_arduino_uno, ports):
             boards.add(
-                ArduinoUnoBoard(
+                SBArduinoBoard(
                     port.serial_number,
                     cls(port.device, serial_class),
                 ),
@@ -82,7 +82,7 @@ class ArduinoUnoHardwareBackend(
 
     @handle_serial_error
     def __init__(self, serial_port: str, serial_class: Type[Serial] = Serial) -> None:
-        super(ArduinoUnoHardwareBackend, self).__init__(
+        super(SBArduinoHardwareBackend, self).__init__(
             serial_port=serial_port,
             serial_class=serial_class,
             baud=115200,
@@ -264,7 +264,7 @@ class ArduinoUnoHardwareBackend(
 
     def write_gpio_pin_pwm_value(self, identifier: int, duty_cycle: float) -> None:
         """Write a scaled analogue value to the PWM on the GPIO pin."""
-        # Not implemented on ArduinoUnoBoard yet.
+        # Not implemented on SBArduinoBoard yet.
         raise NotImplementedError
 
     def get_led_state(self, identifier: int) -> bool:

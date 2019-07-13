@@ -1,9 +1,9 @@
-"""Tests for the Arduino Uno and related classes."""
+"""Tests for the SourceBots Arduino and related classes."""
 
 from typing import TYPE_CHECKING, Optional, Set
 
 from j5.backends import Backend, Environment
-from j5.boards.arduino import AnaloguePin, ArduinoUnoBoard
+from j5.boards.sb import AnaloguePin, SBArduinoBoard
 from j5.components import GPIOPin, GPIOPinInterface, GPIOPinMode, LEDInterface
 
 if TYPE_CHECKING:
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 MockEnvironment = Environment("MockEnvironment")
 
 
-class MockArduinoUnoBackend(
+class MockSBArduinoBackend(
     GPIOPinInterface,
     LEDInterface,
     Backend,
@@ -21,7 +21,7 @@ class MockArduinoUnoBackend(
     """Mock Backend for testing the Arduino Uno."""
 
     environment = MockEnvironment
-    board = ArduinoUnoBoard
+    board = SBArduinoBoard
 
     def set_gpio_pin_mode(self, identifier: int, pin_mode: GPIOPinMode) -> None:
         """Set the GPIO pin mode."""
@@ -76,44 +76,44 @@ class MockArduinoUnoBackend(
 
 def test_uno_initialisation() -> None:
     """Test that we can initialise an Uno."""
-    ArduinoUnoBoard("SERIAL0", MockArduinoUnoBackend())
+    SBArduinoBoard("SERIAL0", MockSBArduinoBackend())
 
 
 def test_uno_discover() -> None:
     """Test that we can discover Unos."""
-    assert MockArduinoUnoBackend.discover() == set()
+    assert MockSBArduinoBackend.discover() == set()
 
 
 def test_uno_name() -> None:
     """Test the name attribute of the Uno."""
-    uno = ArduinoUnoBoard("SERIAL0", MockArduinoUnoBackend())
+    uno = SBArduinoBoard("SERIAL0", MockSBArduinoBackend())
 
     assert uno.name == "Arduino Uno"
 
 
 def test_uno_serial() -> None:
     """Test the serial attribute of the Uno."""
-    uno = ArduinoUnoBoard("SERIAL0", MockArduinoUnoBackend())
+    uno = SBArduinoBoard("SERIAL0", MockSBArduinoBackend())
 
     assert uno.serial == "SERIAL0"
 
 
 def test_uno_firmware_version() -> None:
     """Test the firmware_version attribute of the Uno."""
-    uno = ArduinoUnoBoard("SERIAL0", MockArduinoUnoBackend())
+    uno = SBArduinoBoard("SERIAL0", MockSBArduinoBackend())
 
     assert uno.firmware_version is None
 
 
 def test_uno_make_safe() -> None:
     """Test the make_safe method of the Uno."""
-    uno = ArduinoUnoBoard("SERIAL0", MockArduinoUnoBackend())
+    uno = SBArduinoBoard("SERIAL0", MockSBArduinoBackend())
     uno.make_safe()
 
 
 def test_uno_pins() -> None:
     """Test the pins of the Uno."""
-    uno = ArduinoUnoBoard("SERIAL0", MockArduinoUnoBackend())
+    uno = SBArduinoBoard("SERIAL0", MockSBArduinoBackend())
 
     assert len(uno.pins) == 12 + 6
 

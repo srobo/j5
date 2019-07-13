@@ -1,4 +1,4 @@
-"""Classes for the Arduino Uno."""
+"""Classes for the SourceBots Arduino."""
 from enum import IntEnum
 from typing import Mapping, Optional, Set, Type, Union, cast
 
@@ -28,8 +28,8 @@ class AnaloguePin(IntEnum):
 PinNumber = Union[int, AnaloguePin]
 
 
-class ArduinoUnoBoard(Board):
-    """Arduino Uno Board."""
+class SBArduinoBoard(Board):
+    """SourceBots Arduino Board."""
 
     _led: LED
     _digital_pins: Mapping[int, GPIOPin]

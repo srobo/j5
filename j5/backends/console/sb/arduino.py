@@ -1,10 +1,10 @@
-"""Console Backend for the Arduino Uno."""
+"""Console Backend for the SourceBots Arduino."""
 from typing import Mapping, Optional, Set, Type
 
 from j5.backends import Backend
 from j5.backends.console import Console, ConsoleEnvironment
 from j5.boards import Board
-from j5.boards.arduino import ArduinoUnoBoard
+from j5.boards.sb import SBArduinoBoard
 from j5.components import GPIOPinInterface, GPIOPinMode, LEDInterface
 
 
@@ -19,11 +19,11 @@ class PinData:
         self.digital_state = digital_state
 
 
-class ArduinoUnoConsoleBackend(GPIOPinInterface, LEDInterface, Backend):
-    """Console Backend for the Arduino Uno."""
+class SBArduinoConsoleBackend(GPIOPinInterface, LEDInterface, Backend):
+    """Console Backend for the SourceBots Arduino."""
 
     environment = ConsoleEnvironment
-    board = ArduinoUnoBoard
+    board = SBArduinoBoard
 
     @classmethod
     def discover(cls) -> Set[Board]:
@@ -97,7 +97,7 @@ class ArduinoUnoConsoleBackend(GPIOPinInterface, LEDInterface, Backend):
 
     def write_gpio_pin_pwm_value(self, identifier: int, duty_cycle: float) -> None:
         """Write a scaled analogue value to the PWM on the GPIO pin."""
-        # Not implemented on ArduinoUnoBoard yet.
+        # Not implemented on SBArduinoBoard yet.
         raise NotImplementedError
 
     def get_led_state(self, identifier: int) -> bool:

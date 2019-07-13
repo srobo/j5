@@ -1,0 +1,1 @@
+"""Test supported SourceBots boards."""
