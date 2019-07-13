@@ -1,6 +1,6 @@
 """Test the SR v4 motor board hardware backend and associated classes."""
 
-from typing import List, Optional, Type, cast
+from typing import List, Type, cast
 
 import pytest
 from serial import SerialException, SerialTimeoutException
@@ -88,27 +88,15 @@ def mock_comports(include_links: bool = False) -> List[MockListPortInfo]:
 class MotorSerial(MockSerial):
     """MotorSerial is the same as MockSerial, but includes data we expect to receive."""
 
-    def __init__(self,
-                 port: Optional[str] = None,
-                 baudrate: int = 9600,
-                 bytesize: int = 8,
-                 parity: str = 'N',
-                 stopbits: float = 1,
-                 timeout: Optional[float] = None):
-        super().__init__(
-            port=port,
-            baudrate=baudrate,
-            bytesize=bytesize,
-            parity=parity,
-            stopbits=stopbits,
-            timeout=timeout,
-            expects=b'\x01'  # Version Check
-                    b'\x02\x02'  # Brake Motor 0 at init
-                    b'\x03\x02'  # Brake Motor 1 at init
-                    b'\x02\x02'  # Brake Motor 0 at del
-                    b'\x03\x02',  # Brake Motor 1 at del
-            expected_baudrate=1000000,
-        )
+    initial_expects = (
+        b'\x01'  # Version Check
+        b'\x02\x02'  # Brake Motor 0 at init
+        b'\x03\x02'  # Brake Motor 1 at init
+        b'\x02\x02'  # Brake Motor 0 at del
+        b'\x03\x02'  # Brake Motor 1 at del
+    )
+
+    expected_baudrate = 1000000
 
 
 class MotorSerialBadWrite(MotorSerial):

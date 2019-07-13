@@ -6,6 +6,9 @@ from typing import Optional
 class MockSerial:
     """This class mocks the behaviour of serial.Serial."""
 
+    initial_expects = b""
+    expected_baudrate = 9600
+
     def __init__(self,
                  port: Optional[str] = None,
                  baudrate: int = 9600,
@@ -13,15 +16,13 @@ class MockSerial:
                  parity: str = 'N',
                  stopbits: float = 1,
                  timeout: Optional[float] = None,
-                 expects: bytes = b'',
-                 expected_baudrate: int = 9600,
                  ):
         self._is_open: bool = True
         self._buffer: bytes = b''
         self.port = port
-        self._expects = expects
+        self._expects = self.initial_expects
 
-        assert baudrate == expected_baudrate
+        assert baudrate == self.expected_baudrate
         assert bytesize == 8
         assert parity == 'N'
         assert stopbits == 1
