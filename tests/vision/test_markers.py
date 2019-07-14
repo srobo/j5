@@ -6,7 +6,7 @@ from j5.vision.markers import Coordinate, Cylindrical, Marker, Spherical
 
 
 def assert_coordinate_isclose(coord1: Coordinate, coord2: Coordinate):
-    """Checks two coordinates a roughly equal."""
+    """Checks two coordinates are roughly equal."""
     assert isclose(coord1.cartesian.x, coord2.cartesian.x)
     assert isclose(coord1.cartesian.y, coord2.cartesian.y)
     assert isclose(coord1.cartesian.z, coord2.cartesian.z)
