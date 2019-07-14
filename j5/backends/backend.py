@@ -101,6 +101,12 @@ class Backend(metaclass=BackendMeta):
 
     @property
     @abstractmethod
+    def board(self) -> Type['Board']:
+        """Type of board this backend implements."""
+        raise NotImplementedError  # pragma: no cover
+
+    @property
+    @abstractmethod
     def firmware_version(self) -> Optional[str]:
         """The firmware version of the board."""
         raise NotImplementedError  # pragma: no cover
