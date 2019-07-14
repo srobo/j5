@@ -20,7 +20,7 @@ def assert_cylindrical_isclose(cyl1: Cylindrical, cyl2: Cylindrical):
 
 
 def assert_spherical_isclose(sph1: Spherical, sph2: Spherical):
-    """Checks two sphericals a roughly equal."""
+    """Checks two sphericals are roughly equal."""
     assert isclose(sph1.r, sph2.r)
     assert isclose(sph1.theta, sph2.theta)
     assert isclose(sph1.phi, sph2.phi)
