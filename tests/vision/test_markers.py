@@ -13,14 +13,14 @@ def assert_coordinate_isclose(coord1: Coordinate, coord2: Coordinate):
 
 
 def assert_cylindrical_isclose(cyl1: Cylindrical, cyl2: Cylindrical):
-    """Checks two cylindricals a roughly equal."""
+    """Checks two cylindricals are roughly equal."""
     assert isclose(cyl1.p, cyl2.p)
     assert isclose(cyl1.theta, cyl2.theta)
     assert isclose(cyl1.z, cyl2.z)
 
 
 def assert_spherical_isclose(sph1: Spherical, sph2: Spherical):
-    """Checks two sphericals a roughly equal."""
+    """Checks two sphericals are roughly equal."""
     assert isclose(sph1.r, sph2.r)
     assert isclose(sph1.theta, sph2.theta)
     assert isclose(sph1.phi, sph2.phi)
@@ -44,7 +44,7 @@ def test_coordinate_from_cylindrical() -> None:
 
 
 def test_coordinate_from_spherical() -> None:
-    """Test the from_spherical() method of the coordiante class."""
+    """Test the from_spherical() method of the coordinate class."""
     coordinate_1 = Coordinate(3., 4., 5.)
     coordinate_2 = Coordinate(70., 34., 83.)
 
@@ -111,7 +111,7 @@ def test_coordinate_represenation() -> None:
     """Test the representation of the coordinate class."""
     coordinate_1 = Coordinate(3., 4., 5.)
 
-    given_representation = coordinate_1.__repr__()
+    given_representation = repr(coordinate_1)
     expected_representation = "Coordinate(x=3.0, y=4.0, z=5.0)"
 
     assert(given_representation == expected_representation)
