@@ -13,7 +13,7 @@ def assert_coordinate_isclose(coord1: Coordinate, coord2: Coordinate):
 
 
 def assert_cylindrical_isclose(cyl1: Cylindrical, cyl2: Cylindrical):
-    """Checks two cylindricals a roughly equal."""
+    """Checks two cylindricals are roughly equal."""
     assert isclose(cyl1.p, cyl2.p)
     assert isclose(cyl1.theta, cyl2.theta)
     assert isclose(cyl1.z, cyl2.z)
