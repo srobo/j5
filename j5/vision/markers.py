@@ -1,7 +1,7 @@
 """Marker Class."""
 
 from math import atan2, cos, sin, sqrt
-from typing import List, NamedTuple
+from typing import NamedTuple
 
 
 class Coordinate:
@@ -119,7 +119,7 @@ class Marker():
         self.__position = position
 
     @property
-    def id(self) -> List[Coordinate]:
+    def id(self) -> int:
         """Returns the id of the marker."""
         return self.__id
 
