@@ -6,21 +6,21 @@ from j5.vision.markers import Coordinate, Cylindrical, Marker, Spherical
 
 
 def assert_coordinate_isclose(coord1: Coordinate, coord2: Coordinate):
-    """Checks two coordinates a roughly equal."""
+    """Checks two coordinates are roughly equal."""
     assert isclose(coord1.cartesian.x, coord2.cartesian.x)
     assert isclose(coord1.cartesian.y, coord2.cartesian.y)
     assert isclose(coord1.cartesian.z, coord2.cartesian.z)
 
 
 def assert_cylindrical_isclose(cyl1: Cylindrical, cyl2: Cylindrical):
-    """Checks two cylindricals a roughly equal."""
+    """Checks two cylindricals are roughly equal."""
     assert isclose(cyl1.p, cyl2.p)
     assert isclose(cyl1.theta, cyl2.theta)
     assert isclose(cyl1.z, cyl2.z)
 
 
 def assert_spherical_isclose(sph1: Spherical, sph2: Spherical):
-    """Checks two sphericals a roughly equal."""
+    """Checks two sphericals are roughly equal."""
     assert isclose(sph1.r, sph2.r)
     assert isclose(sph1.theta, sph2.theta)
     assert isclose(sph1.phi, sph2.phi)
