@@ -14,6 +14,8 @@ if TYPE_CHECKING:  # pragma: no cover
 class ServoBoard(Board):
     """Student Robotics v4 Servo Board."""
 
+    name: str = "Student Robotics v4 Servo Board"
+
     def __init__(self, serial: str, backend: Backend):
         self._serial = serial
         self._backend = backend
@@ -22,11 +24,6 @@ class ServoBoard(Board):
             Servo(servo, cast(ServoInterface, self._backend))
             for servo in range(0, 12)
         ]
-
-    @property
-    def name(self) -> str:
-        """Get a human friendly name for this board."""
-        return "Student Robotics v4 Servo Board"
 
     @property
     def serial(self) -> str:

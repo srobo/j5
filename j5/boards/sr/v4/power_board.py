@@ -45,6 +45,8 @@ class PowerOutputPosition(Enum):
 class PowerBoard(Board):
     """Student Robotics v4 Power Board."""
 
+    name: str = "Student Robotics v4 Power Board"
+
     def __init__(self, serial: str, backend: Backend):
         self._serial = serial
         self._backend = backend
@@ -67,11 +69,6 @@ class PowerBoard(Board):
 
         self._run_led = LED(0, cast("LEDInterface", self._backend))
         self._error_led = LED(1, cast("LEDInterface", self._backend))
-
-    @property
-    def name(self) -> str:
-        """Get a human friendly name for this board."""
-        return "Student Robotics v4 Power Board"
 
     @property
     def serial(self) -> str:

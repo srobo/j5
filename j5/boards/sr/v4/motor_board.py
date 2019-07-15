@@ -14,6 +14,8 @@ if TYPE_CHECKING:  # pragma: no cover
 class MotorBoard(Board):
     """Student Robotics v4 Motor Board."""
 
+    name: str = "Student Robotics v4 Motor Board"
+
     def __init__(self, serial: str, backend: Backend):
         self._serial = serial
         self._backend = backend
@@ -22,11 +24,6 @@ class MotorBoard(Board):
             Motor(output, cast(MotorInterface, self._backend))
             for output in range(0, 2)
         ]
-
-    @property
-    def name(self) -> str:
-        """Get a human friendly name for this board."""
-        return "Student Robotics v4 Motor Board"
 
     @property
     def serial(self) -> str:
