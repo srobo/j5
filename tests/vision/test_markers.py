@@ -111,7 +111,7 @@ def test_coordinate_represenation() -> None:
     """Test the representation of the coordinate class."""
     coordinate_1 = Coordinate(3., 4., 5.)
 
-    given_representation = coordinate_1.__repr__()
+    given_representation = repr(coordinate_1)
     expected_representation = "Coordinate(x=3.0, y=4.0, z=5.0)"
 
     assert(given_representation == expected_representation)
