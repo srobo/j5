@@ -126,4 +126,4 @@ class Marker:
     @property
     def position(self) -> Coordinate:
         """Returns the position of the marker."""
-        return self.__position
+        return self._position
