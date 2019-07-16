@@ -48,7 +48,7 @@ class Coordinate:
         if self._cyl is None:
             self._cyl = Cylindrical(
                 p=sqrt(self._cart.x**2 + self._cart.y**2),
-                theta=atan2(self._cart.y, self._cart.x),
+                phi=atan2(self._cart.y, self._cart.x),
                 z=self._cart.z,
             )
         return self._cyl
@@ -86,7 +86,13 @@ class Coordinate:
 
 
 class Cartesian(NamedTuple):
-    """A Cartesian Coordinate."""
+    """
+    Position in the Cartesian 3D plane.
+
+    x := Displacement from the origin in the x-axis
+    y := Displacement from the origin in the y-axis
+    z := Displacement from the origin in the z-axis
+    """
 
     x: float
     y: float
@@ -94,20 +100,22 @@ class Cartesian(NamedTuple):
 
 
 class Cylindrical(NamedTuple):
-    """A Cylindrical Coordinate.
+    """
+    Position in a cylindrical polar coordinate system.
 
     p     := axial distance
-    theta := azimuth angle (radians)
+    phi   := azimuth angle (radians)
     z     := height
     """
 
     p: float
-    theta: float
+    phi: float
     z: float
 
 
 class Spherical(NamedTuple):
-    """A Spherical Coordinate.
+    """
+    A Spherical Coordinate.
 
     r     := radial distance
     theta := azimuth angle (radians)
