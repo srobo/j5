@@ -44,7 +44,7 @@ def test_coordinate_from_cylindrical() -> None:
 
 
 def test_coordinate_from_spherical() -> None:
-    """Test the from_spherical() method of the coordiante class."""
+    """Test the from_spherical() method of the coordinate class."""
     coordinate_1 = Coordinate(3., 4., 5.)
     coordinate_2 = Coordinate(70., 34., 83.)
 
