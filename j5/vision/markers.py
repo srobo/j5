@@ -105,25 +105,25 @@ class Spherical(NamedTuple):
     phi: float
 
 
-class Marker():
+class Marker:
     """Marker Class.
 
     Holds a marker's position and id.
     """
 
-    __position: Coordinate
-    __id: int
+    _position: Coordinate
+    _id: int
 
     def __init__(self, id: int, position: Coordinate):
-        self.__id = id
-        self.__position = position
+        self._id = id
+        self._position = position
 
     @property
     def id(self) -> int:
         """Returns the id of the marker."""
-        return self.__id
+        return self._id
 
     @property
     def position(self) -> Coordinate:
         """Returns the position of the marker."""
-        return self.__position
+        return self._position
