@@ -1,6 +1,6 @@
 """Coordinate Classes to represent position in space."""
 
-from math import atan2, cos, sin, sqrt
+from math import atan2, cos, isclose, sin, sqrt
 from typing import NamedTuple, Optional
 
 
@@ -69,6 +69,20 @@ class Coordinate:
 
     def __repr__(self) -> str:
         return f"Coordinate(x={self._cart.x}, y={self._cart.y}, z={self._cart.z})"
+
+    def isclose(self, other: 'Coordinate', tolerance: float = 1e-09) -> bool:
+        """
+        Determine if close to another Coordinate.
+
+        See math.isclose for more information on the behaviour.
+        """
+        axes = [
+            isclose(self._cart.x, other._cart.x, rel_tol=tolerance),
+            isclose(self._cart.y, other._cart.y, rel_tol=tolerance),
+            isclose(self._cart.z, other._cart.z, rel_tol=tolerance),
+        ]
+
+        return all(axes)
 
 
 class Cartesian(NamedTuple):
