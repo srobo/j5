@@ -15,7 +15,7 @@ def assert_coordinate_isclose(coord1: Coordinate, coord2: Coordinate):
 def assert_cylindrical_isclose(cyl1: Cylindrical, cyl2: Cylindrical):
     """Checks two cylindricals are roughly equal."""
     assert isclose(cyl1.p, cyl2.p)
-    assert isclose(cyl1.theta, cyl2.theta)
+    assert isclose(cyl1.phi, cyl2.phi)
     assert isclose(cyl1.z, cyl2.z)
 
 
@@ -80,8 +80,8 @@ def test_coordinate_cylindrical() -> None:
     coordinate_1 = Coordinate(3., 4., 5.)
     coordinate_2 = Coordinate(20., 3., 7.)
 
-    cylindrical_1 = Cylindrical(p=5., theta=0.92729521800161, z=5.)
-    cylindrical_2 = Cylindrical(p=20.223748416157, theta=0.1488899476095, z=7.)
+    cylindrical_1 = Cylindrical(p=5., phi=0.92729521800161, z=5.)
+    cylindrical_2 = Cylindrical(p=20.223748416157, phi=0.1488899476095, z=7.)
 
     assert_cylindrical_isclose(coordinate_1.cylindrical, cylindrical_1)
     assert_cylindrical_isclose(coordinate_2.cylindrical, cylindrical_2)

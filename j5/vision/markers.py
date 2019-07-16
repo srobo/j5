@@ -6,9 +6,11 @@ from .coordinates import Coordinate
 
 
 class Marker:
-    """Marker Class.
+    """
+    A fiducial marker.
 
-    Holds a marker's position and id.
+    Specifically, this class represents a specific measurement of a marker,
+    and its position, ID, and in the future, orientation in 3D space.
     """
 
     _position: Coordinate
@@ -20,12 +22,12 @@ class Marker:
 
     @property
     def id(self) -> int:
-        """Returns the id of the marker."""
+        """The id of the marker."""
         return self._id
 
     @property
     def position(self) -> Coordinate:
-        """Returns the position of the marker."""
+        """Position of the marker."""
         return self._position
 
 
