@@ -108,7 +108,7 @@ class Spherical(NamedTuple):
 class Marker():
     """Marker Class.
 
-    Holds a maker's position and id.
+    Holds a marker's position and id.
     """
 
     __position: Coordinate
