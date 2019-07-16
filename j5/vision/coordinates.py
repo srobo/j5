@@ -1,26 +1,26 @@
 """Coordinate Classes to represent position in space."""
 
 from math import atan2, cos, sin, sqrt
-from typing import NamedTuple
+from typing import NamedTuple, Optional
 
 
 class Coordinate:
     """A position in space."""
 
-    _cart: 'Cartesian' = None
-    _cyl: 'Cylindrical' = None
-    _sph: 'Spherical' = None
+    _cart: 'Cartesian'
+    _cyl: Optional['Cylindrical'] = None
+    _sph: Optional['Spherical'] = None
 
     def __init__(self, x: float, y: float, z: float) -> None:
         self._cart = Cartesian(x, y, z)
 
     @classmethod
-    def from_cartesian(cls, x: float, y: float, z: float) -> None:
+    def from_cartesian(cls, x: float, y: float, z: float) -> 'Coordinate':
         """Create a coordinate from a cartesian position."""
         return cls(x, y, z)
 
     @classmethod
-    def from_spherical(cls, r: float, theta: float, phi: float) -> None:
+    def from_spherical(cls, r: float, theta: float, phi: float) -> 'Coordinate':
         """Create a coordinate from a spherical position."""
         return cls(
             r * sin(phi) * cos(theta),
@@ -29,7 +29,7 @@ class Coordinate:
         )
 
     @classmethod
-    def from_cylindrical(cls, p: float, theta: float, z: float) -> None:
+    def from_cylindrical(cls, p: float, theta: float, z: float) -> 'Coordinate':
         """Create a coordinate from a cylindrical position."""
         return cls(
             p * cos(theta),

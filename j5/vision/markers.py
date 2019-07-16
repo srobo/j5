@@ -1,6 +1,6 @@
 """Marker Class."""
 
-from typing import List, overload
+from typing import List, TypeVar, overload
 
 from .coordinates import Coordinate
 
@@ -29,7 +29,10 @@ class Marker:
         return self._position
 
 
-class MarkerList(List[Marker]):
+T = TypeVar("T", bound=Marker)
+
+
+class MarkerList(List[T]):
     """
     A ``list`` class with nicer error messages.
 
@@ -40,14 +43,14 @@ class MarkerList(List[Marker]):
     """
 
     @overload
-    def __getitem__(self, index: int) -> Marker:
+    def __getitem__(self, index: int) -> T:
         ...
 
     @overload  # noqa: F811 (deliberate method replacement)
-    def __getitem__(self, index: slice) -> List[Marker]:
+    def __getitem__(self, index: slice) -> List[T]:
         ...
 
-    def __getitem__(self, index):  # noqa: F811 (deliberate method replacement)
+    def __getitem__(self, index):  # type:ignore  # noqa: F811
         try:
             return super().__getitem__(index)
         except IndexError:

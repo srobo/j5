@@ -41,7 +41,7 @@ def test_markers_positions() -> None:
 
 def test_marker_list_instantiation() -> None:
     """Test that we can instantiate a MarkerList."""
-    li = [get_random_marker() for _ in range(0, randint(0, 12))]
+    li = [get_random_marker() for _ in range(1, randint(2, 12))]
 
     marker_list = MarkerList(li)
     assert isinstance(marker_list, MarkerList)
