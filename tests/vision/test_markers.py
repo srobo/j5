@@ -25,7 +25,7 @@ def test_markers_instantiates() -> None:
     Marker(1, Coordinate(1., 2., 3.))
 
 
-def test_markers_positions() -> None:
+def test_markers_position() -> None:
     """Test the properties of the marker class."""
     given_id = 13
     given_position = Coordinate(4., 5., 6.)
@@ -37,6 +37,15 @@ def test_markers_positions() -> None:
 
     assert(given_id == marker.id)
     assert(given_position == marker.position)
+
+
+def test_marker_isclose() -> None:
+    """Test the isclose method."""
+    c = Coordinate(1, 1, 1)
+
+    assert c.isclose(c)
+    assert c.isclose(Coordinate(1.00000000001, 1, 1))
+    assert not c.isclose(Coordinate(1.1, 1.1, 1.1))
 
 
 def test_marker_list_instantiation() -> None:
