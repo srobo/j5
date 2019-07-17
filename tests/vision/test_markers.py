@@ -2,6 +2,8 @@
 
 from random import randint, random
 
+import pytest
+
 from j5.vision.coordinates import Coordinate
 from j5.vision.markers import Marker, MarkerList
 
@@ -115,3 +117,22 @@ def test_marker_list_instantiation() -> None:
 
     marker = marker_list[0]
     assert isinstance(marker, Marker)
+
+
+def test_marker_list_friendly_error() -> None:
+    """Test that MarkerList is friendly."""
+    marker_list = MarkerList([])
+
+    with pytest.raises(IndexError) as e:
+        marker_list[0]
+
+        assert e.value == "Trying to index an empty list"
+
+    # Check that it still does it normally too.
+
+    marker_list = MarkerList([get_random_marker()])
+
+    with pytest.raises(IndexError) as e:
+        marker_list[1]
+
+        assert e.value != "Trying to index an empty list"

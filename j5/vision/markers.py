@@ -104,11 +104,11 @@ class MarkerList(List[T]):
 
     @overload
     def __getitem__(self, index: int) -> T:
-        ...
+        ...  # pragma: nocover
 
     @overload  # noqa: F811 (deliberate method replacement)
     def __getitem__(self, index: slice) -> List[T]:
-        ...
+        ...  # pragma: nocover
 
     def __getitem__(self, index):  # type:ignore  # noqa: F811
         try:
