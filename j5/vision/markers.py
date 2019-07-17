@@ -1,8 +1,11 @@
 """Marker Class."""
 
-from typing import List, TypeVar, overload
+from typing import List, NewType, Optional, Sequence, Tuple, TypeVar, overload
 
 from .coordinates import Coordinate
+
+Pixel = NewType('Pixel', float)
+PixelCoordinates = NewType('PixelCoordinates', Tuple[Pixel, Pixel])
 
 
 class Marker:
@@ -13,12 +16,18 @@ class Marker:
     and its position, ID, and in the future, orientation in 3D space.
     """
 
-    _position: Coordinate
     _id: int
+    _pixel_corners: Optional[Sequence[PixelCoordinates]]
+    _position: Coordinate
 
-    def __init__(self, id: int, position: Coordinate):
+    def __init__(self,
+                 id: int,
+                 position: Coordinate,
+                 pixel_corners: Optional[Sequence[PixelCoordinates]] = None,
+                 ):
         self._id = id
         self._position = position
+        self._pixel_corners = pixel_corners
 
     @property
     def id(self) -> int:
@@ -29,6 +38,20 @@ class Marker:
     def position(self) -> Coordinate:
         """Position of the marker."""
         return self._position
+
+    @property
+    def pixel_corners(self) -> Optional[Sequence[PixelCoordinates]]:
+        """
+        Pixel positions of the marker corners within the image.
+
+        Specified in clockwise order, starting from the top left corner of the
+        marker. Pixels are counted from the origin of the image, which
+        conventionally is in the top left corner of the image.
+
+        This is made available so that if users want to use their own pose
+        estimation algorithms, they can!
+        """
+        return self._pixel_corners
 
 
 T = TypeVar("T", bound=Marker)
