@@ -17,12 +17,7 @@ class BaseRobot:
     def __new__(cls, *args, **kwargs) -> 'BaseRobot':  # type: ignore
         """Create a new instance of the class."""
         obj: BaseRobot = super().__new__(cls)
-
-        # We have to ignore some of the types here as they are unknown.
-        obj.__init__(*args, **kwargs)  # type: ignore
-
         obj._obtain_lock()
-
         return obj
 
     def make_safe(self) -> None:

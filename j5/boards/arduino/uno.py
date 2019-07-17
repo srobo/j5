@@ -34,6 +34,7 @@ class ArduinoUnoBoard(Board):
     _led: LED
     _digital_pins: Mapping[int, GPIOPin]
     _analogue_pins: Mapping[AnaloguePin, GPIOPin]
+    name: str = "Arduino Uno"
 
     def __init__(self, serial: str, backend: Backend):
         self._serial = serial
@@ -71,11 +72,6 @@ class ArduinoUnoBoard(Board):
             )
             for i in AnaloguePin
         }
-
-    @property
-    def name(self) -> str:
-        """Get a human friendly name for this board."""
-        return "Arduino Uno"
 
     @property
     def serial(self) -> str:

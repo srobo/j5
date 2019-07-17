@@ -3,7 +3,7 @@
 CMD:=poetry run
 PYMODULE:=j5
 
-all: lint type test
+all: type test lint
 
 lint:
 	$(CMD) flake8 $(PYMODULE) tests tests_hw
@@ -16,6 +16,9 @@ test:
 
 test-cov:
 	$(CMD) pytest --cov=$(PYMODULE) tests --cov-report html
+
+isort:
+	$(CMD) isort --recursive $(PYMODULE) tests tests_hw
 
 clean:
 	git clean -Xdf # Delete all files in .gitignore
