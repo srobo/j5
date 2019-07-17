@@ -1,5 +1,6 @@
 """Marker Class."""
 
+from math import degrees
 from typing import List, NewType, Optional, Sequence, Tuple, TypeVar, overload
 
 from .coordinates import Coordinate
@@ -18,16 +19,19 @@ class Marker:
 
     _id: int
     _pixel_corners: Optional[Sequence[PixelCoordinates]]
+    _pixel_centre: Optional[PixelCoordinates]
     _position: Coordinate
 
     def __init__(self,
                  id: int,
                  position: Coordinate,
                  pixel_corners: Optional[Sequence[PixelCoordinates]] = None,
+                 pixel_centre: Optional[PixelCoordinates] = None,
                  ):
         self._id = id
         self._position = position
         self._pixel_corners = pixel_corners
+        self._pixel_centre = pixel_centre
 
     @property
     def id(self) -> int:
@@ -52,6 +56,37 @@ class Marker:
         estimation algorithms, they can!
         """
         return self._pixel_corners
+
+    @property
+    def pixel_centre(self) -> Optional[PixelCoordinates]:
+        """
+        Pixel positions of the centre of the marker within the image.
+
+        Pixels are counted from the origin of the image, which
+        conventionally is in the top left corner of the image.
+
+        This is made available so that if users want to use their own pose
+        estimation algorithms, they can!
+        """
+        return self._pixel_centre
+
+    @property
+    def bearing(self) -> float:
+        """Bearing to the marker from the origin, in radians."""
+        return self.position.cylindrical.phi
+
+    @property
+    def distance(self) -> float:
+        """Distance to the marker from the origin, in metres."""
+        return self.position.cylindrical.p
+
+    def __str__(self) -> str:
+        return "<Marker {}: {:.0f}° {}, {:.2f}m away>".format(
+            self.id,
+            abs(degrees(self.bearing)),
+            "right" if self.bearing > 0 else "left",
+            self.distance,
+        )
 
 
 T = TypeVar("T", bound=Marker)
