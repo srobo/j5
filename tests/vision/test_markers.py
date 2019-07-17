@@ -11,12 +11,21 @@ def get_random_float() -> float:
     return (random() - 0.5) * randint(0, 2 * 8)
 
 
+def get_random_coordinate() -> Coordinate:
+    """Get a random coordinate."""
+    return Coordinate(
+        get_random_float(),
+        get_random_float(),
+        get_random_float(),
+    )
+
+
 def get_random_marker() -> Marker:
     """Get a random marker for testing."""
     marker_id = randint(0, 128)
     return Marker(
         marker_id,
-        Coordinate(get_random_float(), get_random_float(), get_random_float()),
+        get_random_coordinate(),
     )
 
 
@@ -46,6 +55,26 @@ def test_marker_isclose() -> None:
     assert c.isclose(c)
     assert c.isclose(Coordinate(1.00000000001, 1, 1))
     assert not c.isclose(Coordinate(1.1, 1.1, 1.1))
+
+
+def test_marker_pixel_corners() -> None:
+    """Test that pixel corners can be stored."""
+    m = Marker(0, get_random_coordinate())
+    assert m.pixel_corners is None
+
+    m = Marker(0, get_random_coordinate(), [])
+    assert m.pixel_corners is not None
+    assert len(m.pixel_corners) == 0
+
+    m = Marker(0, get_random_coordinate(), ())
+    assert m.pixel_corners is not None
+    assert len(m.pixel_corners) == 0
+
+    m = Marker(0, get_random_coordinate(), ((12, 12), (34, 43)))
+    assert m.pixel_corners is not None
+    assert len(m.pixel_corners) == 2
+    assert m.pixel_corners[0] == (12, 12)
+    assert m.pixel_corners[1] == (34, 43)
 
 
 def test_marker_list_instantiation() -> None:
