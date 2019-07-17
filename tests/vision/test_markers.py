@@ -77,6 +77,34 @@ def test_marker_pixel_corners() -> None:
     assert m.pixel_corners[1] == (34, 43)
 
 
+def test_marker_pixel_centre() -> None:
+    """Test that we can store the pixel centre."""
+    m = Marker(0, get_random_coordinate())
+    assert m.pixel_centre is None
+
+    m = Marker(0, get_random_coordinate(), pixel_centre=(10, 10))
+    assert m.pixel_centre == (10, 10)
+
+
+def test_marker_distance() -> None:
+    """Test that the distance is the expected value."""
+    m = get_random_marker()
+    assert m.distance is m.position.cylindrical.p
+
+
+def test_marker_bearing() -> None:
+    """Test that the bearing is the expected value."""
+    m = get_random_marker()
+    assert m.bearing is m.position.cylindrical.phi
+
+
+def test_marker_str() -> None:
+    """Test that the marker string is as expected."""
+    m = Marker(4, Coordinate(5, 0, 7))
+
+    assert str(m) == "<Marker 4: 0° left, 5.00m away>"
+
+
 def test_marker_list_instantiation() -> None:
     """Test that we can instantiate a MarkerList."""
     li = [get_random_marker() for _ in range(1, randint(2, 12))]
