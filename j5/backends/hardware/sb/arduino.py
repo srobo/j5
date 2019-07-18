@@ -260,13 +260,13 @@ class SBArduinoHardwareBackend(
 
     def write_gpio_pin_dac_value(self, identifier: int, scaled_value: float) -> None:
         """Write a scaled analogue value to the DAC on the GPIO pin."""
-        # Uno doesn't have any of these.
-        raise NotImplementedError
+        raise NotSupportedByHardwareError("SB Arduino does not have a DAC")
 
     def write_gpio_pin_pwm_value(self, identifier: int, duty_cycle: float) -> None:
         """Write a scaled analogue value to the PWM on the GPIO pin."""
-        # Not implemented on SBArduinoBoard yet.
-        raise NotImplementedError
+        raise NotSupportedByHardwareError(
+            "SB Arduino firmware does not implement PWM output",
+        )
 
     def get_led_state(self, identifier: int) -> bool:
         """Get the state of an LED."""
