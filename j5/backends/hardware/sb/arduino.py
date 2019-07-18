@@ -230,14 +230,14 @@ class SBArduinoHardwareBackend(
                              f"in order to read the digital state.")
         results = self._command("R", str(identifier))
         if len(results) != 1:
-            raise CommunicationError(f"Invalid response from Arduino: {results}")
+            raise CommunicationError(f"Invalid response from Arduino: {results!r}")
         result = results[0]
         if result == "H":
             return True
         elif result == "L":
             return False
         else:
-            raise CommunicationError(f"Invalid response from Arduino: {result}")
+            raise CommunicationError(f"Invalid response from Arduino: {result!r}")
 
     def read_gpio_pin_analogue_value(self, identifier: int) -> float:
         """Read the analogue voltage of the GPIO pin."""
@@ -256,7 +256,7 @@ class SBArduinoHardwareBackend(
             if pin_name == f"a{analogue_pin_num}":
                 voltage = (int(reading) / 1024.0) * 5.0
                 return voltage
-        raise CommunicationError(f"Invalid response from Arduino: {results}")
+        raise CommunicationError(f"Invalid response from Arduino: {results!r}")
 
     def write_gpio_pin_dac_value(self, identifier: int, scaled_value: float) -> None:
         """Write a scaled analogue value to the DAC on the GPIO pin."""
