@@ -1,7 +1,7 @@
 """Marker Class."""
 
 from math import degrees
-from typing import List, NewType, Optional, Sequence, Tuple, TypeVar, overload
+from typing import List, NewType, Optional, Sequence, Tuple, overload
 
 from .coordinates import Coordinate
 
@@ -89,10 +89,7 @@ class Marker:
         )
 
 
-T = TypeVar("T", bound=Marker)
-
-
-class MarkerList(List[T]):
+class MarkerList(List[Marker]):
     """
     A ``list`` class with nicer error messages.
 
@@ -103,11 +100,11 @@ class MarkerList(List[T]):
     """
 
     @overload
-    def __getitem__(self, index: int) -> T:
+    def __getitem__(self, index: int) -> Marker:
         ...  # pragma: nocover
 
     @overload  # noqa: F811 (deliberate method replacement)
-    def __getitem__(self, index: slice) -> List[T]:
+    def __getitem__(self, index: slice) -> List[Marker]:
         ...  # pragma: nocover
 
     def __getitem__(self, index):  # type:ignore  # noqa: F811
