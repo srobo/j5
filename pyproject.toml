@@ -20,7 +20,7 @@ classifiers = [
 python = "^3.6"
 pyusb = "^1.0"
 pyserial = "^3.4"
-
+zoloto = {git = "https://github.com/RealOrangeOne/zoloto.git"}
 [tool.poetry.dev-dependencies]
 flake8 = "^3.7"
 flake8-commas = "^2.0"
