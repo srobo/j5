@@ -1,4 +1,4 @@
-"""Classes for the Arduino Uno."""
+"""Classes for the SourceBots Arduino."""
 from enum import IntEnum
 from typing import Mapping, Optional, Set, Type, Union, cast
 
@@ -28,8 +28,8 @@ class AnaloguePin(IntEnum):
 PinNumber = Union[int, AnaloguePin]
 
 
-class ArduinoUnoBoard(Board):
-    """Arduino Uno Board."""
+class SBArduinoBoard(Board):
+    """SourceBots Arduino Board."""
 
     _led: LED
     _digital_pins: Mapping[int, GPIOPin]
@@ -81,7 +81,7 @@ class ArduinoUnoBoard(Board):
     @property
     def firmware_version(self) -> Optional[str]:
         """Get the firmware version of the board."""
-        return None
+        return self._backend.firmware_version
 
     @property
     def pins(self) -> Mapping[PinNumber, GPIOPin]:

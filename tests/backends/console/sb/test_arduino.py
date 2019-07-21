@@ -1,16 +1,16 @@
-"""Tests for the Arduino Uno console backend."""
+"""Tests for the SourceBots Arduino console backend."""
 
 import pytest
 from tests.backends.console.helpers import MockConsole
 
-from j5.backends.console.arduino.uno import ArduinoUnoConsoleBackend
+from j5.backends.console.sb.arduino import SBArduinoConsoleBackend
 from j5.components.gpio_pin import GPIOPinMode
 
 
 def test_backend_initialisation() -> None:
     """Test that we can initialise a Backend."""
-    backend = ArduinoUnoConsoleBackend("test")
-    assert isinstance(backend, ArduinoUnoConsoleBackend)
+    backend = SBArduinoConsoleBackend("test")
+    assert isinstance(backend, SBArduinoConsoleBackend)
 
     assert len(backend._pins) == 18
 
@@ -28,19 +28,19 @@ def test_backend_discover() -> None:
     This backend does not support discovery.
     """
     with pytest.raises(NotImplementedError):
-        ArduinoUnoConsoleBackend.discover()
+        SBArduinoConsoleBackend.discover()
 
 
 def test_backend_firmware_version() -> None:
     """Test that we can get the firmware version."""
-    backend = ArduinoUnoConsoleBackend("TestBoard")
+    backend = SBArduinoConsoleBackend("TestBoard")
 
     assert backend.firmware_version is None
 
 
 def test_set_gpio_pin_mode() -> None:
     """Test that we can set the mode of a GPIO pin."""
-    backend = ArduinoUnoConsoleBackend(
+    backend = SBArduinoConsoleBackend(
         "TestBoard",
         console_class=MockConsole,
     )
@@ -57,7 +57,7 @@ def test_set_gpio_pin_mode() -> None:
 
 def test_get_gpio_pin_mode() -> None:
     """Test that we can get the mode of a GPIO Pin."""
-    backend = ArduinoUnoConsoleBackend(
+    backend = SBArduinoConsoleBackend(
         "TestBoard",
         console_class=MockConsole,
     )
@@ -73,7 +73,7 @@ def test_get_gpio_pin_mode() -> None:
 
 def test_write_gpio_pin_digital_state() -> None:
     """Test that we can write a digital state."""
-    backend = ArduinoUnoConsoleBackend(
+    backend = SBArduinoConsoleBackend(
         "TestBoard",
         console_class=MockConsole,
     )
@@ -87,7 +87,7 @@ def test_write_gpio_pin_digital_state() -> None:
 
 def test_write_gpio_pin_digital_state_bad_mode() -> None:
     """Test that we cannot write a digital state in the wrong mode."""
-    backend = ArduinoUnoConsoleBackend(
+    backend = SBArduinoConsoleBackend(
         "TestBoard",
         console_class=MockConsole,
     )
@@ -100,7 +100,7 @@ def test_write_gpio_pin_digital_state_bad_mode() -> None:
 
 def test_get_gpio_pin_digital_state() -> None:
     """Test that we can get a digital state."""
-    backend = ArduinoUnoConsoleBackend(
+    backend = SBArduinoConsoleBackend(
         "TestBoard",
         console_class=MockConsole,
     )
@@ -114,7 +114,7 @@ def test_get_gpio_pin_digital_state() -> None:
 
 def test_get_gpio_pin_digital_state_bad_mode() -> None:
     """Test that we cannot get a digital state in the wrong mode."""
-    backend = ArduinoUnoConsoleBackend(
+    backend = SBArduinoConsoleBackend(
         "TestBoard",
         console_class=MockConsole,
     )
@@ -127,7 +127,7 @@ def test_get_gpio_pin_digital_state_bad_mode() -> None:
 
 def test_read_gpio_pin_digital_state() -> None:
     """Test that we can read the digital state of a pin."""
-    backend = ArduinoUnoConsoleBackend(
+    backend = SBArduinoConsoleBackend(
         "TestBoard",
         console_class=MockConsole,
     )
@@ -139,7 +139,7 @@ def test_read_gpio_pin_digital_state() -> None:
 
 def test_read_gpio_pin_digital_state_bad_mode() -> None:
     """Test that we cannot read a digital state in the wrong mode."""
-    backend = ArduinoUnoConsoleBackend(
+    backend = SBArduinoConsoleBackend(
         "TestBoard",
         console_class=MockConsole,
     )
@@ -152,7 +152,7 @@ def test_read_gpio_pin_digital_state_bad_mode() -> None:
 
 def test_read_gpio_pin_analogue_value() -> None:
     """Test that we can read an analogue value."""
-    backend = ArduinoUnoConsoleBackend(
+    backend = SBArduinoConsoleBackend(
         "TestBoard",
         console_class=MockConsole,
     )
@@ -164,7 +164,7 @@ def test_read_gpio_pin_analogue_value() -> None:
 
 def test_read_gpio_pin_analogue_value_bad_mode() -> None:
     """Test that we cannot read an analogue value in the wrong mode."""
-    backend = ArduinoUnoConsoleBackend(
+    backend = SBArduinoConsoleBackend(
         "TestBoard",
         console_class=MockConsole,
     )
@@ -176,7 +176,7 @@ def test_read_gpio_pin_analogue_value_bad_mode() -> None:
 
 def test_write_gpio_pin_dac_value() -> None:
     """Test that this isn't implemented."""
-    backend = ArduinoUnoConsoleBackend("test")
+    backend = SBArduinoConsoleBackend("test")
 
     with pytest.raises(NotImplementedError):
         backend.write_gpio_pin_dac_value(10, 1.0)
@@ -184,7 +184,7 @@ def test_write_gpio_pin_dac_value() -> None:
 
 def test_write_gpio_pin_pwm_value() -> None:
     """Test that this isn't implemented."""
-    backend = ArduinoUnoConsoleBackend("test")
+    backend = SBArduinoConsoleBackend("test")
 
     with pytest.raises(NotImplementedError):
         backend.write_gpio_pin_pwm_value(10, 1.0)
@@ -192,7 +192,7 @@ def test_write_gpio_pin_pwm_value() -> None:
 
 def test_get_led_state() -> None:
     """Test that we can get the LED state."""
-    backend = ArduinoUnoConsoleBackend(
+    backend = SBArduinoConsoleBackend(
         "TestBoard",
         console_class=MockConsole,
     )
@@ -204,7 +204,7 @@ def test_get_led_state() -> None:
 
 def test_set_led_state() -> None:
     """Test that we can set the LED state."""
-    backend = ArduinoUnoConsoleBackend(
+    backend = SBArduinoConsoleBackend(
         "TestBoard",
         console_class=MockConsole,
     )
@@ -220,7 +220,7 @@ def test_set_led_state() -> None:
 
 def test_that_led_is_pin_13() -> None:
     """Test that the LED has the same state as Pin 13."""
-    backend = ArduinoUnoConsoleBackend(
+    backend = SBArduinoConsoleBackend(
         "TestBoard",
         console_class=MockConsole,
     )
@@ -232,7 +232,7 @@ def test_that_led_is_pin_13() -> None:
 
 def test_one_led() -> None:
     """Test that we can only control LED 0."""
-    backend = ArduinoUnoConsoleBackend("test")
+    backend = SBArduinoConsoleBackend("test")
     with pytest.raises(ValueError):
         backend.set_led_state(1, False)
 
