@@ -1,9 +1,10 @@
 """Stubs for zoloto.camera.camera."""
 
 from pathlib import Path
-from typing import Iterator
+from typing import Iterator, Optional
 
 from zoloto.marker import Marker
+
 
 class Camera:
     """Camera class."""
@@ -11,9 +12,8 @@ class Camera:
     def __init__(
         self,
         camera_id: int,
-        *,
-        marker_dict: int,
-        calibration_file: str,
+        marker_dict: Optional[int] = None,
+        calibration_file: Optional[str] = None,
 
     ) -> None: ...
 

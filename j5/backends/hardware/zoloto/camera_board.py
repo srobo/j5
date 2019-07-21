@@ -1,11 +1,11 @@
 """Hardware implementation of the Zoloto Virtual Camera Board."""
 
 from os.path import exists
-from pathlib import Path, PosixPath
+from pathlib import PosixPath
 from platform import system
-from typing import Optional, Set
+from typing import Optional, Set, Type, TypeVar
 
-from cv2.aruco import DICT_APRILTAG_36H11
+from zoloto import __version__ as zoloto_version
 from zoloto.cameras.camera import Camera
 
 from j5.backends import Backend
@@ -18,12 +18,18 @@ from j5.vision import Coordinate, Marker, MarkerList
 CAMERA_PATH = PosixPath("/dev/video0")
 CAMERA_SERIAL = "video0"
 
+T = TypeVar("T", bound=Camera)
 
-class ZCamera(Camera):
-    """A zoloto camera."""
+
+class DefaultCamera(Camera):
+    """
+    A default camera that doesn't do much.
+
+    Mostly here to ensure sound types.
+    """
 
     def get_marker_size(self, marker_id: int) -> int:
-        """Get the size of the marker."""
+        """Get the size of a particular marker."""
         return 10
 
 
@@ -37,7 +43,7 @@ class ZolotoCameraBoardHardwareBackend(
     board = ZolotoCameraBoard
 
     @classmethod
-    def discover(cls) -> Set[Board]:
+    def discover(cls, camera_class: Type[Camera] = DefaultCamera) -> Set[Board]:
         """Discover boards that this backend can control."""
         if system() != "Linux":
             # We currently only support Zoloto on Linux platforms as there is
@@ -48,32 +54,24 @@ class ZolotoCameraBoardHardwareBackend(
             return set()
 
         return {
-            ZolotoCameraBoard("video0", cls(CAMERA_PATH)),
+            ZolotoCameraBoard("video0", cls(CAMERA_PATH, camera_class)),
         }
 
-    def __init__(self, device_path: PosixPath) -> None:
+    def __init__(self, device_path: PosixPath, camera_class: Type[T]) -> None:
         self._device_path = device_path
 
-        self._zoloto = ZCamera(
-            0,
-            marker_dict=DICT_APRILTAG_36H11,
-            calibration_file=str(
-                Path(__file__).resolve().parent.joinpath(
-                    "C270.xml",
-                ),
-            ),
-        )
+        self._zcamera = camera_class(0)
 
     @property
     def firmware_version(self) -> Optional[str]:
         """The firmware version reported by the board."""
-        return None  # Console, so no firmware
+        return zoloto_version
 
     def get_visible_markers(self, identifier: int) -> MarkerList:
         """Get markers that are visible to the camera."""
         markers = MarkerList()
 
-        marker_gen = self._zoloto.process_frame()
+        marker_gen = self._zcamera.process_frame()
 
         for zmarker in marker_gen:
             position = Coordinate(
