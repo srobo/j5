@@ -13,8 +13,10 @@ class Camera:
         self,
         camera_id: int,
         marker_dict: Optional[int] = None,
-        calibration_file: Optional[str] = None,
+        calibration_file: Optional[Path] = None,
 
     ) -> None: ...
 
     def process_frame(self) -> Iterator[Marker]: ...
+
+    def save_frame(self, path: Path, annotate: bool = False) -> None: ...

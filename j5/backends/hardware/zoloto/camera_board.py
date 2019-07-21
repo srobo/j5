@@ -1,7 +1,7 @@
 """Hardware implementation of the Zoloto Virtual Camera Board."""
 
 from os.path import exists
-from pathlib import PosixPath
+from pathlib import Path, PosixPath
 from platform import system
 from typing import Optional, Set, Type, TypeVar
 
@@ -94,3 +94,7 @@ class ZolotoCameraBoardHardwareBackend(
             )
 
         return markers
+
+    def save_annotated_image(self, file: Path) -> None:
+        """Save an annotated image to file."""
+        self._zcamera.save_frame(file, annotate=True)

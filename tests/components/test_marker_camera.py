@@ -1,5 +1,7 @@
 """Tests for the Marker Camera Component."""
 
+from pathlib import Path
+
 from j5.components.marker_camera import MarkerCamera, MarkerCameraInterface
 from j5.vision import Coordinate, Marker, MarkerList
 
@@ -12,6 +14,10 @@ class MockMarkerCameraDriver(MarkerCameraInterface):
         return MarkerList(
             [Marker(i, Coordinate(0, 0, 0)) for i in range(1, 12)],
         )
+
+    def save_annotated_image(self, file: Path) -> None:
+        """Save an annotated image to file."""
+        pass
 
 
 def test_marker_camera_interface_implementation() -> None:
@@ -46,3 +52,10 @@ def test_marker_camera_see() -> None:
 
     m1 = reslist[0]
     assert isinstance(m1, Marker)
+
+
+def test_marker_camera_save_annotated_image() -> None:
+    """Test that we can save an annotated image."""
+    m = MarkerCamera(0, MockMarkerCameraDriver())
+
+    m.save("")

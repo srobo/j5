@@ -1,4 +1,5 @@
 """Console backend for the Zoloto Virtual Board."""
+from pathlib import Path
 from typing import Optional, Set, Type
 
 from j5.backends import Backend
@@ -70,3 +71,10 @@ class ZolotoCameraBoardConsoleBackend(
             )
 
         return markers
+
+    def save_annotated_image(self, file: Path) -> None:
+        """Save an annotated image to a file."""
+        self._console.info(f"Saved annotated image to {file}")
+        self._console.info(
+            f"(Image not actually saved due to backend limitations.",
+        )
