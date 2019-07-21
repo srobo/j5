@@ -1,5 +1,6 @@
 """Test the Zoloto Camera System."""
 
+from pathlib import Path
 from typing import Set
 
 from zoloto.cameras.camera import Camera
@@ -16,8 +17,8 @@ class ZolotoCamera(Camera):
 
         super().__init__(
             id,
-            marker_dict=20, # Apriltags 11
-            calibration_file="calibrations.xml"
+            marker_dict=20,  # Apriltags 11
+            calibration_file=Path("calibrations.xml"),
         )
 
     def get_marker_size(self, marker_id: int) -> int:
