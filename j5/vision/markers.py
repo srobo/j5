@@ -1,12 +1,11 @@
 """Marker Class."""
 
 from math import degrees
-from typing import List, NewType, Optional, Sequence, Tuple, overload
+from typing import List, Optional, Sequence, Tuple, overload
 
 from .coordinates import Coordinate
 
-Pixel = NewType('Pixel', float)
-PixelCoordinates = NewType('PixelCoordinates', Tuple[Pixel, Pixel])
+PixelCoordinates = Tuple[float, float]
 
 
 class Marker:
