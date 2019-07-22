@@ -10,6 +10,7 @@ from .component import (
 )
 from .gpio_pin import GPIOPin, GPIOPinInterface, GPIOPinMode
 from .led import LED, LEDInterface
+from .marker_camera import MarkerCamera, MarkerCameraInterface
 from .motor import Motor, MotorInterface, MotorSpecialState
 from .piezo import Piezo, PiezoInterface
 from .power_output import PowerOutput, PowerOutputGroup, PowerOutputInterface
@@ -28,6 +29,8 @@ __all__ = [
     "Interface",
     "LED",
     "LEDInterface",
+    "MarkerCamera",
+    "MarkerCameraInterface",
     "Motor",
     "MotorInterface",
     "MotorSpecialState",

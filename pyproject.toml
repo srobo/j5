@@ -20,6 +20,7 @@ classifiers = [
 python = "^3.6"
 pyusb = "^1.0"
 pyserial = "^3.4"
+zoloto = "^0.2.0"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.7"
@@ -40,6 +41,7 @@ isort = {version = "^4.3",extras = ["pyproject"]}
 
 # See https://gitlab.com/pycqa/flake8-docstrings/issues/36
 pydocstyle = "~3"
+opencv-contrib-python = "^4.1"
 
 
 [build-system]
