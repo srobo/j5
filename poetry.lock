@@ -662,21 +662,17 @@ description = "A fiducial marker system powered by OpenCV - Supports ArUco and A
 name = "zoloto"
 optional = false
 python-versions = ">=3.5"
-version = "0.0.0"
+version = "0.1.0"
 
 [package.dependencies]
-cached-property = "1.5.1"
-coordinates = "0.3.0"
-fastcache = "1.1.0"
-opencv-contrib-python-headless = "4.1.0.25"
-ujson = "1.35"
+cached-property = "*"
+coordinates = "*"
+fastcache = "*"
+opencv-contrib-python-headless = ">=4,<5"
+ujson = "*"
 
-[package.source]
-reference = "753f88fe95244dd63a5356e33fdaeb9dfdf7ecd5"
-type = "git"
-url = "https://github.com/RealOrangeOne/zoloto.git"
 [metadata]
-content-hash = "f44f13515ff4642a2d577d3fb87a8b4bedb29205dbc9d027c529020187fa274e"
+content-hash = "792edff352ae376fef660c194cce22ecbcff972b4a86bc770552d5cf184f570b"
 python-versions = "^3.6"
 
 [metadata.hashes]
@@ -748,4 +744,4 @@ ujson = ["f66073e5506e91d204ab0c614a148d5aa938bdbf104751be66f8ad7a222f5f86"]
 urllib3 = ["b246607a25ac80bedac05c6f282e3cdaf3afb65420fd024ac94435cabe6e18d1", "dbe59173209418ae49d485b87d1681aefa36252ee85884c31346debd19463232"]
 wcwidth = ["3df37372226d6e63e1b1e1eda15c594bca98a22d33a23832a90998faa96bc65e", "f4ebe71925af7b40a864553f761ed559b43544f8f71746c2d756c7fe788ade7c"]
 zipp = ["4970c3758f4e89a7857a973b1e2a5d75bcdc47794442f2e2dd4fe8e0466e809a", "8a5712cfd3bb4248015eb3b0b3c54a5f6ee3f2425963ef2a0125b8bc40aafaec"]
-zoloto = []
+zoloto = ["66a9dfaebcb7dea6cbd2c01c5958b0b722006d15d6a16dcc108d8287808a8b55", "77806bc386854e1a7ce55beaddbf6bb9ef1976c0e0ca030dcc75a2ce356732c9"]
