@@ -76,5 +76,5 @@ class ZolotoCameraBoardConsoleBackend(
         """Save an annotated image to a file."""
         self._console.info(f"Saved annotated image to {file}")
         self._console.info(
-            f"(Image not actually saved due to backend limitations.",
+            "Image not actually saved due to backend limitations.",
         )

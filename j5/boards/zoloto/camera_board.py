@@ -26,7 +26,7 @@ class ZolotoCameraBoard(Board):
     @property
     def firmware_version(self) -> Optional[str]:
         """Get the firmware version of the board."""
-        return None
+        return self._backend.firmware_version
 
     @property
     def camera(self) -> MarkerCamera:

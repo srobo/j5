@@ -1,7 +1,6 @@
 """Hardware implementation of the Zoloto Virtual Camera Board."""
 
-from os.path import exists
-from pathlib import Path, PosixPath
+from pathlib import Path
 from platform import system
 from typing import Optional, Set, Type, TypeVar
 
@@ -15,7 +14,7 @@ from j5.boards.zoloto import ZolotoCameraBoard
 from j5.components import MarkerCameraInterface
 from j5.vision import Coordinate, Marker, MarkerList
 
-CAMERA_PATH = PosixPath("/dev/video0")
+CAMERA_PATH = Path("/dev/video0")
 CAMERA_SERIAL = "video0"
 
 T = TypeVar("T", bound=Camera)
@@ -49,7 +48,7 @@ class ZolotoCameraBoardHardwareBackend(
             # We currently only support Zoloto on Linux platforms as there is
             # no easy way to detect the presence of webcams on other platforms.
             return set()
-        if not exists(CAMERA_PATH):
+        if not CAMERA_PATH.exists():
             # We currently only support a hardcoded path.
             return set()
 
@@ -57,7 +56,7 @@ class ZolotoCameraBoardHardwareBackend(
             ZolotoCameraBoard("video0", cls(CAMERA_PATH, camera_class)),
         }
 
-    def __init__(self, device_path: PosixPath, camera_class: Type[T]) -> None:
+    def __init__(self, device_path: Path, camera_class: Type[T]) -> None:
         self._device_path = device_path
 
         self._zcamera = camera_class(0)
