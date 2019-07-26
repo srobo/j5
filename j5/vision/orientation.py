@@ -56,17 +56,17 @@ class Orientation:
         return self.yaw_pitch_roll[2]
 
     @property
-    def x(self) -> float:
+    def rot_x(self) -> float:
         """Alias to roll."""
         return self.roll
 
     @property
-    def y(self) -> float:
+    def rot_y(self) -> float:
         """Alias to pitch."""
         return self.pitch
 
     @property
-    def z(self) -> float:
+    def rot_z(self) -> float:
         """Alias to yaw."""
         return self.yaw
 
@@ -78,7 +78,7 @@ class Orientation:
         used, because this is likely to confuse students.
         """
         return f"Orientation(" \
-               f"x_radians={self.x}, " \
-               f"y_radians={self.y}, " \
-               f"z_radians={self.z}" \
+               f"x_radians={self.rot_x}, " \
+               f"y_radians={self.rot_y}, " \
+               f"z_radians={self.rot_z}" \
                f")"
