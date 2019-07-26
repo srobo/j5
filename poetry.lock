@@ -414,6 +414,17 @@ version = "2.4.0"
 
 [[package]]
 category = "main"
+description = "A fully featured, pythonic library for representing and using quaternions."
+name = "pyquaternion"
+optional = false
+python-versions = "*"
+version = "0.9.5"
+
+[package.dependencies]
+numpy = "*"
+
+[[package]]
+category = "main"
 description = "Python Serial Port Extension"
 name = "pyserial"
 optional = false
@@ -683,7 +694,7 @@ opencv-contrib-python-headless = ">=4.1,<5.0"
 ujson = ">=1.35,<2.0"
 
 [metadata]
-content-hash = "58cdc6313ea39bea4ada88eda5adc65cdd998fbe76ab653b2140acb4d5e4e601"
+content-hash = "8e9549a96ea635c55b6314a2126227b1ccab6e912984a0cce97dea3ded458cd0"
 python-versions = "^3.6"
 
 [metadata.hashes]
@@ -730,6 +741,7 @@ pydocstyle = ["2258f9b0df68b97bf3a6c29003edc5238ff8879f1efb6f1999988d934e432bd8"
 pyflakes = ["17dbeb2e3f4d772725c777fabc446d5634d1038f234e77343108ce445ea69ce0", "d976835886f8c5b31d47970ed689944a0262b5f3afa00a5a7b4dc81e5449f8a2"]
 pygments = ["71e430bc85c88a430f000ac1d9b331d2407f681d6f6aec95e8bcfbc3df5b0127", "881c4c157e45f30af185c1ffe8d549d48ac9127433f2c380c24b84572ad66297"]
 pyparsing = ["1873c03321fc118f4e9746baf201ff990ceb915f433f23b395f5580d1840cb2a", "9b6323ef4ab914af344ba97510e966d64ba91055d6b9afa6b30799340e89cc03"]
+pyquaternion = ["2d89d19259d62a8fbd25219eee7dacc1f6bb570becb70e1e883f622597c7d81d", "9da8a22375783c1d5f2d65d195b4eb6c1ce2c5a5cab4700860b3bacc4dacb460", "bac5945d08b9a2f4106dc76206e40f353c7240fdf37a370e13b03113c135f59b"]
 pyserial = ["6e2d401fdee0eab996cf734e67773a0143b932772ca8b42451440cfed942c627", "e0770fadba80c31013896c7e6ef703f72e7834965954a78e71a3049488d4d7d8"]
 pytest = ["6ef6d06de77ce2961156013e9dff62f1b2688aa04d0dc244299fe7d67e09370d", "a736fed91c12681a7b34617c8fcefe39ea04599ca72c608751c31d89579a3f77"]
 pytest-cov = ["2b097cde81a302e1047331b48cadacf23577e431b61e9c6f49a1170bbe3d3da6", "e00ea4fdde970725482f1f35630d12f074e121a23801aabf2ae154ec6bdd343a"]
