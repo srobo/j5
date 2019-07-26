@@ -62,6 +62,6 @@ if __name__ == '__main__':
         print(f"Found {len(markers)} markers.")
 
         for m in markers:
-            print(m)
+            print(f"{m} : {m.orientation}")
 
         print("\r")

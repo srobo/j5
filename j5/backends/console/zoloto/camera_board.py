@@ -7,7 +7,7 @@ from j5.backends.console import Console, ConsoleEnvironment
 from j5.boards import Board
 from j5.boards.zoloto import ZolotoCameraBoard
 from j5.components import MarkerCameraInterface
-from j5.vision import Coordinate, Marker, MarkerList
+from j5.vision import Coordinate, Marker, MarkerList, Orientation
 
 
 class ZolotoCameraBoardConsoleBackend(
@@ -66,8 +66,39 @@ class ZolotoCameraBoardConsoleBackend(
                 f"What is the z coordinate of marker {i}?",
                 float,
             )
+
+            orient = self._console.read(
+                f"Do you know the orientation of marker {i}?",
+                bool,
+            )
+
+            orientation = None
+
+            if orient:
+                orient_x = self._console.read(
+                    f"What is the x rotation of marker {i}?",
+                    float,
+                )
+                orient_y = self._console.read(
+                    f"What is the y rotation of marker {i}?",
+                    float,
+                )
+                orient_z = self._console.read(
+                    f"What is the z rotation of marker {i}?",
+                    float,
+                )
+                orientation = Orientation.from_cartesian(
+                    orient_x,
+                    orient_y,
+                    orient_z,
+                )
+
             markers.append(
-                Marker(marker_id, Coordinate(marker_x, marker_y, marker_z)),
+                Marker(
+                    marker_id,
+                    Coordinate(marker_x, marker_y, marker_z),
+                    orientation=orientation,
+                ),
             )
 
         return markers
