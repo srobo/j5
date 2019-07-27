@@ -72,7 +72,7 @@ class Piezo(Component):
         """
         Queue a note to be played.
 
-        Float durations are measured in seconds.
+        Float and integer durations are measured in seconds.
         """
         if isinstance(duration, float) or isinstance(duration, int):
             duration = timedelta(seconds=duration)
