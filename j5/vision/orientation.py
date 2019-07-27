@@ -70,6 +70,11 @@ class Orientation:
         """Returns the rotation around the z axis in radians."""
         return self.yaw
 
+    @property
+    def quaternion(self) -> Quaternion:
+        """The quaternion representing the underlying rotation."""
+        return self._quaternion
+
     def __repr__(self) -> str:
         """
         A string representation.
