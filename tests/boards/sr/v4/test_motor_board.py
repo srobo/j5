@@ -86,12 +86,12 @@ def test_motor_board_make_safe() -> None:
     mb = MotorBoard("SERIAL0", MockMotorBoardBackend())
 
     for m in mb.motors:
-        m.state = 1
+        m.power = 1
 
     mb.make_safe()
 
     for m in mb.motors:
-        assert m.state == MotorSpecialState.BRAKE
+        assert m.power == MotorSpecialState.BRAKE
 
 
 def test_motor_board_motors() -> None:

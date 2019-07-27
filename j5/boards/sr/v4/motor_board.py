@@ -44,7 +44,7 @@ class MotorBoard(Board):
         """Make this board safe."""
         for output in self._outputs:
             # Brake both motors.
-            output.state = MotorSpecialState.BRAKE
+            output.power = MotorSpecialState.BRAKE
 
     @staticmethod
     def supported_components() -> Set[Type['Component']]:

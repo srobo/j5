@@ -47,6 +47,6 @@ if __name__ == '__main__':
     for m in r.motor_board.motors:
         print(f"Testing output {m.identifier}")
         for v in range(-10, 10):
-            m.state = v / 10
+            m.power = v / 10
             sleep(0.1)
-        m.state = MotorSpecialState.BRAKE
+        m.power = MotorSpecialState.BRAKE
