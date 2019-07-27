@@ -57,17 +57,17 @@ class Orientation:
 
     @property
     def rot_x(self) -> float:
-        """Alias to roll."""
+        """Returns the rotation around the x axis in radians."""
         return self.roll
 
     @property
     def rot_y(self) -> float:
-        """Alias to pitch."""
+        """Returns the rotation around the y axis in radians."""
         return self.pitch
 
     @property
     def rot_z(self) -> float:
-        """Alias to yaw."""
+        """Returns the rotation around the z axis in radians."""
         return self.yaw
 
     def __repr__(self) -> str:
