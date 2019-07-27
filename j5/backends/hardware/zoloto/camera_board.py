@@ -12,7 +12,7 @@ from j5.backends.hardware import HardwareEnvironment
 from j5.boards import Board
 from j5.boards.zoloto import ZolotoCameraBoard
 from j5.components import MarkerCameraInterface
-from j5.vision import Coordinate, Marker, MarkerList
+from j5.vision import Coordinate, Marker, MarkerList, Orientation
 
 CAMERA_PATH = Path("/dev/video0")
 CAMERA_SERIAL = "video0"
@@ -78,6 +78,11 @@ class ZolotoCameraBoardHardwareBackend(
                 zmarker.cartesian.y,
                 zmarker.cartesian.z,
             )
+            orientation = Orientation.from_cartesian(
+                zmarker.orientation.rot_x,
+                zmarker.orientation.rot_y,
+                zmarker.orientation.rot_z,
+            )
             pixel_corners = list(
                 map(lambda x: (x.x, x.y), zmarker.pixel_corners),
             )
@@ -89,6 +94,7 @@ class ZolotoCameraBoardHardwareBackend(
                     position,
                     pixel_centre=pixel_centre,
                     pixel_corners=pixel_corners,
+                    orientation=orientation,
                 ),
             )
 

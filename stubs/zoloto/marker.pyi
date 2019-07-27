@@ -2,7 +2,7 @@
 
 from typing import List
 
-from zoloto.coords import Coordinates, ThreeDCoordinates
+from zoloto.coords import Coordinates, Orientation, ThreeDCoordinates
 
 class Marker:
     """A Zoloto Marker object."""
@@ -24,3 +24,6 @@ class Marker:
 
     @property
     def cartesian(self) -> ThreeDCoordinates: ...
+
+    @property
+    def orientation(self) -> Orientation: ...

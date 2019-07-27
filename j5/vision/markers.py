@@ -4,6 +4,7 @@ from math import degrees
 from typing import List, Optional, Sequence, Tuple, overload
 
 from .coordinates import Coordinate
+from .orientation import Orientation
 
 PixelCoordinates = Tuple[float, float]
 
@@ -17,6 +18,7 @@ class Marker:
     """
 
     _id: int
+    _orientation: Optional[Orientation]
     _pixel_corners: Optional[Sequence[PixelCoordinates]]
     _pixel_centre: Optional[PixelCoordinates]
     _position: Coordinate
@@ -26,8 +28,11 @@ class Marker:
                  position: Coordinate,
                  pixel_corners: Optional[Sequence[PixelCoordinates]] = None,
                  pixel_centre: Optional[PixelCoordinates] = None,
+                 *,  # We need to move this before pixel_corners.
+                 orientation: Optional[Orientation] = None,
                  ):
         self._id = id
+        self._orientation = orientation
         self._position = position
         self._pixel_corners = pixel_corners
         self._pixel_centre = pixel_centre
@@ -36,6 +41,21 @@ class Marker:
     def id(self) -> int:
         """The id of the marker."""
         return self._id
+
+    @property
+    def bearing(self) -> float:
+        """Bearing to the marker from the origin, in radians."""
+        return self.position.cylindrical.phi
+
+    @property
+    def distance(self) -> float:
+        """Distance to the marker from the origin, in metres."""
+        return self.position.cylindrical.p
+
+    @property
+    def orientation(self) -> Optional[Orientation]:
+        """Orientation of the Marker."""
+        return self._orientation
 
     @property
     def position(self) -> Coordinate:
@@ -68,16 +88,6 @@ class Marker:
         estimation algorithms, they can!
         """
         return self._pixel_centre
-
-    @property
-    def bearing(self) -> float:
-        """Bearing to the marker from the origin, in radians."""
-        return self.position.cylindrical.phi
-
-    @property
-    def distance(self) -> float:
-        """Distance to the marker from the origin, in metres."""
-        return self.position.cylindrical.p
 
     def __str__(self) -> str:
         return "<Marker {}: {:.0f}° {}, {:.2f}m away>".format(

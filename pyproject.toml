@@ -21,6 +21,7 @@ python = "^3.6"
 pyusb = "^1.0"
 pyserial = "^3.4"
 zoloto = "^0.2.0"
+pyquaternion = "^0.9.5"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.7"
@@ -38,10 +39,14 @@ sphinx = "^2.1"
 sphinx-rtd-theme = "^0.4.3"
 rope = "^0.14.0"
 isort = {version = "^4.3",extras = ["pyproject"]}
+opencv-contrib-python = "^4.1"
 
 # See https://gitlab.com/pycqa/flake8-docstrings/issues/36
 pydocstyle = "~3"
-opencv-contrib-python = "^4.1"
+
+# See https://github.com/sdispater/poetry/issues/1256
+docutils= "!=0.15.1"
+
 
 
 [build-system]
