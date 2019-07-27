@@ -59,11 +59,11 @@ def test_motor_get_state_float() -> None:
     motor0 = Motor(0, MockMotorDriver())
     motor1 = Motor(1, MockMotorDriver())
 
-    assert type(motor0.state) is float
-    assert type(motor1.state) is float
+    assert type(motor0.power) is float
+    assert type(motor1.power) is float
 
-    assert motor0.state == 0
-    assert motor1.state == 0.5
+    assert motor0.power == 0
+    assert motor1.power == 0.5
 
 
 def test_motor_get_state_special() -> None:
@@ -71,24 +71,24 @@ def test_motor_get_state_special() -> None:
     motor0 = Motor(2, MockMotorDriver())
     motor1 = Motor(3, MockMotorDriver())
 
-    assert type(motor0.state) is MotorSpecialState
-    assert type(motor1.state) is MotorSpecialState
+    assert type(motor0.power) is MotorSpecialState
+    assert type(motor1.power) is MotorSpecialState
 
-    assert motor0.state == MotorSpecialState.COAST
-    assert motor1.state == MotorSpecialState.BRAKE
+    assert motor0.power == MotorSpecialState.COAST
+    assert motor1.power == MotorSpecialState.BRAKE
 
 
 def test_motor_set_state() -> None:
     """Test that we can set the state of a motor."""
     motor = Motor(0, MockMotorDriver())
 
-    motor.state = 0
-    motor.state = 1
-    motor.state = -1
-    motor.state = 0.123
+    motor.power = 0
+    motor.power = 1
+    motor.power = -1
+    motor.power = 0.123
 
-    motor.state = MotorSpecialState.COAST
-    motor.state = MotorSpecialState.BRAKE
+    motor.power = MotorSpecialState.COAST
+    motor.power = MotorSpecialState.BRAKE
 
 
 def test_motor_set_state_out_of_bounds() -> None:
@@ -96,7 +96,7 @@ def test_motor_set_state_out_of_bounds() -> None:
     motor = Motor(0, MockMotorDriver())
 
     with pytest.raises(ValueError):
-        motor.state = 1.1
+        motor.power = 1.1
 
     with pytest.raises(ValueError):
-        motor.state = -1.2
+        motor.power = -1.2

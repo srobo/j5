@@ -53,14 +53,14 @@ class Motor(Component):
         return self._identifier
 
     @property
-    def state(self) -> MotorState:
-        """Get the current state of this output."""
+    def power(self) -> MotorState:
+        """Get the current power of this output."""
         return self._backend.get_motor_state(self._identifier)
 
-    @state.setter
-    def state(self, new_state: MotorState) -> None:
+    @power.setter
+    def power(self, new_power: MotorState) -> None:
         """Set the current state of this output."""
-        if isinstance(new_state, float):
-            if new_state < -1 or new_state > 1:
-                raise ValueError("Motor speed must be between 1 and -1.")
-        self._backend.set_motor_state(self._identifier, new_state)
+        if isinstance(new_power, float):
+            if new_power < -1 or new_power > 1:
+                raise ValueError("Motor power must be between 1 and -1.")
+        self._backend.set_motor_state(self._identifier, new_power)
