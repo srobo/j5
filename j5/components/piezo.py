@@ -68,8 +68,14 @@ class Piezo(Component):
         """An integer to identify the component on a board."""
         return self._identifier
 
-    def buzz(self, duration: timedelta, pitch: Pitch) -> None:
-        """Queue a note to be played."""
+    def buzz(self, duration: Union[int, float, timedelta], pitch: Pitch) -> None:
+        """
+        Queue a note to be played.
+
+        Float durations are measured in seconds.
+        """
+        if isinstance(duration, float) or isinstance(duration, int):
+            duration = timedelta(seconds=duration)
         if type(pitch) is int:
             pitch = float(pitch)
 
