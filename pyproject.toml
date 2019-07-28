@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "j5"
-version = "0.7.0"
+version = "0.7.1"
 description = "J5 Robotics API"
 authors = ["j5 contributors <sro@soton.ac.uk>"]
 license = "MIT"
@@ -20,7 +20,7 @@ classifiers = [
 python = "^3.6"
 pyusb = "^1.0"
 pyserial = "^3.4"
-zoloto = "^0.2.0"
+zoloto = "^0.3.0"
 pyquaternion = "^0.9.5"
 
 [tool.poetry.dev-dependencies]
