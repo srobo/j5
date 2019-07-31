@@ -44,11 +44,6 @@ opencv-contrib-python = "^4.1"
 # See https://gitlab.com/pycqa/flake8-docstrings/issues/36
 pydocstyle = "~3"
 
-# See https://github.com/sdispater/poetry/issues/1256
-docutils= "!=0.15.1"
-
-
-
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
