@@ -18,6 +18,8 @@ The recommended installation method is to use pipenv_, an excellent tool that co
 
 Simply run: ``pipenv install j5``
 
+If you want Zoloto CV support: ``pipenv install j5[zoloto-vision]``
+
 You can now import `j5` into your libraries. Awesome!
 
 .. _pipenv: https://pipenv.readthedocs.io/en/latest/
