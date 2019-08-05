@@ -15,6 +15,7 @@ from j5.components import (
     PiezoInterface,
     PowerOutput,
     PowerOutputInterface,
+    SerialNumberInterface,
 )
 from j5.components.piezo import Pitch
 
@@ -31,6 +32,7 @@ class MockPowerBoardBackend(
     ButtonInterface,
     BatterySensorInterface,
     LEDInterface,
+    SerialNumberInterface,
     Backend,
 ):
     """A mock power board backend implementation."""
@@ -92,10 +94,14 @@ class MockPowerBoardBackend(
         """Set the state of an LED."""
         pass
 
+    def get_serial_number(self) -> str:
+        """Get the serial number."""
+        return "SERIAL0"
+
 
 def test_power_board_instantiation() -> None:
     """Test that we can instantiate a PowerBoard."""
-    PowerBoard("SERIAL0", MockPowerBoardBackend())
+    PowerBoard(MockPowerBoardBackend())
 
 
 def test_power_board_discover() -> None:
@@ -105,33 +111,33 @@ def test_power_board_discover() -> None:
 
 def test_power_board_name() -> None:
     """Test the name attribute of the PowerBoard."""
-    pb = PowerBoard("SERIAL0", MockPowerBoardBackend())
+    pb = PowerBoard(MockPowerBoardBackend())
 
     assert pb.name == "Student Robotics v4 Power Board"
 
 
 def test_power_board_serial() -> None:
     """Test the serial attribute of the PowerBoard."""
-    pb = PowerBoard("SERIAL0", MockPowerBoardBackend())
+    pb = PowerBoard(MockPowerBoardBackend())
 
     assert pb.serial == "SERIAL0"
 
 
 def test_firmware_version() -> None:
     """Test the firmware_version attribute of the PowerBoard."""
-    pb = PowerBoard("SERIAL0", MockPowerBoardBackend())
+    pb = PowerBoard(MockPowerBoardBackend())
     assert pb.firmware_version is None
 
 
 def test_power_board_make_safe() -> None:
     """Test the make_safe method of the PowerBoard."""
-    pb = PowerBoard("SERIAL0", MockPowerBoardBackend())
+    pb = PowerBoard(MockPowerBoardBackend())
     pb.make_safe()
 
 
 def test_power_board_outputs() -> None:
     """Test the power outputs on the PowerBoard."""
-    pb = PowerBoard("SERIAL0", MockPowerBoardBackend())
+    pb = PowerBoard(MockPowerBoardBackend())
 
     assert type(pb.outputs) is PowerOutputGroup
     assert len(pb.outputs) == 6
@@ -144,42 +150,42 @@ def test_power_board_outputs() -> None:
 
 def test_power_board_piezo() -> None:
     """Test the Piezo on the PowerBoard."""
-    pb = PowerBoard("SERIAL0", MockPowerBoardBackend())
+    pb = PowerBoard(MockPowerBoardBackend())
 
     assert type(pb.piezo) is Piezo
 
 
 def test_power_board_button() -> None:
     """Test the Button on the PowerBoard."""
-    pb = PowerBoard("SERIAL0", MockPowerBoardBackend())
+    pb = PowerBoard(MockPowerBoardBackend())
 
     assert type(pb.start_button) is Button
 
 
 def test_power_board_battery_sensor() -> None:
     """Test the Battery Sensor on the Power Board."""
-    pb = PowerBoard("SERIAL0", MockPowerBoardBackend())
+    pb = PowerBoard(MockPowerBoardBackend())
 
     assert type(pb.battery_sensor) is BatterySensor
 
 
 def test_power_board_run_led() -> None:
     """Test the run LED on the Power Board."""
-    pb = PowerBoard("SERIAL0", MockPowerBoardBackend())
+    pb = PowerBoard(MockPowerBoardBackend())
 
     assert type(pb._run_led) is LED
 
 
 def test_power_board_error_led() -> None:
     """Test the error LED on the Power Board."""
-    pb = PowerBoard("SERIAL0", MockPowerBoardBackend())
+    pb = PowerBoard(MockPowerBoardBackend())
 
     assert type(pb._error_led) is LED
 
 
 def test_power_board_wait_start() -> None:
     """Test the wait_for_start_flash method."""
-    pb = PowerBoard("SERIAL0", MockPowerBoardBackend())
+    pb = PowerBoard(MockPowerBoardBackend())
 
     # Note: This isn't a great test, but ensures that the code runs at least.
     pb.wait_for_start_flash()

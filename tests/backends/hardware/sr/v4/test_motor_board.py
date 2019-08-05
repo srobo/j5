@@ -125,7 +125,7 @@ class MotorSerialBadFirmware(MotorSerial):
 
 def test_backend_initialisation() -> None:
     """Test that we can initialise a backend."""
-    backend = SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerial)
+    backend = SRV4MotorBoardHardwareBackend("COM0", "SERIAL0", serial_class=MotorSerial)
 
     assert type(backend) is SRV4MotorBoardHardwareBackend
     assert type(backend._serial) is MotorSerial
@@ -137,7 +137,11 @@ def test_backend_initialisation() -> None:
 def test_backend_bad_firmware_version() -> None:
     """Test that we can detect a bad firmware version."""
     with pytest.raises(CommunicationError):
-        SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerialBadFirmware)
+        SRV4MotorBoardHardwareBackend(
+            "COM0",
+            "SERIAL0",
+            serial_class=MotorSerialBadFirmware,
+        )
 
 
 def test_backend_discover() -> None:
@@ -152,7 +156,7 @@ def test_backend_discover() -> None:
 
 def test_backend_send_command() -> None:
     """Test that the backend can send commands."""
-    backend = SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerial)
+    backend = SRV4MotorBoardHardwareBackend("COM0", "SERIAL0", serial_class=MotorSerial)
     serial = cast(MotorSerial, backend._serial)
     serial.check_data_sent_by_constructor()
 
@@ -165,7 +169,7 @@ def test_backend_send_command() -> None:
 
 def test_backend_send_command_bad_write() -> None:
     """Test that an error is thrown if we can't write bytes."""
-    backend = SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerial)
+    backend = SRV4MotorBoardHardwareBackend("COM0", "SERIAL0", serial_class=MotorSerial)
 
     bad_serial_driver = MotorSerialBadWrite("COM0", baudrate=1000000, timeout=0.25)
     backend._serial = bad_serial_driver
@@ -175,7 +179,7 @@ def test_backend_send_command_bad_write() -> None:
 
 def test_read_serial_line() -> None:
     """Test that we can we lines from the serial interface."""
-    backend = SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerial)
+    backend = SRV4MotorBoardHardwareBackend("COM0", "SERIAL0", serial_class=MotorSerial)
     serial = cast(MotorSerial, backend._serial)
     serial.check_data_sent_by_constructor()
     serial.append_received_data(b"Green Beans", newline=True)
@@ -185,7 +189,7 @@ def test_read_serial_line() -> None:
 
 def test_read_serial_line_no_data() -> None:
     """Check that a communication error is thrown if we get no data."""
-    backend = SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerial)
+    backend = SRV4MotorBoardHardwareBackend("COM0", "SERIAL0", serial_class=MotorSerial)
     serial = cast(MotorSerial, backend._serial)
     serial.check_data_sent_by_constructor()
 
@@ -195,7 +199,7 @@ def test_read_serial_line_no_data() -> None:
 
 def test_get_firmware_version() -> None:
     """Test that we can get the firmware version from the serial interface."""
-    backend = SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerial)
+    backend = SRV4MotorBoardHardwareBackend("COM0", "SERIAL0", serial_class=MotorSerial)
     serial = cast(MotorSerial, backend._serial)
     serial.check_data_sent_by_constructor()
     assert backend.firmware_version == "3"
@@ -209,7 +213,7 @@ def test_get_firmware_version() -> None:
 
 def test_get_set_motor_state() -> None:
     """Test that we can get and set the motor state."""
-    backend = SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerial)
+    backend = SRV4MotorBoardHardwareBackend("COM0", "SERIAL0", serial_class=MotorSerial)
     serial = cast(MotorSerial, backend._serial)
     serial.check_data_sent_by_constructor()
 
@@ -247,7 +251,7 @@ def test_get_set_motor_state() -> None:
 
 def test_brake_motors_at_deletion() -> None:
     """Test that both motors are set to BRAKE when the backend is garbage collected."""
-    backend = SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerial)
+    backend = SRV4MotorBoardHardwareBackend("COM0", "SERIAL0", serial_class=MotorSerial)
     serial = cast(MotorSerial, backend._serial)
     serial.check_data_sent_by_constructor()
     del backend

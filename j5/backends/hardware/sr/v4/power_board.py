@@ -68,7 +68,7 @@ class SRV4PowerBoardHardwareBackend(
         device_list = find(idVendor=0x1bda, idProduct=0x0010, find_all=True)
         for device in device_list:
             backend = cls(device)
-            board = PowerBoard(backend.serial, backend)
+            board = PowerBoard(backend)
             boards.add(cast(Board, board))
         return boards
 

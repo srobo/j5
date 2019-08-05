@@ -14,7 +14,12 @@ from j5.backends.hardware.j5.serial import (
 )
 from j5.boards import Board
 from j5.boards.sr.v4.motor_board import MotorBoard
-from j5.components.motor import MotorInterface, MotorSpecialState, MotorState
+from j5.components import (
+    MotorInterface,
+    MotorSpecialState,
+    MotorState,
+    SerialNumberInterface,
+)
 
 CMD_RESET = 0
 CMD_VERSION = 1
@@ -33,6 +38,7 @@ def is_motor_board(port: ListPortInfo) -> bool:
 
 class SRV4MotorBoardHardwareBackend(
     MotorInterface,
+    SerialNumberInterface,
     SerialHardwareBackend,
 ):
     """The hardware implementation of the SR v4 motor board."""
@@ -53,22 +59,28 @@ class SRV4MotorBoardHardwareBackend(
         # Get a list of boards from the ports.
         boards: Set[Board] = set()
         for port in filter(is_motor_board, ports):
-            boards.add(
-                MotorBoard(
-                    port.serial_number,
-                    SRV4MotorBoardHardwareBackend(port.device, serial_class),
-                ),
-            )
+            boards.add(MotorBoard(SRV4MotorBoardHardwareBackend(
+                port.device,
+                port.serial_number,
+                serial_class,
+            )))
 
         return boards
 
     @handle_serial_error
-    def __init__(self, serial_port: str, serial_class: Type[Seriallike] = Serial) -> None:
+    def __init__(
+        self,
+        serial_port: str,
+        serial_number: str,
+        serial_class: Type[Seriallike] = Serial,
+    ) -> None:
         super(SRV4MotorBoardHardwareBackend, self).__init__(
             serial_port=serial_port,
             serial_class=serial_class,
             baud=1000000,
         )
+
+        self._serial_number = serial_number
 
         # Initialise our stored values for the state.
         self._state: List[MotorState] = [
@@ -119,6 +131,10 @@ class SRV4MotorBoardHardwareBackend(
                 f"Unexpected model string: {model}, expected MCV4B.",
             )
         return firmware_data[6:]  # Strip model and return version
+
+    def get_serial_number(self) -> str:
+        """Get the board's serial number."""
+        return self._serial_number
 
     def get_motor_state(self, identifier: int) -> MotorState:
         """Get the state of a motor."""

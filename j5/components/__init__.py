@@ -11,10 +11,11 @@ from .component import (
 from .gpio_pin import GPIOPin, GPIOPinInterface, GPIOPinMode
 from .led import LED, LEDInterface
 from .marker_camera import MarkerCamera, MarkerCameraInterface
-from .motor import Motor, MotorInterface, MotorSpecialState
+from .motor import Motor, MotorInterface, MotorSpecialState, MotorState
 from .piezo import Piezo, PiezoInterface
 from .power_output import PowerOutput, PowerOutputGroup, PowerOutputInterface
-from .servo import Servo, ServoInterface
+from .serial_number import SerialNumberInterface
+from .servo import Servo, ServoInterface, ServoPosition
 
 __all__ = [
     "BatterySensor",
@@ -34,12 +35,15 @@ __all__ = [
     "Motor",
     "MotorInterface",
     "MotorSpecialState",
+    "MotorState",
     "NotSupportedByComponentError",
     "Piezo",
     "PiezoInterface",
     "PowerOutput",
-    "PowerOutputInterface",
     "PowerOutputGroup",
+    "PowerOutputInterface",
+    "SerialNumberInterface",
     "Servo",
     "ServoInterface",
+    "ServoPosition",
 ]

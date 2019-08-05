@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, List, Optional, Set, Type, cast
 
 from j5.backends import Backend
 from j5.boards import Board
-from j5.components.servo import Servo, ServoInterface
+from j5.components import SerialNumberInterface, Servo, ServoInterface
 
 if TYPE_CHECKING:  # pragma: no cover
     from j5.components import Interface  # noqa: F401
@@ -14,8 +14,7 @@ class ServoBoard(Board):
 
     name: str = "Student Robotics v4 Servo Board"
 
-    def __init__(self, serial: str, backend: Backend):
-        self._serial = serial
+    def __init__(self, backend: Backend):
         self._backend = backend
 
         self._servos: List[Servo] = [
@@ -26,7 +25,7 @@ class ServoBoard(Board):
     @property
     def serial(self) -> str:
         """Get the serial number."""
-        return self._serial
+        return cast("SerialNumberInterface", self._backend).get_serial_number()
 
     @property
     def firmware_version(self) -> Optional[str]:
@@ -44,7 +43,7 @@ class ServoBoard(Board):
     @staticmethod
     def required_interfaces() -> Set[Type["Interface"]]:
         """The interfaces that a backend for this board must implement."""
-        return {ServoInterface}
+        return {ServoInterface, SerialNumberInterface}
 
     @property
     def servos(self) -> List[Servo]:

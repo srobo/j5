@@ -45,7 +45,7 @@ class SRV4ServoBoardHardwareBackend(
         device_list = find(idVendor=0x1bda, idProduct=0x0011, find_all=True)
         for device in device_list:
             backend = cls(device)
-            board = ServoBoard(backend.serial, backend)
+            board = ServoBoard(backend)
             boards.add(cast(Board, board))
         return boards
 
@@ -77,7 +77,8 @@ class SRV4ServoBoardHardwareBackend(
         """Raises an exception if the firmware version is not supported."""
         v = self.firmware_version
         if v != "2":
-            raise NotImplementedError(f"Servo Board ({self.serial}) is running firmware "
+            serial = self.get_serial_number()
+            raise NotImplementedError(f"Servo Board ({serial}) is running firmware "
                                       f"version {v}, but only version 2 is supported")
 
     def get_servo_position(self, identifier: int) -> ServoPosition:

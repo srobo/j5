@@ -269,7 +269,7 @@ def test_backend_serial_number() -> None:
     device = MockUSBPowerBoardDevice("SERIAL0")
     backend = SRV4PowerBoardHardwareBackend(device)
 
-    assert backend.serial == "SERIAL0"
+    assert backend.get_serial_number() == "SERIAL0"
 
 
 def test_backend_get_power_output_enabled() -> None:

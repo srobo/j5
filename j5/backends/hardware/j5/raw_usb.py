@@ -14,6 +14,7 @@ import usb
 
 from j5.backends import BackendMeta, CommunicationError, Environment
 from j5.boards import Board
+from j5.components import SerialNumberInterface
 
 # Stop the library from closing the USB connections before make_safe is called.
 usb._objfinalizer._AutoFinalizedObjectBase._do_finalize_object = (  # type: ignore
@@ -73,7 +74,7 @@ def handle_usb_error(func: Callable[..., RT]) -> Callable[..., RT]:  # type: ign
     return catch_exceptions
 
 
-class RawUSBHardwareBackend(metaclass=BackendMeta):
+class RawUSBHardwareBackend(SerialNumberInterface, metaclass=BackendMeta):
     """An abstract class for creating backends that use Raw USB communication."""
 
     _usb_device: usb.core.Device
@@ -96,9 +97,8 @@ class RawUSBHardwareBackend(metaclass=BackendMeta):
         """The firmware version of the board."""
         raise NotImplementedError  # pragma: no cover
 
-    @property  # type: ignore # https://github.com/python/mypy/issues/1362
     @handle_usb_error
-    def serial(self) -> str:
+    def get_serial_number(self) -> str:
         """The serial number reported by the board."""
         # https://github.com/python/mypy/issues/1362
         return self._usb_device.serial_number

@@ -178,7 +178,7 @@ def test_backend_serial_number() -> None:
     device = MockUSBServoBoardDevice("SERIAL0")
     backend = SRV4ServoBoardHardwareBackend(device)
 
-    assert backend.serial == "SERIAL0"
+    assert backend.get_serial_number() == "SERIAL0"
 
 
 def test_backend_get_servo_status() -> None:

@@ -4,17 +4,18 @@ from typing import List, Optional, Set
 from j5.backends import Backend, Environment
 from j5.boards import Board
 from j5.boards.sr.v4 import MotorBoard
-from j5.components.motor import (
+from j5.components import (
     Motor,
     MotorInterface,
     MotorSpecialState,
     MotorState,
+    SerialNumberInterface,
 )
 
 MockEnvironment = Environment("MockEnvironment")
 
 
-class MockMotorBoardBackend(MotorInterface, Backend):
+class MockMotorBoardBackend(MotorInterface, SerialNumberInterface, Backend):
     """A mock motor board backend implementation."""
 
     environment = MockEnvironment
@@ -44,10 +45,14 @@ class MockMotorBoardBackend(MotorInterface, Backend):
         """Set the current state of a motor."""
         self._states[identifier] = power
 
+    def get_serial_number(self) -> str:
+        """Get the board's serial number."""
+        return "SERIAL0"
+
 
 def test_motor_board_required_interfaces() -> None:
     """Test the required interfaces on the motor board."""
-    assert MotorBoard.required_interfaces() == {MotorInterface}
+    assert MotorBoard.required_interfaces() == {MotorInterface, SerialNumberInterface}
 
 
 def test_motor_board_discover() -> None:
@@ -57,33 +62,33 @@ def test_motor_board_discover() -> None:
 
 def test_motor_board_instantiation() -> None:
     """Test that we can instantiate a Motor Board."""
-    MotorBoard("SERIAL0", MockMotorBoardBackend())
+    MotorBoard(MockMotorBoardBackend())
 
 
 def test_motor_board_firmware_version() -> None:
     """Test the firmware version on the motor board."""
-    mb = MotorBoard("SERIAL0", MockMotorBoardBackend())
+    mb = MotorBoard(MockMotorBoardBackend())
 
     assert mb.firmware_version is None
 
 
 def test_motor_board_name() -> None:
     """Test the name attribute of the motor board."""
-    mb = MotorBoard("SERIAL0", MockMotorBoardBackend())
+    mb = MotorBoard(MockMotorBoardBackend())
 
     assert mb.name == "Student Robotics v4 Motor Board"
 
 
 def test_motor_board_serial() -> None:
     """Test the serial attribute of the motor board."""
-    mb = MotorBoard("SERIAL0", MockMotorBoardBackend())
+    mb = MotorBoard(MockMotorBoardBackend())
 
     assert mb.serial == "SERIAL0"
 
 
 def test_motor_board_make_safe() -> None:
     """Test the make_safe method of the motor board."""
-    mb = MotorBoard("SERIAL0", MockMotorBoardBackend())
+    mb = MotorBoard(MockMotorBoardBackend())
 
     for m in mb.motors:
         m.power = 1
@@ -96,7 +101,7 @@ def test_motor_board_make_safe() -> None:
 
 def test_motor_board_motors() -> None:
     """Test the motor_outputs on the motor board."""
-    mb = MotorBoard("SERIAL0", MockMotorBoardBackend())
+    mb = MotorBoard(MockMotorBoardBackend())
 
     for m in mb.motors:
         assert type(m) is Motor

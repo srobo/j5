@@ -4,12 +4,17 @@ from typing import List, Optional, Set
 from j5.backends import Backend, Environment
 from j5.boards import Board
 from j5.boards.sr.v4 import ServoBoard
-from j5.components.servo import Servo, ServoInterface, ServoPosition
+from j5.components import (
+    SerialNumberInterface,
+    Servo,
+    ServoInterface,
+    ServoPosition,
+)
 
 MockEnvironment = Environment("MockEnvironment")
 
 
-class MockServoBoardBackend(ServoInterface, Backend):
+class MockServoBoardBackend(ServoInterface, SerialNumberInterface, Backend):
     """A mock servo board backend implementation."""
 
     environment = MockEnvironment
@@ -39,10 +44,14 @@ class MockServoBoardBackend(ServoInterface, Backend):
         """Set the position of a servo."""
         self._positions[identifier] = position
 
+    def get_serial_number(self) -> str:
+        """Get the serial number."""
+        return "SERIAL0"
+
 
 def test_servo_board_required_interfaces() -> None:
     """Test the required interfaces on the servo board."""
-    assert ServoBoard.required_interfaces() == {ServoInterface}
+    assert ServoBoard.required_interfaces() == {ServoInterface, SerialNumberInterface}
 
 
 def test_servo_board_discover() -> None:
@@ -52,39 +61,39 @@ def test_servo_board_discover() -> None:
 
 def test_servo_board_instantiation() -> None:
     """Test that we can instantiate a servo board."""
-    ServoBoard("SERIAL0", MockServoBoardBackend())
+    ServoBoard(MockServoBoardBackend())
 
 
 def test_servo_board_name() -> None:
     """Test the name attribute of the servo board."""
-    sb = ServoBoard("SERIAL0", MockServoBoardBackend())
+    sb = ServoBoard(MockServoBoardBackend())
 
     assert sb.name == "Student Robotics v4 Servo Board"
 
 
 def test_servo_board_firmware_version() -> None:
     """Test the firmware version on the servo board."""
-    sb = ServoBoard("SERIAL0", MockServoBoardBackend())
+    sb = ServoBoard(MockServoBoardBackend())
 
     assert sb.firmware_version is None
 
 
 def test_servo_board_serial() -> None:
     """Test the serial attribute of the servo board."""
-    sb = ServoBoard("SERIAL0", MockServoBoardBackend())
+    sb = ServoBoard(MockServoBoardBackend())
 
     assert sb.serial == "SERIAL0"
 
 
 def test_servo_board_make_safe() -> None:
     """Test the make_safe method of the servo board."""
-    sb = ServoBoard("SERIAL0", MockServoBoardBackend())
+    sb = ServoBoard(MockServoBoardBackend())
 
     sb.make_safe()
 
 
 def test_servo_board_servos() -> None:
     """Test the servos on the servo board."""
-    sb = ServoBoard("SERIAL0", MockServoBoardBackend())
+    sb = ServoBoard(MockServoBoardBackend())
 
     assert all(type(s) is Servo for s in sb.servos)

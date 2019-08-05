@@ -18,6 +18,7 @@ from j5.components import (
     PowerOutput,
     PowerOutputGroup,
     PowerOutputInterface,
+    SerialNumberInterface,
 )
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -44,8 +45,7 @@ class PowerBoard(Board):
 
     name: str = "Student Robotics v4 Power Board"
 
-    def __init__(self, serial: str, backend: Backend):
-        self._serial = serial
+    def __init__(self, backend: Backend):
         self._backend = backend
 
         self._outputs: Mapping[PowerOutputPosition, PowerOutput] = {
@@ -70,7 +70,7 @@ class PowerBoard(Board):
     @property
     def serial(self) -> str:
         """Get the serial number."""
-        return self._serial
+        return cast("SerialNumberInterface", self._backend).get_serial_number()
 
     @property
     def firmware_version(self) -> Optional[str]:
@@ -128,4 +128,5 @@ class PowerBoard(Board):
             ButtonInterface,
             BatterySensorInterface,
             LEDInterface,
+            SerialNumberInterface,
         }

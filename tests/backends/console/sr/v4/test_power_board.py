@@ -42,7 +42,7 @@ def test_backend_serial_number() -> None:
     """Test that we can get the serial number."""
     backend = SRV4PowerBoardConsoleBackend("TestBoard")
 
-    assert backend.serial == "TestBoard"
+    assert backend.get_serial_number() == "TestBoard"
 
 
 def test_backend_get_power_output_enabled() -> None:

@@ -6,11 +6,17 @@ from j5.backends import Backend
 from j5.backends.console import Console, ConsoleEnvironment
 from j5.boards import Board
 from j5.boards.sr.v4.motor_board import MotorBoard
-from j5.components.motor import MotorInterface, MotorSpecialState, MotorState
+from j5.components import (
+    MotorInterface,
+    MotorSpecialState,
+    MotorState,
+    SerialNumberInterface,
+)
 
 
 class SRV4MotorBoardConsoleBackend(
     MotorInterface,
+    SerialNumberInterface,
     Backend,
 ):
     """The console implementation of the SR v4 motor board."""
@@ -35,8 +41,7 @@ class SRV4MotorBoardConsoleBackend(
         # Setup console helper
         self._console = console_class(f"{self.board.__name__}({self._serial})")
 
-    @property
-    def serial(self) -> str:
+    def get_serial_number(self) -> str:
         """The serial number reported by the board."""
         return self._serial
 

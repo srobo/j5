@@ -13,6 +13,7 @@ from j5.components import (
     LEDInterface,
     PiezoInterface,
     PowerOutputInterface,
+    SerialNumberInterface,
 )
 
 
@@ -22,6 +23,7 @@ class SRV4PowerBoardConsoleBackend(
     ButtonInterface,
     BatterySensorInterface,
     LEDInterface,
+    SerialNumberInterface,
     Backend,
 ):
     """The console implementation of the SR V4 power board."""
@@ -53,8 +55,7 @@ class SRV4PowerBoardConsoleBackend(
         """The firmware version reported by the board."""
         return None  # Console, so no firmware
 
-    @property
-    def serial(self) -> str:
+    def get_serial_number(self) -> str:
         """The serial number reported by the board."""
         return self._serial
 
