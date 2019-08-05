@@ -1,10 +1,12 @@
 """Tests for the SourceBots Arduino and related classes."""
 
+from datetime import timedelta
 from typing import TYPE_CHECKING, Optional, Set
 
 from j5.backends import Backend, Environment
 from j5.boards.sb import AnaloguePin, SBArduinoBoard
 from j5.components import GPIOPin, GPIOPinInterface, GPIOPinMode, LEDInterface
+from j5.components.derived import UltrasoundInterface, UltrasoundSensor
 
 if TYPE_CHECKING:
     from j5.boards import Board  # noqa
@@ -16,6 +18,7 @@ MockEnvironment = Environment("MockEnvironment")
 class MockSBArduinoBackend(
     GPIOPinInterface,
     LEDInterface,
+    UltrasoundInterface,
     Backend,
 ):
     """Mock Backend for testing the Arduino Uno."""
@@ -62,6 +65,22 @@ class MockSBArduinoBackend(
     def set_led_state(self, identifier: int, state: bool) -> None:
         """Set the state of the LED."""
         self.write_gpio_pin_digital_state(13, state)
+
+    def get_ultrasound_pulse(
+        self,
+        trigger_pin_identifier: int,
+        echo_pin_identifier: int,
+    ) -> Optional[timedelta]:
+        """Get a timedelta for the ultrasound time."""
+        return timedelta(milliseconds=3)
+
+    def get_ultrasound_distance(
+        self,
+        trigger_pin_identifier: int,
+        echo_pin_identifier: int,
+    ) -> Optional[float]:
+        """Get a distance in metres."""
+        return 1.0
 
     @classmethod
     def discover(cls) -> Set['Board']:
@@ -122,3 +141,12 @@ def test_uno_pins() -> None:
 
     for j in AnaloguePin:
         assert type(uno.pins[j]) is GPIOPin
+
+
+def test_uno_ultrasound_sensors() -> None:
+    """Test the ultrasound sensors of the arduino."""
+    uno = SBArduinoBoard("SERIAL0", MockSBArduinoBackend())
+    sensor = uno.ultrasound_sensors[3, 4]
+    assert type(sensor) is UltrasoundSensor
+    assert sensor._gpio_trigger._identifier == 3
+    assert sensor._gpio_echo._identifier == 4

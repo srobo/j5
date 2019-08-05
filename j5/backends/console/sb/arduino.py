@@ -1,4 +1,5 @@
 """Console Backend for the SourceBots Arduino."""
+from datetime import timedelta
 from typing import Mapping, Optional, Set, Type
 
 from j5.backends import Backend
@@ -6,6 +7,7 @@ from j5.backends.console import Console, ConsoleEnvironment
 from j5.boards import Board
 from j5.boards.sb import SBArduinoBoard
 from j5.components import GPIOPinInterface, GPIOPinMode, LEDInterface
+from j5.components.derived import UltrasoundInterface
 
 
 class PinData:
@@ -19,7 +21,12 @@ class PinData:
         self.digital_state = digital_state
 
 
-class SBArduinoConsoleBackend(GPIOPinInterface, LEDInterface, Backend):
+class SBArduinoConsoleBackend(
+    GPIOPinInterface,
+    LEDInterface,
+    UltrasoundInterface,
+    Backend,
+):
     """Console Backend for the SourceBots Arduino."""
 
     environment = ConsoleEnvironment
@@ -111,3 +118,45 @@ class SBArduinoConsoleBackend(GPIOPinInterface, LEDInterface, Backend):
         if identifier != 0:
             raise ValueError("Arduino Uno only has LED 0 (digital pin 13)")
         self.write_gpio_pin_digital_state(13, state)
+
+    def get_ultrasound_pulse(
+            self,
+            trigger_pin_identifier: int,
+            echo_pin_identifier: int,
+    ) -> Optional[timedelta]:
+        """
+        Get a timedelta for the ultrasound time.
+
+        Returns None if the sensor times out.
+        """
+        microseconds = self._console.read(
+            f"Response time for ultrasound sensor on pins "
+            f"{trigger_pin_identifier}/{echo_pin_identifier} [microseconds]",
+            float,
+        )
+        self._update_ultrasound_pin_modes(trigger_pin_identifier, echo_pin_identifier)
+        return timedelta(microseconds=microseconds)
+
+    def get_ultrasound_distance(
+            self,
+            trigger_pin_identifier: int,
+            echo_pin_identifier: int,
+    ) -> Optional[float]:
+        """Get a distance in metres."""
+        metres = self._console.read(
+            f"Distance for ultrasound sensor on pins "
+            f"{trigger_pin_identifier}/{echo_pin_identifier} [metres]",
+            float,
+        )
+        self._update_ultrasound_pin_modes(trigger_pin_identifier, echo_pin_identifier)
+        return metres
+
+    def _update_ultrasound_pin_modes(
+        self,
+        trigger_pin_identifier: int,
+        echo_pin_identifier: int,
+    ) -> None:
+        # Ultrasound functions force the pins into particular modes.
+        self._pins[trigger_pin_identifier].mode = GPIOPinMode.DIGITAL_OUTPUT
+        self._pins[trigger_pin_identifier].digital_state = False
+        self._pins[echo_pin_identifier].mode = GPIOPinMode.DIGITAL_INPUT

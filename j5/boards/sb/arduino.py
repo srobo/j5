@@ -1,6 +1,6 @@
 """Classes for the SourceBots Arduino."""
 from enum import IntEnum
-from typing import Mapping, Optional, Set, Type, Union, cast
+from typing import Mapping, Optional, Set, Tuple, Type, Union, cast
 
 from j5.backends import Backend
 from j5.boards import Board
@@ -12,6 +12,7 @@ from j5.components import (
     GPIOPinMode,
     LEDInterface,
 )
+from j5.components.derived import UltrasoundInterface, UltrasoundSensor
 
 
 class AnaloguePin(IntEnum):
@@ -54,6 +55,7 @@ class SBArduinoBoard(Board):
                     GPIOPinMode.DIGITAL_INPUT_PULLUP,
                     GPIOPinMode.DIGITAL_OUTPUT,
                 },
+                firmware_modes={UltrasoundSensor},
             )
             for i in range(2, 14)
         }
@@ -72,6 +74,8 @@ class SBArduinoBoard(Board):
             )
             for i in AnaloguePin
         }
+
+        self.ultrasound_sensors = UltrasoundSensors(self)
 
     @property
     def serial(self) -> str:
@@ -103,4 +107,27 @@ class SBArduinoBoard(Board):
         return {
             GPIOPin,
             LED,
+            UltrasoundSensor,
         }
+
+
+class UltrasoundSensors:
+    """
+    Helper class for constructing UltrasoundSensor objects on the fly.
+
+    This exists so that arduino.ultrasound_sensors can be accessed using square bracket
+    notation like a mapping, for consistency with how other types of component are
+    accessed.
+    """
+
+    def __init__(self, arduino: SBArduinoBoard):
+        self._arduino = arduino
+
+    def __getitem__(self, key: Tuple[PinNumber, PinNumber]) -> UltrasoundSensor:
+        """Get an ultrasound sensor with the given pin configuration."""
+        trigger_pin, echo_pin = key
+        return UltrasoundSensor(
+            gpio_trigger=self._arduino.pins[trigger_pin],
+            gpio_echo=self._arduino.pins[echo_pin],
+            backend=cast(UltrasoundInterface, self._arduino._backend),
+        )

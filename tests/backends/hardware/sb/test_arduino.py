@@ -1,5 +1,6 @@
 """Tests for the SourceBots Arduino hardware implementation."""
 
+from datetime import timedelta
 from math import isclose
 from typing import Optional, cast
 
@@ -332,3 +333,105 @@ def test_backend_read_analogue_requires_analogue_pin() -> None:
     backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)
     with pytest.raises(NotSupportedByHardwareError):
         backend.read_gpio_pin_analogue_value(13)
+
+
+def test_ultrasound_pulse() -> None:
+    """Test that we can read an ultrasound pulse time."""
+    backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)
+    serial = cast(SBArduinoSerial, backend._serial)
+    serial.check_data_sent_by_constructor()
+
+    serial.append_received_data(b"> 2345\n")
+    duration = backend.get_ultrasound_pulse(3, 4)
+    serial.check_sent_data(b"T 3 4\n")
+    assert duration == timedelta(microseconds=2345)
+
+    # Check backend updated its view of what modes the pins are in now.
+    assert backend.get_gpio_pin_mode(3) is GPIOPinMode.DIGITAL_OUTPUT
+    assert backend.get_gpio_pin_digital_state(3) is False
+    assert backend.get_gpio_pin_mode(4) is GPIOPinMode.DIGITAL_INPUT
+
+    serial.check_all_received_data_consumed()
+
+
+def test_ultrasound_pulse_on_same_pin() -> None:
+    """Test same pin for trigger and echo."""
+    backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)
+    serial = cast(SBArduinoSerial, backend._serial)
+    serial.check_data_sent_by_constructor()
+
+    serial.append_received_data(b"> 2345\n")
+    duration = backend.get_ultrasound_pulse(3, 3)
+    serial.check_sent_data(b"T 3 3\n")
+    assert duration == timedelta(microseconds=2345)
+
+    # Check backend updated its view of what modes the pins are in now.
+    assert backend.get_gpio_pin_mode(3) is GPIOPinMode.DIGITAL_INPUT
+
+    serial.check_all_received_data_consumed()
+
+
+def test_ultrasound_pulse_timeout() -> None:
+    """Test that None is returned upon a timeout occurring."""
+    backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)
+    serial = cast(SBArduinoSerial, backend._serial)
+    serial.check_data_sent_by_constructor()
+
+    serial.append_received_data(b"> 0\n")
+    duration = backend.get_ultrasound_pulse(3, 4)
+    serial.check_sent_data(b"T 3 4\n")
+    assert duration is None
+
+    serial.check_all_received_data_consumed()
+
+
+def test_ultrasound_distance() -> None:
+    """Test that we can read an ultrasound distance."""
+    backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)
+    serial = cast(SBArduinoSerial, backend._serial)
+    serial.check_data_sent_by_constructor()
+
+    serial.append_received_data(b"> 1230\n")
+    metres = backend.get_ultrasound_distance(3, 4)
+    serial.check_sent_data(b"U 3 4\n")
+    assert metres is not None
+    assert isclose(metres, 1.23)
+
+    # Check backend updated its view of what modes the pins are in now.
+    assert backend.get_gpio_pin_mode(3) is GPIOPinMode.DIGITAL_OUTPUT
+    assert backend.get_gpio_pin_digital_state(3) is False
+    assert backend.get_gpio_pin_mode(4) is GPIOPinMode.DIGITAL_INPUT
+
+    serial.check_all_received_data_consumed()
+
+
+def test_ultrasound_distance_on_same_pin() -> None:
+    """Test same pin for trigger and echo."""
+    backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)
+    serial = cast(SBArduinoSerial, backend._serial)
+    serial.check_data_sent_by_constructor()
+
+    serial.append_received_data(b"> 1230\n")
+    metres = backend.get_ultrasound_distance(3, 3)
+    serial.check_sent_data(b"U 3 3\n")
+    assert metres is not None
+    assert isclose(metres, 1.23)
+
+    # Check backend updated its view of what modes the pins are in now.
+    assert backend.get_gpio_pin_mode(3) is GPIOPinMode.DIGITAL_INPUT
+
+    serial.check_all_received_data_consumed()
+
+
+def test_ultrasound_distance_timeout() -> None:
+    """Test that None is returned upon a timeout occurring."""
+    backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)
+    serial = cast(SBArduinoSerial, backend._serial)
+    serial.check_data_sent_by_constructor()
+
+    serial.append_received_data(b"> 0\n")
+    metres = backend.get_ultrasound_distance(3, 4)
+    serial.check_sent_data(b"U 3 4\n")
+    assert metres is None
+
+    serial.check_all_received_data_consumed()

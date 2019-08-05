@@ -1,5 +1,8 @@
 """Tests for the SourceBots Arduino console backend."""
 
+from datetime import timedelta
+from math import isclose
+
 import pytest
 from tests.backends.console.helpers import MockConsole
 
@@ -238,3 +241,67 @@ def test_one_led() -> None:
 
     with pytest.raises(ValueError):
         backend.get_led_state(1)
+
+
+def test_ultrasound_pulse() -> None:
+    """Test that we can read an ultrasound pulse time."""
+    backend = SBArduinoConsoleBackend(
+        "TestBoard",
+        console_class=MockConsole,
+    )
+
+    backend._console.next_input = "2345"  # type: ignore
+    assert backend.get_ultrasound_pulse(3, 4) == timedelta(microseconds=2345)
+
+    # Check backend updated its view of what modes the pins are in now.
+    assert backend.get_gpio_pin_mode(3) is GPIOPinMode.DIGITAL_OUTPUT
+    assert backend.get_gpio_pin_digital_state(3) is False
+    assert backend.get_gpio_pin_mode(4) is GPIOPinMode.DIGITAL_INPUT
+
+
+def test_ultrasound_pulse_on_same_pin() -> None:
+    """Test same pin for trigger and echo."""
+    backend = SBArduinoConsoleBackend(
+        "TestBoard",
+        console_class=MockConsole,
+    )
+
+    backend._console.next_input = "2345"  # type: ignore
+    assert backend.get_ultrasound_pulse(3, 3) == timedelta(microseconds=2345)
+
+    # Check backend updated its view of what modes the pins are in now.
+    assert backend.get_gpio_pin_mode(3) is GPIOPinMode.DIGITAL_INPUT
+
+
+def test_ultrasound_distance() -> None:
+    """Test that we can read an ultrasound distance."""
+    backend = SBArduinoConsoleBackend(
+        "TestBoard",
+        console_class=MockConsole,
+    )
+
+    backend._console.next_input = "1.23"  # type: ignore
+    metres = backend.get_ultrasound_distance(3, 4)
+    assert metres is not None
+    assert isclose(metres, 1.23)
+
+    # Check backend updated its view of what modes the pins are in now.
+    assert backend.get_gpio_pin_mode(3) is GPIOPinMode.DIGITAL_OUTPUT
+    assert backend.get_gpio_pin_digital_state(3) is False
+    assert backend.get_gpio_pin_mode(4) is GPIOPinMode.DIGITAL_INPUT
+
+
+def test_ultrasound_distance_on_same_pin() -> None:
+    """Test same pin for trigger and echo."""
+    backend = SBArduinoConsoleBackend(
+        "TestBoard",
+        console_class=MockConsole,
+    )
+
+    backend._console.next_input = "1.23"  # type: ignore
+    metres = backend.get_ultrasound_distance(3, 3)
+    assert metres is not None
+    assert isclose(metres, 1.23)
+
+    # Check backend updated its view of what modes the pins are in now.
+    assert backend.get_gpio_pin_mode(3) is GPIOPinMode.DIGITAL_INPUT

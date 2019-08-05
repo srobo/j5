@@ -20,8 +20,8 @@ class UltrasoundInterface(Interface):
     @abstractmethod
     def get_ultrasound_pulse(
             self,
-            pin_trigger: int,
-            pin_echo: int,
+            trigger_pin_identifier: int,
+            echo_pin_identifier: int,
     ) -> Optional[timedelta]:
         """
         Get a timedelta for the ultrasound time.
@@ -33,8 +33,8 @@ class UltrasoundInterface(Interface):
     @abstractmethod
     def get_ultrasound_distance(
             self,
-            pin_trigger: int,
-            pin_echo: int,
+            trigger_pin_identifier: int,
+            echo_pin_identifier: int,
     ) -> Optional[float]:
         """Get a distance in metres."""
         raise NotImplementedError  # pragma: no cover
