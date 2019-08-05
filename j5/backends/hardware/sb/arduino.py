@@ -1,5 +1,6 @@
 """SourceBots Arduino Hardware Implementation."""
 
+from datetime import timedelta
 from typing import Callable, List, Mapping, Optional, Set, Tuple, Type
 
 from serial import Serial
@@ -18,6 +19,7 @@ from j5.backends.hardware.j5.serial import (
 from j5.boards import Board
 from j5.boards.sb.arduino import SBArduinoBoard
 from j5.components import GPIOPinInterface, GPIOPinMode, LEDInterface
+from j5.components.derived import UltrasoundInterface
 
 USB_IDS: Set[Tuple[int, int]] = {
     (0x2341, 0x0043),  # Fake Uno
@@ -47,6 +49,7 @@ class DigitalPinData:
 class SBArduinoHardwareBackend(
     LEDInterface,
     GPIOPinInterface,
+    UltrasoundInterface,
     SerialHardwareBackend,
 ):
     """
@@ -279,3 +282,71 @@ class SBArduinoHardwareBackend(
         if identifier != 0:
             raise ValueError("Arduino Uno only has LED 0 (digital pin 13)")
         self.write_gpio_pin_digital_state(13, state)
+
+    def get_ultrasound_pulse(
+        self,
+        trigger_pin_identifier: int,
+        echo_pin_identifier: int,
+    ) -> Optional[timedelta]:
+        """
+        Get a timedelta for the ultrasound time.
+
+        Returns None if the sensor times out.
+        """
+        self._check_ultrasound_pins(trigger_pin_identifier, echo_pin_identifier)
+        results = self._command("T", str(trigger_pin_identifier),
+                                str(echo_pin_identifier))
+        self._update_ultrasound_pin_modes(trigger_pin_identifier, echo_pin_identifier)
+        if len(results) != 1:
+            raise CommunicationError(f"Invalid response from Arduino: {results!r}")
+        result = results[0]
+        microseconds = float(result)
+        if microseconds == 0:
+            # arduino pulseIn() returned 0 which indicates a timeout.
+            return None
+        else:
+            return timedelta(microseconds=microseconds)
+
+    def get_ultrasound_distance(
+        self,
+        trigger_pin_identifier: int,
+        echo_pin_identifier: int,
+    ) -> Optional[float]:
+        """Get a distance in metres."""
+        self._check_ultrasound_pins(trigger_pin_identifier, echo_pin_identifier)
+        results = self._command("U", str(trigger_pin_identifier),
+                                str(echo_pin_identifier))
+        self._update_ultrasound_pin_modes(trigger_pin_identifier, echo_pin_identifier)
+        if len(results) != 1:
+            raise CommunicationError(f"Invalid response from Arduino: {results!r}")
+        result = results[0]
+        millimetres = float(result)
+        if millimetres == 0:
+            # arduino pulseIn() returned 0 which indicates a timeout.
+            return None
+        else:
+            return millimetres / 1000.0
+
+    def _check_ultrasound_pins(
+        self,
+        trigger_pin_identifier: int,
+        echo_pin_identifier: int,
+    ) -> None:
+        if trigger_pin_identifier >= FIRST_ANALOGUE_PIN:
+            raise NotSupportedByHardwareError(
+                "Ultrasound functions not supported on analogue pins",
+            )
+        if echo_pin_identifier >= FIRST_ANALOGUE_PIN:
+            raise NotSupportedByHardwareError(
+                "Ultrasound functions not supported on analogue pins",
+            )
+
+    def _update_ultrasound_pin_modes(
+        self,
+        trigger_pin_identifier: int,
+        echo_pin_identifier: int,
+    ) -> None:
+        # Ultrasound functions force the pins into particular modes.
+        self._digital_pins[trigger_pin_identifier].mode = GPIOPinMode.DIGITAL_OUTPUT
+        self._digital_pins[trigger_pin_identifier].state = False
+        self._digital_pins[echo_pin_identifier].mode = GPIOPinMode.DIGITAL_INPUT
