@@ -45,9 +45,9 @@ class MockMotorBoardBackend(MotorInterface, Backend):
         self._states[identifier] = power
 
 
-def test_motor_board_supported_components() -> None:
-    """Test the supported components on the motor board."""
-    assert MotorBoard.supported_components() == {Motor}
+def test_motor_board_required_interfaces() -> None:
+    """Test the required interfaces on the motor board."""
+    assert MotorBoard.required_interfaces() == {MotorInterface}
 
 
 def test_motor_board_discover() -> None:

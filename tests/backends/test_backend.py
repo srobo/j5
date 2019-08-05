@@ -6,10 +6,10 @@ import pytest
 
 from j5.backends import Backend, Environment
 from j5.boards import Board
-from j5.components import LED
+from j5.components import LEDInterface
 
 if TYPE_CHECKING:
-    from j5.components import Component  # noqa
+    from j5.components import Interface  # noqa
 
 
 class MockBoard(Board):
@@ -35,8 +35,8 @@ class MockBoard(Board):
         return None
 
     @staticmethod
-    def supported_components() -> Set[Type["Component"]]:
-        """List the types of component supported by this Board."""
+    def required_interfaces() -> Set[Type["Interface"]]:
+        """The interfaces that a backend for this board must implement."""
         return set()
 
 
@@ -63,8 +63,8 @@ class Mock2Board(Board):
         return None
 
     @staticmethod
-    def supported_components() -> Set[Type["Component"]]:
-        """List the types of component supported by this Board."""
+    def required_interfaces() -> Set[Type["Interface"]]:
+        """The interfaces that a backend for this board must implement."""
         return set()
 
 
@@ -192,9 +192,9 @@ def test_backend_has_required_interface() -> None:
             return None
 
         @staticmethod
-        def supported_components() -> Set[Type["Component"]]:
-            """List the types of component supported by this Board."""
-            return {LED}
+        def required_interfaces() -> Set[Type["Interface"]]:
+            """The interfaces that a backend for this board must implement."""
+            return {LEDInterface}
 
     with pytest.raises(TypeError):
         class BackendTwo(Backend):

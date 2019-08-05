@@ -6,10 +6,10 @@ from j5.backends import Backend
 from j5.boards import Board
 from j5.components import (
     LED,
-    Component,
     GPIOPin,
     GPIOPinInterface,
     GPIOPinMode,
+    Interface,
     LEDInterface,
 )
 from j5.components.derived import UltrasoundInterface, UltrasoundSensor
@@ -102,12 +102,12 @@ class SBArduinoBoard(Board):
         pass
 
     @staticmethod
-    def supported_components() -> Set[Type[Component]]:
-        """List the types of components supported by this board."""
+    def required_interfaces() -> Set[Type[Interface]]:
+        """The interfaces that a backend for this board must implement."""
         return {
-            GPIOPin,
-            LED,
-            UltrasoundSensor,
+            GPIOPinInterface,
+            LEDInterface,
+            UltrasoundInterface,
         }
 
 

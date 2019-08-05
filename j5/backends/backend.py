@@ -67,8 +67,8 @@ class BackendMeta(ABCMeta):
         and we want to make sure that the Backend implements
         them. This is a run-time type check.
         """
-        for component in cls.board.supported_components():
-            if not issubclass(cls, component.interface_class()):
+        for interface in cls.board.required_interfaces():
+            if not issubclass(cls, interface):
                 raise TypeError("The backend class doesn't have a required interface.")  # noqa: E501
 
 

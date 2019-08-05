@@ -19,7 +19,7 @@ from typing import (
 from j5.backends import Backend, CommunicationError
 
 if TYPE_CHECKING:  # pragma: nocover
-    from j5.components import Component  # noqa
+    from j5.components import Interface  # noqa
 
 
 class Board(metaclass=ABCMeta):
@@ -68,8 +68,8 @@ class Board(metaclass=ABCMeta):
 
     @staticmethod
     @abstractmethod
-    def supported_components() -> Set[Type['Component']]:
-        """The types of component supported by this board."""
+    def required_interfaces() -> Set[Type['Interface']]:
+        """The interfaces that a backend for this board must implement."""
         raise NotImplementedError  # pragma: no cover
 
     @staticmethod

@@ -4,7 +4,7 @@ from typing import Optional, Set, Type, cast
 
 from j5.backends import Backend
 from j5.boards import Board
-from j5.components import Component, MarkerCamera, MarkerCameraInterface
+from j5.components import Interface, MarkerCamera, MarkerCameraInterface
 
 
 class ZolotoCameraBoard(Board):
@@ -38,8 +38,6 @@ class ZolotoCameraBoard(Board):
         pass
 
     @staticmethod
-    def supported_components() -> Set[Type[Component]]:
-        """List the types of components supported by this board."""
-        return {
-            MarkerCamera,
-        }
+    def required_interfaces() -> Set[Type[Interface]]:
+        """The interfaces that a backend for this board must implement."""
+        return {MarkerCameraInterface}

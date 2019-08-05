@@ -40,9 +40,9 @@ class MockServoBoardBackend(ServoInterface, Backend):
         self._positions[identifier] = position
 
 
-def test_servo_board_supported_components() -> None:
-    """Test the supported components on the servo board."""
-    assert ServoBoard.supported_components() == {Servo}
+def test_servo_board_required_interfaces() -> None:
+    """Test the required interfaces on the servo board."""
+    assert ServoBoard.required_interfaces() == {ServoInterface}
 
 
 def test_servo_board_discover() -> None:

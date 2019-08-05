@@ -2,29 +2,26 @@
 
 from enum import Enum
 from time import sleep
-from typing import TYPE_CHECKING, Mapping, Optional, Set, cast
+from typing import TYPE_CHECKING, Mapping, Optional, Set, Type, cast
 
 from j5.backends import Backend
 from j5.boards import Board
 from j5.components import (
     LED,
     BatterySensor,
+    BatterySensorInterface,
     Button,
+    ButtonInterface,
+    LEDInterface,
     Piezo,
+    PiezoInterface,
     PowerOutput,
     PowerOutputGroup,
+    PowerOutputInterface,
 )
 
 if TYPE_CHECKING:  # pragma: no cover
-    from j5.components import (  # noqa: F401
-        Component,
-        ButtonInterface,
-        PowerOutputInterface,
-        PiezoInterface,
-        BatterySensorInterface,
-        LEDInterface,
-    )
-    from typing import Type  # noqa: F401
+    from j5.components import Interface  # noqa: F401
 
 
 class PowerOutputPosition(Enum):
@@ -123,6 +120,12 @@ class PowerBoard(Board):
         self._run_led.state = True
 
     @staticmethod
-    def supported_components() -> Set["Type[Component]"]:
-        """List the types of components supported by this board."""
-        return {PowerOutput, Piezo, Button, BatterySensor, LED}
+    def required_interfaces() -> Set[Type["Interface"]]:
+        """The interfaces that a backend for this board must implement."""
+        return {
+            PowerOutputInterface,
+            PiezoInterface,
+            ButtonInterface,
+            BatterySensorInterface,
+            LEDInterface,
+        }

@@ -6,9 +6,7 @@ from j5.boards import Board
 from j5.components.motor import Motor, MotorInterface, MotorSpecialState
 
 if TYPE_CHECKING:  # pragma: no cover
-    from j5.components import (  # noqa: F401
-        Component,
-    )
+    from j5.components import Interface  # noqa: F401
 
 
 class MotorBoard(Board):
@@ -47,6 +45,6 @@ class MotorBoard(Board):
             output.power = MotorSpecialState.BRAKE
 
     @staticmethod
-    def supported_components() -> Set[Type['Component']]:
-        """List the types of components supported by this board."""
-        return {Motor}
+    def required_interfaces() -> Set[Type["Interface"]]:
+        """The interfaces that a backend for this board must implement."""
+        return {MotorInterface}

@@ -7,7 +7,7 @@ from j5.backends import Backend, CommunicationError, Environment
 from j5.boards.board import Board, BoardGroup
 
 if TYPE_CHECKING:
-    from j5.components import Component  # noqa
+    from j5.components import Interface  # noqa
 
 
 class MockBoard(Board):
@@ -37,8 +37,8 @@ class MockBoard(Board):
         self._safe = True
 
     @staticmethod
-    def supported_components() -> Set[Type["Component"]]:
-        """List the types of component supported by this Board."""
+    def required_interfaces() -> Set[Type["Interface"]]:
+        """The interfaces that a backend for this board must implement."""
         return set()
 
 
