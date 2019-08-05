@@ -52,3 +52,18 @@ version number is greater than `0` should be considered to be stable and will un
 
 .. _`Semantic Versioning`: https://semver.org/
 .. _`Git Flow`: https://datasift.github.io/gitflow/IntroducingGitFlow.html
+
+Release Process
+---------------
+
+* Make a commit that bumps the version numbers in `j5/__init__.py` and `pyproject.toml` to the new version, and merge it
+  to master.
+* Ensure you have this commit checked out, then run `poetry publish --build` and follow the instructions. This publishes
+  the release to PyPI.
+* Go to https://github.com/j5api/j5/releases/new.
+* Tag version should be of the form "v0.7.3".
+* Title should be of the form "Release 0.7.3".
+* Enter a release description outlining the changes made since the previous release. `git log v0.7.2..master` might be
+  useful here.
+* Upload the artifacts that were built by `poetry publish --build` earlier. They can be found in the `dist` subdirectory.
+* Click publish!
