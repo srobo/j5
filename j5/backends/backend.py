@@ -1,6 +1,9 @@
 """The base classes for backends."""
 
+import inspect
+import logging
 from abc import ABCMeta, abstractmethod
+from functools import wraps
 from typing import TYPE_CHECKING, Dict, Optional, Set, Type
 
 if TYPE_CHECKING:  # pragma: nocover
@@ -15,6 +18,38 @@ class CommunicationError(Exception):
     specific exception is available, then that may be thrown instead, but it should
     inherit from this one.
     """
+
+
+def _wrap_method_with_logging(
+    backend_class: Type['Backend'],
+    method_name: str,
+    logger: logging.Logger,
+) -> None:
+    old_method = getattr(backend_class, method_name)
+    signature = inspect.signature(old_method)
+    @wraps(old_method)
+    def new_method(*args, **kwargs):  # type: ignore
+        retval = old_method(*args, **kwargs)
+        arg_map = signature.bind(*args, **kwargs).arguments
+        args_str = ", ".join(
+            f"{name}={value!r}"
+            for name, value in arg_map.items()
+            if name != "self"
+        )
+        retval_str = (f" -> {retval!r}" if retval is not None else "")
+        message = f"{method_name}({args_str}){retval_str}"
+        logger.debug(message)
+        return retval
+    setattr(backend_class, method_name, new_method)
+
+
+def _wrap_methods_with_logging(backend_class: Type['Backend']) -> None:
+    component_classes = backend_class.board.supported_components()  # type: ignore
+    for component_class in component_classes:
+        logger = logging.getLogger(component_class.__module__)
+        interface_class = component_class.interface_class()
+        for method_name in interface_class.__abstractmethods__:
+            _wrap_method_with_logging(backend_class, method_name, logger)
 
 
 class BackendMeta(ABCMeta):
@@ -43,6 +78,7 @@ class BackendMeta(ABCMeta):
                 mcs._check_component_interfaces(cls)
 
                 cls.environment.register_backend(cls.board, cls)
+                _wrap_methods_with_logging(cls)
                 return cls
 
         # The following line should never run, as _check_compatibility should fail first.
