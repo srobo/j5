@@ -4,6 +4,7 @@ from datetime import timedelta
 from time import sleep
 
 import j5.backends.hardware.sb.arduino  # noqa: F401
+import j5.backends.hardware.sr.v4.power_board  # noqa: F401
 from j5 import BaseRobot, BoardGroup
 from j5.backends.hardware import HardwareEnvironment
 from j5.boards.sb.arduino import SBArduinoBoard
