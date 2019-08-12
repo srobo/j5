@@ -34,6 +34,7 @@ class BaseRobot:
         if not hasattr(self, '_lock'):
 
             self._lock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self._lock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
             try:
                 self._lock.bind(('localhost', lock_port))
