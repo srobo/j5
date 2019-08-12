@@ -43,6 +43,9 @@ class BaseRobot:
                     Are you trying to create more than one Robot object?",
                 ) from None
 
+            # We have no need to listen on the socket - we just bind to claim the address
+            # and prevent another process using it.
+
         lock_details = self._lock.getsockname()
         if lock_details[1] != lock_port:
             raise OSError("Socket for lock is on the wrong port.")
