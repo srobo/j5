@@ -46,3 +46,14 @@ def test_usb_error_handler_decorator() -> None:
 
     with pytest.raises(USBCommunicationError):
         test_func()
+
+
+def test_usb_error_handler_decorator_for_servo_board_power() -> None:
+    """Test that the handle_usb_error decorator works."""
+    @handle_usb_error
+    def test_func() -> None:
+        raise usb.core.USBError("Test", errno=110)
+
+    regex = r".*are you sure the servo board is being correctly powered.*"
+    with pytest.raises(USBCommunicationError, match=regex):
+        test_func()

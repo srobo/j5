@@ -25,7 +25,15 @@ class Device:
     ) -> bytes: ...
 
 class USBError(Exception):
+    errno: int
     strerror: str
+
+    def __init__(
+        self,
+        strerror: str,
+        error_code: Optional[int] = None,
+        errno: Optional[int] = None,
+    ): ...
 
 def find(
         find_all: bool = False,
