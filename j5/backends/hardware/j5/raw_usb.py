@@ -53,6 +53,8 @@ class USBCommunicationError(CommunicationError):
         message = usb_error.strerror
         if usb_error.errno == 110:  # "operation timed out"
             message += "; are you sure the servo board is being correctly powered?"
+        elif usb_error.errno == 32:  # pipe error
+            message += "; are you sending buzz commands to the power board too quickly?"
         super().__init__(message)
 
 
