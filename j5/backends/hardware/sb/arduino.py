@@ -89,6 +89,7 @@ class SBArduinoHardwareBackend(
             serial_port=serial_port,
             serial_class=serial_class,
             baud=115200,
+            timeout=timedelta(milliseconds=1250),
         )
 
         self._digital_pins: Mapping[int, DigitalPinData] = {
