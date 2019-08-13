@@ -26,7 +26,7 @@ class MockSerial:
         assert parity == 'N'
         assert stopbits == 1
         assert timeout is not None
-        assert 0.1 <= timeout <= 0.3  # Acceptable range of timeouts
+        assert 0.1 <= timeout <= 1.5  # Acceptable range of timeouts
 
     def close(self) -> None:
         """Close the serial port."""
