@@ -72,7 +72,7 @@ def handle_usb_error(func: Callable[..., RT]) -> Callable[..., RT]:  # type: ign
         try:
             return func(*args, **kwargs)
         except usb.core.USBError as e:
-            raise USBCommunicationError(e)
+            raise USBCommunicationError(e) from e
     return catch_exceptions
 
 
