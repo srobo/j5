@@ -50,7 +50,10 @@ class USBCommunicationError(CommunicationError):
     """An error occurred during USB communication."""
 
     def __init__(self, usb_error: usb.core.USBError) -> None:
-        super().__init__(usb_error.strerror)
+        message = usb_error.strerror
+        if usb_error.errno == 110:  # "operation timed out"
+            message += "; are you sure the servo board is being correctly powered?"
+        super().__init__(message)
 
 
 RT = TypeVar('RT')

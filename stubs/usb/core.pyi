@@ -25,6 +25,7 @@ class Device:
     ) -> bytes: ...
 
 class USBError(Exception):
+    errno: int
     strerror: str
 
 def find(
