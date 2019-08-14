@@ -1,8 +1,12 @@
 """The base classes for boards and group of boards."""
 
 import atexit
+import logging
+import os
+import signal
 from abc import ABCMeta, abstractmethod
 from collections import OrderedDict
+from types import FrameType
 from typing import (
     TYPE_CHECKING,
     Dict,
@@ -20,6 +24,14 @@ from j5.backends import Backend, CommunicationError
 
 if TYPE_CHECKING:  # pragma: nocover
     from j5.components import Component  # noqa
+    from typing import Callable, Union
+
+    SignalHandler = Union[
+        Callable[[signal.Signals, FrameType], None],
+        int,
+        signal.Handlers,
+        None,
+    ]
 
 
 class Board(metaclass=ABCMeta):
@@ -73,12 +85,32 @@ class Board(metaclass=ABCMeta):
         raise NotImplementedError  # pragma: no cover
 
     @staticmethod
-    @atexit.register
     def make_all_safe() -> None:
         """Make all boards safe."""
         for board in Board.BOARDS:
             board.make_safe()
 
+    @staticmethod
+    def _make_all_safe_at_exit() -> None:
+        # Register make_all_safe to be called upon normal program termination.
+        atexit.register(Board.make_all_safe)
+
+        # Register make_all_safe to be called when a termination signal is received.
+        old_signal_handlers: Dict[signal.Signals, SignalHandler] = {}
+
+        def new_signal_handler(signal_type: signal.Signals, frame: FrameType) -> None:
+            logging.getLogger(__name__).error("program terminated prematurely")
+            Board.make_all_safe()
+            # Do what the signal originally would have done.
+            signal.signal(signal_type, old_signal_handlers[signal_type])
+            os.kill(0, signal_type)  # 0 = current process
+
+        for signal_type in (signal.SIGHUP, signal.SIGINT, signal.SIGTERM):
+            old_signal_handler = signal.signal(signal_type, new_signal_handler)
+            old_signal_handlers[signal_type] = old_signal_handler
+
+
+Board._make_all_safe_at_exit()
 
 T = TypeVar('T', bound='Board')
 
