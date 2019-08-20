@@ -5,14 +5,14 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/54e440aba5a51c9ee133/maintainability)](https://codeclimate.com/github/j5api/j5/maintainability)
 [![Documentation Status](https://readthedocs.org/projects/j5/badge/?version=master)](https://j5.readthedocs.io/en/master/?badge=master)
 [![PyPI version](https://badge.fury.io/py/j5.svg)](https://badge.fury.io/py/j5)
-[![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](http://opensource.org/licenses/MIT)
+[![MIT license](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://opensource.org/licenses/MIT)
 ![Bees](https://img.shields.io/badge/bees-110%25-yellow.svg)
 
-j5 Robotics API - Currently under development.
+j5 Framework - Creating consistent APIs for robotics
 
 ## What is j5?
 
-`j5` is a Python 3 library that aims to abstract away robotics hardware and provide a consistent API for robotics. It was created to reduce the replication of effort into developing the separate, yet very similar APIs for several robotics competitions. Combining the API into a single library with support for various hardware gives a consistent feel for students and volunteers. This means more time to work on building robots!
+`j5` is a Python 3 framework that aims to make building consistent APIs for robotics easier. It was created to reduce the replication of effort into developing the separate, yet very similar APIs for several robotics competitions. Combining the common elements into a single library with support for various hardware gives a consistent feel for students and volunteers. This means more time to work on building robots!
 
 ## How do I use j5?
 
@@ -58,13 +58,15 @@ class Robot:
 
 We intend to support the kits of the following robotics competitions:
 
-- [SourceBots](https://sourcebots.co.uk/)
+- [SourceBots Summer School](https://sourcebots.co.uk/)
 - [Student Robotics](https://studentrobotics.org/)
 - [Hills Road RoboCon](https://hr-robocon.org/)
 
 Whilst `j5` isn't officially endorsed by Student Robotics or RoboCon, we are working closely with Student Robotics to ensure perfect compatibility. Many `j5` contributors are members of Student Robotics and SourceBots.
 
-If you are interested in adding support for your hardware, please get in touch.
+[sbot](https://github.com/sourcebots/sbot), a `j5` based API, was successfully deployed to over 100 users in August 2019. This is the first known case of a real-world deployment of a `j5` based API.
+
+If you are interested in adding support for your hardware or building your own API, please get in touch.
 
 ## Contributions
 
