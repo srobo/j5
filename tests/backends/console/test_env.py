@@ -54,3 +54,31 @@ def test_console_read_none_type() -> None:
 
     console = Console("TestBoard", input_function=mock_input)
     assert console.read("Enter test input", None) is None
+
+
+BAD_ATTEMPT_COUNT = 0
+
+
+def test_console_read_bad_type() -> None:
+    """Test that the console emits an error if it cannot cast to the desired type."""
+    def mock_input(prompt: str) -> str:
+        """Mock some input."""
+        global BAD_ATTEMPT_COUNT
+        if BAD_ATTEMPT_COUNT == 0:
+            BAD_ATTEMPT_COUNT += 1
+            return "Not an int"
+        return "6"
+
+    def mock_print(text: str) -> None:
+        """Mock printing function."""
+        global BAD_ATTEMPT_COUNT
+        if BAD_ATTEMPT_COUNT == 0:
+            assert text == "TestConsole: Unable to construct a int from 'Not an int'"
+
+    console = Console(
+        "TestConsole",
+        print_function=mock_print,
+        input_function=mock_input,
+    )
+
+    assert console.read("I want an int", int) == 6
