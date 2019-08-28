@@ -33,9 +33,9 @@ def handle_serial_error(func: Callable[..., RT]) -> Callable[..., RT]:  # type: 
         try:
             return func(*args, **kwargs)
         except SerialTimeoutException as e:
-            raise CommunicationError(f"Serial Timeout Error: {e}")
+            raise CommunicationError(f"Serial Timeout Error: {e}") from e
         except SerialException as e:
-            raise CommunicationError(f"Serial Error: {e}")
+            raise CommunicationError(f"Serial Error: {e}") from e
     return catch_exceptions
 
 
