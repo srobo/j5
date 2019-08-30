@@ -207,4 +207,4 @@ class GPIOPin(Component):
     @firmware_modes.setter
     def firmware_modes(self, modes: Set[FirmwareMode]) -> None:
         """Set the supported firmware modes."""
-        self.firmware_modes = modes
+        self._firmware_modes = modes
