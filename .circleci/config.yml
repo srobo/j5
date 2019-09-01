@@ -38,3 +38,7 @@ jobs:
     <<: *template
     docker:
       - image: j5api/ci:3.7
+  test-3.8:
+    <<: *template
+    docker:
+      - image: j5api/ci:3.8
