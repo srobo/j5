@@ -56,29 +56,32 @@ def test_console_read_none_type() -> None:
     assert console.read("Enter test input", None) is None
 
 
-BAD_ATTEMPT_COUNT = 0
-
-
 def test_console_read_bad_type() -> None:
     """Test that the console emits an error if it cannot cast to the desired type."""
-    def mock_input(prompt: str) -> str:
-        """Mock some input."""
-        global BAD_ATTEMPT_COUNT
-        if BAD_ATTEMPT_COUNT == 0:
-            BAD_ATTEMPT_COUNT += 1
-            return "Not an int"
-        return "6"
+    class MockConsoleState:
+        """A mock console with state."""
 
-    def mock_print(text: str) -> None:
-        """Mock printing function."""
-        global BAD_ATTEMPT_COUNT
-        if BAD_ATTEMPT_COUNT == 0:
-            assert text == "TestConsole: Unable to construct a int from 'Not an int'"
+        def __init__(self) -> None:
+            self.bad_attempt_count = 0
+
+        def input(self, prompt: str) -> str:
+            """Mock some input."""
+            if self.bad_attempt_count == 0:
+                self.bad_attempt_count += 1
+                return "Not an int"
+            return "6"
+
+        def print(self, text: str) -> None:
+            """Mock printing function."""
+            if self.bad_attempt_count == 0:
+                assert text == "TestConsole: Unable to construct a int from 'Not an int'"
+
+    mock = MockConsoleState()
 
     console = Console(
         "TestConsole",
-        print_function=mock_print,
-        input_function=mock_input,
+        print_function=mock.print,
+        input_function=mock.input,
     )
 
     assert console.read("I want an int", int) == 6
