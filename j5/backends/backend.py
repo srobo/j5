@@ -4,7 +4,7 @@ import inspect
 import logging
 from abc import ABCMeta, abstractmethod
 from functools import wraps
-from typing import TYPE_CHECKING, Dict, Optional, Set, Type
+from typing import TYPE_CHECKING, Dict, Optional, Set, Type, cast
 
 if TYPE_CHECKING:  # pragma: nocover
     from j5.boards import Board  # noqa
@@ -71,29 +71,10 @@ class BackendMeta(ABCMeta):
         if len(cls.__bases__) == 1 and cls.__base__.__name__ != "Backend":
             return cls
 
-        if hasattr(cls, "environment"):
-            if cls.environment is not None and cls.board is not None:
+        mcs._check_component_interfaces(cls)
+        _wrap_methods_with_logging(cls)
 
-                mcs._check_compatibility(cls)
-                mcs._check_component_interfaces(cls)
-
-                cls.environment.register_backend(cls.board, cls)
-                _wrap_methods_with_logging(cls)
-                return cls
-
-        # The following line should never run, as _check_compatibility should fail first.
-        raise RuntimeError(  # pragma: nocover
-            f"The {str(cls)} has no environment attribute",
-        )
-
-    def _check_compatibility(cls):  # type: ignore
-        """Check that the backend and environment are compatible."""
-        if type(cls.environment) != Environment:
-            raise ValueError("The environment must be of type Environment.")
-
-        if cls.board in cls.environment.supported_boards:
-            raise RuntimeError(
-                "You cannot register multiple backends for the same board in the same Environment.")  # noqa: E501
+        return cls
 
     def _check_component_interfaces(cls):  # type: ignore
         """
@@ -131,12 +112,6 @@ class Backend(metaclass=BackendMeta):
 
     @property
     @abstractmethod
-    def environment(self) -> 'Environment':
-        """Environment the backend belongs too."""
-        raise NotImplementedError  # pragma: no cover
-
-    @property
-    @abstractmethod
     def board(self) -> Type['Board']:
         """Type of board this backend implements."""
         raise NotImplementedError  # pragma: no cover
@@ -152,7 +127,8 @@ class Environment:
     """
     A collection of board implementations that can work together.
 
-    Auto-populated with board mappings using metaclass magic.
+    Backends must be manually registered, but can this is a useful mechanism
+    for API authors to group different backend types.
     """
 
     def __init__(self, name: str):
@@ -161,16 +137,20 @@ class Environment:
 
     @property
     def supported_boards(self) -> Set[Type['Board']]:
-        """The boards that are supported by this backend group."""
+        """The boards that are supported by this environment."""
         return set(self.board_backend_mapping.keys())
 
     def __str__(self) -> str:
         """Get a string representation of this group."""
         return self.name
 
-    def register_backend(self, board: Type['Board'], backend: Type[Backend]) -> None:
-        """Register a new backend with this Backend Group."""
-        self.board_backend_mapping[board] = backend
+    def register_backend(self, backend: Type[Backend]) -> None:
+        """Register a new backend with this environment."""
+        board_type: Type['Board'] = cast(Type['Board'], backend.board)
+        if board_type in self.board_backend_mapping.keys():
+            raise RuntimeError(f"Attempted to register multiple backends for"
+                               f" {board_type.__name__} in the same environment.")
+        self.board_backend_mapping[board_type] = backend
 
     def get_backend(self, board: Type['Board']) -> Type[Backend]:
         """Get the backend for a board."""
