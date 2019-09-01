@@ -2,10 +2,6 @@
 
 from typing import Callable, Optional, Type, TypeVar
 
-from j5.backends import Environment
-
-ConsoleEnvironment = Environment("ConsoleEnvironment")
-
 T = TypeVar("T")
 
 

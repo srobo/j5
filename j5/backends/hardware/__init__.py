@@ -1,8 +1,7 @@
 """Backends for the hardware environment."""
 
-from .env import HardwareEnvironment, NotSupportedByHardwareError
+from .env import NotSupportedByHardwareError
 
 __all__ = [
-    "HardwareEnvironment",
     "NotSupportedByHardwareError",
 ]

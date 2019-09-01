@@ -3,10 +3,11 @@
 from datetime import timedelta
 from time import sleep
 
-import j5.backends.hardware.sb.arduino  # noqa: F401
-import j5.backends.hardware.sr.v4.power_board  # noqa: F401
 from j5 import BaseRobot, BoardGroup
-from j5.backends.hardware import HardwareEnvironment
+from j5.backends.hardware.sb.arduino import SBArduinoHardwareBackend
+from j5.backends.hardware.sr.v4.power_board import (
+    SRV4PowerBoardHardwareBackend,
+)
 from j5.boards.sb.arduino import SBArduinoBoard
 from j5.boards.sr.v4 import PowerBoard
 from j5.components.gpio_pin import GPIOPinMode
@@ -18,7 +19,7 @@ class Robot(BaseRobot):
 
     def __init__(self) -> None:
         self.power_boards = BoardGroup[PowerBoard](
-            HardwareEnvironment.get_backend(PowerBoard),
+            SRV4PowerBoardHardwareBackend,
         )
         self.power_board: PowerBoard = self.power_boards.singular()
 
@@ -26,7 +27,7 @@ class Robot(BaseRobot):
         sleep(0.2)  # Give time for arduino to initialise.
 
         self.arduinos = BoardGroup[SBArduinoBoard](
-            HardwareEnvironment.get_backend(SBArduinoBoard),
+            SBArduinoHardwareBackend,
         )
 
         self.arduino: SBArduinoBoard = self.arduinos.singular()
