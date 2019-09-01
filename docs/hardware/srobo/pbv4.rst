@@ -160,6 +160,6 @@ use the board but it may be of interest to some people.
 .. _Hardware designs: https://github.com/srobo/power-v4-hw
 
 
-.. Note:: Some of the documentation in this section has been taken and modified from `Student Robotics`_. See here_ for more information.
+.. Note:: Some of the documentation in this section has been taken and modified from Student Robotics. See here_ for more information.
 
 .. _here: LICENSE.html

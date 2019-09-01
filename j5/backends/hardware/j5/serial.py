@@ -2,22 +2,15 @@
 from abc import abstractmethod
 from datetime import timedelta
 from functools import wraps
-from typing import TYPE_CHECKING, Callable, Optional, Set, Type, TypeVar
+from typing import Callable, Optional, Set, Type, TypeVar
 
 from serial import Serial, SerialException, SerialTimeoutException
+from typing_extensions import Protocol
 
 from j5.backends import BackendMeta, CommunicationError, Environment
 from j5.boards import Board
 
 RT = TypeVar("RT")  # pragma: nocover
-
-if TYPE_CHECKING:
-    from typing_extensions import Protocol  # pragma: nocover
-else:
-    class Protocol:
-        """Dummy class since typing_extensions is not available at runtime."""
-
-        pass
 
 
 def handle_serial_error(func: Callable[..., RT]) -> Callable[..., RT]:  # type: ignore
