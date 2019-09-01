@@ -5,10 +5,7 @@ from typing import Callable, List, Set, cast
 
 import usb
 
-from j5.backends.hardware.env import (
-    HardwareEnvironment,
-    NotSupportedByHardwareError,
-)
+from j5.backends.hardware.env import NotSupportedByHardwareError
 from j5.backends.hardware.j5.raw_usb import (
     RawUSBHardwareBackend,
     ReadCommand,
@@ -35,7 +32,6 @@ class SRV4ServoBoardHardwareBackend(
     """The hardware implementaton of the SR v4 Servo Board."""
 
     board = ServoBoard
-    environment = HardwareEnvironment
 
     @classmethod
     @handle_usb_error

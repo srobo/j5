@@ -1,7 +1,7 @@
 """Tests for the SR v4 Motor Board."""
 from typing import List, Optional, Set
 
-from j5.backends import Backend, Environment
+from j5.backends import Backend
 from j5.boards import Board
 from j5.boards.sr.v4 import MotorBoard
 from j5.components.motor import (
@@ -11,13 +11,10 @@ from j5.components.motor import (
     MotorState,
 )
 
-MockEnvironment = Environment("MockEnvironment")
-
 
 class MockMotorBoardBackend(MotorInterface, Backend):
     """A mock motor board backend implementation."""
 
-    environment = MockEnvironment
     board = MotorBoard
 
     @classmethod

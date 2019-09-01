@@ -6,7 +6,6 @@ from serial.tools.list_ports import comports
 from serial.tools.list_ports_common import ListPortInfo
 
 from j5.backends import CommunicationError
-from j5.backends.hardware.env import HardwareEnvironment
 from j5.backends.hardware.j5.serial import (
     SerialHardwareBackend,
     Seriallike,
@@ -37,7 +36,6 @@ class SRV4MotorBoardHardwareBackend(
 ):
     """The hardware implementation of the SR v4 motor board."""
 
-    environment = HardwareEnvironment
     board = MotorBoard
 
     @classmethod

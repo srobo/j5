@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Optional, Set, Type
 
 import pytest
 
-from j5.backends import Backend, CommunicationError, Environment
+from j5.backends import Backend, CommunicationError
 from j5.boards.board import Board, BoardGroup
 
 if TYPE_CHECKING:
@@ -55,7 +55,6 @@ class MockBoardWithConstructor(MockBoard):
 class NoBoardMockBackend(Backend):
     """This backend never finds any testing boards."""
 
-    environment = Environment("MockEnvironment")
     board = MockBoard
 
     @property
@@ -72,7 +71,6 @@ class NoBoardMockBackend(Backend):
 class OneBoardMockBackend(Backend):
     """This backend finds exactly one."""
 
-    environment = Environment("MockEnvironment")
     board = MockBoard
 
     @property
@@ -89,7 +87,6 @@ class OneBoardMockBackend(Backend):
 class TwoBoardsMockBackend(Backend):
     """This backend finds exactly two."""
 
-    environment = Environment("MockEnvironment")
     board = MockBoard
 
     @property

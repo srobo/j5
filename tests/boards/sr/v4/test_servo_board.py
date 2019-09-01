@@ -1,18 +1,15 @@
 """Tests for the SR v4 Servo Board."""
 from typing import List, Optional, Set
 
-from j5.backends import Backend, Environment
+from j5.backends import Backend
 from j5.boards import Board
 from j5.boards.sr.v4 import ServoBoard
 from j5.components.servo import Servo, ServoInterface, ServoPosition
-
-MockEnvironment = Environment("MockEnvironment")
 
 
 class MockServoBoardBackend(ServoInterface, Backend):
     """A mock servo board backend implementation."""
 
-    environment = MockEnvironment
     board = ServoBoard
 
     @classmethod

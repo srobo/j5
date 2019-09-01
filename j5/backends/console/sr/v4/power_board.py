@@ -4,7 +4,7 @@ from datetime import timedelta
 from typing import Dict, Optional, Set, Type
 
 from j5.backends import Backend
-from j5.backends.console.env import Console, ConsoleEnvironment
+from j5.backends.console.env import Console
 from j5.boards import Board
 from j5.boards.sr.v4.power_board import PowerBoard, PowerOutputPosition
 from j5.components import (
@@ -26,7 +26,6 @@ class SRV4PowerBoardConsoleBackend(
 ):
     """The console implementation of the SR V4 power board."""
 
-    environment = ConsoleEnvironment
     board = PowerBoard
 
     @classmethod

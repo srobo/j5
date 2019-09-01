@@ -8,7 +8,6 @@ from zoloto import __version__ as zoloto_version
 from zoloto.cameras.camera import Camera
 
 from j5.backends import Backend
-from j5.backends.hardware import HardwareEnvironment
 from j5.boards import Board
 from j5.boards.zoloto import ZolotoCameraBoard
 from j5.components import MarkerCameraInterface
@@ -38,7 +37,6 @@ class ZolotoCameraBoardHardwareBackend(
 ):
     """Hardware Backend for Zoloto Camera."""
 
-    environment = HardwareEnvironment
     board = ZolotoCameraBoard
 
     @classmethod

@@ -12,7 +12,7 @@ from typing import Callable, NamedTuple, Optional, Set, TypeVar, Union
 
 import usb
 
-from j5.backends import BackendMeta, CommunicationError, Environment
+from j5.backends import BackendMeta, CommunicationError
 from j5.boards import Board
 
 # Stop the library from closing the USB connections before make_safe is called.
@@ -87,12 +87,6 @@ class RawUSBHardwareBackend(metaclass=BackendMeta):
     @abstractmethod
     def discover(cls) -> Set[Board]:
         """Discover boards that this backend can control."""
-        raise NotImplementedError  # pragma: no cover
-
-    @property
-    @abstractmethod
-    def environment(self) -> 'Environment':
-        """Environment the backend belongs too."""
         raise NotImplementedError  # pragma: no cover
 
     @property

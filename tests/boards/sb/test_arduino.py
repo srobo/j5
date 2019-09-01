@@ -3,16 +3,13 @@
 from datetime import timedelta
 from typing import TYPE_CHECKING, Optional, Set
 
-from j5.backends import Backend, Environment
+from j5.backends import Backend
 from j5.boards.sb import AnaloguePin, SBArduinoBoard
 from j5.components import GPIOPin, GPIOPinInterface, GPIOPinMode, LEDInterface
 from j5.components.derived import UltrasoundInterface, UltrasoundSensor
 
 if TYPE_CHECKING:
     from j5.boards import Board  # noqa
-
-
-MockEnvironment = Environment("MockEnvironment")
 
 
 class MockSBArduinoBackend(
@@ -23,7 +20,6 @@ class MockSBArduinoBackend(
 ):
     """Mock Backend for testing the Arduino Uno."""
 
-    environment = MockEnvironment
     board = SBArduinoBoard
 
     def set_gpio_pin_mode(self, identifier: int, pin_mode: GPIOPinMode) -> None:
