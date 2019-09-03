@@ -26,9 +26,9 @@ def handle_serial_error(func: Callable[..., RT]) -> Callable[..., RT]:  # type: 
         try:
             return func(*args, **kwargs)
         except SerialTimeoutException as e:
-            raise CommunicationError(f"Serial Timeout Error: {e}")
+            raise CommunicationError(f"Serial Timeout Error: {e}") from e
         except SerialException as e:
-            raise CommunicationError(f"Serial Error: {e}")
+            raise CommunicationError(f"Serial Error: {e}") from e
     return catch_exceptions
 
 
@@ -46,23 +46,23 @@ class Seriallike(Protocol):
                  parity: str = 'N',
                  stopbits: float = 1,
                  timeout: Optional[float] = None):
-        ...
+        ...  # pragma: nocover
 
     def close(self) -> None:
         """Close the connection."""
-        ...
+        ...  # pragma: nocover
 
     def flush(self) -> None:
         """Flush all pending write operations."""
-        ...
+        ...  # pragma: nocover
 
     def readline(self) -> bytes:
         """Read a line from the serial port."""
-        ...
+        ...  # pragma: nocover
 
     def write(self, data: bytes) -> int:
         """Write data to the serial port."""
-        ...
+        ...  # pragma: nocover
 
 
 class SerialHardwareBackend(metaclass=BackendMeta):

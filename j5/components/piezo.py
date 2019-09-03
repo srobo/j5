@@ -3,7 +3,7 @@
 from abc import abstractmethod
 from datetime import timedelta
 from enum import Enum
-from typing import Generator, Type, Union
+from typing import Type, Union
 
 from j5.components.component import Component, Interface
 
@@ -30,12 +30,6 @@ class Note(float, Enum):
     A7 = 3520.0
     B7 = 3951.1
     C8 = 4186.0
-
-    def __reverse__(self) -> Generator['Note', None, None]:
-        # Type is ignored because of an open bug within mypy
-        # https://github.com/python/typeshed/issues/1590
-        # https://github.com/python/typeshed/issues/1595
-        yield from reversed(self.__members__.items())  # type: ignore
 
 
 Pitch = Union[int, float, Note]

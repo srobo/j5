@@ -345,3 +345,23 @@ def test_derived_mode_is_possible() -> None:
             Peripheral,
         },
     )
+
+
+def test_firmware_mode_setter() -> None:
+    """Test that the firmware mode of a pin can be set after instantation."""
+    driver = MockGPIOPinDriver()
+    pin = GPIOPin(
+        0,
+        driver,
+        initial_mode=GPIOPinMode.ANALOGUE_OUTPUT,
+        hardware_modes={
+            GPIOPinMode.ANALOGUE_OUTPUT,
+            GPIOPinMode.PWM_OUTPUT,
+        },
+    )
+
+    assert Peripheral not in pin.firmware_modes
+
+    pin.firmware_modes = {Peripheral}
+
+    assert Peripheral in pin.firmware_modes
