@@ -113,12 +113,13 @@ class Board(metaclass=ABCMeta):
 Board._make_all_safe_at_exit()
 
 T = TypeVar('T', bound='Board')
+U = TypeVar('U', bound=Backend)
 
 
 class BoardGroup(Generic[T]):
     """A group of boards that can be accessed."""
 
-    def __init__(self, backend_class: Type[Backend]):
+    def __init__(self, backend_class: Type[U]):
         self._backend_class = backend_class
         self._boards: Dict[str, T] = OrderedDict()
 
@@ -183,7 +184,7 @@ class BoardGroup(Generic[T]):
             raise KeyError(f"Could not find a board with the serial {serial}")
 
     @property
-    def backend_class(self) -> Type[Backend]:
+    def backend_class(self) -> Type[U]:
         """The Backend that this group uses for Boards."""
         return self._backend_class
 
