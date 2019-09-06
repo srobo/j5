@@ -125,10 +125,25 @@ class Backend(metaclass=BackendMeta):
 
 class Environment:
     """
-    A collection of board implementations that can work together.
+    A collection of backends that can work together.
 
-    Backends must be manually registered, but can this is a useful mechanism
-    for API authors to group different backend types.
+    A number of Backends that we wish to use in a grouping, such as those that
+    all work together in hardware can be added to this group. We can then pass
+    Environments to a Robot object, so that the Robot object can call different
+    methods based on where it is being used.
+
+    e.g Hardware Environment
+
+    We have `n` boards of `n` different types. They are all physical hardware.
+    We create an Environment containing the Backends to control the physical
+    hardware for our boards.
+
+    It is later realised that we want to test code without the physical hardware.
+    We can add Console backends to an environment, and instantiate our Robot object
+    with that environment, so that the console is manipulated rather than the hardware.
+
+    This allows for a high degree of code reuse and ensures API compatibility in
+    different situations.
     """
 
     def __init__(self, name: str):
