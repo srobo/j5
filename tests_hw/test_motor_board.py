@@ -17,7 +17,8 @@ class Robot(BaseRobot):
     """A basic robot with a power board."""
 
     def __init__(self) -> None:
-        self.power_boards = BoardGroup[PowerBoard](
+        self.power_boards = BoardGroup.get_board_group(
+            PowerBoard,
             SRV4PowerBoardHardwareBackend,
         )
         self.power_board: PowerBoard = self.power_boards.singular()
@@ -25,10 +26,10 @@ class Robot(BaseRobot):
         self.power_board.outputs.power_on()
         sleep(0.2)  # Give time for motor board to initialise.
 
-        self.motor_boards = BoardGroup[MotorBoard](
+        self.motor_boards = BoardGroup.get_board_group(
+            MotorBoard,
             SRV4MotorBoardHardwareBackend,
         )
-
         self.motor_board: MotorBoard = self.motor_boards.singular()
 
 

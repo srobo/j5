@@ -116,14 +116,25 @@ T = TypeVar('T', bound='Board')
 U = TypeVar('U', bound=Backend)
 
 
-class BoardGroup(Generic[T]):
+class BoardGroup(Generic[T, U]):
     """A group of boards that can be accessed."""
 
-    def __init__(self, backend_class: Type[U]):
+    def __init__(self, backend_class: Type[U]) -> None:
         self._backend_class = backend_class
         self._boards: Dict[str, T] = OrderedDict()
 
         self.update_boards()
+
+    @classmethod
+    def get_board_group(cls, _: Type[T], backend: Type[U]) -> 'BoardGroup[T, U]':
+        """
+        Get the board group with the given types.
+
+        Whilst the first parameter value is not actually used in the function,
+        we need it for typing purposes. This is similar to how a ProxyType
+        works in Haskell.
+        """
+        return BoardGroup[T, U](backend)
 
     def update_boards(self) -> None:
         """Update the boards in this group to see if new boards have been added."""

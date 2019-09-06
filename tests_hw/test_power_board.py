@@ -15,7 +15,8 @@ class Robot(BaseRobot):
     """A basic robot with a power board."""
 
     def __init__(self) -> None:
-        self.power_boards = BoardGroup[PowerBoard](
+        self.power_boards = BoardGroup.get_board_group(
+            PowerBoard,
             SRV4PowerBoardHardwareBackend,
         )
         self.power_board: PowerBoard = self.power_boards.singular()
