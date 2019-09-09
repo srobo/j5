@@ -42,9 +42,6 @@ rope = "^0.14.0"
 isort = {version = "^4.3",extras = ["pyproject"]}
 opencv-contrib-python = "^4.1"
 
-# See https://gitlab.com/pycqa/flake8-docstrings/issues/36
-pydocstyle = "~4"
-
 [tool.poetry.extras]
 zoloto-vision = ["zoloto"]
 
