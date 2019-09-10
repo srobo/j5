@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Optional, Set, Type
 
 from j5.backends import Backend
-from j5.backends.console import Console, ConsoleEnvironment
+from j5.backends.console import Console
 from j5.boards import Board
 from j5.boards.zoloto import ZolotoCameraBoard
 from j5.components import MarkerCameraInterface
@@ -16,7 +16,6 @@ class ZolotoCameraBoardConsoleBackend(
 ):
     """Console Backend for Zoloto Camera."""
 
-    environment = ConsoleEnvironment
     board = ZolotoCameraBoard
 
     @classmethod

@@ -7,7 +7,7 @@ from typing import Callable, Optional, Set, Type, TypeVar
 from serial import Serial, SerialException, SerialTimeoutException
 from typing_extensions import Protocol
 
-from j5.backends import BackendMeta, CommunicationError, Environment
+from j5.backends import BackendMeta, CommunicationError
 from j5.boards import Board
 
 RT = TypeVar("RT")  # pragma: nocover
@@ -87,12 +87,6 @@ class SerialHardwareBackend(metaclass=BackendMeta):
     @abstractmethod
     def discover(cls) -> Set[Board]:
         """Discover boards that this backend can control."""
-        raise NotImplementedError  # pragma: no cover
-
-    @property
-    @abstractmethod
-    def environment(self) -> Environment:
-        """Environment the backend belongs too."""
         raise NotImplementedError  # pragma: no cover
 
     @property

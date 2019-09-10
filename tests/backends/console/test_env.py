@@ -1,14 +1,6 @@
 """Tests for the ConsoleEnvironment and Console helper."""
 
-from j5.backends import Environment
-from j5.backends.console import Console, ConsoleEnvironment
-
-
-def test_console_environment() -> None:
-    """Test that the Console Environment works."""
-    assert type(ConsoleEnvironment) is Environment
-
-    assert ConsoleEnvironment.name == "ConsoleEnvironment"
+from j5.backends.console import Console
 
 
 def test_console_instantiation() -> None:

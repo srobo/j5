@@ -2,7 +2,7 @@
 from datetime import timedelta
 from typing import TYPE_CHECKING, Optional, Set
 
-from j5.backends import Backend, Environment
+from j5.backends import Backend
 from j5.boards.sr.v4 import PowerBoard, PowerOutputGroup, PowerOutputPosition
 from j5.components import (
     LED,
@@ -22,9 +22,6 @@ if TYPE_CHECKING:
     from j5.boards import Board  # noqa
 
 
-MockEnvironment = Environment("MockEnvironment")
-
-
 class MockPowerBoardBackend(
     PowerOutputInterface,
     PiezoInterface,
@@ -35,7 +32,6 @@ class MockPowerBoardBackend(
 ):
     """A mock power board backend implementation."""
 
-    environment = MockEnvironment
     board = PowerBoard
 
     @classmethod
