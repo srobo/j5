@@ -22,11 +22,3 @@ Please note that this documentation is not aimed at the average competitor. It i
    development/index
 
    source/modules
-   genindex
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
