@@ -31,27 +31,27 @@ The above code is likely to be familiar to any student who has competed in one o
 
 ```python
 from j5.boards import BoardGroup
-from j5.backends.hw import HardwareEnvironment
 
 from j5.boards.sr.v4 import PowerBoard, MotorBoard, ServoBoard, Ruggeduino
-
+from j5.backends.hardware.sr.v4 import (
+    SRV4MotorBoardHardwareBackend,
+    SRV4PowerBoardHardwareBackend,
+    SRV4RuggeduinoHardwareBackend,
+    SRV4ServoBoardHardwareBackend,
+)
 
 class Robot:
 
     def __init__(self):
+        self.power_board = PowerBoard(SRV4PowerBoardHardwareBackend)
 
-        self._env = HardwareEnvironment()
-
-        self.power_board = PowerBoard(self._env)
-
-        self.motor_boards = BoardGroup(MotorBoard, self._env)
+        self.motor_boards = BoardGroup.get_board_group(MotorBoard, SRV4MotorBoardHardwareBackend)
         self.motor_board = self.motor_boards.singular()
 
-        self.servo_boards = BoardGroup(ServoBoard, self._env)
+        self.servo_boards = BoardGroup.get_board_group(ServoBoard, SRV4ServoBoardHardwareBackend)
         self.servo_board = self.servo_boards.singular()
 
-        self.ruggeduino = Ruggeduino(self._env)
-
+        self.ruggeduino = Ruggeduino(SRV4RuggeduinoHardwareBackend)
 ```
 
 ## Competitions
