@@ -138,7 +138,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'j5.tex', 'j5 Documentation',
-     'Dan Trickey', 'manual'),
+     'j5 Contributors', 'manual'),
 ]
 
 
@@ -187,7 +187,9 @@ epub_exclude_files = ['search.html']
 # -- Options for intersphinx extension ---------------------------------------
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'https://docs.python.org/': None}
+intersphinx_mapping = {
+    'https://docs.python.org/3/': None
+}
 
 # -- Options for todo extension ----------------------------------------------
 
