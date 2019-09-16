@@ -20,7 +20,7 @@ from typing import (
     cast,
 )
 
-from j5.backends import Backend, CommunicationError
+from j5.backends import Backend, CommunicationError, Environment
 
 if TYPE_CHECKING:  # pragma: nocover
     from j5.components import Component  # noqa
@@ -32,6 +32,9 @@ if TYPE_CHECKING:  # pragma: nocover
         signal.Handlers,
         None,
     ]
+
+T = TypeVar('T', bound='Board')
+U = TypeVar('U', bound=Backend)
 
 
 class Board(metaclass=ABCMeta):
@@ -90,6 +93,21 @@ class Board(metaclass=ABCMeta):
         for board in Board.BOARDS:
             board.make_safe()
 
+    @classmethod
+    def get_board_group_from_environment(
+            cls: Type[T],
+            environment: Environment,
+    ) -> 'BoardGroup[T, U]':
+        """
+        Get a board group from an environment.
+
+        This method is on Board, rather than BoardGroup for typing purposes.
+        """
+        backend = environment.get_backend(cls)
+
+        # Cast is needed here as environment doesn't return a known type.
+        return BoardGroup.get_board_group(cls, cast(Type[U], backend))
+
     @staticmethod
     def _make_all_safe_at_exit() -> None:
         # Register make_all_safe to be called upon normal program termination.
@@ -111,9 +129,6 @@ class Board(metaclass=ABCMeta):
 
 
 Board._make_all_safe_at_exit()
-
-T = TypeVar('T', bound='Board')
-U = TypeVar('U', bound=Backend)
 
 
 class BoardGroup(Generic[T, U]):
