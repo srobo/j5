@@ -185,11 +185,9 @@ class Environment:
         This method will fail if any board is defined in both environments,
          as it is unclear which one has the correct mapping.
         """
-        boards_present = self.supported_boards | other.supported_boards
-        total_boards = len(self.supported_boards) + len(other.supported_boards)
+        intersection = self.supported_boards & other.supported_boards
 
-        if len(boards_present) != total_boards:
-            intersection = self.supported_boards & other.supported_boards
+        if len(intersection) > 0:
             common_boards = ", ".join(map(lambda x: x.__name__, intersection))
             raise RuntimeError(
                 f"Attempted to merge two Environments"
