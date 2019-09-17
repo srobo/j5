@@ -17,7 +17,7 @@ jobs:
           command: |
             git config user.name "dummy"
             git config user.email "dummy@example.org"
-            git fetch origin master
+            git fetch origin $(circleci-branch) 
             git merge --squash origin/$(circleci-branch)
       - restore_cache:
           keys:
