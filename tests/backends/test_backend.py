@@ -142,7 +142,7 @@ def test_environment_merge() -> None:
 
 
 def test_environment_merge_duplicate() -> None:
-    """Test that the correct exception is thrown if duplicate entries."""
+    """Test that the correct exception is thrown if duplicate entries exist."""
     env1 = Environment("Env1")
     env2 = Environment("Env2")
 
