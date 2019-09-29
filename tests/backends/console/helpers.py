@@ -11,7 +11,7 @@ class MockConsole(Console):
     """Test Console for testing boards."""
 
     def __init__(self, descriptor: str):
-        super(Console, self).__init__()  # type: ignore
+        super(Console, self).__init__()
         self._descriptor = descriptor
         self.next_input: str = ""
         self.expects: str = ""
