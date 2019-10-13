@@ -17,8 +17,9 @@ jobs:
           command: |
             git config user.name "dummy"
             git config user.email "dummy@example.org"
-            git fetch origin $(circleci-branch) 
-            git merge --squash origin/$(circleci-branch)
+            parent_branch=$(circleci-branch)
+            git fetch origin $parent_branch
+            git merge --squash origin/$parent_branch
       - restore_cache:
           keys:
             - pip-packages-{{ .Branch }}-{{ checksum "poetry.lock" }}
