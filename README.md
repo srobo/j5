@@ -18,7 +18,7 @@ j5 Framework - Creating consistent APIs for robotics
 
 `j5` is designed to never be visible to students. It sits behind the scenes and works magic.
 
-```python
+```python unchecked
 from robot import Robot
 
 r = Robot()

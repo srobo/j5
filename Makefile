@@ -3,15 +3,17 @@
 CMD:=poetry run
 PYMODULE:=j5
 TESTS:=tests
-EXTRACODE:=tests_hw
+SNIPPETS:=build/doc-snippets
+EXTRACODE:=tests_hw tools/extract_snippets.py
+GENERATEDCODE:=$(SNIPPETS)/**/*.py
 
 all: type test lint
 
-lint:
-	$(CMD) flake8 $(PYMODULE) $(TESTS) $(EXTRACODE)
+lint: extract_snippets
+	$(CMD) flake8 $(PYMODULE) $(TESTS) $(EXTRACODE) $(GENERATEDCODE)
 
-type:
-	$(CMD) mypy $(PYMODULE) $(TESTS) $(EXTRACODE)
+type: extract_snippets
+	$(CMD) mypy $(PYMODULE) $(TESTS) $(EXTRACODE) $(GENERATEDCODE)
 
 test:
 	$(CMD) pytest --cov=$(PYMODULE) $(TESTS)
@@ -21,6 +23,11 @@ test-cov:
 
 isort:
 	$(CMD) isort --recursive $(PYMODULE) $(TESTS) $(EXTRACODE)
+
+extract_snippets:
+	rm -rf $(SNIPPETS)
+	mkdir -p $(SNIPPETS)/README.md
+	python tools/extract_snippets.py README.md $(SNIPPETS)/README.md
 
 clean:
 	git clean -Xdf # Delete all files in .gitignore
