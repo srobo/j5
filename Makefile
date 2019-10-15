@@ -19,6 +19,9 @@ test:
 test-cov:
 	$(CMD) pytest --cov=$(PYMODULE) $(TESTS) --cov-report html
 
+test-ci:
+	$(CMD) pytest --cov=$(PYMODULE) $(TESTS) --cov-report xml
+
 isort:
 	$(CMD) isort --recursive $(PYMODULE) $(TESTS) $(EXTRACODE)
 
