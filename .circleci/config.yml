@@ -13,12 +13,13 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Merge with master
+          name: Merge with parent branch
           command: |
             git config user.name "dummy"
             git config user.email "dummy@example.org"
-            git fetch origin master
-            git merge --squash origin/master
+            parent_branch=$(circleci-branch)
+            git fetch origin $parent_branch
+            git merge --squash origin/$parent_branch
       - restore_cache:
           keys:
             - pip-packages-{{ .Branch }}-{{ checksum "poetry.lock" }}

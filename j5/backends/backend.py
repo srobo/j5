@@ -173,3 +173,26 @@ class Environment:
             raise NotImplementedError(f"The {str(self)} does not support {str(board)}")
 
         return self.board_backend_mapping[board]
+
+    def merge(self, other: 'Environment') -> None:
+        """
+        Merge in the board-backend mappings from another environment.
+
+        This allows vendors to predefine Environments and API authors
+        can then merge several vendor environments to get the one that
+        they need for their API.
+
+        This method will fail if any board is defined in both environments,
+         as it is unclear which one has the correct mapping.
+        """
+        intersection = self.supported_boards & other.supported_boards
+
+        if len(intersection) > 0:
+            common_boards = ", ".join(map(lambda x: x.__name__, intersection))
+            raise RuntimeError(
+                f"Attempted to merge two Environments"
+                f" that both contain: {common_boards}")
+        self.board_backend_mapping = {
+            **self.board_backend_mapping,
+            **other.board_backend_mapping,
+        }

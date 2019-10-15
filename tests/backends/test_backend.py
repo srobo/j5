@@ -121,6 +121,41 @@ def test_environment_board_get_backend_unknown() -> None:
         assert environment.get_backend(Mock2Board)
 
 
+def test_environment_merge() -> None:
+    """Test that we can merge environments."""
+    env1 = Environment("Env1")
+    env2 = Environment("Env2")
+
+    assert len(env1.supported_boards) == 0
+    assert len(env2.supported_boards) == 0
+
+    env1.merge(env2)
+    assert len(env1.supported_boards) == 0
+    assert len(env2.supported_boards) == 0
+
+    env2.register_backend(MockBackend)
+    assert len(env2.supported_boards) == 1
+
+    env1.merge(env2)
+    assert len(env1.supported_boards) == 1
+    assert len(env2.supported_boards) == 1
+
+
+def test_environment_merge_duplicate() -> None:
+    """Test that the correct exception is thrown if duplicate entries exist."""
+    env1 = Environment("Env1")
+    env2 = Environment("Env2")
+
+    env1.register_backend(MockBackend)
+    env2.register_backend(MockBackend)
+
+    with pytest.raises(RuntimeError) as e:
+        env1.merge(env2)
+    assert e is not None
+    assert str(e.value) == \
+        "Attempted to merge two Environments that both contain: MockBoard"
+
+
 def test_backend_check_multiple_backends_same_env() -> None:
     """Test that we can't define two backends for the same board/environment combo."""
     test_environment = Environment("test_environment")
