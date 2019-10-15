@@ -17,7 +17,8 @@ jobs:
           command: |
             git config user.name "dummy"
             git config user.email "dummy@example.org"
-            parent_branch=$(circleci-branch)
+            branch_output=$(circleci-branch)
+            parent_branch=${branch_output:=master}
             git fetch origin $parent_branch
             git merge --squash origin/$parent_branch
       - restore_cache:
