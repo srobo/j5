@@ -23,7 +23,7 @@ class MockConsole(Console):
     def read(  # type: ignore
             self,
             prompt: str,
-            return_type: Optional[Type[T]] = str,
+            return_type: Optional[Type[T]] = str,  # type: ignore
     ) -> Optional[T]:
         """Get a value of type 'return_type' from the user."""
         if return_type is not None:
