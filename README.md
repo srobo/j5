@@ -44,16 +44,24 @@ class Robot:
     """My Competition Robot."""
 
     def __init__(self) -> None:
-        self._power_boards = BoardGroup.get_board_group(PowerBoard, SRV4PowerBoardHardwareBackend)
+        self._power_boards = BoardGroup.get_board_group(
+            PowerBoard, SRV4PowerBoardHardwareBackend,
+        )
         self.power_board = self._power_boards.singular()
 
-        self.motor_boards = BoardGroup.get_board_group(MotorBoard, SRV4MotorBoardHardwareBackend)
+        self.motor_boards = BoardGroup.get_board_group(
+            MotorBoard, SRV4MotorBoardHardwareBackend,
+        )
         self.motor_board = self.motor_boards.singular()
 
-        self.servo_boards = BoardGroup.get_board_group(ServoBoard, SRV4ServoBoardHardwareBackend)
+        self.servo_boards = BoardGroup.get_board_group(
+            ServoBoard, SRV4ServoBoardHardwareBackend,
+        )
         self.servo_board = self.servo_boards.singular()
 
-        self._ruggeduinos = BoardGroup.get_board_group(Ruggeduino, SRV4RuggeduinoHardwareBackend)
+        self._ruggeduinos = BoardGroup.get_board_group(
+            Ruggeduino, SRV4RuggeduinoHardwareBackend,
+        )
         self.ruggeduino = self._ruggeduinos.singular()
 ```
 
