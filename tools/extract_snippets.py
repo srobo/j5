@@ -10,6 +10,10 @@ starting with "```".
 import argparse
 from pathlib import Path
 
+ignored_flake8_rules = {
+    "D100",  # missing module-level docstring
+}
+
 
 class SnippetWriter:
     """Writes files with sequentially increasing numbers into a directory."""
@@ -20,6 +24,7 @@ class SnippetWriter:
 
     def write(self, contents: str) -> None:
         """Write the next file using the given contents."""
+        contents = f"# noqa: {','.join(ignored_flake8_rules)}\n{contents}"
         path = self.output_path / f"snippet{self.next_num:04d}.py"
         with open(path, "w") as file:
             file.write(contents)
