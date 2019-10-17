@@ -33,11 +33,10 @@ The above code is likely to be familiar to any student who has competed in one o
 from j5.backends.hardware.sr.v4 import (
     SRV4MotorBoardHardwareBackend,
     SRV4PowerBoardHardwareBackend,
-    SRV4RuggeduinoHardwareBackend,
     SRV4ServoBoardHardwareBackend,
 )
 from j5.boards import BoardGroup
-from j5.boards.sr.v4 import MotorBoard, PowerBoard, Ruggeduino, ServoBoard
+from j5.boards.sr.v4 import MotorBoard, PowerBoard, ServoBoard
 
 
 class Robot:
@@ -58,11 +57,6 @@ class Robot:
             ServoBoard, SRV4ServoBoardHardwareBackend,
         )
         self.servo_board = self.servo_boards.singular()
-
-        self._ruggeduinos = BoardGroup.get_board_group(
-            Ruggeduino, SRV4RuggeduinoHardwareBackend,
-        )
-        self.ruggeduino = self._ruggeduinos.singular()
 ```
 
 ## Competitions
