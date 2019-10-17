@@ -96,7 +96,10 @@ def test_motor_set_state_out_of_bounds() -> None:
     motor = Motor(0, MockMotorDriver())
 
     with pytest.raises(ValueError):
+        motor.power = 2
+    with pytest.raises(ValueError):
         motor.power = 1.1
-
+    with pytest.raises(ValueError):
+        motor.power = -3
     with pytest.raises(ValueError):
         motor.power = -1.2
