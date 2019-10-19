@@ -30,6 +30,7 @@ The above code is likely to be familiar to any student who has competed in one o
 `j5` lets competition vendors define how the basic parts of the apis are accessed. A robot can thus be constructed from any combination of parts from various organisations.
 
 ```python
+from j5 import BaseRobot
 from j5.backends.hardware.sr.v4 import (
     SRV4MotorBoardHardwareBackend,
     SRV4PowerBoardHardwareBackend,
@@ -39,7 +40,7 @@ from j5.boards import BoardGroup
 from j5.boards.sr.v4 import MotorBoard, PowerBoard, ServoBoard
 
 
-class Robot:
+class Robot(BaseRobot):
     """My Competition Robot."""
 
     def __init__(self) -> None:
