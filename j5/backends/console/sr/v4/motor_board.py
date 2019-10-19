@@ -3,7 +3,7 @@
 from typing import List, Optional, Set, Type
 
 from j5.backends import Backend
-from j5.backends.console import Console, ConsoleEnvironment
+from j5.backends.console import Console
 from j5.boards import Board
 from j5.boards.sr.v4.motor_board import MotorBoard
 from j5.components.motor import MotorInterface, MotorSpecialState, MotorState
@@ -15,7 +15,6 @@ class SRV4MotorBoardConsoleBackend(
 ):
     """The console implementation of the SR v4 motor board."""
 
-    environment = ConsoleEnvironment
     board = MotorBoard
 
     @classmethod

@@ -7,10 +7,7 @@ from typing import Callable, Dict, Mapping, Set, cast
 
 import usb
 
-from j5.backends.hardware.env import (
-    HardwareEnvironment,
-    NotSupportedByHardwareError,
-)
+from j5.backends.hardware.env import NotSupportedByHardwareError
 from j5.backends.hardware.j5.raw_usb import (
     RawUSBHardwareBackend,
     ReadCommand,
@@ -57,7 +54,6 @@ class SRV4PowerBoardHardwareBackend(
 ):
     """The hardware implementation of the SR V4 power board."""
 
-    environment = HardwareEnvironment
     board = PowerBoard
 
     @classmethod

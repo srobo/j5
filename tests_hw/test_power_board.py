@@ -4,8 +4,7 @@ from datetime import timedelta
 from time import sleep
 
 from j5 import BaseRobot, BoardGroup
-from j5.backends.hardware import HardwareEnvironment
-from j5.backends.hardware.sr.v4.power_board import (  # noqa: F401
+from j5.backends.hardware.sr.v4.power_board import (
     SRV4PowerBoardHardwareBackend,
 )
 from j5.boards.sr.v4.power_board import PowerBoard, PowerOutputPosition
@@ -16,8 +15,9 @@ class Robot(BaseRobot):
     """A basic robot with a power board."""
 
     def __init__(self) -> None:
-        self.power_boards = BoardGroup[PowerBoard](
-            HardwareEnvironment.get_backend(PowerBoard),
+        self.power_boards = BoardGroup.get_board_group(
+            PowerBoard,
+            SRV4PowerBoardHardwareBackend,
         )
         self.power_board: PowerBoard = self.power_boards.singular()
 

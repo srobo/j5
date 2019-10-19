@@ -1,14 +1,6 @@
 """Tests for the ConsoleEnvironment and Console helper."""
 
-from j5.backends import Environment
-from j5.backends.console import Console, ConsoleEnvironment
-
-
-def test_console_environment() -> None:
-    """Test that the Console Environment works."""
-    assert type(ConsoleEnvironment) is Environment
-
-    assert ConsoleEnvironment.name == "ConsoleEnvironment"
+from j5.backends.console import Console
 
 
 def test_console_instantiation() -> None:
@@ -54,3 +46,34 @@ def test_console_read_none_type() -> None:
 
     console = Console("TestBoard", input_function=mock_input)
     assert console.read("Enter test input", None) is None
+
+
+def test_console_read_bad_type() -> None:
+    """Test that the console emits an error if it cannot cast to the desired type."""
+    class MockConsoleState:
+        """A mock console with state."""
+
+        def __init__(self) -> None:
+            self.bad_attempt_count = 0
+
+        def input(self, prompt: str) -> str:
+            """Mock some input."""
+            if self.bad_attempt_count == 0:
+                self.bad_attempt_count += 1
+                return "Not an int"
+            return "6"
+
+        def print(self, text: str) -> None:
+            """Mock printing function."""
+            if self.bad_attempt_count == 0:
+                assert text == "TestConsole: Unable to construct a int from 'Not an int'"
+
+    mock = MockConsoleState()
+
+    console = Console(
+        "TestConsole",
+        print_function=mock.print,
+        input_function=mock.input,
+    )
+
+    assert console.read("I want an int", int) == 6

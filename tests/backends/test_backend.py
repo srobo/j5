@@ -68,13 +68,9 @@ class Mock2Board(Board):
         return set()
 
 
-MockEnvironment = Environment("TestBackendGroup")
-
-
 class MockBackend(Backend):
     """A test backend."""
 
-    environment = MockEnvironment
     board = MockBoard
 
     @classmethod
@@ -95,14 +91,16 @@ def test_backend_instantiation() -> None:
 
 def test_environment_supported_boards() -> None:
     """Test that we can get the supported boards for a environment."""
-    environment = MockEnvironment
+    environment = Environment("MockEnv")
+    environment.register_backend(MockBackend)
     assert type(environment.supported_boards) is set
     assert len(environment.supported_boards) == 1
 
 
 def test_environment_board_backend_mapping() -> None:
     """Test that the board_backend_mapping works."""
-    environment = MockEnvironment
+    environment = Environment("MockEnv")
+    environment.register_backend(MockBackend)
     assert type(environment.board_backend_mapping) == dict
     assert len(environment.supported_boards) == 1
     assert environment.board_backend_mapping[MockBoard] == MockBackend
@@ -110,65 +108,89 @@ def test_environment_board_backend_mapping() -> None:
 
 def test_environment_board_get_backend() -> None:
     """Test that we can get the backend of a board."""
-    environment = MockEnvironment
+    environment = Environment("MockEnv")
+    environment.register_backend(MockBackend)
     assert issubclass(environment.get_backend(MockBoard), MockBackend)
 
 
 def test_environment_board_get_backend_unknown() -> None:
     """Test that we can't get the backend of an unknown board."""
-    environment = MockEnvironment
+    environment = Environment("MockEnv")
+    environment.register_backend(MockBackend)
     with pytest.raises(NotImplementedError):
         assert environment.get_backend(Mock2Board)
 
 
-def test_backend_check_has_environment() -> None:
-    """Test that an error is thrown if a backend is defined without an environment."""
-    with pytest.raises(ValueError):
-        class NoEnvironmentBackend(Backend):
-            """Backend definition with no environment."""
+def test_environment_merge() -> None:
+    """Test that we can merge environments."""
+    env1 = Environment("Env1")
+    env2 = Environment("Env2")
 
-            board = MockBoard
+    assert len(env1.supported_boards) == 0
+    assert len(env2.supported_boards) == 0
 
-            @classmethod
-            def discover(cls) -> Set['Board']:
-                return set()
+    env1.merge(env2)
+    assert len(env1.supported_boards) == 0
+    assert len(env2.supported_boards) == 0
 
-            def get_firmware_version(self) -> Optional[str]:
-                return None
+    env2.register_backend(MockBackend)
+    assert len(env2.supported_boards) == 1
+
+    env1.merge(env2)
+    assert len(env1.supported_boards) == 1
+    assert len(env2.supported_boards) == 1
+
+
+def test_environment_merge_duplicate() -> None:
+    """Test that the correct exception is thrown if duplicate entries exist."""
+    env1 = Environment("Env1")
+    env2 = Environment("Env2")
+
+    env1.register_backend(MockBackend)
+    env2.register_backend(MockBackend)
+
+    with pytest.raises(RuntimeError) as e:
+        env1.merge(env2)
+    assert e is not None
+    assert str(e.value) == \
+        "Attempted to merge two Environments that both contain: MockBoard"
 
 
 def test_backend_check_multiple_backends_same_env() -> None:
     """Test that we can't define two backends for the same board/environment combo."""
     test_environment = Environment("test_environment")
 
+    class BackendOne(Backend):
+        board = MockBoard
+
+        @classmethod
+        def discover(cls) -> Set['Board']:
+            return set()
+
+        @property
+        def firmware_version(self) -> Optional[str]:
+            return None
+
+    class BackendTwo(Backend):
+
+        board = MockBoard
+
+        @classmethod
+        def discover(cls) -> Set['Board']:
+            return set()
+
+        @property
+        def firmware_version(self) -> Optional[str]:
+            return None
+
+    test_environment.register_backend(BackendOne)
+
     with pytest.raises(RuntimeError):
-        class BackendOne(Backend):
-            board = MockBoard
-            environment = test_environment
-
-            @classmethod
-            def discover(cls) -> Set['Board']:
-                return set()
-
-            def get_firmware_version(self) -> Optional[str]:
-                return None
-
-        class BackendTwo(Backend):
-            board = MockBoard
-            environment = test_environment
-
-            @classmethod
-            def discover(cls) -> Set['Board']:
-                return set()
-
-            def get_firmware_version(self) -> Optional[str]:
-                return None
+        test_environment.register_backend(BackendTwo)
 
 
 def test_backend_has_required_interface() -> None:
     """Test that the backend has to have the required interfaces."""
-    test_environment = Environment("test_environment")
-
     class LEDMockBoard(Board):
         """A test board."""
 
@@ -199,11 +221,11 @@ def test_backend_has_required_interface() -> None:
     with pytest.raises(TypeError):
         class BackendTwo(Backend):
             board = LEDMockBoard
-            environment = test_environment
 
             @classmethod
             def discover(cls) -> Set['Board']:
                 return set()
 
-            def get_firmware_version(self) -> Optional[str]:
+            @property
+            def firmware_version(self) -> Optional[str]:
                 return None

@@ -22,27 +22,25 @@ pyusb = "^1.0"
 pyserial = "^3.4"
 pyquaternion = "^0.9.5"
 zoloto = {version = "^0.3.0", optional = true}
+typing-extensions = "^3.7"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.7"
 flake8-commas = "^2.0"
 flake8-comprehensions = "^2.2"
-flake8-debugger = "^3.1"
-flake8-docstrings = "^1.4"
+flake8-debugger = "^3.2"
+flake8-docstrings = "^1.5"
 flake8-isort = "^2.7"
 flake8-mutable = "^1.2"
 flake8-todo = "^0.7.0"
-mypy = "^0.720"
-pytest = "^5.1"
-pytest-cov = "^2.7"
+mypy = "^0.740"
+pytest = "^5.2"
+pytest-cov = "^2.8"
 sphinx = "^2.2"
 sphinx-rtd-theme = "^0.4.3"
 rope = "^0.14.0"
 isort = {version = "^4.3",extras = ["pyproject"]}
 opencv-contrib-python = "^4.1"
-
-# See https://gitlab.com/pycqa/flake8-docstrings/issues/36
-pydocstyle = "~4"
 
 [tool.poetry.extras]
 zoloto-vision = ["zoloto"]

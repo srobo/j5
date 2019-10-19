@@ -40,7 +40,8 @@ class Robot(BaseRobot):
     """A basic robot with a power board."""
 
     def __init__(self) -> None:
-        self.camera_boards = BoardGroup[ZolotoCameraBoard](
+        self.camera_boards = BoardGroup.get_board_group(
+            ZolotoCameraBoard,
             ZolotoCameraBackend,
         )
         self.camera_board: ZolotoCameraBoard = self.camera_boards.singular()

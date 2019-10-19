@@ -11,7 +11,7 @@ class MockConsole(Console):
     """Test Console for testing boards."""
 
     def __init__(self, descriptor: str):
-        super(Console, self).__init__()  # type: ignore
+        super(Console, self).__init__()
         self._descriptor = descriptor
         self.next_input: str = ""
         self.expects: str = ""
@@ -23,7 +23,7 @@ class MockConsole(Console):
     def read(  # type: ignore
             self,
             prompt: str,
-            return_type: Optional[Type[T]] = str,
+            return_type: Optional[Type[T]] = str,  # type: ignore
     ) -> Optional[T]:
         """Get a value of type 'return_type' from the user."""
         if return_type is not None:

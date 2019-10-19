@@ -2,22 +2,15 @@
 from abc import abstractmethod
 from datetime import timedelta
 from functools import wraps
-from typing import TYPE_CHECKING, Callable, Optional, Set, Type, TypeVar
+from typing import Callable, Optional, Set, Type, TypeVar
 
 from serial import Serial, SerialException, SerialTimeoutException
+from typing_extensions import Protocol
 
-from j5.backends import BackendMeta, CommunicationError, Environment
+from j5.backends import BackendMeta, CommunicationError
 from j5.boards import Board
 
 RT = TypeVar("RT")  # pragma: nocover
-
-if TYPE_CHECKING:
-    from typing_extensions import Protocol
-else:
-    class Protocol:
-        """Dummy class since typing_extensions is not available at runtime."""
-
-        pass
 
 
 def handle_serial_error(func: Callable[..., RT]) -> Callable[..., RT]:  # type: ignore
@@ -33,9 +26,9 @@ def handle_serial_error(func: Callable[..., RT]) -> Callable[..., RT]:  # type: 
         try:
             return func(*args, **kwargs)
         except SerialTimeoutException as e:
-            raise CommunicationError(f"Serial Timeout Error: {e}")
+            raise CommunicationError(f"Serial Timeout Error: {e}") from e
         except SerialException as e:
-            raise CommunicationError(f"Serial Error: {e}")
+            raise CommunicationError(f"Serial Error: {e}") from e
     return catch_exceptions
 
 
@@ -53,23 +46,23 @@ class Seriallike(Protocol):
                  parity: str = 'N',
                  stopbits: float = 1,
                  timeout: Optional[float] = None):
-        ...
+        ...  # pragma: nocover
 
     def close(self) -> None:
         """Close the connection."""
-        ...
+        ...  # pragma: nocover
 
     def flush(self) -> None:
         """Flush all pending write operations."""
-        ...
+        ...  # pragma: nocover
 
     def readline(self) -> bytes:
         """Read a line from the serial port."""
-        ...
+        ...  # pragma: nocover
 
     def write(self, data: bytes) -> int:
         """Write data to the serial port."""
-        ...
+        ...  # pragma: nocover
 
 
 class SerialHardwareBackend(metaclass=BackendMeta):
@@ -94,12 +87,6 @@ class SerialHardwareBackend(metaclass=BackendMeta):
     @abstractmethod
     def discover(cls) -> Set[Board]:
         """Discover boards that this backend can control."""
-        raise NotImplementedError  # pragma: no cover
-
-    @property
-    @abstractmethod
-    def environment(self) -> Environment:
-        """Environment the backend belongs too."""
         raise NotImplementedError  # pragma: no cover
 
     @property

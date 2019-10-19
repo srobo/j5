@@ -3,7 +3,7 @@
 from typing import List, Optional, Set, Type
 
 from j5.backends import Backend
-from j5.backends.console import Console, ConsoleEnvironment
+from j5.backends.console import Console
 from j5.boards import Board
 from j5.boards.sr.v4.servo_board import ServoBoard
 from j5.components.servo import ServoInterface, ServoPosition
@@ -15,7 +15,6 @@ class SRV4ServoBoardConsoleBackend(
 ):
     """The console implementation of the SR v4 Servo board."""
 
-    environment = ConsoleEnvironment
     board = ServoBoard
 
     @classmethod

@@ -14,7 +14,6 @@ The following diagram shows the main classes at a very basic level, with their i
    digraph {
         Interface -> LEDInterface
         {LEDInterface, Backend} -> HardwarePowerBoardBackend
-        Environment -> HardwareEnvironment
         Component -> LED
         Board -> LEDBoard
    }
@@ -40,13 +39,12 @@ clever features that `j5` has. The below class diagram has metaclasses added.
    digraph {
         Interface -> LEDInterface
         {LEDInterface, Backend} -> HardwarePowerBoardBackend
-        Environment -> HardwareEnvironment
         Component -> LED
         Board -> LEDBoard
 
         ABCMeta -> BackendMeta
         BackendMeta -> Backend [style=dashed]
-        ABCMeta -> {Board, Environment, Component, Interface} [style=dashed]
+        ABCMeta -> {Board, Component, Interface} [style=dashed]
    }
 
 You can view more details about `BackendMeta` in its documentation. `ABCMeta` is part of the Python ``abc`` library.
@@ -63,11 +61,10 @@ The below diagram shows a class having instances of another class as an attribut
    digraph {
         Interface -> LEDInterface
         {LEDInterface, Backend} -> HardwarePowerBoardBackend
-        Environment -> HardwareEnvironment
         Component -> LED
         Board -> PowerBoard
 
-        HardwarePowerBoardBackend -> {HardwareEnvironment, PowerBoard} [style=dotted]
+        HardwarePowerBoardBackend -> {PowerBoard} [style=dotted]
         PowerBoard -> LED [style=dotted]
         Board -> PowerBoard [style=dotted]
         BoardGroup -> PowerBoard [style=dotted]
@@ -76,7 +73,7 @@ The below diagram shows a class having instances of another class as an attribut
    }
 
 Here we can see how the control flow of the robot is not immediately obvious, but also how we can easily swap out the
-modular components within the class structure to support different hardware and environments.
+modular components within the class structure to support different hardware.
 
 Complete Structure
 ------------------
@@ -88,14 +85,13 @@ This diagram may occasionally be useful, and contains the entire class structure
    digraph {
         Interface -> LEDInterface
         {LEDInterface, Backend} -> HardwarePowerBoardBackend
-        Environment -> HardwareEnvironment
         Component -> LED
         Board -> PowerBoard
 
         ABCMeta -> BackendMeta
         BackendMeta -> Backend [style=dashed]
 
-        HardwarePowerBoardBackend -> {HardwareEnvironment, PowerBoard} [style=dotted]
+        HardwarePowerBoardBackend -> {PowerBoard} [style=dotted]
         PowerBoard -> LED [style=dotted]
         Board -> PowerBoard [style=dotted]
         BoardGroup -> PowerBoard [style=dotted]

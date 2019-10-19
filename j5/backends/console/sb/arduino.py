@@ -3,7 +3,7 @@ from datetime import timedelta
 from typing import Mapping, Optional, Set, Type
 
 from j5.backends import Backend
-from j5.backends.console import Console, ConsoleEnvironment
+from j5.backends.console import Console
 from j5.boards import Board
 from j5.boards.sb import SBArduinoBoard
 from j5.components import GPIOPinInterface, GPIOPinMode, LEDInterface
@@ -29,7 +29,6 @@ class SBArduinoConsoleBackend(
 ):
     """Console Backend for the SourceBots Arduino."""
 
-    environment = ConsoleEnvironment
     board = SBArduinoBoard
 
     @classmethod
