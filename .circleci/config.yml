@@ -15,21 +15,23 @@ jobs:
       - run:
           name: Merge with parent branch
           command: |
-            git config user.name "dummy"
-            git config user.email "dummy@example.org"
-            parent_branch=$(circleci-branch)
-            git fetch origin $parent_branch
-            git merge --squash origin/$parent_branch
+            if [ -n "${CIRCLE_PULL_REQUEST:-}" ]; then
+              git config user.name "dummy"
+              git config user.email "dummy@example.org"
+              parent_branch=$(circleci-branch)
+              git fetch origin $parent_branch
+              git merge --squash origin/$parent_branch
+            fi
       - restore_cache:
           keys:
             - pip-packages-{{ .Branch }}-{{ checksum "poetry.lock" }}
             - pip-packages-{{ .Branch }}-
             - pip-packages-
       - run: poetry install
-      - run: poetry run flake8 j5 tests
-      - run: poetry run mypy j5 tests
+      - run: make lint
+      - run: make type
       - run: cc-test-reporter before-build
-      - run: poetry run pytest --cov=j5 tests --cov-report xml
+      - run: make test-ci
       - run: cc-test-reporter after-build -t coverage.py --exit-code $? coverage.xml
       - save_cache:
           paths:

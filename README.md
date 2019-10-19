@@ -18,7 +18,7 @@ j5 Framework - Creating consistent APIs for robotics
 
 `j5` is designed to never be visible to students. It sits behind the scenes and works magic.
 
-```python
+```python unchecked
 from robot import Robot
 
 r = Robot()
@@ -30,31 +30,33 @@ The above code is likely to be familiar to any student who has competed in one o
 `j5` lets competition vendors define how the basic parts of the apis are accessed. A robot can thus be constructed from any combination of parts from various organisations.
 
 ```python
-from j5.boards import BoardGroup
-
-from j5.boards.sr.v4 import PowerBoard, MotorBoard, ServoBoard, Ruggeduino
 from j5.backends.hardware.sr.v4 import (
     SRV4MotorBoardHardwareBackend,
     SRV4PowerBoardHardwareBackend,
-    SRV4RuggeduinoHardwareBackend,
     SRV4ServoBoardHardwareBackend,
 )
+from j5.boards import BoardGroup
+from j5.boards.sr.v4 import MotorBoard, PowerBoard, ServoBoard
+
 
 class Robot:
     """My Competition Robot."""
 
     def __init__(self) -> None:
-        self._power_boards = BoardGroup.get_board_group(PowerBoard, SRV4PowerBoardHardwareBackend)
+        self._power_boards = BoardGroup.get_board_group(
+            PowerBoard, SRV4PowerBoardHardwareBackend,
+        )
         self.power_board = self._power_boards.singular()
-        
-        self.motor_boards = BoardGroup.get_board_group(MotorBoard, SRV4MotorBoardHardwareBackend)
+
+        self.motor_boards = BoardGroup.get_board_group(
+            MotorBoard, SRV4MotorBoardHardwareBackend,
+        )
         self.motor_board = self.motor_boards.singular()
 
-        self.servo_boards = BoardGroup.get_board_group(ServoBoard, SRV4ServoBoardHardwareBackend)
+        self.servo_boards = BoardGroup.get_board_group(
+            ServoBoard, SRV4ServoBoardHardwareBackend,
+        )
         self.servo_board = self.servo_boards.singular()
-
-        self._ruggeduinos = BoardGroup.get_board_group(Ruggeduino, SRV4RuggeduinoHardwareBackend)
-        self.ruggeduino = self._ruggeduinos.singular()
 ```
 
 ## Competitions
