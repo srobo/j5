@@ -71,7 +71,7 @@ class BackendMeta(ABCMeta):
         if len(cls.__bases__) == 1 and cls.__base__.__name__ != "Backend":
             return cls
 
-        mcs._check_component_interfaces(cls)
+        mcs._check_component_interfaces(cls)  # type: ignore
         _wrap_methods_with_logging(cls)
 
         return cls
@@ -84,7 +84,7 @@ class BackendMeta(ABCMeta):
         and we want to make sure that the Backend implements
         them. This is a run-time type check.
         """
-        for component in cls.board.supported_components():
+        for component in cls.board.supported_components():  # type: ignore
             if not issubclass(cls, component.interface_class()):
                 raise TypeError("The backend class doesn't have a required interface.")  # noqa: E501
 
