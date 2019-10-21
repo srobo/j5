@@ -112,7 +112,7 @@ class MarkerList(List[Marker]):
     def __getitem__(self, index: int) -> Marker:
         ...  # pragma: nocover
 
-    @overload
+    @overload  # noqa: F811
     def __getitem__(self, index: slice) -> List[Marker]:  # noqa: F811
         ...  # pragma: nocover
 
