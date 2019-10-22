@@ -8,6 +8,7 @@ distributed separately in the future, to remove the PyUSB dependency from the j5
 
 from abc import abstractmethod
 from functools import wraps
+from threading import Lock
 from typing import Callable, NamedTuple, Optional, Set, TypeVar, Union
 
 import usb
@@ -82,6 +83,7 @@ class RawUSBHardwareBackend(metaclass=BackendMeta):
     """An abstract class for creating backends that use Raw USB communication."""
 
     _usb_device: usb.core.Device
+    _lock: Lock
 
     @classmethod
     @abstractmethod
@@ -99,23 +101,26 @@ class RawUSBHardwareBackend(metaclass=BackendMeta):
     @handle_usb_error
     def serial(self) -> str:
         """The serial number reported by the board."""
-        # https://github.com/python/mypy/issues/1362
-        return self._usb_device.serial_number
+        with self._lock:
+            return self._usb_device.serial_number
 
     @handle_usb_error
     def __del__(self) -> None:
         """Clean up device on destruction of object."""
+        # Note: we do not obtain the lock here.
+        # This is because we want to close the device ASAP in an emergency.
         usb.util.dispose_resources(self._usb_device)
 
     @handle_usb_error
     def _read(self, command: ReadCommand) -> bytes:
-        return self._usb_device.ctrl_transfer(
-            0x80,
-            64,
-            wValue=0,
-            wIndex=command.code,
-            data_or_wLength=command.data_len,
-        )
+        with self._lock:
+            return self._usb_device.ctrl_transfer(
+                0x80,
+                64,
+                wValue=0,
+                wIndex=command.code,
+                data_or_wLength=command.data_len,
+            )
 
     @handle_usb_error
     def _write(self, command: WriteCommand, param: Union[int, bytes]) -> None:
@@ -126,10 +131,11 @@ class RawUSBHardwareBackend(metaclass=BackendMeta):
         else:
             req_data = param
 
-        self._usb_device.ctrl_transfer(
-            0x00,
-            64,
-            wValue=req_val,
-            wIndex=command.code,
-            data_or_wLength=req_data,
-        )
+        with self._lock:
+            self._usb_device.ctrl_transfer(
+                0x00,
+                64,
+                wValue=req_val,
+                wIndex=command.code,
+                data_or_wLength=req_data,
+            )
