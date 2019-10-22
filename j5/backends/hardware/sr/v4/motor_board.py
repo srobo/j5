@@ -100,11 +100,15 @@ class SRV4MotorBoardHardwareBackend(
     @handle_serial_error
     def send_command(self, command: int, data: Optional[int] = None) -> None:
         """Send a serial command to the board."""
+        with self._lock:
+            return self._send_command_no_lock(command, data)
+
+    def _send_command_no_lock(self, command: int, data: Optional[int] = None) -> None:
+        """Send a serial command to the board without acquiring the lock."""
         message: List[int] = [command]
         if data is not None:
             message += [data]
-        with self._lock:
-            bytes_written = self._serial.write(bytes(message))
+        bytes_written = self._serial.write(bytes(message))
         if len(message) != bytes_written:
             raise CommunicationError(
                 "Mismatch in command bytes written to serial interface.",
@@ -113,8 +117,8 @@ class SRV4MotorBoardHardwareBackend(
     @property
     def firmware_version(self) -> Optional[str]:
         """The firmware version of the board."""
-        self.send_command(CMD_VERSION)
         with self._lock:
+            self._send_command_no_lock(CMD_VERSION)
             firmware_data = self.read_serial_line()
         model = firmware_data[:5]
         if model != "MCV4B":
