@@ -1,4 +1,5 @@
 """Hardware Backend for the SR v4 motor board."""
+from threading import Lock
 from typing import Callable, List, Optional, Set, Type, cast
 
 from serial import Serial
@@ -74,6 +75,8 @@ class SRV4MotorBoardHardwareBackend(
             for _ in range(0, 2)
         ]
 
+        self._lock = Lock()
+
         # Check we have the correct firmware version.
         version = self.firmware_version
         if version != "3":
@@ -100,7 +103,8 @@ class SRV4MotorBoardHardwareBackend(
         message: List[int] = [command]
         if data is not None:
             message += [data]
-        bytes_written = self._serial.write(bytes(message))
+        with self._lock:
+            bytes_written = self._serial.write(bytes(message))
         if len(message) != bytes_written:
             raise CommunicationError(
                 "Mismatch in command bytes written to serial interface.",
@@ -110,7 +114,8 @@ class SRV4MotorBoardHardwareBackend(
     def firmware_version(self) -> Optional[str]:
         """The firmware version of the board."""
         self.send_command(CMD_VERSION)
-        firmware_data = self.read_serial_line()
+        with self._lock:
+            firmware_data = self.read_serial_line()
         model = firmware_data[:5]
         if model != "MCV4B":
             raise CommunicationError(
