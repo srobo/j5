@@ -40,7 +40,6 @@ sphinx = "^2.2"
 sphinx-rtd-theme = "^0.4.3"
 rope = "^0.14.0"
 isort = {version = "^4.3",extras = ["pyproject"]}
-opencv-contrib-python = "^4.1"
 
 [tool.poetry.extras]
 zoloto-vision = ["zoloto"]
