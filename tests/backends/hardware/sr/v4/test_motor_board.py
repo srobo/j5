@@ -255,3 +255,17 @@ def test_brake_motors_at_deletion() -> None:
         b'\x02\x02'  # Brake motor 0
         b'\x03\x02',  # Brake motor 1
     )
+
+
+def test_safe_shutdown_serial_start_crash() -> None:
+    """Test that the _shutdown on the board doesn't break during start."""
+    backend = SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerial)
+
+    # This line simulates the backend never initialising the state
+    del backend._state
+
+    # Check it worked.
+    assert not hasattr(backend, "_state")
+
+    # Now force a deconstruction event.
+    del backend
