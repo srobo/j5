@@ -5,17 +5,12 @@ import socket
 import pytest
 
 from j5 import BaseRobot
-from j5.backends import Environment
 from j5.base_robot import UnableToObtainLock
-
-TestEnvironment = Environment("TestEnvironment")
-
 
 class Robot(BaseRobot):
     """A robot."""
 
     def __init__(self, debug: bool = False) -> None:
-        self._env = TestEnvironment
         self.debug = debug
 
 
