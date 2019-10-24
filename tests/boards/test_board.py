@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Optional, Set, Type
 
 import pytest
 
-from j5.backends import Backend, CommunicationError, Environment
+from j5.backends import Backend, CommunicationError
 from j5.boards.board import Board, BoardGroup
 
 if TYPE_CHECKING:
@@ -140,19 +140,6 @@ def test_testing_board_repr() -> None:
     """Test the __repr__ method of the board class."""
     tb = MockBoard("TESTSERIAL1")
     assert repr(tb) == f"<MockBoard serial=TESTSERIAL1>"
-
-
-def test_get_boardgroup_from_environment() -> None:
-    """Test that we can create a boardgroup from an environment."""
-    env = Environment("TestEnv")
-    env.register_backend(OneBoardMockBackend)
-
-    # See https://github.com/j5api/j5/issues/408
-    bg = MockBoard.get_board_group_from_environment(env)  # type: ignore
-
-    assert bg.backend_class is OneBoardMockBackend
-    assert len(bg) == 1
-
 
 def test_discover() -> None:
     """Test that the detect all static method works."""
