@@ -37,7 +37,7 @@ pytz = ">=2015.7"
 category = "main"
 description = "A decorator for caching properties in classes."
 name = "cached-property"
-optional = true
+optional = false
 python-versions = "*"
 version = "1.5.1"
 
@@ -137,10 +137,15 @@ description = "A flake8 plugin to help you write better list/set/dict comprehens
 name = "flake8-comprehensions"
 optional = false
 python-versions = ">=3.5"
-version = "2.2.0"
+version = "3.0.0"
 
 [package.dependencies]
-flake8 = "!=3.2.0"
+cached-property = ">=1.0.0,<2.0.0"
+flake8 = ">=3.0,<3.2.0 || >3.2.0,<4"
+
+[package.dependencies.importlib-metadata]
+python = "<3.8"
+version = "*"
 
 [[package]]
 category = "dev"
@@ -684,7 +689,7 @@ ujson = ">=1.35,<2.0"
 zoloto-vision = ["zoloto"]
 
 [metadata]
-content-hash = "b1c8338fce2adb801c28007f1d2d9426967173218906e93f3bf9e750c8f47ed1"
+content-hash = "4f3d5c60fa0522f5949571c7810c66237c6c2f6fbd8cd25f10af1e368fcdfef4"
 python-versions = "^3.6"
 
 [metadata.hashes]
@@ -703,7 +708,7 @@ entrypoints = ["589f874b313739ad35be6e0cd7efde2a4e9b6fea91edcc34e58ecbb8dbe56d19
 fastcache = ["6de1b16e70335b7bde266707eb401a3aaec220fb66c5d13b02abf0eab8be782b"]
 flake8 = ["19241c1cbc971b9962473e4438a2ca19749a7dd002dd1a946eaba171b4114548", "8e9dfa3cecb2400b3738a42c54c3043e821682b9c840b0448c0503f781130696"]
 flake8-commas = ["d3005899466f51380387df7151fb59afec666a0f4f4a2c6a8995b975de0f44b7", "ee2141a3495ef9789a3894ed8802d03eff1eaaf98ce6d8653a7c573ef101935e"]
-flake8-comprehensions = ["7b174ded3d7e73edf587e942458b6c1a7c3456d512d9c435deae367236b9562c", "e36fc12bd3833e0b34fe0639b7a817d32c86238987f532078c57eafdc7a8a219"]
+flake8-comprehensions = ["60a3d8eb8f29b11ba7dd22a9ba3641b8a5f241fbc31287d00d398eafe823d16d", "f5ca4f2b8752dbe7e49fc430290761bb4bd030d47bc1ba39bcaa24b79b0c8672"]
 flake8-debugger = ["08d80b7e90f6c11d72e77d2717b90c29b144c87e5698ffd1b5a1e42acb3ecfd9", "6e662f7e75a3ed729d3be7c92e72bde385ab08ec26e7808bf3dfc63445c87857"]
 flake8-docstrings = ["3d5a31c7ec6b7367ea6506a87ec293b94a0a46c0bce2bb4975b7f1d09b6f3717", "a256ba91bc52307bef1de59e2a009c3cf61c3d0952dbe035d6ff7208940c2edc"]
 flake8-isort = ["1e67b6b90a9b980ac3ff73782087752d406ce0a729ed928b92797f9fa188917e", "81a8495eefed3f2f63f26cd2d766c7b1191e923a15b9106e6233724056572c68"]
