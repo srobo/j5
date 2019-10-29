@@ -27,7 +27,7 @@ typing-extensions = "^3.7"
 [tool.poetry.dev-dependencies]
 flake8 = "^3.7"
 flake8-commas = "^2.0"
-flake8-comprehensions = "^2.2"
+flake8-comprehensions = "^3.0"
 flake8-debugger = "^3.2"
 flake8-docstrings = "^1.5"
 flake8-isort = "^2.7"
@@ -40,7 +40,6 @@ sphinx = "^2.2"
 sphinx-rtd-theme = "^0.4.3"
 rope = "^0.14.0"
 isort = {version = "^4.3",extras = ["pyproject"]}
-opencv-contrib-python = "^4.1"
 
 [tool.poetry.extras]
 zoloto-vision = ["zoloto"]

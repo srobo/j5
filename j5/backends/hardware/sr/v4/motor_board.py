@@ -91,13 +91,13 @@ class SRV4MotorBoardHardwareBackend(
     def __del__(self) -> None:
         """Clean up device on destruction of object."""
         # Brake both of the motors for safety
-        for i, val in enumerate(self._state):
-            self.set_motor_state(
-                i,
-                MotorSpecialState.BRAKE,
-                acquire_lock=False,
-            )
-
+        if hasattr(self, "_state"):
+            for i, val in enumerate(self._state):
+                self.set_motor_state(
+                    i,
+                    MotorSpecialState.BRAKE,
+                    acquire_lock=False,
+                )
         self._serial.flush()
         self._serial.close()
 
