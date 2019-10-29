@@ -83,7 +83,9 @@ class RawUSBHardwareBackend(metaclass=BackendMeta):
     """An abstract class for creating backends that use Raw USB communication."""
 
     _usb_device: usb.core.Device
-    _lock: Lock
+
+    def __init__(self) -> None:
+        self._lock = Lock()
 
     @classmethod
     @abstractmethod

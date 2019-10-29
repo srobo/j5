@@ -1,7 +1,6 @@
 """Hardware Backend for the SR V4 Servo Board."""
 
 import struct
-from threading import Lock
 from typing import Callable, List, Set, cast
 
 import usb
@@ -48,8 +47,9 @@ class SRV4ServoBoardHardwareBackend(
 
     @handle_usb_error
     def __init__(self, usb_device: usb.core.Device) -> None:
+        super().__init__()
+
         self._usb_device = usb_device
-        self._lock = Lock()
 
         self.check_firmware_version_supported()
 

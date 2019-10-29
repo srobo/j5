@@ -2,7 +2,6 @@
 
 import struct
 from datetime import timedelta
-from threading import Lock
 from time import sleep
 from typing import Callable, Dict, Mapping, Set, cast
 
@@ -71,9 +70,9 @@ class SRV4PowerBoardHardwareBackend(
 
     @handle_usb_error
     def __init__(self, usb_device: usb.core.Device) -> None:
-        self._usb_device = usb_device
+        super().__init__()
 
-        self._lock = Lock()
+        self._usb_device = usb_device
 
         self._output_states: Dict[int, bool] = {
             output.value: False
