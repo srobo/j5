@@ -92,7 +92,11 @@ class SRV4MotorBoardHardwareBackend(
         """Clean up device on destruction of object."""
         # Brake both of the motors for safety
         for i, val in enumerate(self._state):
-            self.set_motor_state(i, MotorSpecialState.BRAKE)
+            self.set_motor_state(
+                i,
+                MotorSpecialState.BRAKE,
+                acquire_lock=False,
+            )
 
         self._serial.flush()
         self._serial.close()
@@ -133,7 +137,12 @@ class SRV4MotorBoardHardwareBackend(
         # so we'll get the last set value.
         return self._state[identifier]
 
-    def set_motor_state(self, identifier: int, power: MotorState) -> None:
+    def set_motor_state(
+            self,
+            identifier: int,
+            power: MotorState,
+            acquire_lock: bool = True,
+    ) -> None:
         """Set the state of a motor."""
         if identifier not in range(0, 2):
             raise ValueError(
@@ -157,4 +166,10 @@ class SRV4MotorBoardHardwareBackend(
             value = round(ipower * 125) + 128
 
         self._state[identifier] = power
-        self.send_command(CMD_MOTOR[identifier], value)
+
+        command = CMD_MOTOR[identifier]
+
+        if acquire_lock:
+            self.send_command(command, value)
+        else:
+            self._send_command_no_lock(command, value)
