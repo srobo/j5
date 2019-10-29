@@ -61,6 +61,6 @@ class Motor(Component):
     def power(self, new_power: MotorState) -> None:
         """Set the current state of this output."""
         if not isinstance(new_power, MotorSpecialState):
-            if not(-1 < new_power < 1):
+            if not(-1 <= new_power <= 1):
                 raise ValueError("Motor power must be between 1 and -1.")
         self._backend.set_motor_state(self._identifier, new_power)
