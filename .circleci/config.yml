@@ -16,7 +16,7 @@ jobs:
       - run:
           name: Merge with parent branch
           command: |
-            if [ -n "${CIRCLE_PULL_REQUEST:-}" ]; then
+            if [ -n "${CIRCLE_PULL_REQUEST:-}" ] && [ -n "${GITHUB_TOKEN:-}" ]; then
               git config user.name "dummy"
               git config user.email "dummy@example.org"
               parent_branch=$(circleci-branch)
