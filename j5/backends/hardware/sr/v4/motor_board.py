@@ -116,6 +116,7 @@ class SRV4MotorBoardHardwareBackend(
             self,
             command: int,
             data: Optional[int] = None,
+            *,
             acquire_lock: bool = True,
     ) -> None:
         """Send a serial command to the board."""
@@ -141,7 +142,7 @@ class SRV4MotorBoardHardwareBackend(
     def firmware_version(self) -> Optional[str]:
         """The firmware version of the board."""
         with self._lock:
-            self.send_command(CMD_VERSION, None, False)
+            self.send_command(CMD_VERSION, acquire_lock=False)
             firmware_data = self.read_serial_line()
         model = firmware_data[:5]
         if model != "MCV4B":
@@ -160,6 +161,7 @@ class SRV4MotorBoardHardwareBackend(
             self,
             identifier: int,
             power: MotorState,
+            *,
             acquire_lock: bool = True,
     ) -> None:
         """Set the state of a motor."""
@@ -188,4 +190,4 @@ class SRV4MotorBoardHardwareBackend(
 
         command = CMD_MOTOR[identifier]
 
-        self.send_command(command, value, acquire_lock)
+        self.send_command(command, value, acquire_lock=acquire_lock)
