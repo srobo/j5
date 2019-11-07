@@ -1,5 +1,4 @@
 """Hardware Backend for the SR v4 motor board."""
-from contextlib import nullcontext
 from threading import Lock
 from typing import (
     Callable,
@@ -25,6 +24,7 @@ from j5.backends.hardware.j5.serial import (
 from j5.boards import Board
 from j5.boards.sr.v4.motor_board import MotorBoard
 from j5.components.motor import MotorInterface, MotorSpecialState, MotorState
+from j5.utils import NullContextManager
 
 CMD_RESET = 0
 CMD_VERSION = 1
@@ -129,7 +129,7 @@ class SRV4MotorBoardHardwareBackend(
         if acquire_lock:
             lock = self._lock
         else:
-            lock = nullcontext()
+            lock = NullContextManager()
 
         with lock:
             bytes_written = self._serial.write(bytes(message))
