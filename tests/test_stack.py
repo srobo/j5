@@ -7,6 +7,7 @@ import pytest
 from j5 import BaseRobot
 from j5.base_robot import UnableToObtainLock
 
+
 class Robot(BaseRobot):
     """A robot."""
 
