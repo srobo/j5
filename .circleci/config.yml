@@ -5,6 +5,7 @@ workflows:
     jobs:
       - test-3.6
       - test-3.7
+      - test-3.8
 
 jobs:
   test-3.6: &template
@@ -15,7 +16,7 @@ jobs:
       - run:
           name: Merge with parent branch
           command: |
-            if [ -n "${CIRCLE_PULL_REQUEST:-}" ]; then
+            if [ -n "${CIRCLE_PULL_REQUEST:-}" -a -n "${GITHUB_TOKEN:-}" ]; then
               git config user.name "dummy"
               git config user.email "dummy@example.org"
               parent_branch=$(circleci-branch)
