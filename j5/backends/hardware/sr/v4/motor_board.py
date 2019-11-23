@@ -1,15 +1,6 @@
 """Hardware Backend for the SR v4 motor board."""
 from threading import Lock
-from typing import (
-    Callable,
-    ContextManager,
-    List,
-    Optional,
-    Set,
-    Type,
-    Union,
-    cast,
-)
+from typing import Callable, List, Optional, Set, Type, cast
 
 from serial import Serial
 from serial.tools.list_ports import comports
@@ -24,7 +15,6 @@ from j5.backends.hardware.j5.serial import (
 from j5.boards import Board
 from j5.boards.sr.v4.motor_board import MotorBoard
 from j5.components.motor import MotorInterface, MotorSpecialState, MotorState
-from j5.utils import NullContextManager
 
 CMD_RESET = 0
 CMD_VERSION = 1
@@ -112,27 +102,17 @@ class SRV4MotorBoardHardwareBackend(
         self._serial.close()
 
     @handle_serial_error
-    def send_command(
-            self,
-            command: int,
-            data: Optional[int] = None,
-            *,
-            acquire_lock: bool = True,
-    ) -> None:
+    def send_command(self, command: int, data: Optional[int] = None) -> None:
         """Send a serial command to the board."""
+        with self._lock:
+            return self._send_command_no_lock(command, data)
+
+    def _send_command_no_lock(self, command: int, data: Optional[int] = None) -> None:
+        """Send a serial command to the board without acquiring the lock."""
         message: List[int] = [command]
         if data is not None:
             message += [data]
-
-        lock: Union[Lock, ContextManager[None]]
-
-        if acquire_lock:
-            lock = self._lock
-        else:
-            lock = NullContextManager()
-
-        with lock:
-            bytes_written = self._serial.write(bytes(message))
+        bytes_written = self._serial.write(bytes(message))
         if len(message) != bytes_written:
             raise CommunicationError(
                 "Mismatch in command bytes written to serial interface.",
@@ -142,7 +122,7 @@ class SRV4MotorBoardHardwareBackend(
     def firmware_version(self) -> Optional[str]:
         """The firmware version of the board."""
         with self._lock:
-            self.send_command(CMD_VERSION, acquire_lock=False)
+            self._send_command_no_lock(CMD_VERSION)
             firmware_data = self.read_serial_line()
         model = firmware_data[:5]
         if model != "MCV4B":
@@ -161,7 +141,6 @@ class SRV4MotorBoardHardwareBackend(
             self,
             identifier: int,
             power: MotorState,
-            *,
             acquire_lock: bool = True,
     ) -> None:
         """Set the state of a motor."""
@@ -190,4 +169,7 @@ class SRV4MotorBoardHardwareBackend(
 
         command = CMD_MOTOR[identifier]
 
-        self.send_command(command, value, acquire_lock=acquire_lock)
+        if acquire_lock:
+            self.send_command(command, value)
+        else:
+            self._send_command_no_lock(command, value)
