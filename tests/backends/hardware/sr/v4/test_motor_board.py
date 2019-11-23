@@ -165,12 +165,19 @@ def test_backend_send_command() -> None:
 
 def test_backend_send_command_bad_write() -> None:
     """Test that an error is thrown if we can't write bytes."""
+    # Use a good serial driver for the initialisation
     backend = SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerial)
+    good_serial_driver = backend._serial
 
+    # Swap it for a bad one.
     bad_serial_driver = MotorSerialBadWrite("COM0", baudrate=1000000, timeout=0.25)
     backend._serial = bad_serial_driver
+
     with pytest.raises(CommunicationError):
         backend.send_command(4)
+
+    # Use the good serial driver for a graceful shutdown
+    backend._serial = good_serial_driver
 
 
 def test_read_serial_line() -> None:
