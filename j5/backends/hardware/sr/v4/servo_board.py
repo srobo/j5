@@ -47,6 +47,8 @@ class SRV4ServoBoardHardwareBackend(
 
     @handle_usb_error
     def __init__(self, usb_device: usb.core.Device) -> None:
+        super().__init__()
+
         self._usb_device = usb_device
 
         self.check_firmware_version_supported()
@@ -57,8 +59,8 @@ class SRV4ServoBoardHardwareBackend(
         ]
 
         # Initialise servos.
-
-        self._usb_device.ctrl_transfer(0, 64, 0, 12, b"")
+        with self._lock:
+            self._usb_device.ctrl_transfer(0, 64, 0, 12, b"")
 
         for s in range(0, 12):
             self.set_servo_position(s, 0.0)

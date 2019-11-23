@@ -1,6 +1,7 @@
 """SourceBots Arduino Hardware Implementation."""
 
 from datetime import timedelta
+from threading import Lock
 from typing import Callable, List, Mapping, Optional, Set, Tuple, Type
 
 from serial import Serial
@@ -88,23 +89,28 @@ class SBArduinoHardwareBackend(
             timeout=timedelta(milliseconds=1250),
         )
 
+        self._lock = Lock()
+
         self._digital_pins: Mapping[int, DigitalPinData] = {
             i: DigitalPinData(mode=GPIOPinMode.DIGITAL_INPUT, state=False)
             for i in range(2, FIRST_ANALOGUE_PIN)
         }
 
-        count = 0
-        line = self.read_serial_line(empty=True)
-        while len(line) == 0:
+        with self._lock:
+            count = 0
             line = self.read_serial_line(empty=True)
-            count += 1
-            if count > 25:
-                raise CommunicationError(f"Arduino ({serial_port}) is not responding.")
+            while len(line) == 0:
+                line = self.read_serial_line(empty=True)
+                count += 1
+                if count > 25:
+                    raise CommunicationError(
+                        f"Arduino ({serial_port}) is not responding.",
+                    )
 
-        if line != "# Booted":
-            raise CommunicationError("Arduino Boot Error.")
+            if line != "# Booted":
+                raise CommunicationError("Arduino Boot Error.")
 
-        self._version_line = self.read_serial_line()
+            self._version_line = self.read_serial_line()
 
         if self.firmware_version is not None:
             version_ids = tuple(map(int, self.firmware_version.split(".")))
@@ -128,25 +134,26 @@ class SBArduinoHardwareBackend(
     @handle_serial_error
     def _command(self, command: str, *params: str) -> List[str]:
         """Send a command to the board."""
-        message = " ".join([command] + list(params)) + "\n"
-        self._serial.write(message.encode("utf-8"))
+        with self._lock:
+            message = " ".join([command] + list(params)) + "\n"
+            self._serial.write(message.encode("utf-8"))
 
-        results: List[str] = []
-        while True:
-            line = self.read_serial_line(empty=False)
-            code, param = line.split(None, 1)
-            if code == "+":
-                return results
-            elif code == "-":
-                raise CommunicationError(f"Arduino error: {param}")
-            elif code == ">":
-                results.append(param)
-            elif code == "#":
-                pass  # Ignore comment lines
-            else:
-                raise CommunicationError(
-                    f"Arduino returned unrecognised response line: {line}",
-                )
+            results: List[str] = []
+            while True:
+                line = self.read_serial_line(empty=False)
+                code, param = line.split(None, 1)
+                if code == "+":
+                    return results
+                elif code == "-":
+                    raise CommunicationError(f"Arduino error: {param}")
+                elif code == ">":
+                    results.append(param)
+                elif code == "#":
+                    pass  # Ignore comment lines
+                else:
+                    raise CommunicationError(
+                        f"Arduino returned unrecognised response line: {line}",
+                    )
 
     def _update_digital_pin(self, identifier: int) -> None:
         if identifier >= FIRST_ANALOGUE_PIN:
