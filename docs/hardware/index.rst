@@ -9,9 +9,7 @@ project.
 
 .. toctree::
    :maxdepth: 1
-   :caption: Officially Supported Vendors:
+   :caption: j5 Supported Vendors:
 
-   hr-robocon
-   sourcebots
    srobo/index
 
