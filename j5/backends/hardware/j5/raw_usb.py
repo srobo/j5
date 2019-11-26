@@ -7,13 +7,12 @@ distributed separately in the future, to remove the PyUSB dependency from the j5
 """
 
 from abc import abstractmethod
-from functools import wraps
 from threading import Lock
-from typing import Callable, NamedTuple, Optional, Set, TypeVar, Union
+from typing import NamedTuple, Optional, Set, Union
 
 import usb
 
-from j5.backends import BackendMeta, CommunicationError
+from j5.backends import Backend, BackendMeta, CommunicationError
 from j5.boards import Board
 
 # Stop the library from closing the USB connections before make_safe is called.
@@ -59,7 +58,7 @@ class USBCommunicationError(CommunicationError):
         super().__init__(message)
 
 
-class RawUSBHardwareBackend(metaclass=BackendMeta):
+class RawUSBHardwareBackend(Backend, metaclass=BackendMeta):
     """An abstract class for creating backends that use Raw USB communication."""
 
     _usb_device: usb.core.Device
