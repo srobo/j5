@@ -5,6 +5,7 @@ from datetime import timedelta
 from typing import List, Optional, Union
 
 import pytest
+import usb
 
 from j5.backends.hardware import NotSupportedByHardwareError
 from j5.backends.hardware.j5.raw_usb import ReadCommand, WriteCommand
@@ -99,7 +100,7 @@ class MockUSBContext:
         pass
 
 
-class MockUSBPowerBoardDevice:
+class MockUSBPowerBoardDevice(usb.core.Device):
     """This class mocks the behaviour of a USB device for a Power Board."""
 
     def __init__(self, serial_number: str, fw_version: int = 3):
