@@ -9,8 +9,8 @@ from j5.backends.hardware.env import NotSupportedByHardwareError
 from j5.backends.hardware.j5.raw_usb import (
     RawUSBHardwareBackend,
     ReadCommand,
-    WriteCommand,
     USBCommunicationError,
+    WriteCommand,
 )
 from j5.boards import Board
 from j5.boards.sr.v4 import ServoBoard

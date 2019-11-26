@@ -68,6 +68,8 @@ class Seriallike(Protocol):
 class SerialHardwareBackend(metaclass=BackendMeta):
     """An abstract class for creating backends that use USB serial communication."""
 
+    ABSTRACT: bool = True
+
     @handle_serial_error
     def __init__(
             self,

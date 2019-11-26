@@ -1,6 +1,5 @@
 """Test the abstract Raw USB backend."""
 
-import pytest
 import usb
 
 from j5.backends.hardware.j5.raw_usb import (
