@@ -26,9 +26,9 @@ class Marker:
     def __init__(self,
                  id: int,
                  position: Coordinate,
+                 *,
                  pixel_corners: Optional[Sequence[PixelCoordinates]] = None,
                  pixel_centre: Optional[PixelCoordinates] = None,
-                 *,  # We need to move this before pixel_corners.
                  orientation: Optional[Orientation] = None,
                  ):
         self._id = id

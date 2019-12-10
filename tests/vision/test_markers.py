@@ -64,15 +64,15 @@ def test_marker_pixel_corners() -> None:
     m = Marker(0, get_random_coordinate())
     assert m.pixel_corners is None
 
-    m = Marker(0, get_random_coordinate(), [])
+    m = Marker(0, get_random_coordinate(), pixel_corners=[])
     assert m.pixel_corners is not None
     assert len(m.pixel_corners) == 0
 
-    m = Marker(0, get_random_coordinate(), ())
+    m = Marker(0, get_random_coordinate(), pixel_corners=())
     assert m.pixel_corners is not None
     assert len(m.pixel_corners) == 0
 
-    m = Marker(0, get_random_coordinate(), ((12, 12), (34, 43)))
+    m = Marker(0, get_random_coordinate(), pixel_corners=((12, 12), (34, 43)))
     assert m.pixel_corners is not None
     assert len(m.pixel_corners) == 2
     assert m.pixel_corners[0] == (12, 12)
