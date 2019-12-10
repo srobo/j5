@@ -1,4 +1,5 @@
 """Hardware Backend for the SR v4 motor board."""
+from threading import Lock
 from typing import Callable, List, Optional, Set, Type, cast
 
 from serial import Serial
@@ -74,6 +75,8 @@ class SRV4MotorBoardHardwareBackend(
             for _ in range(0, 2)
         ]
 
+        self._lock = Lock()
+
         # Check we have the correct firmware version.
         version = self.firmware_version
         if version != "3":
@@ -90,14 +93,22 @@ class SRV4MotorBoardHardwareBackend(
         # Brake both of the motors for safety
         if hasattr(self, "_state"):
             for i, val in enumerate(self._state):
-                self.set_motor_state(i, MotorSpecialState.BRAKE)
-
+                self.set_motor_state(
+                    i,
+                    MotorSpecialState.BRAKE,
+                    acquire_lock=False,
+                )
         self._serial.flush()
         self._serial.close()
 
     @handle_serial_error
     def send_command(self, command: int, data: Optional[int] = None) -> None:
         """Send a serial command to the board."""
+        with self._lock:
+            return self._send_command_no_lock(command, data)
+
+    def _send_command_no_lock(self, command: int, data: Optional[int] = None) -> None:
+        """Send a serial command to the board without acquiring the lock."""
         message: List[int] = [command]
         if data is not None:
             message += [data]
@@ -110,8 +121,9 @@ class SRV4MotorBoardHardwareBackend(
     @property
     def firmware_version(self) -> Optional[str]:
         """The firmware version of the board."""
-        self.send_command(CMD_VERSION)
-        firmware_data = self.read_serial_line()
+        with self._lock:
+            self._send_command_no_lock(CMD_VERSION)
+            firmware_data = self.read_serial_line()
         model = firmware_data[:5]
         if model != "MCV4B":
             raise CommunicationError(
@@ -125,7 +137,12 @@ class SRV4MotorBoardHardwareBackend(
         # so we'll get the last set value.
         return self._state[identifier]
 
-    def set_motor_state(self, identifier: int, power: MotorState) -> None:
+    def set_motor_state(
+            self,
+            identifier: int,
+            power: MotorState,
+            acquire_lock: bool = True,
+    ) -> None:
         """Set the state of a motor."""
         if identifier not in range(0, 2):
             raise ValueError(
@@ -149,4 +166,10 @@ class SRV4MotorBoardHardwareBackend(
             value = round(ipower * 125) + 128
 
         self._state[identifier] = power
-        self.send_command(CMD_MOTOR[identifier], value)
+
+        command = CMD_MOTOR[identifier]
+
+        if acquire_lock:
+            self.send_command(command, value)
+        else:
+            self._send_command_no_lock(command, value)

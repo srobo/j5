@@ -2,6 +2,7 @@
 
 from pathlib import Path
 from platform import system
+from threading import Lock
 from typing import Optional, Set, Type, TypeVar
 
 from zoloto import __version__ as zoloto_version
@@ -56,8 +57,10 @@ class ZolotoCameraBoardHardwareBackend(
 
     def __init__(self, device_path: Path, camera_class: Type[T]) -> None:
         self._device_path = device_path
+        self._lock = Lock()
 
-        self._zcamera = camera_class(0)
+        with self._lock:
+            self._zcamera = camera_class(0)
 
     @property
     def firmware_version(self) -> Optional[str]:
@@ -68,7 +71,8 @@ class ZolotoCameraBoardHardwareBackend(
         """Get markers that are visible to the camera."""
         markers = MarkerList()
 
-        marker_gen = self._zcamera.process_frame()
+        with self._lock:
+            marker_gen = self._zcamera.process_frame()
 
         for zmarker in marker_gen:
             position = Coordinate(
@@ -101,4 +105,5 @@ class ZolotoCameraBoardHardwareBackend(
 
     def save_annotated_image(self, file: Path) -> None:
         """Save an annotated image to file."""
-        self._zcamera.save_frame(file, annotate=True)
+        with self._lock:
+            self._zcamera.save_frame(file, annotate=True)
