@@ -3,9 +3,11 @@
 from random import randint, random
 
 import pytest
+from pyquaternion import Quaternion
 
 from j5.vision.coordinates import Coordinate
 from j5.vision.markers import Marker, MarkerList
+from j5.vision.orientation import Orientation
 
 
 def get_random_float() -> float:
@@ -64,15 +66,15 @@ def test_marker_pixel_corners() -> None:
     m = Marker(0, get_random_coordinate())
     assert m.pixel_corners is None
 
-    m = Marker(0, get_random_coordinate(), [])
+    m = Marker(0, get_random_coordinate(), pixel_corners=[])
     assert m.pixel_corners is not None
     assert len(m.pixel_corners) == 0
 
-    m = Marker(0, get_random_coordinate(), ())
+    m = Marker(0, get_random_coordinate(), pixel_corners=())
     assert m.pixel_corners is not None
     assert len(m.pixel_corners) == 0
 
-    m = Marker(0, get_random_coordinate(), ((12, 12), (34, 43)))
+    m = Marker(0, get_random_coordinate(), pixel_corners=((12, 12), (34, 43)))
     assert m.pixel_corners is not None
     assert len(m.pixel_corners) == 2
     assert m.pixel_corners[0] == (12, 12)
@@ -86,6 +88,17 @@ def test_marker_pixel_centre() -> None:
 
     m = Marker(0, get_random_coordinate(), pixel_centre=(10, 10))
     assert m.pixel_centre == (10, 10)
+
+
+def test_marker_orientation() -> None:
+    """Test that we can store and retrieve the orientation."""
+    quaternion = Quaternion()
+
+    m = Marker(0, get_random_coordinate())
+    assert m.orientation is None
+
+    m = Marker(0, get_random_coordinate(), orientation=Orientation(quaternion))
+    assert m.orientation.quaternion is quaternion
 
 
 def test_marker_distance() -> None:
