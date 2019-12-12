@@ -15,6 +15,8 @@
 import os
 import sys
 
+from sphinx.ext import apidoc
+
 sys.path.insert(0, os.path.abspath('../'))
 
 from j5 import __version__, __version_short__
@@ -195,3 +197,17 @@ intersphinx_mapping = {
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
+
+# API-Docs Generation
+
+
+def run_apidoc(_):
+    modules = ['j5']
+    for module in modules:
+        cur_dir = os.path.abspath(os.path.dirname(__file__))
+        output_path = os.path.join(cur_dir, 'api')
+        apidoc.main(['-e', '-o', output_path, '../' + module, '--force'])
+
+
+def setup(app):
+    app.connect('builder-inited', run_apidoc)
