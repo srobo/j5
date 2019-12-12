@@ -61,8 +61,6 @@ class USBCommunicationError(CommunicationError):
 class RawUSBHardwareBackend(Backend, metaclass=BackendMeta):
     """An abstract class for creating backends that use Raw USB communication."""
 
-    ABSTRACT: bool = True
-
     _usb_device: usb.core.Device
 
     def __init__(self) -> None:

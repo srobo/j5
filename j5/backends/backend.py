@@ -68,7 +68,7 @@ class BackendMeta(ABCMeta):
             return cls
 
         # Check if this is an abstract Backend.
-        if hasattr(cls, "ABSTRACT") and cls.ABSTRACT:
+        if bool(cls.__abstractmethods__):
             return cls
 
         mcs._check_component_interfaces(cls)  # type: ignore
@@ -103,8 +103,6 @@ class Backend(metaclass=BackendMeta):
     A Backend usually also implements a number of ComponentInterfaces which thus allow
     a physical component to be controlled by the abstract Component representation.
     """
-
-    ABSTRACT: bool = False
 
     @classmethod
     @abstractmethod
