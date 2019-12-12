@@ -52,7 +52,7 @@ class ZolotoCameraBoardHardwareBackend(
             return set()
 
         return {
-            ZolotoCameraBoard("video0", cls(CAMERA_PATH, camera_class)),
+            ZolotoCameraBoard(CAMERA_SERIAL, cls(CAMERA_PATH, camera_class)),
         }
 
     def __init__(self, device_path: Path, camera_class: Type[T]) -> None:
