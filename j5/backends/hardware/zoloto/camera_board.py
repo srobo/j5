@@ -41,7 +41,7 @@ class ZolotoCameraBoardHardwareBackend(
     board = ZolotoCameraBoard
 
     @classmethod
-    def discover(cls, camera_class: Type[Camera] = DefaultCamera) -> Set[Board]:
+    def discover(cls, camera_class: Type[T] = DefaultCamera) -> Set[Board]:
         """Discover boards that this backend can control."""
         if system() != "Linux":
             # We currently only support Zoloto on Linux platforms as there is

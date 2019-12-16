@@ -28,7 +28,7 @@ jobs:
             - pip-packages-{{ .Branch }}-{{ checksum "poetry.lock" }}
             - pip-packages-{{ .Branch }}-
             - pip-packages-
-      - run: poetry install
+      - run: poetry install -E zoloto-vision
       - run: make lint
       - run: make type
       - run: cc-test-reporter before-build
