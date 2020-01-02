@@ -1,4 +1,4 @@
-"""The Console Environment."""
+"""Console helper classes."""
 
 from typing import Callable, Optional, Type, TypeVar
 
@@ -6,7 +6,7 @@ T = TypeVar("T")
 
 
 class Console:
-    """A helper class for the console environment."""
+    """A helper class for console backends."""
 
     def __init__(
             self,
