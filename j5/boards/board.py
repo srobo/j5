@@ -20,7 +20,7 @@ from typing import (
     cast,
 )
 
-from j5.backends import Backend, CommunicationError, Environment
+from j5.backends import CommunicationError, Environment
 
 if TYPE_CHECKING:  # pragma: nocover
     from j5.components import Component  # noqa
