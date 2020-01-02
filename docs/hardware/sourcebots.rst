@@ -1,6 +1,9 @@
 SourceBots
 ==========
 
-.. Attention:: This vendor is not yet supported by j5, but we intend to do so in the future.
+The SourceBots `Arduino firmware`_ is supported.
 
-SourceBots is currently developing a new computer vision board.
+When it is developed, ``j5`` will support the new `computer vision board`_ that SourceBots are developing.
+
+.. _Arduino firmware: https://docs.sourcebots.co.uk/en/latest/kit/arduino.html
+.. _computer vision board: https://kb.roboticsoutreach.org/projects/active/camera-board/
