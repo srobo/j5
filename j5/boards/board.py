@@ -20,7 +20,7 @@ from typing import (
     cast,
 )
 
-from j5.backends import Backend, CommunicationError, Environment
+from j5.backends import CommunicationError, Environment
 
 if TYPE_CHECKING:  # pragma: nocover
     from j5.components import Component  # noqa
@@ -34,7 +34,7 @@ if TYPE_CHECKING:  # pragma: nocover
     ]
 
 T = TypeVar('T', bound='Board')
-U = TypeVar('U', bound=Backend)
+U = TypeVar('U')  # See #489
 
 
 class Board(metaclass=ABCMeta):
@@ -154,7 +154,8 @@ class BoardGroup(Generic[T, U]):
     def update_boards(self) -> None:
         """Update the boards in this group to see if new boards have been added."""
         self._boards.clear()
-        discovered_boards = self._backend_class.discover()
+        # See  #489 for type ignore explanation
+        discovered_boards = self._backend_class.discover()  # type: ignore
         for board in sorted(discovered_boards, key=lambda b: b.serial):
             self._boards.update({board.serial: cast(T, board)})
 
@@ -164,7 +165,8 @@ class BoardGroup(Generic[T, U]):
         if num == 1:
             return list(self._boards.values())[0]
         else:
-            name = self._backend_class.board.__name__
+            # See  #489 for type ignore explanation
+            name = self._backend_class.board.__name__  # type: ignore
             raise CommunicationError(
                 f"expected exactly one {name} to be connected, but found {num}",
             )

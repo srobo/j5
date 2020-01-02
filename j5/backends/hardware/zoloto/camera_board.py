@@ -3,7 +3,7 @@
 from pathlib import Path
 from platform import system
 from threading import Lock
-from typing import Optional, Set, Type, TypeVar
+from typing import Optional, Set, Type
 
 from zoloto import __version__ as zoloto_version
 from zoloto.cameras.camera import Camera
@@ -16,8 +16,6 @@ from j5.vision import Coordinate, Marker, MarkerList, Orientation
 
 CAMERA_PATH = Path("/dev/video0")
 CAMERA_SERIAL = "video0"
-
-T = TypeVar("T", bound=Camera)
 
 
 class DefaultCamera(Camera):
@@ -55,7 +53,7 @@ class ZolotoCameraBoardHardwareBackend(
             ZolotoCameraBoard(CAMERA_SERIAL, cls(CAMERA_PATH, camera_class)),
         }
 
-    def __init__(self, device_path: Path, camera_class: Type[T]) -> None:
+    def __init__(self, device_path: Path, camera_class: Type[Camera]) -> None:
         self._device_path = device_path
         self._lock = Lock()
 
