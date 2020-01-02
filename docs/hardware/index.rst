@@ -11,5 +11,6 @@ project.
    :maxdepth: 1
    :caption: j5 Supported Vendors:
 
+   sourcebots
    srobo/index
 
