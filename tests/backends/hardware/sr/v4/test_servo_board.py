@@ -4,6 +4,7 @@ import struct
 from typing import List, Optional, Union
 
 import pytest
+import usb
 
 from j5.backends.hardware.j5.raw_usb import ReadCommand, WriteCommand
 from j5.backends.hardware.sr.v4.servo_board import (
@@ -42,7 +43,7 @@ class MockUSBContext:
         pass
 
 
-class MockUSBServoBoardDevice:
+class MockUSBServoBoardDevice(usb.core.Device):
     """This class mocks the behaviour of a USB device for a Servo Board."""
 
     def __init__(self, serial_number: str, fw_version: int = 2):

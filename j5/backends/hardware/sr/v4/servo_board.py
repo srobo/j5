@@ -9,8 +9,8 @@ from j5.backends.hardware.env import NotSupportedByHardwareError
 from j5.backends.hardware.j5.raw_usb import (
     RawUSBHardwareBackend,
     ReadCommand,
+    USBCommunicationError,
     WriteCommand,
-    handle_usb_error,
 )
 from j5.boards import Board
 from j5.boards.sr.v4 import ServoBoard
@@ -34,18 +34,20 @@ class SRV4ServoBoardHardwareBackend(
     board = ServoBoard
 
     @classmethod
-    @handle_usb_error
     def discover(cls, find: Callable = usb.core.find) -> Set[Board]:
         """Discover boards that this backend can control."""
         boards: Set[Board] = set()
-        device_list = find(idVendor=0x1bda, idProduct=0x0011, find_all=True)
+        try:
+            device_list = find(idVendor=0x1bda, idProduct=0x0011, find_all=True)
+        except usb.core.USBError as e:
+            raise USBCommunicationError(e) from e
+
         for device in device_list:
             backend = cls(device)
             board = ServoBoard(backend.serial, backend)
             boards.add(cast(Board, board))
         return boards
 
-    @handle_usb_error
     def __init__(self, usb_device: usb.core.Device) -> None:
         super().__init__()
 

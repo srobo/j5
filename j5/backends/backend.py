@@ -68,7 +68,7 @@ class BackendMeta(ABCMeta):
             return cls
 
         # Check if this is an abstract Backend.
-        if len(cls.__bases__) == 1 and cls.__base__.__name__ != "Backend":
+        if bool(cls.__abstractmethods__):
             return cls
 
         mcs._check_component_interfaces(cls)  # type: ignore

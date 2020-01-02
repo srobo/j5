@@ -1,13 +1,11 @@
 """Test the abstract Raw USB backend."""
 
-import pytest
 import usb
 
 from j5.backends.hardware.j5.raw_usb import (
     ReadCommand,
     USBCommunicationError,
     WriteCommand,
-    handle_usb_error,
 )
 
 
@@ -36,24 +34,3 @@ def test_usb_communication_error() -> None:
     u = USBCommunicationError(usb.core.USBError("Test."))
     assert str(u) == "Test."
     assert issubclass(USBCommunicationError, Exception)
-
-
-def test_usb_error_handler_decorator() -> None:
-    """Test that the handle_usb_error decorator works."""
-    @handle_usb_error
-    def test_func() -> None:
-        raise usb.core.USBError("Test")
-
-    with pytest.raises(USBCommunicationError):
-        test_func()
-
-
-def test_usb_error_handler_decorator_for_servo_board_power() -> None:
-    """Test that the handle_usb_error decorator works."""
-    @handle_usb_error
-    def test_func() -> None:
-        raise usb.core.USBError("Test", errno=110)
-
-    regex = r".*are you sure the servo board is being correctly powered.*"
-    with pytest.raises(USBCommunicationError, match=regex):
-        test_func()

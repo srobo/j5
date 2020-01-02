@@ -7,13 +7,12 @@ distributed separately in the future, to remove the PyUSB dependency from the j5
 """
 
 from abc import abstractmethod
-from functools import wraps
 from threading import Lock
-from typing import Callable, NamedTuple, Optional, Set, TypeVar, Union
+from typing import NamedTuple, Optional, Set, Union
 
 import usb
 
-from j5.backends import BackendMeta, CommunicationError
+from j5.backends import Backend, BackendMeta, CommunicationError
 from j5.boards import Board
 
 # Stop the library from closing the USB connections before make_safe is called.
@@ -59,27 +58,7 @@ class USBCommunicationError(CommunicationError):
         super().__init__(message)
 
 
-RT = TypeVar('RT')
-
-
-def handle_usb_error(func: Callable[..., RT]) -> Callable[..., RT]:  # type: ignore
-    """
-    Wrap functions that use usb1 and give friendly errors.
-
-    The exceptions from PyUSB are hard to find in documentation or code and are confusing
-    to users. This decorator catches the USBErrors and throws a friendlier exception that
-    can also be caught more easily.
-    """
-    @wraps(func)
-    def catch_exceptions(*args, **kwargs):  # type: ignore
-        try:
-            return func(*args, **kwargs)
-        except usb.core.USBError as e:
-            raise USBCommunicationError(e) from e
-    return catch_exceptions
-
-
-class RawUSBHardwareBackend(metaclass=BackendMeta):
+class RawUSBHardwareBackend(Backend, metaclass=BackendMeta):
     """An abstract class for creating backends that use Raw USB communication."""
 
     _usb_device: usb.core.Device
@@ -99,33 +78,40 @@ class RawUSBHardwareBackend(metaclass=BackendMeta):
         """The firmware version of the board."""
         raise NotImplementedError  # pragma: no cover
 
-    @property  # type: ignore # https://github.com/python/mypy/issues/1362
-    @handle_usb_error
+    @property
     def serial(self) -> str:
         """The serial number reported by the board."""
         with self._lock:
-            return self._usb_device.serial_number
+            try:
+                return self._usb_device.serial_number
+            except usb.core.USBError as e:
+                raise USBCommunicationError(e) from e
 
-    @handle_usb_error
     def __del__(self) -> None:
         """Clean up device on destruction of object."""
         # Note: we do not obtain the lock here.
         # This is because we want to close the device ASAP in an emergency.
-        usb.util.dispose_resources(self._usb_device)
+        try:
+            usb.util.dispose_resources(self._usb_device)
+        except usb.core.USBError as e:
+            raise USBCommunicationError(e) from e
 
-    @handle_usb_error
     def _read(self, command: ReadCommand) -> bytes:
+        """Read bytes from the USB control endpoint."""
         with self._lock:
-            return self._usb_device.ctrl_transfer(
-                0x80,
-                64,
-                wValue=0,
-                wIndex=command.code,
-                data_or_wLength=command.data_len,
-            )
+            try:
+                return self._usb_device.ctrl_transfer(
+                    0x80,
+                    64,
+                    wValue=0,
+                    wIndex=command.code,
+                    data_or_wLength=command.data_len,
+                )
+            except usb.core.USBError as e:
+                raise USBCommunicationError(e) from e
 
-    @handle_usb_error
     def _write(self, command: WriteCommand, param: Union[int, bytes]) -> None:
+        """Write bytes to the USB control endpoint."""
         req_val: int = 0
         req_data: bytes = b""
         if isinstance(param, int):
@@ -134,10 +120,13 @@ class RawUSBHardwareBackend(metaclass=BackendMeta):
             req_data = param
 
         with self._lock:
-            self._usb_device.ctrl_transfer(
-                0x00,
-                64,
-                wValue=req_val,
-                wIndex=command.code,
-                data_or_wLength=req_data,
-            )
+            try:
+                self._usb_device.ctrl_transfer(
+                    0x00,
+                    64,
+                    wValue=req_val,
+                    wIndex=command.code,
+                    data_or_wLength=req_data,
+                )
+            except usb.core.USBError as e:
+                raise USBCommunicationError(e) from e
