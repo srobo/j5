@@ -2,7 +2,7 @@
 name = "j5"
 version = "0.7.7"
 description = "J5 Robotics API"
-authors = ["j5 contributors <sro@soton.ac.uk>"]
+authors = ["j5 contributors <j5api@googlegroups.com>"]
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/j5api/j5"
