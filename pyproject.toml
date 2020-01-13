@@ -38,7 +38,7 @@ pytest = "^5.3"
 pytest-cov = "^2.8"
 sphinx = "^2.3"
 sphinx-rtd-theme = "^0.4.3"
-rope = "^0.14.0"
+rope = "^0.16.0"
 isort = {version = "^4.3",extras = ["pyproject"]}
 
 [tool.poetry.extras]
