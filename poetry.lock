@@ -664,7 +664,7 @@ description = "A fiducial marker system powered by OpenCV - Supports ArUco and A
 name = "zoloto"
 optional = true
 python-versions = ">=3.5"
-version = "0.4.0"
+version = "0.4.1"
 
 [package.dependencies]
 cached-property = ">=1.5"
@@ -748,4 +748,4 @@ ujson = ["f66073e5506e91d204ab0c614a148d5aa938bdbf104751be66f8ad7a222f5f86"]
 urllib3 = ["3de946ffbed6e6746608990594d08faac602528ac7015ac28d33cee6a45b7398", "9a107b99a5393caf59c7aa3c1249c16e6879447533d0887f4336dde834c7be86"]
 wcwidth = ["3df37372226d6e63e1b1e1eda15c594bca98a22d33a23832a90998faa96bc65e", "f4ebe71925af7b40a864553f761ed559b43544f8f71746c2d756c7fe788ade7c"]
 zipp = ["3718b1cbcd963c7d4c5511a8240812904164b7f381b647143a89d3b98f9bcd8e", "f06903e9f1f43b12d371004b4ac7b06ab39a44adc747266928ae6debfa7b3335"]
-zoloto = ["755d55b5d2c6183d6b50b3b1db2962c7943124c8218c7e47b44da9cfd46255a2"]
+zoloto = ["bd491216acb476db1f6ede03f45250812d69905c9f507e8ff72d35f3a7e8b8e4"]
