@@ -15,9 +15,6 @@ from j5.boards.zoloto import ZolotoCameraBoard
 from j5.components import MarkerCameraInterface
 from j5.vision import Coordinate, Marker, MarkerList, Orientation
 
-CAMERA_PATH = Path("/dev/video0")
-CAMERA_SERIAL = "video0"
-
 
 class DefaultCamera(Camera):
     """
@@ -44,24 +41,18 @@ class ZolotoCameraBoardHardwareBackend(
     @classmethod
     def discover(cls, camera_class: Type[Camera] = DefaultCamera) -> Set[Board]:
         """Discover boards that this backend can control."""
-        if system() != "Linux":
-            # We currently only support Zoloto on Linux platforms as there is
-            # no easy way to detect the presence of webcams on other platforms.
-            return set()
-        if not CAMERA_PATH.exists():
-            # We currently only support a hardcoded path.
-            return set()
+        cameras = camera_class.discover()
 
         return {
-            ZolotoCameraBoard(CAMERA_SERIAL, cls(CAMERA_PATH, camera_class)),
+            ZolotoCameraBoard(camera.camera_id, cls(camera))
+            for camera in cameras
         }
 
-    def __init__(self, device_path: Path, camera_class: Type[Camera]) -> None:
-        self._device_path = device_path
+    def __init__(self, camera: Camera) -> None:
         self._lock = Lock()
 
         with self._lock:
-            self._zcamera = camera_class(0)
+            self._zcamera = camera
 
     @property
     def firmware_version(self) -> Optional[str]:
