@@ -15,15 +15,6 @@ class Orientation:
     def __init__(self, orientation: Quaternion):
         self._quaternion = orientation
 
-    @classmethod
-    def from_cartesian(cls, x: float, y: float, z: float) -> 'Orientation':
-        """Create a coordinate from a cartesian position."""
-        q = Quaternion(axis=(1, 0, 0), angle=x)
-        q = q.rotate(Quaternion(axis=(0, 1, 0), angle=y))
-        q = q.rotate(Quaternion(axis=(0, 0, 1), angle=z))
-
-        return cls(q)
-
     @property
     def matrix(self) -> List[List[float]]:
         """Get a 3x3 rotation matrix representing the 3D rotation."""
