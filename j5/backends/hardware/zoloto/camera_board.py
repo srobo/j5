@@ -63,7 +63,7 @@ class ZolotoCameraBoardHardwareBackend(
         markers = MarkerList()
 
         with self._lock:
-            marker_gen = self._zcamera.process_frame()
+            marker_gen = self._zcamera.process_frame_eager()
 
         for zmarker in marker_gen:
             position = Coordinate(
