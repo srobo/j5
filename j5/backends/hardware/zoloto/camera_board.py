@@ -7,6 +7,7 @@ from typing import Optional, Set, Type
 
 from zoloto import __version__ as zoloto_version
 from zoloto.cameras.camera import Camera
+from zoloto.marker_dict import MarkerDict
 
 from j5.backends import Backend
 from j5.boards import Board
@@ -24,6 +25,8 @@ class DefaultCamera(Camera):
 
     Mostly here to ensure sound types.
     """
+
+    marker_dict = MarkerDict.DICT_APRILTAG_36H11
 
     def get_marker_size(self, marker_id: int) -> int:
         """Get the size of a particular marker."""
@@ -79,11 +82,7 @@ class ZolotoCameraBoardHardwareBackend(
                 zmarker.cartesian.y / 100,
                 zmarker.cartesian.z / 100,
             )
-            orientation = Orientation.from_cartesian(
-                zmarker.orientation.rot_x,
-                zmarker.orientation.rot_y,
-                zmarker.orientation.rot_z,
-            )
+            orientation = Orientation(zmarker.orientation.quaternion)
             pixel_corners = list(
                 map(lambda x: (x.x, x.y), zmarker.pixel_corners),
             )
