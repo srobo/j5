@@ -1,7 +1,7 @@
 """Stubs for zoloto.camera.camera."""
 
 from pathlib import Path
-from typing import Iterator, Optional
+from typing import Any, Generator, Iterator, Optional
 
 from zoloto.marker import Marker
 
@@ -12,7 +12,6 @@ class Camera:
     def __init__(
         self,
         camera_id: int,
-        marker_dict: Optional[int] = None,
         calibration_file: Optional[Path] = None,
 
     ) -> None: ...
@@ -20,3 +19,6 @@ class Camera:
     def process_frame(self) -> Iterator[Marker]: ...
 
     def save_frame(self, path: Path, annotate: bool = False) -> None: ...
+
+    @classmethod
+    def discover(cls, **kwargs: Any) -> Generator["Camera", None, None]: ...
