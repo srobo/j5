@@ -1,7 +1,6 @@
 """Hardware implementation of the Zoloto Virtual Camera Board."""
 
 from pathlib import Path
-from platform import system
 from threading import Lock
 from typing import Optional, Set, Type
 
@@ -44,7 +43,7 @@ class ZolotoCameraBoardHardwareBackend(
         cameras = camera_class.discover()
 
         return {
-            ZolotoCameraBoard(camera.camera_id, cls(camera))
+            ZolotoCameraBoard(f"CAM{camera.camera_id}", cls(camera))
             for camera in cameras
         }
 
