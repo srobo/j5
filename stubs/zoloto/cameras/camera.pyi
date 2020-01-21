@@ -9,6 +9,8 @@ from zoloto.marker import Marker
 class Camera:
     """Camera class."""
 
+    camera_id: int
+
     def __init__(
         self,
         camera_id: int,
