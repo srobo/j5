@@ -30,7 +30,7 @@ isort:
 extract_snippets:
 	rm -rf $(SNIPPETS)
 	mkdir -p $(SNIPPETS)/README.md
-	python tools/extract_snippets.py README.md $(SNIPPETS)/README.md
+	python3 tools/extract_snippets.py README.md $(SNIPPETS)/README.md
 
 clean:
 	git clean -Xdf # Delete all files in .gitignore
