@@ -12,18 +12,17 @@ Student Robotics is currently on it's fourth generation of robotics kit, which i
 and some custom designed hardware that's based on STM32 microcontrollers. The kit communicates with the ODROID using
 USB, which has proven to be a more reliable communication method than their previous kits.
 
-.. toctree::
-   :maxdepth: 1
-   :caption: Supported Boards:
+``j5`` supports the following Student Robotics Hardware:
 
-   mbv4
-   pbv4
-   sbv4
+- `Power Board v4`_
+- `Motor Board v4`_
+- `Servo Board v4`_
 
-.. Note:: Some of the documentation in this section has been taken and modified from `Student Robotics`_. See here_ for more information.
-
-.. _here: LICENSE.html
+Support for the Ruggeduino_ is planned.
 
 .. _Student Robotics: https://studentrobotics.org
 .. _ODROID U3: https://en.wikipedia.org/wiki/ODROID
-
+.. _Power Board v4: https://studentrobotics.org/docs/kit/power_board
+.. _Motor Board v4: https://studentrobotics.org/docs/kit/motor_board
+.. _Servo Board v4: https://studentrobotics.org/docs/kit/servo_board
+.. _Ruggeduino: https://studentrobotics.org/docs/kit/ruggeduino

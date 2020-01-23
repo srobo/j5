@@ -12,5 +12,5 @@ project.
    :caption: j5 Supported Vendors:
 
    sourcebots
-   srobo/index
+   srobo
 
