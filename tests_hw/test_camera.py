@@ -15,11 +15,12 @@ from j5.boards.zoloto import ZolotoCameraBoard
 class ZolotoCamera(Camera):
     """Zoloto Camera."""
 
+    marker_dict = MarkerDict.DICT_APRILTAG_36H11
+
     def __init__(self, id: int):
         super().__init__(
             id,
-            marker_dict=MarkerDict.DICT_APRILTAG_36H11,
-            calibration_file=Path("calibrations.xml"),
+            calibration_file=Path(__file__).parent.joinpath('C270.xml'),
         )
 
     def get_marker_size(self, marker_id: int) -> int:
