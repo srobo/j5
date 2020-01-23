@@ -145,7 +145,13 @@ class SRV4PowerBoardHardwareBackend(
             raise NotSupportedByHardwareError("Maximum piezo frequency is 65535Hz.")
 
         data = struct.pack("<HH", frequency_int, duration_ms)
-        self._write(CMD_WRITE_PIEZO, data)
+        try:
+            self._write(CMD_WRITE_PIEZO, data)
+        except USBCommunicationError as e:
+            if e.usb_error.errno == 32:  # pipe error
+                e.message += "; are you sending buzz commands to the" \
+                             " power board too quickly?"
+            raise
 
     def get_button_state(self, identifier: int) -> bool:
         """Get the state of a button."""
