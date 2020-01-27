@@ -124,7 +124,7 @@ class GPIOPin(Component):
 
     def _require_pin_modes(self, pin_modes: Set[PinMode]) -> None:
         """Ensure that this pin is in the specified hardware mode."""
-        if not any(self.mode is mode for mode in pin_modes) and not len(pin_modes) == 0:
+        if self.mode not in pin_modes and not len(pin_modes) == 0:
             raise BadGPIOPinModeError(
                 f"Pin {self._identifier} needs to be in one of {pin_modes}",
             )
