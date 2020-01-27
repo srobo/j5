@@ -157,7 +157,7 @@ class SBArduinoHardwareBackend(
 
     def _update_digital_pin(self, identifier: int) -> None:
         if identifier >= FIRST_ANALOGUE_PIN:
-            raise RuntimeError("this should be unreachable")
+            raise RuntimeError("Reached an unreachable statement.")
         pin = self._digital_pins[identifier]
         char: str
         if pin.mode == GPIOPinMode.DIGITAL_INPUT:
@@ -170,7 +170,7 @@ class SBArduinoHardwareBackend(
             else:
                 char = "L"
         else:
-            raise RuntimeError("this should be unreachable")
+            raise RuntimeError("Reached an unreachable statement.")
         self._command("W", str(identifier), char)
 
     def set_gpio_pin_mode(self, identifier: int, pin_mode: GPIOPinMode) -> None:
