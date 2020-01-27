@@ -1,35 +1,13 @@
 """Abstract hardware backend implementation provided by j5 for serial comms."""
 from abc import abstractmethod
 from datetime import timedelta
-from functools import wraps
-from typing import Callable, Optional, Set, Type, TypeVar
+from typing import Optional, Set, Type
 
-from serial import Serial, SerialException, SerialTimeoutException
+from serial import Serial, SerialTimeoutException, SerialException
 from typing_extensions import Protocol
 
 from j5.backends import BackendMeta, CommunicationError
 from j5.boards import Board
-
-RT = TypeVar("RT")  # pragma: nocover
-
-
-def handle_serial_error(func: Callable[..., RT]) -> Callable[..., RT]:  # type: ignore
-    """
-    Wrap functions that use the serial port, and rethrow the errors.
-
-    This is a decorator that should be used to wrap any functions that call the serial
-    interface. It will catch and rethrow the errors as a CommunicationError, so that it
-    is more explicit what is going wrong.
-    """
-    @wraps(func)
-    def catch_exceptions(*args, **kwargs):  # type: ignore
-        try:
-            return func(*args, **kwargs)
-        except SerialTimeoutException as e:
-            raise CommunicationError(f"Serial Timeout Error: {e}") from e
-        except SerialException as e:
-            raise CommunicationError(f"Serial Error: {e}") from e
-    return catch_exceptions
 
 
 class Seriallike(Protocol):
@@ -68,7 +46,6 @@ class Seriallike(Protocol):
 class SerialHardwareBackend(metaclass=BackendMeta):
     """An abstract class for creating backends that use USB serial communication."""
 
-    @handle_serial_error
     def __init__(
             self,
             serial_port: str,
@@ -77,11 +54,16 @@ class SerialHardwareBackend(metaclass=BackendMeta):
             timeout: timedelta = timedelta(milliseconds=250),
     ) -> None:
         timeout_secs = timeout / timedelta(seconds=1)
-        self._serial = serial_class(
-            port=serial_port,
-            baudrate=baud,
-            timeout=timeout_secs,
-        )
+        try:
+            self._serial = serial_class(
+                port=serial_port,
+                baudrate=baud,
+                timeout=timeout_secs,
+            )
+        except SerialTimeoutException as e:
+            raise CommunicationError(f"Serial Timeout Error: {e}") from e
+        except SerialException as e:
+            raise CommunicationError(f"Serial Error: {e}") from e
 
     @classmethod
     @abstractmethod
@@ -95,10 +77,14 @@ class SerialHardwareBackend(metaclass=BackendMeta):
         """The firmware version of the board."""
         raise NotImplementedError  # pragma: no cover
 
-    @handle_serial_error
     def read_serial_line(self, empty: bool = False) -> str:
         """Read a line from the serial interface."""
-        bdata = self._serial.readline()
+        try:
+            bdata = self._serial.readline()
+        except SerialTimeoutException as e:
+            raise CommunicationError(f"Serial Timeout Error: {e}") from e
+        except SerialException as e:
+            raise CommunicationError(f"Serial Error: {e}") from e
 
         if len(bdata) == 0:
             if empty:
