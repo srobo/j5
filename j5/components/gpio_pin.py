@@ -2,7 +2,7 @@
 
 from abc import abstractmethod
 from enum import IntEnum
-from typing import List, Set, Type, Union
+from typing import Set, Type, Union
 
 from j5.components.component import (
     Component,
@@ -122,9 +122,9 @@ class GPIOPin(Component):
         """Get the interface class that is required to use this component."""
         return GPIOPinInterface
 
-    def _require_pin_modes(self, pin_modes: List[PinMode]) -> None:
+    def _require_pin_modes(self, pin_modes: Set[PinMode]) -> None:
         """Ensure that this pin is in the specified hardware mode."""
-        if not any(self.mode == mode for mode in pin_modes) and not len(pin_modes) == 0:
+        if not any(self.mode is mode for mode in pin_modes) and not len(pin_modes) == 0:
             raise BadGPIOPinModeError(
                 f"Pin {self._identifier} needs to be in one of {pin_modes}",
             )
@@ -152,11 +152,11 @@ class GPIOPin(Component):
     @property
     def digital_state(self) -> bool:
         """Get the digital state of the pin."""
-        self._require_pin_modes([
+        self._require_pin_modes({
             GPIOPinMode.DIGITAL_OUTPUT,
             GPIOPinMode.DIGITAL_INPUT,
             GPIOPinMode.DIGITAL_INPUT_PULLUP,
-            GPIOPinMode.DIGITAL_INPUT_PULLDOWN],
+            GPIOPinMode.DIGITAL_INPUT_PULLDOWN},
         )
 
         # Behave differently depending on the hardware mode.
@@ -168,22 +168,22 @@ class GPIOPin(Component):
     @digital_state.setter
     def digital_state(self, state: bool) -> None:
         """Set the digital state of the pin."""
-        self._require_pin_modes([GPIOPinMode.DIGITAL_OUTPUT])
+        self._require_pin_modes({GPIOPinMode.DIGITAL_OUTPUT})
         self._backend.write_gpio_pin_digital_state(self._identifier, state)
 
     @property
     def analogue_value(self) -> float:
         """Get the scaled analogue reading of the pin."""
-        self._require_pin_modes([GPIOPinMode.ANALOGUE_INPUT])
+        self._require_pin_modes({GPIOPinMode.ANALOGUE_INPUT})
         return self._backend.read_gpio_pin_analogue_value(self._identifier)
 
     @analogue_value.setter
     def analogue_value(self, new_value: float) -> None:
         """Set the analogue value of the pin."""
-        self._require_pin_modes([
+        self._require_pin_modes({
             GPIOPinMode.ANALOGUE_OUTPUT,
             GPIOPinMode.PWM_OUTPUT,
-        ])
+        })
         if new_value < 0 or new_value > 1:
             raise ValueError("An analogue pin value must be between 0 and 1.")
 
