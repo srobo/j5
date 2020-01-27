@@ -56,8 +56,10 @@ class BackendMeta(ABCMeta):
     """
     The metaclass for a backend.
 
-    Responsible for registering the board-backend mapping with an Environment.
-
+    Ensures that the backend implements the correct interfaces
+    when instantiated. It does this by checking that the class
+    inherits from the interface classes defined on the Components
+    in backend.board.supported_components.
     """
 
     def __new__(mcs, name, bases, namespace, **kwargs):  # type:ignore
