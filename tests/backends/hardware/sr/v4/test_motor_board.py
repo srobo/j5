@@ -1,9 +1,8 @@
 """Test the SR v4 motor board hardware backend and associated classes."""
 
-from typing import List, Type, cast
+from typing import List, cast
 
 import pytest
-from serial import SerialException, SerialTimeoutException
 from tests.backends.hardware.j5.mock_serial import MockSerial
 
 from j5.backends import CommunicationError
@@ -15,7 +14,6 @@ from j5.backends.hardware.sr.v4.motor_board import (
     SPEED_BRAKE,
     SPEED_COAST,
     SRV4MotorBoardHardwareBackend,
-    handle_serial_error,
 )
 from j5.boards.sr.v4 import MotorBoard
 from j5.components import MotorSpecialState
@@ -36,19 +34,6 @@ def test_speed_constants() -> None:
     """Test that the speed constants are what we expect."""
     assert SPEED_COAST == 1
     assert SPEED_BRAKE == 2
-
-
-def test_serial_error_handler_decorator() -> None:
-    """Test that the handle_serial_error decorator works."""
-    @handle_serial_error
-    def test_func(exception: Type[IOError]) -> None:
-        raise exception()
-
-    with pytest.raises(CommunicationError):
-        test_func(SerialException)
-
-    with pytest.raises(CommunicationError):
-        test_func(SerialTimeoutException)
 
 
 class MockListPortInfo:

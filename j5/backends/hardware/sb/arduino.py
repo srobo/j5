@@ -4,7 +4,7 @@ from datetime import timedelta
 from threading import Lock
 from typing import Callable, List, Mapping, Optional, Set, Tuple, Type
 
-from serial import Serial, SerialTimeoutException, SerialException
+from serial import Serial, SerialException, SerialTimeoutException
 from serial.tools.list_ports import comports
 from serial.tools.list_ports_common import ListPortInfo
 
@@ -59,7 +59,7 @@ class SBArduinoHardwareBackend(
     def discover(
             cls,
             comports: Callable = comports,
-            serial_class: Type[Serial] = Serial, # type: ignore
+            serial_class: Type[Serial] = Serial,
     ) -> Set[Board]:
         """Discover all connected motor boards."""
         # Find all serial ports.
@@ -71,7 +71,7 @@ class SBArduinoHardwareBackend(
             boards.add(
                 SBArduinoBoard(
                     port.serial_number,
-                    cls(port.device, serial_class),
+                    cls(port.device, serial_class),  # type: ignore
                 ),
             )
 
@@ -80,7 +80,7 @@ class SBArduinoHardwareBackend(
     def __init__(
             self,
             serial_port: str,
-            serial_class: Type[Serial] = Serial,  # type: ignore
+            serial_class: Type[Serial] = Serial,
     ) -> None:
         super(SBArduinoHardwareBackend, self).__init__(
             serial_port=serial_port,

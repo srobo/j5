@@ -7,10 +7,7 @@ from serial.tools.list_ports import comports
 from serial.tools.list_ports_common import ListPortInfo
 
 from j5.backends import Backend, CommunicationError
-from j5.backends.hardware.j5.serial import (
-    SerialHardwareBackend,
-    Seriallike,
-)
+from j5.backends.hardware.j5.serial import SerialHardwareBackend, Seriallike
 from j5.boards import Board
 from j5.boards.sr.v4.motor_board import MotorBoard
 from j5.components.motor import MotorInterface, MotorSpecialState, MotorState
@@ -54,7 +51,10 @@ class SRV4MotorBoardHardwareBackend(
             boards.add(
                 MotorBoard(
                     port.serial_number,
-                    cast(Backend, SRV4MotorBoardHardwareBackend(port.device, serial_class)),
+                    cast(
+                        Backend,
+                        SRV4MotorBoardHardwareBackend(port.device, serial_class),
+                    ),
                 ),
             )
 

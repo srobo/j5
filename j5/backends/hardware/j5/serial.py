@@ -3,7 +3,7 @@ from abc import abstractmethod
 from datetime import timedelta
 from typing import Optional, Set, Type
 
-from serial import Serial, SerialTimeoutException, SerialException
+from serial import Serial, SerialException, SerialTimeoutException
 from typing_extensions import Protocol
 
 from j5.backends import BackendMeta, CommunicationError
