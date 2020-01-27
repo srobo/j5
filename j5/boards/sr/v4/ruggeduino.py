@@ -3,7 +3,7 @@
 It's similar to the Sourcebots Arduino, but without official ultrasound support.
 """
 from enum import IntEnum
-from typing import Mapping, Optional, Set, Tuple, Type, Union, cast
+from typing import Mapping, Optional, Set, Type, Union, cast
 
 from j5.backends import Backend
 from j5.boards import Board
@@ -15,7 +15,6 @@ from j5.components import (
     GPIOPinMode,
     LEDInterface,
 )
-from j5.components.derived import UltrasoundInterface, UltrasoundSensor
 
 
 class AnaloguePin(IntEnum):
@@ -32,7 +31,7 @@ class AnaloguePin(IntEnum):
 PinNumber = Union[int, AnaloguePin]
 
 
-class SRArduinoBoard(Board):
+class SRRuggeduinoBoard(Board):
     """Student Robotics Ruggeduino board."""
 
     _led: LED
