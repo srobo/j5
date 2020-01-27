@@ -5,6 +5,7 @@ from typing import Callable, List, Set, cast
 
 import usb
 
+from j5.backends import CommunicationError
 from j5.backends.hardware.env import NotSupportedByHardwareError
 from j5.backends.hardware.j5.raw_usb import (
     RawUSBHardwareBackend,
@@ -70,8 +71,16 @@ class SRV4ServoBoardHardwareBackend(
     @property
     def firmware_version(self) -> str:
         """The firmware version reported by the board."""
-        version, = struct.unpack("<I", self._read(CMD_READ_FWVER))
-        return str(cast(int, version))
+        try:
+            version, = struct.unpack("<I", self._read(CMD_READ_FWVER))
+            return str(cast(int, version))
+        except USBCommunicationError as e:
+            if e.usb_error.errno in [5, 110]:  # "Input/Output", "operation timed out"
+                raise CommunicationError(
+                    f"{e.message}; are you sure the servo board"
+                    f" is being correctly powered?",
+                )
+            raise
 
     def check_firmware_version_supported(self) -> None:
         """Raises an exception if the firmware version is not supported."""
