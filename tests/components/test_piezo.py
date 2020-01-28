@@ -57,6 +57,12 @@ def test_piezo_buzz_invalid_value() -> None:
         piezo.buzz(timedelta(seconds=1), "j5")  # type: ignore
     with pytest.raises(ValueError):
         piezo.buzz(timedelta(seconds=-2), Note.D7)
+    with pytest.raises(ValueError):
+        piezo.buzz(0, Note.D7)
+    with pytest.raises(ValueError):
+        piezo.buzz(0.0, Note.D7)
+    with pytest.raises(ValueError):
+        piezo.buzz(1.0, 0)
 
 
 def test_note_reversed() -> None:

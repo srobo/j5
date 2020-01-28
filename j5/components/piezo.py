@@ -86,8 +86,7 @@ class Piezo(Component):
         if not (pitch_is_float or pitch_is_note):
             raise TypeError("Pitch must be float or Note")
 
-        # Verify the length of the pitch is non-zero
-        if pitch < 0:
+        if pitch <= 0:
             raise ValueError("Frequency must be greater than zero")
 
     @staticmethod
@@ -95,5 +94,5 @@ class Piezo(Component):
         """Verify that a duration is valid."""
         if not isinstance(duration, timedelta):
             raise TypeError("Duration must be of type datetime.timedelta")
-        if duration < timedelta(seconds=0):
+        if duration <= timedelta(seconds=0):
             raise ValueError("Duration must be greater than or equal to zero.")

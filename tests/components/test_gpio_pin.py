@@ -200,19 +200,19 @@ def test_required_pin_modes() -> None:
     )
 
     # 0
-    pin._require_pin_modes([])
+    pin._require_pin_modes(set())
 
     # 1
-    pin._require_pin_modes([GPIOPinMode.DIGITAL_OUTPUT])
+    pin._require_pin_modes({GPIOPinMode.DIGITAL_OUTPUT})
 
     with pytest.raises(BadGPIOPinModeError):
-        pin._require_pin_modes([GPIOPinMode.DIGITAL_INPUT_PULLUP])
+        pin._require_pin_modes({GPIOPinMode.DIGITAL_INPUT_PULLUP})
 
     # 2
-    pin._require_pin_modes([
+    pin._require_pin_modes({
         GPIOPinMode.DIGITAL_OUTPUT,
         GPIOPinMode.DIGITAL_INPUT,
-    ])
+    })
 
 
 def test_digital_state_getter() -> None:
