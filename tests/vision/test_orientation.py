@@ -1,4 +1,4 @@
-"""Tests for orientation class"""
+"""Tests for orientation class."""
 from pyquaternion import Quaternion
 
 from j5.vision.orientation import Orientation
