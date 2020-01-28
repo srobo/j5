@@ -1,5 +1,6 @@
 """Tests for orientation class."""
 
+from numpy import allclose
 from pyquaternion import Quaternion
 
 from j5.vision.orientation import Orientation
@@ -14,7 +15,7 @@ def test_quaternion() -> None:
 def test_matrix() -> None:
     """Test the matrix property of the Orientation class."""
     q = Quaternion.random()
-    assert q.rotation_matrix == Orientation(q).matrix
+    assert allclose(q.rotation_matrix, Orientation(q).matrix)
 
 
 def test_yaw_pitch_roll() -> None:
