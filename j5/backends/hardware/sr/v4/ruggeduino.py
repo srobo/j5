@@ -4,6 +4,7 @@ from enum import Enum
 from threading import Lock
 from typing import Set, Tuple, Callable, Type, List, Mapping, Optional
 
+from j5.backends.hardware import NotSupportedByHardwareError
 from serial import Serial
 from serial.tools.list_ports import comports
 from serial.tools.list_ports_common import ListPortInfo
@@ -133,10 +134,122 @@ class SRRuggeduinoHardwareBackend(
     def _command(self, command: str, pin: str = "") -> str:
         """Send a command to the board."""
         if len(command) != 1:
-            raise RuntimeError("Commands are 1 character long")
+            raise RuntimeError("Commands should be 1 character long")
 
         with self._lock:
             message: str = command + pin
             self._serial.write(message.encode("utf-8"))
 
             return self.read_serial_line(empty=True)
+
+    def _update_digital_pin(self, identifier: int) -> None:
+        if identifier >= FIRST_ANALOGUE_PIN:
+            raise NotSupportedByHardwareError(
+                "Digital functions not supported on analogue pins",
+            )
+        pin: DigitalPinData = self._digital_pins[identifier]
+        command: str
+        if pin.mode == GPIOPinMode.DIGITAL_INPUT:
+            command = "i"
+        elif pin.mode == GPIOPinMode.DIGITAL_INPUT_PULLUP:
+            command = "p"
+        elif pin.mode == GPIOPinMode.DIGITAL_OUTPUT:
+            if pin.state:
+                command = "h"
+            else:
+                command = "l"
+        else:
+            raise RuntimeError(f"Invalid GPIOPinMode for pin {identifier}")
+        self._command(command, encode_pin(identifier))
+
+    def set_gpio_pin_mode(self, identifier: int, pin_mode: GPIOPinMode) -> None:
+        """Set the hardware mode of a GPIO pin."""
+        digital_pin_modes = (
+            GPIOPinMode.DIGITAL_INPUT,
+            GPIOPinMode.DIGITAL_INPUT_PULLUP,
+            GPIOPinMode.DIGITAL_OUTPUT,
+        )
+        if identifier < FIRST_ANALOGUE_PIN:
+            # Digital pin
+            if pin_mode in digital_pin_modes:
+                self._digital_pins[identifier].mode = pin_mode
+                self._update_digital_pin(identifier)
+                return
+        elif pin_mode is GPIOPinMode.ANALOGUE_INPUT:  # Analogue pin
+            return
+        else:
+            raise NotSupportedByHardwareError(
+                f"Arduino Uno does not support mode {pin_mode} on pin {identifier}",
+            )
+
+    def get_gpio_pin_mode(self, identifier: int) -> GPIOPinMode:
+        """Get the hardware mode of a GPIO pin."""
+        if identifier < FIRST_ANALOGUE_PIN:
+            return self._digital_pins[identifier].mode
+        else:
+            return GPIOPinMode.ANALOGUE_INPUT
+
+    def write_gpio_pin_digital_state(self, identifier: int, state: bool) -> None:
+        """Write to the digital state of a GPIO pin."""
+        if identifier >= FIRST_ANALOGUE_PIN:
+            raise NotSupportedByHardwareError(
+                "Digital functions not supported on analogue pins",
+            )
+        if self._digital_pins[identifier].mode is not GPIOPinMode.DIGITAL_OUTPUT:
+            raise ValueError(f"Pin {identifier} mode needs to be DIGITAL_OUTPUT"
+                             f"in order to set the digital state.")
+        self._digital_pins[identifier].state = state
+        self._update_digital_pin(identifier)
+
+    def get_gpio_pin_digital_state(self, identifier: int) -> bool:
+        """Get the last written state of the GPIO pin."""
+        if identifier >= FIRST_ANALOGUE_PIN:
+            raise NotSupportedByHardwareError(
+                "Digital functions not supported on analogue pins",
+            )
+        if self._digital_pins[identifier].mode is not GPIOPinMode.DIGITAL_OUTPUT:
+            raise ValueError(f"Pin {identifier} mode needs to be DIGITAL_OUTPUT"
+                             f"in order to read the digital state.")
+        return self._digital_pins[identifier].state
+
+    def read_gpio_pin_digital_state(self, identifier: int) -> bool:
+        """Read the digital state of the GPIO pin."""
+        if identifier >= FIRST_ANALOGUE_PIN:
+            raise NotSupportedByHardwareError(
+                "Digital functions not supported on analogue pins",
+            )
+        if self._digital_pins[identifier].mode not in (
+            GPIOPinMode.DIGITAL_INPUT,
+            GPIOPinMode.DIGITAL_INPUT_PULLUP,
+        ):
+            raise ValueError(f"Pin {identifier} mode needs to be DIGITAL_INPUT_*"
+                             f"in order to read the digital state.")
+        results = self._command("r", str(identifier))
+        if len(results) != 1:
+            raise CommunicationError(f"Invalid response from Arduino: {results!r}")
+        result = results[0]
+        if result == "h":
+            return True
+        elif result == "l":
+            return False
+        else:
+            raise CommunicationError(f"Invalid response from Arduino: {result!r}")
+
+    def read_gpio_pin_analogue_value(self, identifier: int) -> float:
+        """Read the analogue voltage of the GPIO pin."""
+        if identifier < FIRST_ANALOGUE_PIN:
+            raise NotSupportedByHardwareError(
+                "Analogue functions not supported on digital pins",
+            )
+        if identifier >= FIRST_ANALOGUE_PIN + 4:
+            raise NotSupportedByHardwareError(
+                f"Arduino Uno firmware only supports analogue pins 0-3 (IDs 14-17)",
+            )
+        analogue_pin_num = identifier - 14
+        results = self._command("")
+        for result in results:
+            pin_name, reading = result.split(None, 1)
+            if pin_name == f"a{analogue_pin_num}":
+                voltage = (int(reading) / 1024.0) * 5.0
+                return voltage
+        raise CommunicationError(f"Invalid response from Arduino: {results!r}")

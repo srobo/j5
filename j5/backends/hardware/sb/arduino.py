@@ -61,7 +61,7 @@ class SBArduinoHardwareBackend(
             comports: Callable = comports,
             serial_class: Type[Serial] = Serial,
     ) -> Set[Board]:
-        """Discover all connected motor boards."""
+        """Discover all connected arduino boards."""
         # Find all serial ports.
         ports: List[ListPortInfo] = comports()
 
@@ -190,13 +190,12 @@ class SBArduinoHardwareBackend(
                 self._digital_pins[identifier].mode = pin_mode
                 self._update_digital_pin(identifier)
                 return
+        elif pin_mode is GPIOPinMode.ANALOGUE_INPUT:  # Analogue pin
+            return
         else:
-            # Analogue pin
-            if pin_mode is GPIOPinMode.ANALOGUE_INPUT:
-                return
-        raise NotSupportedByHardwareError(
-            f"Arduino Uno does not support mode {pin_mode} on pin {identifier}",
-        )
+            raise NotSupportedByHardwareError(
+                f"Arduino Uno does not support mode {pin_mode} on pin {identifier}",
+            )
 
     def get_gpio_pin_mode(self, identifier: int) -> GPIOPinMode:
         """Get the hardware mode of a GPIO pin."""
