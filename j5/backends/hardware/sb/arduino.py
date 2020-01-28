@@ -4,16 +4,13 @@ from datetime import timedelta
 from threading import Lock
 from typing import Callable, List, Mapping, Optional, Set, Tuple, Type
 
-from serial import Serial
+from serial import Serial, SerialException, SerialTimeoutException
 from serial.tools.list_ports import comports
 from serial.tools.list_ports_common import ListPortInfo
 
 from j5.backends import CommunicationError
 from j5.backends.hardware.env import NotSupportedByHardwareError
-from j5.backends.hardware.j5.serial import (
-    SerialHardwareBackend,
-    handle_serial_error,
-)
+from j5.backends.hardware.j5.serial import SerialHardwareBackend
 from j5.boards import Board
 from j5.boards.sb.arduino import SBArduinoBoard
 from j5.components import GPIOPinInterface, GPIOPinMode, LEDInterface
@@ -74,14 +71,17 @@ class SBArduinoHardwareBackend(
             boards.add(
                 SBArduinoBoard(
                     port.serial_number,
-                    cls(port.device, serial_class),
+                    cls(port.device, serial_class),  # type: ignore
                 ),
             )
 
         return boards
 
-    @handle_serial_error
-    def __init__(self, serial_port: str, serial_class: Type[Serial] = Serial) -> None:
+    def __init__(
+            self,
+            serial_port: str,
+            serial_class: Type[Serial] = Serial,
+    ) -> None:
         super(SBArduinoHardwareBackend, self).__init__(
             serial_port=serial_port,
             serial_class=serial_class,
@@ -131,29 +131,33 @@ class SBArduinoHardwareBackend(
         """The firmware version of the board."""
         return self._version_line.split("v")[1]
 
-    @handle_serial_error
     def _command(self, command: str, *params: str) -> List[str]:
         """Send a command to the board."""
-        with self._lock:
-            message = " ".join([command] + list(params)) + "\n"
-            self._serial.write(message.encode("utf-8"))
+        try:
+            with self._lock:
+                message = " ".join([command] + list(params)) + "\n"
+                self._serial.write(message.encode("utf-8"))
 
-            results: List[str] = []
-            while True:
-                line = self.read_serial_line(empty=False)
-                code, param = line.split(None, 1)
-                if code == "+":
-                    return results
-                elif code == "-":
-                    raise CommunicationError(f"Arduino error: {param}")
-                elif code == ">":
-                    results.append(param)
-                elif code == "#":
-                    pass  # Ignore comment lines
-                else:
-                    raise CommunicationError(
-                        f"Arduino returned unrecognised response line: {line}",
-                    )
+                results: List[str] = []
+                while True:
+                    line = self.read_serial_line(empty=False)
+                    code, param = line.split(None, 1)
+                    if code == "+":
+                        return results
+                    elif code == "-":
+                        raise CommunicationError(f"Arduino error: {param}")
+                    elif code == ">":
+                        results.append(param)
+                    elif code == "#":
+                        pass  # Ignore comment lines
+                    else:
+                        raise CommunicationError(
+                            f"Arduino returned unrecognised response line: {line}",
+                        )
+        except SerialTimeoutException as e:
+            raise CommunicationError(f"Serial Timeout Error: {e}") from e
+        except SerialException as e:
+            raise CommunicationError(f"Serial Error: {e}") from e
 
     def _update_digital_pin(self, identifier: int) -> None:
         if identifier >= FIRST_ANALOGUE_PIN:

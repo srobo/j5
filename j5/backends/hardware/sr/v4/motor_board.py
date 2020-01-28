@@ -2,16 +2,12 @@
 from threading import Lock
 from typing import Callable, List, Optional, Set, Type, cast
 
-from serial import Serial
+from serial import Serial, SerialException, SerialTimeoutException
 from serial.tools.list_ports import comports
 from serial.tools.list_ports_common import ListPortInfo
 
-from j5.backends import CommunicationError
-from j5.backends.hardware.j5.serial import (
-    SerialHardwareBackend,
-    Seriallike,
-    handle_serial_error,
-)
+from j5.backends import Backend, CommunicationError
+from j5.backends.hardware.j5.serial import SerialHardwareBackend, Seriallike
 from j5.boards import Board
 from j5.boards.sr.v4.motor_board import MotorBoard
 from j5.components.motor import MotorInterface, MotorSpecialState, MotorState
@@ -55,13 +51,15 @@ class SRV4MotorBoardHardwareBackend(
             boards.add(
                 MotorBoard(
                     port.serial_number,
-                    SRV4MotorBoardHardwareBackend(port.device, serial_class),
+                    cast(
+                        Backend,
+                        SRV4MotorBoardHardwareBackend(port.device, serial_class),
+                    ),
                 ),
             )
 
         return boards
 
-    @handle_serial_error
     def __init__(self, serial_port: str, serial_class: Type[Seriallike] = Serial) -> None:
         super(SRV4MotorBoardHardwareBackend, self).__init__(
             serial_port=serial_port,
@@ -98,10 +96,14 @@ class SRV4MotorBoardHardwareBackend(
                     MotorSpecialState.BRAKE,
                     acquire_lock=False,
                 )
-        self._serial.flush()
-        self._serial.close()
+        try:
+            self._serial.flush()
+            self._serial.close()
+        except SerialTimeoutException as e:
+            raise CommunicationError(f"Serial Timeout Error: {e}") from e
+        except SerialException as e:
+            raise CommunicationError(f"Serial Error: {e}") from e
 
-    @handle_serial_error
     def send_command(self, command: int, data: Optional[int] = None) -> None:
         """Send a serial command to the board."""
         with self._lock:
@@ -109,14 +111,19 @@ class SRV4MotorBoardHardwareBackend(
 
     def _send_command_no_lock(self, command: int, data: Optional[int] = None) -> None:
         """Send a serial command to the board without acquiring the lock."""
-        message: List[int] = [command]
-        if data is not None:
-            message += [data]
-        bytes_written = self._serial.write(bytes(message))
-        if len(message) != bytes_written:
-            raise CommunicationError(
-                "Mismatch in command bytes written to serial interface.",
-            )
+        try:
+            message: List[int] = [command]
+            if data is not None:
+                message += [data]
+            bytes_written = self._serial.write(bytes(message))
+            if len(message) != bytes_written:
+                raise CommunicationError(
+                    "Mismatch in command bytes written to serial interface.",
+                )
+        except SerialTimeoutException as e:
+            raise CommunicationError(f"Serial Timeout Error: {e}") from e
+        except SerialException as e:
+            raise CommunicationError(f"Serial Error: {e}") from e
 
     @property
     def firmware_version(self) -> Optional[str]:

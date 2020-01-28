@@ -37,7 +37,11 @@ class SBArduinoBoard(Board):
     _analogue_pins: Mapping[AnaloguePin, GPIOPin]
     name: str = "Arduino Uno"
 
-    def __init__(self, serial: str, backend: Backend):
+    def __init__(
+            self,
+            serial: str,
+            backend: Backend,
+    ):
         self._serial = serial
         self._backend = backend
 
