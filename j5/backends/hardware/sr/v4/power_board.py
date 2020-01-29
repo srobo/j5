@@ -105,8 +105,10 @@ class SRV4PowerBoardHardwareBackend(
         try:
             return self._output_states[identifier]
         except KeyError:
-            raise ValueError(f"Invalid power output identifier {identifier!r}; "
-                             f"valid identifiers are {CMD_WRITE_OUTPUT.keys()}") from None
+            raise ValueError(
+                f"Invalid power output identifier {identifier!r}; "
+                f"valid identifiers are {CMD_WRITE_OUTPUT.keys()}.",
+            ) from None
 
     def set_power_output_enabled(
         self, identifier: int, enabled: bool,
@@ -115,8 +117,10 @@ class SRV4PowerBoardHardwareBackend(
         try:
             cmd = CMD_WRITE_OUTPUT[identifier]
         except KeyError:
-            raise ValueError(f"Invalid power output identifier {identifier!r}; "
-                             f"valid identifiers are {CMD_WRITE_OUTPUT.keys()}.") from None
+            raise ValueError(
+                f"Invalid power output identifier {identifier!r}; "
+                f"valid identifiers are {CMD_WRITE_OUTPUT.keys()}.",
+            ) from None
         self._write(cmd, int(enabled))
         self._output_states[identifier] = enabled
 
