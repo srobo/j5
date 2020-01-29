@@ -91,8 +91,8 @@ class SRV4PowerBoardHardwareBackend(
         """Raises an exception if the firmware version is not supported."""
         v = self.firmware_version
         if v != "3":
-            raise NotImplementedError(f"this power board is running firmware "
-                                      f"version {v}, but only version 3 is supported")
+            raise NotImplementedError(f"This power board is running firmware "
+                                      f"version {v}, but only version 3 is supported.")
 
     @property
     def firmware_version(self) -> str:
@@ -105,8 +105,10 @@ class SRV4PowerBoardHardwareBackend(
         try:
             return self._output_states[identifier]
         except KeyError:
-            raise ValueError(f"Invalid power output identifier {identifier!r}; "
-                             f"valid identifiers are {CMD_WRITE_OUTPUT.keys()}") from None
+            raise ValueError(
+                f"Invalid power output identifier {identifier!r}; "
+                f"valid identifiers are {CMD_WRITE_OUTPUT.keys()}.",
+            ) from None
 
     def set_power_output_enabled(
         self, identifier: int, enabled: bool,
@@ -115,8 +117,10 @@ class SRV4PowerBoardHardwareBackend(
         try:
             cmd = CMD_WRITE_OUTPUT[identifier]
         except KeyError:
-            raise ValueError(f"Invalid power output identifier {identifier!r}; "
-                             f"valid identifiers are {CMD_WRITE_OUTPUT.keys()}") from None
+            raise ValueError(
+                f"Invalid power output identifier {identifier!r}; "
+                f"valid identifiers are {CMD_WRITE_OUTPUT.keys()}.",
+            ) from None
         self._write(cmd, int(enabled))
         self._output_states[identifier] = enabled
 
@@ -125,8 +129,8 @@ class SRV4PowerBoardHardwareBackend(
         try:
             cmd = CMD_READ_OUTPUT[identifier]
         except KeyError:
-            raise ValueError(f"invalid power output identifier {identifier!r}; "
-                             f"valid identifiers are {CMD_READ_OUTPUT.keys()}") from None
+            raise ValueError(f"Invalid power output identifier {identifier!r}; "
+                             f"valid identifiers are {CMD_READ_OUTPUT.keys()}.") from None
         current, = struct.unpack("<I", self._read(cmd))
         return cast(int, current) / 1000  # convert milliamps to amps
 
@@ -134,8 +138,8 @@ class SRV4PowerBoardHardwareBackend(
              duration: timedelta, frequency: float) -> None:
         """Queue a pitch to be played."""
         if identifier != 0:
-            raise ValueError(f"invalid piezo identifier {identifier!r}; "
-                             f"the only valid identifier is 0")
+            raise ValueError(f"Invalid piezo identifier {identifier!r}; "
+                             f"the only valid identifier is 0.")
 
         duration_ms = round(duration / timedelta(milliseconds=1))
         if duration_ms > 65535:
@@ -159,8 +163,8 @@ class SRV4PowerBoardHardwareBackend(
     def get_button_state(self, identifier: int) -> bool:
         """Get the state of a button."""
         if identifier != 0:
-            raise ValueError(f"invalid button identifier {identifier!r}; "
-                             f"the only valid identifier is 0")
+            raise ValueError(f"Invalid button identifier {identifier!r}; "
+                             f"the only valid identifier is 0.")
         state, = struct.unpack("<I", self._read(CMD_READ_BUTTON))
         return cast(int, state) != 0
 
@@ -172,16 +176,16 @@ class SRV4PowerBoardHardwareBackend(
     def get_battery_sensor_voltage(self, identifier: int) -> float:
         """Get the voltage of a battery sensor."""
         if identifier != 0:
-            raise ValueError(f"invalid battery sensor identifier {identifier!r}; "
-                             f"the only valid identifier is 0")
+            raise ValueError(f"Invalid battery sensor identifier {identifier!r}; "
+                             f"the only valid identifier is 0.")
         current, voltage = struct.unpack("<II", self._read(CMD_READ_BATTERY))
         return cast(int, voltage) / 1000  # convert millivolts to volts
 
     def get_battery_sensor_current(self, identifier: int) -> float:
         """Get the current of a battery sensor."""
         if identifier != 0:
-            raise ValueError(f"invalid battery sensor identifier {identifier!r}; "
-                             f"the only valid identifier is 0")
+            raise ValueError(f"Invalid battery sensor identifier {identifier!r}; "
+                             f"the only valid identifier is 0.")
         current, voltage = struct.unpack("<II", self._read(CMD_READ_BATTERY))
         return cast(int, current) / 1000  # convert milliamps to amps
 
@@ -195,7 +199,7 @@ class SRV4PowerBoardHardwareBackend(
         try:
             cmd = cmds[identifier]
         except KeyError:
-            raise ValueError(f"invalid LED identifier {identifier!r}; valid identifiers "
-                             f"are 0 (run LED) and 1 (error LED)") from None
+            raise ValueError(f"Invalid LED identifier {identifier!r}; valid identifiers "
+                             f"are 0 (run LED) and 1 (error LED).") from None
         self._write(cmd, int(state))
         self._led_states[identifier] = state
