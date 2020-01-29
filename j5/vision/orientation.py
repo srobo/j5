@@ -49,17 +49,17 @@ class Orientation:
     @property
     def rot_x(self) -> float:
         """Returns the rotation around the x axis in radians."""
-        return self.roll
+        return self.pitch
 
     @property
     def rot_y(self) -> float:
         """Returns the rotation around the y axis in radians."""
-        return self.pitch
+        return self.yaw
 
     @property
     def rot_z(self) -> float:
         """Returns the rotation around the z axis in radians."""
-        return self.yaw
+        return self.roll
 
     @property
     def quaternion(self) -> Quaternion:
