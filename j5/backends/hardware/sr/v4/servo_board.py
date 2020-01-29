@@ -94,17 +94,21 @@ class SRV4ServoBoardHardwareBackend(
 
         Currently reads back the last known position as we cannot read from the hardware.
         """
+        if identifier not in range(0, 12) or not isinstance(identifier, int):
+            raise ValueError("Only integers 0 - 12 are valid servo identifiers.")
         return self._positions[identifier]
 
     def set_servo_position(self, identifier: int, position: ServoPosition) -> None:
         """Set the position of a servo."""
-        if identifier not in range(0, 12):
+        if identifier not in range(0, 12) or not isinstance(identifier, int):
             raise ValueError("Only integers 0 - 12 are valid servo identifiers.")
 
         if position is None:
             raise NotSupportedByHardwareError(
                 f"{self.board.name} does not support unpowered servos.",
             )
+        elif position < -1 or position > 1:
+            raise ValueError("Only numbers between -1 and 1 are valid servo positions.")
 
         self._positions[identifier] = position
         value = round(position * 100)
