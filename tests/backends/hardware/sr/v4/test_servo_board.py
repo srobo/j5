@@ -1,12 +1,18 @@
 """Test the SR v4 Servo Board backend and associated classes."""
 
 import struct
-from typing import List, Optional, Union
+from typing import Generator, List, Optional, Union
 
 import pytest
 import usb
 
-from j5.backends.hardware.j5.raw_usb import ReadCommand, WriteCommand
+from j5.backends import CommunicationError
+from j5.backends.hardware import NotSupportedByHardwareError
+from j5.backends.hardware.j5.raw_usb import (
+    ReadCommand,
+    USBCommunicationError,
+    WriteCommand,
+)
 from j5.backends.hardware.sr.v4.servo_board import (
     CMD_READ_FWVER,
     CMD_WRITE_INIT,
@@ -131,6 +137,30 @@ class MockUSBServoBoardDevice(usb.core.Device):
         assert self.timers_initialised
 
 
+class MockUSBServoBoardDeviceUSBInputOutput(MockUSBServoBoardDevice):
+    """This MockBoard throws an Input/Output Error on FW read."""
+
+    def read_fw(self, wLength: int) -> bytes:
+        """Mock reading the firmware number."""
+        raise usb.core.USBError("Input/Output Error", 5, 5)
+
+
+class MockUSBServoBoardDeviceUSBTimeout(MockUSBServoBoardDevice):
+    """This MockBoard throws an Timeout Error on FW read."""
+
+    def read_fw(self, wLength: int) -> bytes:
+        """Mock reading the firmware number."""
+        raise usb.core.USBError("Timeout Error", 110, 110)
+
+
+class MockUSBServoBoardDeviceUSBTimerExpired(MockUSBServoBoardDevice):
+    """This MockBoard throws an Timer Expired Error on FW read."""
+
+    def read_fw(self, wLength: int) -> bytes:
+        """Mock reading the firmware number."""
+        raise usb.core.USBError("Timer Expired", 62, 62)
+
+
 def mock_find(
     find_all: bool = True, *, idVendor: int, idProduct: int,
 ) -> List[MockUSBServoBoardDevice]:
@@ -139,6 +169,15 @@ def mock_find(
     assert idProduct == 0x0011
     assert find_all
     return [MockUSBServoBoardDevice(f"SERIAL{n}") for n in range(0, 4)]
+
+
+def usb_error_find(
+        find_all: bool = False,
+        idVendor: Optional[int] = None,
+        idProduct: Optional[int] = None,
+) -> Generator[usb.core.Device, None, None]:
+    """A function that behaves like find, but throws an error."""
+    raise usb.core.USBError("An error.")
 
 
 def test_backend_initialisation() -> None:
@@ -159,6 +198,16 @@ def test_backend_discover() -> None:
 
     assert len(found_boards) == 4
     assert all(type(board) is ServoBoard for board in found_boards)
+
+
+def test_backend_discover_usb_error() -> None:
+    """
+    Test that a USBCommunication Error is thrown in discover.
+
+    Any USBError should be handled and wrapped.
+    """
+    with pytest.raises(USBCommunicationError):
+        SRV4ServoBoardHardwareBackend.discover(find=usb_error_find)
 
 
 def test_backend_cleanup() -> None:
@@ -184,6 +233,27 @@ def test_backend_bad_firmware_version() -> None:
         SRV4ServoBoardHardwareBackend(device)
 
 
+def test_backend_catch_usb_error_input_output() -> None:
+    """Test that we catch and throw usb input/output errors properly."""
+    device = MockUSBServoBoardDeviceUSBInputOutput("SERIAL0")
+    with pytest.raises(CommunicationError):
+        SRV4ServoBoardHardwareBackend(device)
+
+
+def test_backend_catch_usb_error_timeout() -> None:
+    """Test that we catch and throw usb errors properly."""
+    device = MockUSBServoBoardDeviceUSBTimeout("SERIAL0")
+    with pytest.raises(CommunicationError):
+        SRV4ServoBoardHardwareBackend(device)
+
+
+def test_backend_catch_usb_error_other() -> None:
+    """Test that we catch and throw usb errors properly."""
+    device = MockUSBServoBoardDeviceUSBTimerExpired("SERIAL0")
+    with pytest.raises(USBCommunicationError):
+        SRV4ServoBoardHardwareBackend(device)
+
+
 def test_backend_serial_number() -> None:
     """Test that we can get the serial number."""
     device = MockUSBServoBoardDevice("SERIAL0")
@@ -192,9 +262,86 @@ def test_backend_serial_number() -> None:
     assert backend.serial == "SERIAL0"
 
 
-def test_backend_get_servo_status() -> None:
+def test_backend_set_servo_position() -> None:
+    """Test that we can set the position of a servo."""
+    device = MockUSBServoBoardDevice("SERIAL0")
+    backend = SRV4ServoBoardHardwareBackend(device)
+
+    for i in range(12):
+        backend.set_servo_position(i, 0)
+        backend.set_servo_position(i, 0.0)
+        backend.set_servo_position(i, 0.5)
+        backend.set_servo_position(i, 1)
+        backend.set_servo_position(i, 1.0)
+        backend.set_servo_position(i, -1)
+        backend.set_servo_position(i, -1.0)
+
+
+def test_backend_servo_position_out_of_bounds() -> None:
+    """Test that a ValueError is thrown when position is wrong."""
+    device = MockUSBServoBoardDevice("SERIAL0")
+    backend = SRV4ServoBoardHardwareBackend(device)
+
+    with pytest.raises(ValueError):
+        backend.set_servo_position(0, 100)
+
+    with pytest.raises(ValueError):
+        backend.set_servo_position(0, -100)
+
+    with pytest.raises(ValueError):
+        backend.set_servo_position(0, -1.1)
+
+    with pytest.raises(ValueError):
+        backend.set_servo_position(0, 1.1)
+
+    with pytest.raises(NotSupportedByHardwareError):
+        backend.set_servo_position(0, None)
+
+
+def test_backend_set_servo_pos_identifier_range() -> None:
+    """Test the bounds of the indentifier on set servo pos."""
+    device = MockUSBServoBoardDevice("SERIAL0")
+    backend = SRV4ServoBoardHardwareBackend(device)
+
+    for i in range(12):
+        backend.set_servo_position(i, 0)
+
+    with pytest.raises(ValueError):
+        backend.set_servo_position(12, 0)
+
+    with pytest.raises(ValueError):
+        backend.set_servo_position(-1, 0)
+
+    with pytest.raises(ValueError):
+        backend.set_servo_position(1.0, 0)  # type: ignore
+
+
+def test_backend_get_servo_position() -> None:
     """Test that we can get the position of a servo."""
     device = MockUSBServoBoardDevice("SERIAL0")
     backend = SRV4ServoBoardHardwareBackend(device)
 
-    assert all(backend.get_servo_position(i) == 0.0 for i in range(0, 12))
+    assert all(backend.get_servo_position(i) == 0.0 for i in range(12))
+
+    for i in range(12):
+        backend.set_servo_position(i, 0.5)
+
+    assert all(backend.get_servo_position(i) == 0.5 for i in range(12))
+
+
+def test_backend_get_servo_pos_identifier_range() -> None:
+    """Test the bounds of the indentifier on get servo pos."""
+    device = MockUSBServoBoardDevice("SERIAL0")
+    backend = SRV4ServoBoardHardwareBackend(device)
+
+    for i in range(12):
+        backend.get_servo_position(i)
+
+    with pytest.raises(ValueError):
+        backend.get_servo_position(12)
+
+    with pytest.raises(ValueError):
+        backend.get_servo_position(-1)
+
+    with pytest.raises(ValueError):
+        backend.get_servo_position(1.0)  # type: ignore
