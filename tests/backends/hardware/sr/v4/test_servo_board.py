@@ -50,6 +50,7 @@ class MockUSBServoBoardDevice(usb.core.Device):
         self.serial = serial_number
         self.firmware_version = fw_version
         self._ctx = MockUSBContext()  # Used by PyUSB when cleaning up the device.
+        self.timers_initialised = False
 
     @property
     def serial_number(self) -> str:
@@ -110,7 +111,15 @@ class MockUSBServoBoardDevice(usb.core.Device):
             # Set Servo.
             return self.write_servo(wValue, data)
         if wIndex == 12:
-            # Initialise. Behaviour unknown currently
+            # Initialise the board.
+            # Turns on the timer interrupt to the I2C GPIO expander.
+            assert data == b''
+            assert wValue == 0
+
+            # We don't want to do this twice.
+            assert not self.timers_initialised
+
+            self.timers_initialised = True
             return
 
         raise NotImplementedError
@@ -119,6 +128,7 @@ class MockUSBServoBoardDevice(usb.core.Device):
         """Set the value of a servo."""
         assert -100 <= wValue <= 100
         assert data == b''
+        assert self.timers_initialised
 
 
 def mock_find(

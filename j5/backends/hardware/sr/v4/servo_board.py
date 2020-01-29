@@ -62,8 +62,7 @@ class SRV4ServoBoardHardwareBackend(
         ]
 
         # Initialise servos.
-        with self._lock:
-            self._usb_device.ctrl_transfer(0, 64, 0, 12, b"")
+        self._write(CMD_WRITE_INIT, b"")
 
         for s in range(0, 12):
             self.set_servo_position(s, 0.0)
