@@ -24,7 +24,7 @@ class Marker:
     _position: Coordinate
 
     def __init__(self,
-                 id: int,
+                 id: int,  # noqa: A002
                  position: Coordinate,
                  *,
                  pixel_corners: Optional[Sequence[PixelCoordinates]] = None,
@@ -37,7 +37,7 @@ class Marker:
         self._pixel_corners = pixel_corners
         self._pixel_centre = pixel_centre
 
-    @property
+    @property  # noqa: A003
     def id(self) -> int:
         """The id of the marker."""
         return self._id
