@@ -56,10 +56,7 @@ class SRV4ServoBoardHardwareBackend(
 
         self.check_firmware_version_supported()
 
-        self._positions: List[float] = [
-            0.0
-            for _ in range(0, 12)
-        ]
+        self._positions: List[float] = [0.0] * 12
 
         # Initialise servos.
         self._write(CMD_WRITE_INIT, b"")
