@@ -155,7 +155,7 @@ class SRV4PowerBoardHardwareBackend(
         except USBCommunicationError as e:
             if e.usb_error.errno == 32:  # pipe error
                 raise CommunicationError(
-                    f"{e.message}; are you sending buzz commands to the "
+                    f"{e}; are you sending buzz commands to the "
                     f"power board too quickly",
                 )
             raise

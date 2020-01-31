@@ -76,7 +76,7 @@ class SRV4ServoBoardHardwareBackend(
         except USBCommunicationError as e:
             if e.usb_error.errno in [5, 110]:  # "Input/Output", "operation timed out"
                 raise CommunicationError(
-                    f"{e.message}; are you sure the servo board"
+                    f"{e}; are you sure the servo board"
                     f" is being correctly powered?",
                 )
             raise
