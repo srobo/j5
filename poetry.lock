@@ -222,6 +222,19 @@ flake8 = "*"
 
 [[package]]
 category = "dev"
+description = "print statement checker plugin for flake8"
+name = "flake8-print"
+optional = false
+python-versions = "*"
+version = "3.1.4"
+
+[package.dependencies]
+flake8 = ">=1.5"
+pycodestyle = "*"
+six = "*"
+
+[[package]]
+category = "dev"
 description = "TODO notes checker, plugin for flake8"
 name = "flake8-todo"
 optional = false
@@ -765,7 +778,7 @@ viewer = ["Pillow (>=7.0.0)"]
 zoloto-vision = ["zoloto"]
 
 [metadata]
-content-hash = "2b0c5b7394bf1611cba132ac87bad2d4322ab3e5e8f1c7371f5c8e3620a5338b"
+content-hash = "e4b3d02bfa7c1fce7208ab73d3e08d913c50507ff4dde0b8f085c3dad3f72fd6"
 python-versions = "^3.6"
 
 [metadata.files]
@@ -876,6 +889,9 @@ flake8-isort = [
 flake8-mutable = [
     {file = "flake8-mutable-1.2.0.tar.gz", hash = "sha256:ee9b77111b867d845177bbc289d87d541445ffcc6029a0c5c65865b42b18c6a6"},
     {file = "flake8_mutable-1.2.0-py2-none-any.whl", hash = "sha256:38fd9dadcbcda6550a916197bc40ed76908119dabb37fbcca30873666c31d2d5"},
+]
+flake8-print = [
+    {file = "flake8-print-3.1.4.tar.gz", hash = "sha256:324f9e59a522518daa2461bacd7f82da3c34eb26a4314c2a54bd493f8b394a68"},
 ]
 flake8-todo = [
     {file = "flake8-todo-0.7.tar.gz", hash = "sha256:6e4c5491ff838c06fe5a771b0e95ee15fc005ca57196011011280fc834a85915"},

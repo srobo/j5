@@ -8,11 +8,14 @@ T = TypeVar("T")
 class Console:
     """A helper class for console backends."""
 
+    DEFAULT_PRINT: Callable = print  # type: ignore  # noqa: T002
+    DEFAULT_INPUT: Callable = input  # type: ignore
+
     def __init__(
             self,
             descriptor: str,
-            print_function: Callable = print,  # type: ignore
-            input_function: Callable = input,  # type: ignore
+            print_function: Callable = DEFAULT_PRINT,  # type: ignore
+            input_function: Callable = DEFAULT_INPUT,  # type: ignore
     ) -> None:
         self._descriptor = descriptor
         self._print = print_function
