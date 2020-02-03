@@ -46,12 +46,14 @@ class Seriallike(Protocol):
 class SerialHardwareBackend(metaclass=BackendMeta):
     """An abstract class for creating backends that use USB serial communication."""
 
+    DEFAULT_TIMEOUT: timedelta = timedelta(milliseconds=250)
+
     def __init__(
             self,
             serial_port: str,
             serial_class: Type[Seriallike] = Serial,
             baud: int = 115200,
-            timeout: timedelta = timedelta(milliseconds=250),
+            timeout: timedelta = DEFAULT_TIMEOUT,
     ) -> None:
         timeout_secs = timeout / timedelta(seconds=1)
         try:

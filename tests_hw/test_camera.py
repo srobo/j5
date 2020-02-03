@@ -17,7 +17,7 @@ class ZolotoCamera(Camera):
 
     marker_dict = MarkerDict.DICT_APRILTAG_36H11
 
-    def __init__(self, id: int):
+    def __init__(self, id: int):  # noqa: A002
         super().__init__(
             id,
             calibration_file=Path(__file__).parent.joinpath('C270.xml'),
