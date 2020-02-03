@@ -86,8 +86,6 @@ class Orientation:
         Note that the actual parameters used to construct this are not
         used, because this is likely to confuse students.
         """
-        return f"Orientation(" \
-               f"x_radians={self.rot_x}, " \
-               f"y_radians={self.rot_y}, " \
-               f"z_radians={self.rot_z}" \
-               f")"
+        return "Orientation(rot_x={}, rot_y={}, rot_z={})".format(
+            self.rot_x, self.rot_y, self.rot_z
+        )
