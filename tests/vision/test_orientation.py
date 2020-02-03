@@ -15,7 +15,7 @@ def test_orientation_quaternion() -> None:
 def test_orientation_matrix() -> None:
     """Test the matrix property of the Orientation class."""
     q = Quaternion.random()
-    assert allclose(q.rotation_matrix, Orientation(q).matrix)
+    assert allclose(q.rotation_matrix, Orientation(q).rotation_matrix)
 
 
 def test_orientation_yaw_pitch_roll() -> None:
@@ -64,7 +64,7 @@ def test_orientation_repr() -> None:
     """Test the __repr__ method of the Orientation class."""
     o = Orientation(Quaternion.random())
     assert repr(o) == f"Orientation(" \
-                      f"x_radians={o.rot_x}, " \
-                      f"y_radians={o.rot_y}, " \
-                      f"z_radians={o.rot_z}" \
+                      f"rot_x={o.rot_x}, " \
+                      f"rot_y={o.rot_y}, " \
+                      f"rot_z={o.rot_z}" \
                       f")"
