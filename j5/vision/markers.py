@@ -38,7 +38,7 @@ class Marker:
         self._pixel_centre = pixel_centre
 
     @property  # noqa: A003
-    def id(self) -> int:
+    def id(self) -> int:  # noqa: A003
         """The id of the marker."""
         return self._id
 
