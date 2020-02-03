@@ -24,6 +24,7 @@ pyquaternion = "^0.9.5"
 zoloto = {version = ">=0.5,<0.6", optional = true}
 typing-extensions = "^3.7"
 cached-property = "^1.5.1"
+cached_property = "^1.5.1"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.7"
