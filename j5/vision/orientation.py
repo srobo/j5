@@ -19,7 +19,7 @@ class Orientation:
         self._quaternion = orientation
 
     @property
-    def matrix(self) -> RotationMatrix:
+    def rotation_matrix(self) -> RotationMatrix:
         """
         Get the rotation matrix represented by this orientation.
 
