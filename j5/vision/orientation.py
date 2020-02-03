@@ -4,6 +4,9 @@ from typing import List, Tuple
 
 from pyquaternion import Quaternion
 
+ThreeTuple = Tuple[float, float, float]
+RotationMatrix = Tuple[ThreeTuple, ThreeTuple, ThreeTuple]
+
 
 class Orientation:
     """
@@ -16,12 +19,22 @@ class Orientation:
         self._quaternion = orientation
 
     @property
-    def matrix(self) -> List[List[float]]:
-        """Get a 3x3 rotation matrix representing the 3D rotation."""
-        return self._quaternion.rotation_matrix
+    def matrix(self) -> RotationMatrix:
+        """
+        Get the rotation matrix represented by this orientation.
+
+        Returns:
+            A 3x3 rotation matrix as a tuple of tuples.
+        """
+        r_m = self._quaternion.rotation_matrix
+        return (
+            (r_m[0][0], r_m[0][1], r_m[0][2]),
+            (r_m[1][0], r_m[1][1], r_m[1][2]),
+            (r_m[2][0], r_m[2][1], r_m[2][2]),
+        )
 
     @property
-    def yaw_pitch_roll(self) -> Tuple[float, float, float]:
+    def yaw_pitch_roll(self) -> ThreeTuple:
         """
         Get the equivalent yaw-pitch-roll angles in radians.
 
