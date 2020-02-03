@@ -89,4 +89,4 @@ class Orientation:
         return f"Orientation(" \
                f"rot_x={self.rot_x}, " \
                f"rot_y={self.rot_y}, " \
-               f"rot_z={self._rot_z})"
+               f"rot_z={self.rot_z})"
