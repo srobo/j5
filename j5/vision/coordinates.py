@@ -1,15 +1,15 @@
 """Coordinate Classes to represent position in space."""
 
 from math import atan2, cos, isclose, sin, sqrt
-from typing import NamedTuple, Optional
+from typing import NamedTuple
+
+from cached_property import cached_property
 
 
 class Coordinate:
     """A position in space."""
 
     _cart: 'Cartesian'
-    _cyl: Optional['Cylindrical'] = None
-    _sph: Optional['Spherical'] = None
 
     def __init__(self, x: float, y: float, z: float) -> None:
         self._cart = Cartesian(x, y, z)
@@ -42,30 +42,26 @@ class Coordinate:
         """Cartesian representation."""
         return self._cart
 
-    @property
+    @cached_property
     def cylindrical(self) -> 'Cylindrical':
         """Cylindrical representation."""
-        if self._cyl is None:
-            self._cyl = Cylindrical(
-                p=sqrt(self._cart.x**2 + self._cart.y**2),
-                phi=atan2(self._cart.y, self._cart.x),
-                z=self._cart.z,
-            )
-        return self._cyl
+        return Cylindrical(
+            p=sqrt(self._cart.x**2 + self._cart.y**2),
+            phi=atan2(self._cart.y, self._cart.x),
+            z=self._cart.z,
+        )
 
-    @property
+    @cached_property
     def spherical(self) -> 'Spherical':
         """Spherical representation."""
-        if self._sph is None:
-            self._sph = Spherical(
-                sqrt(self._cart.x**2 + self._cart.y**2 + self._cart.z**2),
-                atan2(self._cart.y, self._cart.x),
-                atan2(
-                    sqrt(self._cart.x**2 + self._cart.y**2),
-                    self._cart.z,
-                ),
-            )
-        return self._sph
+        return Spherical(
+            sqrt(self._cart.x**2 + self._cart.y**2 + self._cart.z**2),
+            atan2(self._cart.y, self._cart.x),
+            atan2(
+                sqrt(self._cart.x**2 + self._cart.y**2),
+                self._cart.z,
+            ),
+        )
 
     def __repr__(self) -> str:
         return f"Coordinate(x={self._cart.x}, y={self._cart.y}, z={self._cart.z})"
