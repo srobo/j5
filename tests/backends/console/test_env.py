@@ -9,7 +9,7 @@ def test_console_instantiation() -> None:
 
     assert type(console) is Console
     assert console._descriptor == "MockConsole"
-    assert console._print is print
+    assert console._print is print  # noqa: T002
     assert console._input is input
 
 
@@ -56,14 +56,14 @@ def test_console_read_bad_type() -> None:
         def __init__(self) -> None:
             self.bad_attempt_count = 0
 
-        def input(self, prompt: str) -> str:
+        def input(self, prompt: str) -> str:  # noqa: A003
             """Mock some input."""
             if self.bad_attempt_count == 0:
                 self.bad_attempt_count += 1
                 return "Not an int"
             return "6"
 
-        def print(self, text: str) -> None:
+        def print(self, text: str) -> None:  # noqa: A003,T002
             """Mock printing function."""
             if self.bad_attempt_count == 0:
                 assert text == "TestConsole: Unable to construct a int from 'Not an int'"

@@ -98,14 +98,17 @@ class GPIOPinInterface(Interface):
 class GPIOPin(Component):
     """A GPIO Pin."""
 
+    DEFAULT_HW_MODE: Set[GPIOPinMode] = {GPIOPinMode.DIGITAL_OUTPUT}
+    DEFAULT_FW_MODE: Set[FirmwareMode] = set()
+
     def __init__(
             self,
             identifier: int,
             backend: GPIOPinInterface,
             *,
             initial_mode: PinMode,
-            hardware_modes: Set[GPIOPinMode] = {GPIOPinMode.DIGITAL_OUTPUT},
-            firmware_modes: Set[FirmwareMode] = set(),
+            hardware_modes: Set[GPIOPinMode] = DEFAULT_HW_MODE,
+            firmware_modes: Set[FirmwareMode] = DEFAULT_FW_MODE,
     ) -> None:
         self._backend = backend
         self._identifier = identifier
