@@ -90,7 +90,7 @@ class SRV4MotorBoardHardwareBackend(
         """Clean up device on destruction of object."""
         # Brake both of the motors for safety
         if hasattr(self, "_state"):
-            for i, val in enumerate(self._state):
+            for i, _ in enumerate(self._state):
                 self.set_motor_state(
                     i,
                     MotorSpecialState.BRAKE,

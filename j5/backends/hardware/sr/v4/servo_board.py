@@ -56,14 +56,10 @@ class SRV4ServoBoardHardwareBackend(
 
         self.check_firmware_version_supported()
 
-        self._positions: List[float] = [
-            0.0
-            for _ in range(0, 12)
-        ]
+        self._positions: List[float] = [0.0] * 12
 
         # Initialise servos.
-        with self._lock:
-            self._usb_device.ctrl_transfer(0, 64, 0, 12, b"")
+        self._write(CMD_WRITE_INIT, b"")
 
         for s in range(0, 12):
             self.set_servo_position(s, 0.0)
@@ -77,7 +73,7 @@ class SRV4ServoBoardHardwareBackend(
         except USBCommunicationError as e:
             if e.usb_error.errno in [5, 110]:  # "Input/Output", "operation timed out"
                 raise CommunicationError(
-                    f"{e.message}; are you sure the servo board"
+                    f"{e}; are you sure the servo board"
                     f" is being correctly powered?",
                 )
             raise
@@ -95,17 +91,21 @@ class SRV4ServoBoardHardwareBackend(
 
         Currently reads back the last known position as we cannot read from the hardware.
         """
+        if identifier not in range(0, 12) or not isinstance(identifier, int):
+            raise ValueError("Only integers 0 - 11 are valid servo identifiers.")
         return self._positions[identifier]
 
     def set_servo_position(self, identifier: int, position: ServoPosition) -> None:
         """Set the position of a servo."""
-        if identifier not in range(0, 12):
-            raise ValueError("Only integers 0 - 12 are valid servo identifiers.")
+        if identifier not in range(0, 12) or not isinstance(identifier, int):
+            raise ValueError("Only integers 0 - 11 are valid servo identifiers.")
 
         if position is None:
             raise NotSupportedByHardwareError(
                 f"{self.board.name} does not support unpowered servos.",
             )
+        elif position < -1 or position > 1:
+            raise ValueError("Only numbers between -1 and 1 are valid servo positions.")
 
         self._positions[identifier] = position
         value = round(position * 100)
