@@ -44,7 +44,7 @@ pytz = ">=2015.7"
 category = "main"
 description = "A decorator for caching properties in classes."
 name = "cached-property"
-optional = true
+optional = false
 python-versions = "*"
 version = "1.5.1"
 
@@ -739,7 +739,7 @@ viewer = ["Pillow (>=7.0.0)"]
 zoloto-vision = ["zoloto"]
 
 [metadata]
-content-hash = "875e435b56d88a89e71d1fa404042bee6ceb7b0fc11008e5f5b6661e2c4b719c"
+content-hash = "2d31d49fefb029e28e397fff04c0e87bc7f4600b7c6fe9a88410003d10b92dfd"
 python-versions = "^3.6"
 
 [metadata.files]
