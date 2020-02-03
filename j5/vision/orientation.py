@@ -1,6 +1,6 @@
 """Orientation classes to represent rotations in space."""
 
-from typing import List, Tuple
+from typing import Tuple
 
 from pyquaternion import Quaternion
 
@@ -86,6 +86,7 @@ class Orientation:
         Note that the actual parameters used to construct this are not
         used, because this is likely to confuse students.
         """
-        return "Orientation(rot_x={}, rot_y={}, rot_z={})".format(
-            self.rot_x, self.rot_y, self.rot_z
-        )
+        return f"Orientation(" \
+               f"rot_x={self.rot_x}, " \
+               f"rot_y={self.rot_y}, " \
+               f"rot_z={self._rot_z})"
