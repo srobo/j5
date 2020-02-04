@@ -5,7 +5,7 @@ This is to avoid duplicating code that is common between different Arduino board
 """
 from abc import abstractmethod
 from enum import IntEnum
-from typing import Union, Mapping, cast, Set, Type
+from typing import Union, Mapping, cast, Set, Type, Optional
 
 from j5.backends import Backend
 
@@ -34,16 +34,19 @@ class ArduinoUno(Board):
     _led: LED
     _digital_pins: Mapping[int, GPIOPin]
     _analogue_pins: Mapping[AnaloguePin, GPIOPin]
+    name: str
 
     def __init__(
             self,
             serial: str,
             backend: Backend,
+            name: str = "Arduino Uno"
     ):
         self._serial = serial
         self._backend = backend
 
         self._led = LED(0, cast(LEDInterface, self._backend))
+        self.name = name
 
         # Digital Pins
         # Note that pins 0 and 1 are used for serial comms.
@@ -80,6 +83,12 @@ class ArduinoUno(Board):
     def serial(self) -> str:
         """Get the serial number."""
         return self._serial
+
+    @property
+    @abstractmethod
+    def firmware_version(self) -> Optional[str]:
+        """Get the firmware version of the board."""
+        raise NotImplementedError
 
     @property
     def pins(self) -> Mapping[PinNumber, GPIOPin]:
