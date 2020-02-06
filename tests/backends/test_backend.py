@@ -121,6 +121,16 @@ def test_environment_board_get_backend_unknown() -> None:
         assert environment.get_backend(Mock2Board)
 
 
+def test_environment_get_board_group() -> None:
+    """Test that we can create a boardgroup from an environment."""
+    env = Environment("TestEnv")
+    env.register_backend(MockBackend)
+
+    bg = env.get_board_group(MockBoard)
+
+    assert bg.backend_class is MockBackend
+
+
 def test_environment_merge() -> None:
     """Test that we can merge environments."""
     env1 = Environment("Env1")

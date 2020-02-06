@@ -4,10 +4,10 @@ import inspect
 import logging
 from abc import ABCMeta, abstractmethod
 from functools import wraps
-from typing import TYPE_CHECKING, Dict, Optional, Set, Type, TypeVar, cast
+from typing import TYPE_CHECKING, Dict, Optional, Set, Type, cast
 
 if TYPE_CHECKING:  # pragma: nocover
-    from j5.boards import Board, BoardGroup  # noqa
+    from j5.boards import Board  # noqa
 
 
 class CommunicationError(Exception):
@@ -123,9 +123,6 @@ class Backend(metaclass=BackendMeta):
     def firmware_version(self) -> Optional[str]:
         """The firmware version of the board."""
         raise NotImplementedError  # pragma: no cover
-
-
-BoardT = TypeVar("BoardT", bound="Board")
 
 
 class Environment:
