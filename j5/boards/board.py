@@ -6,13 +6,10 @@ import os
 import signal
 from abc import ABCMeta, abstractmethod
 from types import FrameType
-from typing import TYPE_CHECKING, Dict, Optional, Set, Type, TypeVar, cast
-
-from .board_group import BoardGroup
+from typing import TYPE_CHECKING, Dict, Optional, Set, Type, TypeVar
 
 if TYPE_CHECKING:  # pragma: nocover
     from j5.components import Component  # noqa: F401
-    from j5.backends.environment import Environment  # noqa: F401
     from typing import Callable, Union
 
     SignalHandler = Union[
@@ -81,21 +78,6 @@ class Board(metaclass=ABCMeta):
         """Make all boards safe."""
         for board in Board.BOARDS:
             board.make_safe()
-
-    @classmethod
-    def get_board_group_from_environment(
-            cls: Type[T],
-            environment: 'Environment',
-    ) -> 'BoardGroup[T, U]':
-        """
-        Get a board group from an environment.
-
-        This method is on Board, rather than BoardGroup for typing purposes.
-        """
-        backend = environment.get_backend(cls)
-
-        # Cast is needed here as environment doesn't return a known type.
-        return BoardGroup.get_board_group(cls, cast(Type[U], backend))
 
     @staticmethod
     def _make_all_safe_at_exit() -> None:
