@@ -2,20 +2,17 @@
 from datetime import timedelta
 from enum import Enum
 from threading import Lock
-from typing import Set, Callable, Type, List, Mapping, Optional
+from typing import Callable, List, Mapping, Optional, Set, Type
 
-from cached_property import cached_property
-
-from j5.backends.hardware import NotSupportedByHardwareError
-from serial import Serial
+from serial import Serial, SerialException, SerialTimeoutException
 from serial.tools.list_ports import comports
 from serial.tools.list_ports_common import ListPortInfo
 
 from j5.backends import CommunicationError
+from j5.backends.hardware.env import NotSupportedByHardwareError
 from j5.backends.hardware.j5.serial import SerialHardwareBackend
 from j5.boards import Board
 from j5.boards.sr.v4.ruggeduino import Ruggeduino
-
 from j5.components import GPIOPinMode, LEDInterface, GPIOPinInterface
 
 FIRST_ANALOGUE_PIN = 14
@@ -26,7 +23,7 @@ def is_ruggeduino(port: ListPortInfo) -> bool:
     return (port.vid, port.pid) == (0x10c4, 0xea60)  # For the CP2104 used by Ruggeduino
 
 
-def encode_pin(pin):
+def encode_pin(pin) -> str:
     """Encode a pin number as a letter of the alphabet."""
     return chr(ord('a') + pin)
 
@@ -86,7 +83,7 @@ class SRV4RuggeduinoHardwareBackend(
             boards.add(
                 Ruggeduino(
                     port.serial_number,
-                    cls(port.device, serial_class)
+                    cls(port.device, serial_class),  # type: ignore
                 ),
             )
 
@@ -132,12 +129,12 @@ class SRV4RuggeduinoHardwareBackend(
         for pin_number in self._digital_pins.keys():
             self.set_gpio_pin_mode(pin_number, GPIOPinMode.DIGITAL_INPUT)
 
-    @cached_property
+    @property
     def firmware_version(self) -> Optional[str]:
         """The firmware version of the board."""
         return self._version_line.split(":")[-1]
 
-    @cached_property
+    @property
     def firmware_type(self) -> Optional[FirmwareTypeEnum]:
         """The type of firmware on the board."""
         flavour: str = self._version_line.split(":")[0]
@@ -153,11 +150,16 @@ class SRV4RuggeduinoHardwareBackend(
         if len(command) != 1:
             raise RuntimeError("Commands should be 1 character long")
 
-        with self._lock:
-            message: str = command + pin
-            self._serial.write(message.encode("utf-8"))
+        try:
+            with self._lock:
+                message: str = command + pin
+                self._serial.write(message.encode("utf-8"))
 
-            return self.read_serial_line(empty=True)
+                return self.read_serial_line(empty=True)
+        except SerialTimeoutException as e:
+            raise CommunicationError(f"Serial Timeout Error: {e}") from e
+        except SerialException as e:
+            raise CommunicationError(f"Serial Error: {e}") from e
 
     def _update_digital_pin(self, identifier: int) -> None:
         if identifier >= FIRST_ANALOGUE_PIN:
