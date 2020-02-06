@@ -4,10 +4,10 @@ import inspect
 import logging
 from abc import ABCMeta, abstractmethod
 from functools import wraps
-from typing import TYPE_CHECKING, Dict, Optional, Set, Type, cast
+from typing import TYPE_CHECKING, Dict, Optional, Set, Type, TypeVar, cast
 
 if TYPE_CHECKING:  # pragma: nocover
-    from j5.boards import Board  # noqa
+    from j5.boards import Board, BoardGroup  # noqa
 
 
 class CommunicationError(Exception):
@@ -125,6 +125,9 @@ class Backend(metaclass=BackendMeta):
         raise NotImplementedError  # pragma: no cover
 
 
+BoardT = TypeVar("BoardT", bound="Board")
+
+
 class Environment:
     """
     A collection of backends that can work together.
@@ -175,6 +178,16 @@ class Environment:
             raise NotImplementedError(f"The {str(self)} does not support {str(board)}")
 
         return self.board_backend_mapping[board]
+
+    def get_board_group(self, board: Type[BoardT]) -> 'BoardGroup[BoardT, Backend]':
+        """Get a board group for the given board type."""
+        if board not in self.supported_boards:
+            raise NotImplementedError(f"The {str(self)} does not support {str(board)}")
+
+        return BoardGroup.get_board_group(
+            board,
+            self.get_backend(board),
+        )
 
     def merge(self, other: 'Environment') -> None:
         """
