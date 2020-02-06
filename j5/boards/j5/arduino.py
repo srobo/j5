@@ -5,13 +5,18 @@ This is to avoid duplicating code that is common between different Arduino board
 """
 from abc import abstractmethod
 from enum import IntEnum
-from typing import Union, Mapping, cast, Set, Type, Optional
+from typing import Mapping, Optional, Set, Type, Union, cast
 
 from j5.backends import Backend
-
 from j5.boards import Board
-from j5.components import LED, GPIOPin, LEDInterface, GPIOPinInterface, GPIOPinMode, \
-    Component
+from j5.components import (
+    LED,
+    Component,
+    GPIOPin,
+    GPIOPinInterface,
+    GPIOPinMode,
+    LEDInterface,
+)
 
 
 class AnaloguePin(IntEnum):

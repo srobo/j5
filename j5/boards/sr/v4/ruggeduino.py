@@ -8,11 +8,7 @@ from typing import Optional, Set, Type, Union
 
 from j5.backends import Backend
 from j5.boards.j5 import ArduinoUno
-from j5.components import (
-    LED,
-    Component,
-    GPIOPin,
-)
+from j5.components import LED, Component, GPIOPin
 
 
 class AnaloguePin(IntEnum):
