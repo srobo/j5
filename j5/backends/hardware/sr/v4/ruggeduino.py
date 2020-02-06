@@ -2,7 +2,9 @@
 from datetime import timedelta
 from enum import Enum
 from threading import Lock
-from typing import Set, Tuple, Callable, Type, List, Mapping, Optional
+from typing import Set, Callable, Type, List, Mapping, Optional
+
+from cached_property import cached_property
 
 from j5.backends.hardware import NotSupportedByHardwareError
 from serial import Serial
@@ -10,9 +12,9 @@ from serial.tools.list_ports import comports
 from serial.tools.list_ports_common import ListPortInfo
 
 from j5.backends import CommunicationError
-from j5.backends.hardware.j5.serial import SerialHardwareBackend, handle_serial_error
+from j5.backends.hardware.j5.serial import SerialHardwareBackend
 from j5.boards import Board
-from j5.boards.sr.v4.ruggeduino import SRRuggeduinoBoard
+from j5.boards.sr.v4.ruggeduino import Ruggeduino
 
 from j5.components import GPIOPinMode, LEDInterface, GPIOPinInterface
 
@@ -20,7 +22,8 @@ FIRST_ANALOGUE_PIN = 14
 
 
 def is_ruggeduino(port: ListPortInfo) -> bool:
-    return (port.vid, port.pid) == (0x10c4, 0xea60)  # From the CP2104 datasheet, I don't know if this is right
+    """Checks whether a USB device is a Ruggeduino."""
+    return (port.vid, port.pid) == (0x10c4, 0xea60)  # For the CP2104 used by Ruggeduino
 
 
 def encode_pin(pin):
@@ -40,23 +43,33 @@ class DigitalPinData:
 
 
 class FirmwareTypeEnum(Enum):
-    OFFICIAL = "SRduino"  # Unmodified firmware
-    CUSTOM = "SRcustom"  # Official, with added commands
-    OTHER = "SRother"  # Bespoke firmware
+    """
+    The types of firmware that can be present on the Ruggeduino.
+
+    OFFICIAL - Unmodified firmware. Students probably won't know that the default
+               firmware sends this value, unless they pore through j5 or sr-robot.
+    CUSTOM - Official, but with added commands. This value is sent by the open version
+             of the firmware. This firmware should support all official commands.
+    OTHER - Bespoke firmware entirely devised by the students themselves. Compatibility
+            should not be assumed.
+    """
+    OFFICIAL = "SRduino"
+    CUSTOM = "SRcustom"
+    OTHER = "SRother"
 
 
-class SRRuggeduinoHardwareBackend(
+class SRV4RuggeduinoHardwareBackend(
     LEDInterface,
     GPIOPinInterface,
     SerialHardwareBackend,
 ):
     """
-    Hardware Backend for the Ruggeduino ET.
+    Hardware Backend for the Ruggeduino SE.
 
     Supports Student Robotics ruggeduino firmware and teams' custom firmware.
     """
 
-    board = SRRuggeduinoBoard
+    board = Ruggeduino
 
     @classmethod
     def discover(
@@ -71,7 +84,7 @@ class SRRuggeduinoHardwareBackend(
         boards: Set[Board] = set()
         for port in filter(is_ruggeduino, ports):
             boards.add(
-                SRRuggeduinoBoard(
+                Ruggeduino(
                     port.serial_number,
                     cls(port.device, serial_class)
                 ),
@@ -79,9 +92,12 @@ class SRRuggeduinoHardwareBackend(
 
         return boards
 
-    @handle_serial_error
-    def __init__(self, serial_port: str, serial_class: Type[Serial] = Serial) -> None:
-        super(SRRuggeduinoHardwareBackend, self).__init__(
+    def __init__(
+            self,
+            serial_port: str,
+            serial_class: Type[Serial] = Serial,
+    ) -> None:
+        super(SRV4RuggeduinoHardwareBackend, self).__init__(
             serial_port=serial_port,
             serial_class=serial_class,
             baud=115200,
@@ -95,7 +111,8 @@ class SRRuggeduinoHardwareBackend(
             for i in range(2, FIRST_ANALOGUE_PIN)
         }
 
-        # This only works if the firmware supports the SRduino verson command
+        # This only works if the firmware supports the SRduino verson command.
+        # It may have unexpected behaviour on custom firmware.
         with self._lock:
             count = 0
             self._command("v")
@@ -104,9 +121,10 @@ class SRRuggeduinoHardwareBackend(
                 self._command("v")
                 line = self.read_serial_line(empty=True)
                 count += 1
-                if count > 25:
-                    raise CommunicationError(
-                        f"Ruggeduino ({serial_port}) is not responding.",
+                if count > 15:
+                    print(
+                        f"Ruggeduino ({serial_port}) is not responding "
+                        f"or runs custom firmware.",
                     )
 
             self._version_line = self.read_serial_line()
@@ -114,23 +132,22 @@ class SRRuggeduinoHardwareBackend(
         for pin_number in self._digital_pins.keys():
             self.set_gpio_pin_mode(pin_number, GPIOPinMode.DIGITAL_INPUT)
 
-    @property
+    @cached_property
     def firmware_version(self) -> Optional[str]:
         """The firmware version of the board."""
-        return self._version_line.split(":")[-1]  # -1 avoids IndexErrors on modified boards
+        return self._version_line.split(":")[-1]
 
-    @property
+    @cached_property
     def firmware_type(self) -> Optional[FirmwareTypeEnum]:
         """The type of firmware on the board."""
         flavour: str = self._version_line.split(":")[0]
-        if flavour == FirmwareTypeEnum.OFFICIAL:
+        if flavour == FirmwareTypeEnum.OFFICIAL.value:
             return FirmwareTypeEnum.OFFICIAL
-        elif flavour == FirmwareTypeEnum.CUSTOM:
-            return FirmwareTypeEnum.CUSTOM  # Although we can't always trust this
+        elif flavour == FirmwareTypeEnum.CUSTOM.value:
+            return FirmwareTypeEnum.CUSTOM
         else:
             return FirmwareTypeEnum.OTHER
 
-    @handle_serial_error
     def _command(self, command: str, pin: str = "") -> str:
         """Send a command to the board."""
         if len(command) != 1:
@@ -179,7 +196,7 @@ class SRRuggeduinoHardwareBackend(
             return
         else:
             raise NotSupportedByHardwareError(
-                f"Arduino Uno does not support mode {pin_mode} on pin {identifier}",
+                f"Ruggeduino does not support mode {pin_mode} on pin {identifier}",
             )
 
     def get_gpio_pin_mode(self, identifier: int) -> GPIOPinMode:
@@ -226,14 +243,14 @@ class SRRuggeduinoHardwareBackend(
                              f"in order to read the digital state.")
         results = self._command("r", str(identifier))
         if len(results) != 1:
-            raise CommunicationError(f"Invalid response from Arduino: {results!r}")
+            raise CommunicationError(f"Invalid response from Ruggeduino: {results!r}")
         result = results[0]
         if result == "h":
             return True
         elif result == "l":
             return False
         else:
-            raise CommunicationError(f"Invalid response from Arduino: {result!r}")
+            raise CommunicationError(f"Invalid response from Ruggeduino: {result!r}")
 
     def read_gpio_pin_analogue_value(self, identifier: int) -> float:
         """Read the analogue voltage of the GPIO pin."""
@@ -243,7 +260,7 @@ class SRRuggeduinoHardwareBackend(
             )
         if identifier >= FIRST_ANALOGUE_PIN + 4:
             raise NotSupportedByHardwareError(
-                f"Arduino Uno firmware only supports analogue pins 0-3 (IDs 14-17)",
+                f"Ruggeduino firmware only supports analogue pins 0-3 (IDs 14-17)",
             )
         analogue_pin_num = identifier - 14
         results = self._command("")
@@ -252,4 +269,26 @@ class SRRuggeduinoHardwareBackend(
             if pin_name == f"a{analogue_pin_num}":
                 voltage = (int(reading) / 1024.0) * 5.0
                 return voltage
-        raise CommunicationError(f"Invalid response from Arduino: {results!r}")
+        raise CommunicationError(f"Invalid response from Ruggeduino: {results!r}")
+
+    def write_gpio_pin_dac_value(self, identifier: int, scaled_value: float) -> None:
+        """Write a scaled analogue value to the DAC on the GPIO pin."""
+        raise NotSupportedByHardwareError("SR Ruggeduino does not have a DAC")
+
+    def write_gpio_pin_pwm_value(self, identifier: int, duty_cycle: float) -> None:
+        """Write a scaled analogue value to the PWM on the GPIO pin."""
+        raise NotSupportedByHardwareError(
+            "SR Ruggeduino firmware does not implement PWM output",
+        )
+
+    def get_led_state(self, identifier: int) -> bool:
+        """Get the state of an LED."""
+        if identifier != 0:
+            raise ValueError("Ruggeduino only has LED 0 (digital pin 13).")
+        return self.get_gpio_pin_digital_state(13)
+
+    def set_led_state(self, identifier: int, state: bool) -> None:
+        """Set the state of an LED."""
+        if identifier != 0:
+            raise ValueError("Ruggeduino only has LED 0 (digital pin 13)")
+        self.write_gpio_pin_digital_state(13, state)
