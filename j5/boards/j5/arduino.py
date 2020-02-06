@@ -45,7 +45,7 @@ class ArduinoUno(Board):
             self,
             serial: str,
             backend: Backend,
-            name: str = "Arduino Uno"
+            name: str = "Arduino Uno",
     ):
         self._serial = serial
         self._backend = backend

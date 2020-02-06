@@ -1,4 +1,5 @@
 """Student Robotics Ruggeduino Hardware Implementation."""
+
 from datetime import timedelta
 from enum import Enum
 from threading import Lock
@@ -23,7 +24,7 @@ def is_ruggeduino(port: ListPortInfo) -> bool:
     return (port.vid, port.pid) == (0x10c4, 0xea60)  # For the CP2104 used by Ruggeduino
 
 
-def encode_pin(pin) -> str:
+def encode_pin(pin: int) -> str:
     """Encode a pin number as a letter of the alphabet."""
     return chr(ord('a') + pin)
 
@@ -50,6 +51,7 @@ class FirmwareTypeEnum(Enum):
     OTHER - Bespoke firmware entirely devised by the students themselves. Compatibility
             should not be assumed.
     """
+
     OFFICIAL = "SRduino"
     CUSTOM = "SRcustom"
     OTHER = "SRother"
@@ -98,7 +100,7 @@ class SRV4RuggeduinoHardwareBackend(
             serial_port=serial_port,
             serial_class=serial_class,
             baud=115200,
-            timeout=timedelta(milliseconds=1250)
+            timeout=timedelta(milliseconds=1250),
         )
 
         self._lock = Lock()
@@ -119,7 +121,7 @@ class SRV4RuggeduinoHardwareBackend(
                 line = self.read_serial_line(empty=True)
                 count += 1
                 if count > 15:
-                    print(
+                    raise CommunicationError(
                         f"Ruggeduino ({serial_port}) is not responding "
                         f"or runs custom firmware.",
                     )

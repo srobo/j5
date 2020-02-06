@@ -4,5 +4,5 @@ from .arduino import AnaloguePin, ArduinoUno
 
 __all__ = [
     'ArduinoUno',
-    'AnaloguePin'
+    'AnaloguePin',
 ]

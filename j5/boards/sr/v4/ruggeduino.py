@@ -31,7 +31,7 @@ class Ruggeduino(ArduinoUno):
     def __init__(
             self,
             serial: str,
-            backend: Backend
+            backend: Backend,
     ):
         super().__init__(serial, backend, name="Ruggeduino")
 
