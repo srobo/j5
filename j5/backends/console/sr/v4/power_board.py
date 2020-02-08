@@ -1,7 +1,7 @@
 """Console Backend for the SR V4 power board."""
 
 from datetime import timedelta
-from typing import Dict, Optional, Set, Type
+from typing import Dict, Optional, Set, Type, cast
 
 from j5.backends import Backend
 from j5.backends.console.console import Console
@@ -31,7 +31,7 @@ class SRV4PowerBoardConsoleBackend(
     @classmethod
     def discover(cls) -> Set[Board]:
         """Discover boards that this backend can control."""
-        raise NotImplementedError("The Console Backend cannot discover boards.")
+        return {cast(Board, cls("SERIAL"))}
 
     def __init__(self, serial: str, console_class: Type[Console] = Console) -> None:
         self._serial = serial
