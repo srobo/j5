@@ -27,8 +27,8 @@ def test_backend_discover() -> None:
 
     This backend does not support discovery.
     """
-    with pytest.raises(NotImplementedError):
-        SRV4PowerBoardConsoleBackend.discover()
+    boards = SRV4PowerBoardConsoleBackend.discover()
+    assert len(boards) == 1
 
 
 def test_backend_firmware_version() -> None:
