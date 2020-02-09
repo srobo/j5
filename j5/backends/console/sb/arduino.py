@@ -1,6 +1,6 @@
 """Console Backend for the SourceBots Arduino."""
 from datetime import timedelta
-from typing import Mapping, Optional, Set, Type
+from typing import Mapping, Optional, Set, Type, cast
 
 from j5.backends import Backend
 from j5.backends.console import Console
@@ -34,7 +34,7 @@ class SBArduinoConsoleBackend(
     @classmethod
     def discover(cls) -> Set[Board]:
         """Discover boards that this backend can control."""
-        raise NotImplementedError("The Console Backend cannot discover boards.")
+        return {cast(Board, cls("SERIAL"))}
 
     def __init__(self, serial: str, console_class: Type[Console] = Console) -> None:
         self._serial = serial

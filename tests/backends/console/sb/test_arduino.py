@@ -30,8 +30,8 @@ def test_backend_discover() -> None:
 
     This backend does not support discovery.
     """
-    with pytest.raises(NotImplementedError):
-        SBArduinoConsoleBackend.discover()
+    boards = SBArduinoConsoleBackend.discover()
+    assert len(boards) == 1
 
 
 def test_backend_firmware_version() -> None:
