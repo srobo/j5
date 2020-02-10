@@ -1,6 +1,6 @@
 """j5 Robotics API."""
 
-from .backends import Environment
+from .backends.environment import Environment
 from .base_robot import BaseRobot
 from .boards import BoardGroup
 
