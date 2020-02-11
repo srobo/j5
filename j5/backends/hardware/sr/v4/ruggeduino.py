@@ -65,7 +65,7 @@ class SRV4RuggeduinoHardwareBackend(
     """
     Hardware Backend for the Ruggeduino SE.
 
-    Supports Student Robotics ruggeduino firmware and teams' custom firmware.
+    Supports Student Robotics' ruggeduino firmware and teams' custom firmware.
     """
 
     board = Ruggeduino
@@ -83,7 +83,7 @@ class SRV4RuggeduinoHardwareBackend(
         boards: Set[Board] = set()
         for port in filter(is_ruggeduino, ports):
             boards.add(
-                Ruggeduino(
+                cls.board(
                     port.serial_number,
                     cls(port.device, serial_class),  # type: ignore
                 ),
@@ -120,7 +120,7 @@ class SRV4RuggeduinoHardwareBackend(
                 self._command("v")
                 line = self.read_serial_line(empty=True)
                 count += 1
-                if count > 15:
+                if count > 25:
                     raise CommunicationError(
                         f"Ruggeduino ({serial_port}) is not responding "
                         f"or runs custom firmware.",
@@ -267,7 +267,7 @@ class SRV4RuggeduinoHardwareBackend(
                 f"Ruggeduino firmware only supports analogue pins 0-3 (IDs 14-17)",
             )
         analogue_pin_num = identifier - 14
-        results = self._command("")
+        results = self._command("a")
         for result in results:
             pin_name, reading = result.split(None, 1)
             if pin_name == f"a{analogue_pin_num}":
