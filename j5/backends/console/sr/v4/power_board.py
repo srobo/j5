@@ -31,7 +31,7 @@ class SRV4PowerBoardConsoleBackend(
     @classmethod
     def discover(cls) -> Set[Board]:
         """Discover boards that this backend can control."""
-        return {cast(Board, cls("SERIAL"))}
+        return {cast(Board, PowerBoard("SERIAL", cls("SERIAL")))}
 
     def __init__(self, serial: str, console_class: Type[Console] = Console) -> None:
         self._serial = serial
