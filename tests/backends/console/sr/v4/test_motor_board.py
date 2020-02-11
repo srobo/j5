@@ -4,6 +4,7 @@ import pytest
 from tests.backends.console.helpers import MockConsole
 
 from j5.backends.console.sr.v4.motor_board import SRV4MotorBoardConsoleBackend
+from j5.boards.sr.v4.motor_board import MotorBoard
 from j5.components.motor import MotorSpecialState
 
 
@@ -25,6 +26,7 @@ def test_backend_discover() -> None:
     """
     boards = SRV4MotorBoardConsoleBackend.discover()
     assert len(boards) == 1
+    assert isinstance(list(boards)[0], MotorBoard)
 
 
 def test_backend_firmware_version() -> None:
