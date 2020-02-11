@@ -7,6 +7,7 @@ import pytest
 from tests.backends.console.helpers import MockConsole
 
 from j5.backends.console.sb.arduino import SBArduinoConsoleBackend
+from j5.boards.sb.arduino import SBArduinoBoard
 from j5.components.gpio_pin import GPIOPinMode
 
 
@@ -32,6 +33,7 @@ def test_backend_discover() -> None:
     """
     boards = SBArduinoConsoleBackend.discover()
     assert len(boards) == 1
+    assert isinstance(list(boards)[0], SBArduinoBoard)
 
 
 def test_backend_firmware_version() -> None:
