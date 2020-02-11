@@ -1,6 +1,6 @@
 """j5 Robotics API."""
 
-from .backends import Environment
+from .backends.environment import Environment
 from .base_robot import BaseRobot
 from .boards import BoardGroup
 
@@ -12,5 +12,5 @@ __all__ = [
     "__version_short__",
 ]
 
-__version__ = "0.8.0"
-__version_short__ = "0.8.0"
+__version__ = "0.9.0"
+__version_short__ = "0.9.0"
