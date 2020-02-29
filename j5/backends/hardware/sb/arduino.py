@@ -190,12 +190,13 @@ class SBArduinoHardwareBackend(
                 self._digital_pins[identifier].mode = pin_mode
                 self._update_digital_pin(identifier)
                 return
-        elif pin_mode is GPIOPinMode.ANALOGUE_INPUT:  # Analogue pin
-            return
         else:
-            raise NotSupportedByHardwareError(
-                f"Arduino Uno does not support mode {pin_mode} on pin {identifier}",
-            )
+            # Analogue pin
+            if pin_mode is GPIOPinMode.ANALOGUE_INPUT:
+                return
+        raise NotSupportedByHardwareError(
+            f"Arduino Uno does not support mode {pin_mode} on pin {identifier}",
+        )
 
     def get_gpio_pin_mode(self, identifier: int) -> GPIOPinMode:
         """Get the hardware mode of a GPIO pin."""
