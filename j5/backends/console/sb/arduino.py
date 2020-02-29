@@ -93,7 +93,7 @@ class SBArduinoConsoleBackend(
         """Read the scaled analogue value of the GPIO pin."""
         if self._pins[identifier].mode is not GPIOPinMode.ANALOGUE_INPUT:
             raise ValueError(f"Pin {identifier} mode needs to be ANALOGUE_INPUT",
-                             f"in order to read the digital state.")
+                             f"in order to read the analogue value.")
         return self._console.read(f"Pin {identifier} ADC state [float]", float)
 
     def write_gpio_pin_dac_value(self, identifier: int, scaled_value: float) -> None:
