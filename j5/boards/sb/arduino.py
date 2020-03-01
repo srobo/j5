@@ -1,12 +1,10 @@
 """Classes for the SourceBots Arduino."""
-from typing import Optional, Set, Tuple, Type, Union, cast
+from typing import Optional, Set, Tuple, Type, cast
 
 from j5.backends import Backend
-from j5.boards.j5 import AnaloguePin, ArduinoUno
+from j5.boards.j5 import ArduinoUno, PinNumber
 from j5.components import LED, Component, GPIOPin
 from j5.components.derived import UltrasoundInterface, UltrasoundSensor
-
-PinNumber = Union[int, AnaloguePin]
 
 
 class SBArduinoBoard(ArduinoUno):
