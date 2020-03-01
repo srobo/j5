@@ -4,7 +4,8 @@ from datetime import timedelta
 from typing import TYPE_CHECKING, Optional, Set
 
 from j5.backends import Backend
-from j5.boards.sb import AnaloguePin, SBArduinoBoard
+from j5.boards.j5 import AnaloguePin
+from j5.boards.sb import SBArduinoBoard
 from j5.components import GPIOPin, GPIOPinInterface, GPIOPinMode, LEDInterface
 from j5.components.derived import UltrasoundInterface, UltrasoundSensor
 

@@ -1,8 +1,7 @@
 """SourceBots Boards."""
 
-from .arduino import AnaloguePin, SBArduinoBoard
+from .arduino import SBArduinoBoard
 
 __all__ = [
-    'AnaloguePin',
     'SBArduinoBoard',
 ]
