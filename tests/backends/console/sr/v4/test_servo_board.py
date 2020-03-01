@@ -4,6 +4,7 @@ import pytest
 from tests.backends.console.helpers import MockConsole
 
 from j5.backends.console.sr.v4.servo_board import SRV4ServoBoardConsoleBackend
+from j5.boards.sr.v4.servo_board import ServoBoard
 
 
 def test_backend_initialisation() -> None:
@@ -25,6 +26,7 @@ def test_backend_discover() -> None:
     """
     boards = SRV4ServoBoardConsoleBackend.discover()
     assert len(boards) == 1
+    assert isinstance(list(boards)[0], ServoBoard)
 
 
 def test_backend_firmware_version() -> None:

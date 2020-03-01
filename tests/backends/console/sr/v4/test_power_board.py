@@ -6,6 +6,7 @@ import pytest
 from tests.backends.console.helpers import MockConsole
 
 from j5.backends.console.sr.v4.power_board import SRV4PowerBoardConsoleBackend
+from j5.boards.sr.v4.power_board import PowerBoard
 from j5.components.piezo import Note
 
 
@@ -29,6 +30,7 @@ def test_backend_discover() -> None:
     """
     boards = SRV4PowerBoardConsoleBackend.discover()
     assert len(boards) == 1
+    assert isinstance(list(boards)[0], PowerBoard)
 
 
 def test_backend_firmware_version() -> None:

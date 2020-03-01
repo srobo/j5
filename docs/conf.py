@@ -24,7 +24,7 @@ from j5 import __version__, __version_short__
 # -- Project information -----------------------------------------------------
 
 project = 'j5'
-copyright = '2019, j5 contributors'
+copyright = '2019-20, j5 contributors'
 author = 'j5 contributors'
 
 # The short X.Y version
