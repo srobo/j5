@@ -11,12 +11,10 @@ from serial.tools.list_ports_common import ListPortInfo
 
 from j5.backends import CommunicationError
 from j5.backends.hardware.env import NotSupportedByHardwareError
-from j5.backends.hardware.j5.serial import SerialHardwareBackend
+from j5.backends.hardware.j5.arduino import ArduinoHardwareBackend, FIRST_ANALOGUE_PIN
 from j5.boards import Board
 from j5.boards.sr.v4.ruggeduino import Ruggeduino
-from j5.components import GPIOPinInterface, GPIOPinMode, LEDInterface
-
-FIRST_ANALOGUE_PIN = 14
+from j5.components import GPIOPinMode
 
 
 def is_ruggeduino(port: ListPortInfo) -> bool:
@@ -27,17 +25,6 @@ def is_ruggeduino(port: ListPortInfo) -> bool:
 def encode_pin(pin: int) -> str:
     """Encode a pin number as a letter of the alphabet."""
     return chr(ord('a') + pin)
-
-
-class DigitalPinData:
-    """Contains data about a digital pin."""
-
-    mode: GPIOPinMode
-    state: bool
-
-    def __init__(self, *, mode: GPIOPinMode, state: bool):
-        self.mode = mode
-        self.state = state
 
 
 class FirmwareTypeEnum(Enum):
@@ -57,11 +44,7 @@ class FirmwareTypeEnum(Enum):
     OTHER = "SRother"
 
 
-class SRV4RuggeduinoHardwareBackend(
-    LEDInterface,
-    GPIOPinInterface,
-    SerialHardwareBackend,
-):
+class SRV4RuggeduinoHardwareBackend(ArduinoHardwareBackend):
     """
     Hardware Backend for the Ruggeduino SE.
 

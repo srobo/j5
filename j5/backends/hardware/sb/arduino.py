@@ -8,7 +8,7 @@ from serial.tools.list_ports_common import ListPortInfo
 
 from j5.backends import CommunicationError
 from j5.backends.hardware.env import NotSupportedByHardwareError
-from j5.backends.hardware.j5.arduino import ArduinoHardwareBackend
+from j5.backends.hardware.j5.arduino import ArduinoHardwareBackend, FIRST_ANALOGUE_PIN
 from j5.boards.sb.arduino import SBArduinoBoard
 from j5.components import GPIOPinMode
 from j5.components.derived import UltrasoundInterface
@@ -18,19 +18,6 @@ USB_IDS: Set[Tuple[int, int]] = {
     (0x2a03, 0x0043),  # Fake Uno
     (0x1a86, 0x7523),  # Real Uno
 }
-
-FIRST_ANALOGUE_PIN = 14
-
-
-class DigitalPinData:
-    """Contains data about a digital pin."""
-
-    mode: GPIOPinMode
-    state: bool
-
-    def __init__(self, *, mode: GPIOPinMode, state: bool):
-        self.mode = mode
-        self.state = state
 
 
 class SBArduinoHardwareBackend(

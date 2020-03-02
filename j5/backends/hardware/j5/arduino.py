@@ -11,7 +11,7 @@ from serial.tools.list_ports_common import ListPortInfo
 from j5.backends.hardware.env import NotSupportedByHardwareError
 from j5.backends.hardware.j5.serial import SerialHardwareBackend
 from j5.boards import Board
-from j5.boards.j5 import ArduinoUno, PinNumber
+from j5.boards.j5 import ArduinoUno
 from j5.components import GPIOPinInterface, GPIOPinMode, LEDInterface
 
 FIRST_ANALOGUE_PIN = 14
