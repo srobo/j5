@@ -43,15 +43,10 @@ class SBArduinoHardwareBackend(
         super(SBArduinoHardwareBackend, self).__init__(
             serial_port=serial_port,
             serial_class=serial_class,
-            baud=115200,
-            timeout=timedelta(milliseconds=1250),
         )
 
-        for pin_number in self._digital_pins.keys():
-            self.set_gpio_pin_mode(pin_number, GPIOPinMode.DIGITAL_INPUT)
-
-    def _verify_boot(self) -> None:
-        """Verify that the Arduino has booted."""
+    def _verify_boot(self) -> str:
+        """Verify that the Arduino has booted and return its version string."""
         count = 0
         line = self.read_serial_line(empty=True)
         while len(line) == 0:
@@ -65,14 +60,12 @@ class SBArduinoHardwareBackend(
         if line != "booted":
             raise CommunicationError("Arduino Boot Error.")
 
+        return self.read_serial_line()
+
     @property
     def firmware_version(self) -> Optional[str]:
         """The firmware version of the board."""
         return self._version_line.split("v")[1]
-
-    def _read_firmware_version(self) -> str:
-        """Read the firmware version from the board."""
-        return self.read_serial_line()
 
     def _verify_firmware_version(self) -> None:
         """Verify that the Arduino firmware meets or exceeds the minimum version."""

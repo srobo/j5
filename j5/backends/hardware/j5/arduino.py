@@ -89,8 +89,7 @@ class ArduinoHardwareBackend(  # TODO maybe specify metaclass in here?
         }
 
         with self._lock:
-            self._verify_boot()
-            self._version_line = self._read_firmware_version()
+            self._version_line = self._verify_boot()
 
         self._verify_firmware_version()
 
@@ -98,19 +97,14 @@ class ArduinoHardwareBackend(  # TODO maybe specify metaclass in here?
             self.set_gpio_pin_mode(pin_number, GPIOPinMode.DIGITAL_INPUT)
 
     @abstractmethod
-    def _verify_boot(self) -> None:
-        """Verify that the Arduino has booted."""
+    def _verify_boot(self) -> str:
+        """Verify that the Arduino has booted and return its version string."""
         raise NotImplementedError
 
     @property
     @abstractmethod
     def firmware_version(self) -> Optional[str]:
         """The firmware version of the board."""
-        raise NotImplementedError
-
-    @abstractmethod
-    def _read_firmware_version(self) -> str:
-        """Read the firmware version from the board."""
         raise NotImplementedError
 
     @abstractmethod
