@@ -145,7 +145,7 @@ class ArduinoHardwareBackend(  # TODO maybe specify metaclass in here?
             if pin_mode is GPIOPinMode.ANALOGUE_INPUT:
                 return
         raise NotSupportedByHardwareError(
-            f"Arduino Uno does not support mode {pin_mode} on pin {identifier}.",
+            f"{self.board.name} does not support mode {pin_mode} on pin {identifier}.",
         )
 
     def get_gpio_pin_mode(self, identifier: int) -> GPIOPinMode:
