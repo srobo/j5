@@ -109,6 +109,7 @@ class SBArduinoHardwareBackend(
             raise CommunicationError(f"Serial Error: {e}") from e
 
     def _update_digital_pin(self, identifier: int) -> None:
+        """Write the stored value of a digital pin to the Arduino."""
         if identifier >= FIRST_ANALOGUE_PIN:
             raise RuntimeError("Reached an unreachable statement.")
         pin = self._digital_pins[identifier]
@@ -203,6 +204,7 @@ class SBArduinoHardwareBackend(
             trigger_pin_identifier: int,
             echo_pin_identifier: int
     ) -> None:
+        """Verify the validity of a pair of ultrasound pins."""
         if trigger_pin_identifier >= FIRST_ANALOGUE_PIN:
             raise NotSupportedByHardwareError(
                 "Ultrasound functions not supported on analogue pins",
@@ -217,7 +219,7 @@ class SBArduinoHardwareBackend(
         trigger_pin_identifier: int,
         echo_pin_identifier: int,
     ) -> None:
-        # Ultrasound functions force the pins into particular modes.
+        """Force the pins into the modes required for ultrasound."""
         self._digital_pins[trigger_pin_identifier].mode = GPIOPinMode.DIGITAL_OUTPUT
         self._digital_pins[trigger_pin_identifier].state = False
         self._digital_pins[echo_pin_identifier].mode = GPIOPinMode.DIGITAL_INPUT
