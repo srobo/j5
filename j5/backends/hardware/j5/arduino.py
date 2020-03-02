@@ -44,7 +44,6 @@ class ArduinoHardwareBackend(  # TODO maybe specify metaclass in here?
         raise NotImplementedError
 
     @classmethod
-    @abstractmethod
     def discover(
             cls,
             comports: Callable = comports,
@@ -70,13 +69,17 @@ class ArduinoHardwareBackend(  # TODO maybe specify metaclass in here?
             self,
             serial_port: str,
             serial_class: Type[Serial] = Serial,
+            baud=115200,
+            timeout=timedelta(milliseconds=1250),
     ) -> None:
         super(ArduinoHardwareBackend, self).__init__(
             serial_port=serial_port,
             serial_class=serial_class,
-            baud=115200,
-            timeout=timedelta(milliseconds=1250),
+            baud=baud,
+            timeout=timeout,
         )
+
+        self.serial_port = serial_port
 
         self._lock = Lock()
 
@@ -86,7 +89,7 @@ class ArduinoHardwareBackend(  # TODO maybe specify metaclass in here?
         }
 
         with self._lock:
-            self.verify_boot()
+            self._verify_boot()
             self._version_line = self._read_firmware_version()
 
         self._verify_firmware_version()
@@ -95,7 +98,7 @@ class ArduinoHardwareBackend(  # TODO maybe specify metaclass in here?
             self.set_gpio_pin_mode(pin_number, GPIOPinMode.DIGITAL_INPUT)
 
     @abstractmethod
-    def verify_boot(self) -> None:
+    def _verify_boot(self) -> None:
         """Verify that the Arduino has booted."""
         raise NotImplementedError
 
@@ -106,13 +109,13 @@ class ArduinoHardwareBackend(  # TODO maybe specify metaclass in here?
         raise NotImplementedError
 
     @abstractmethod
-    def _read_firmware_version(self) -> Optional[str]:
+    def _read_firmware_version(self) -> str:
         """Read the firmware version from the board."""
         raise NotImplementedError
 
     @abstractmethod
-    def _verify_firmware_version(self):
-        """Verify that the Arduino firmware meets of exceeds the minimum version."""
+    def _verify_firmware_version(self) -> None:
+        """Verify that the Arduino firmware meets or exceeds the minimum version."""
         raise NotImplementedError
 
     @abstractmethod
@@ -174,7 +177,7 @@ class ArduinoHardwareBackend(  # TODO maybe specify metaclass in here?
         """Get the last written state of the GPIO pin."""
         if identifier >= FIRST_ANALOGUE_PIN:
             raise NotSupportedByHardwareError(
-                "Digital functions not supported on analogue pins",
+                "Digital functions not supported on analogue pins.",
             )
         if self._digital_pins[identifier].mode is not GPIOPinMode.DIGITAL_OUTPUT:
             raise ValueError(f"Pin {identifier} mode needs to be DIGITAL_OUTPUT "
@@ -195,7 +198,7 @@ class ArduinoHardwareBackend(  # TODO maybe specify metaclass in here?
                              f"in order to read the digital state.")
         return self._read_digital_pin(identifier)
 
-    def read_gpio_pin_analogue_value(self, identifier: PinNumber) -> float:
+    def read_gpio_pin_analogue_value(self, identifier: int) -> float:
         """Read the analogue voltage of the GPIO pin."""
         if identifier < FIRST_ANALOGUE_PIN:
             raise NotSupportedByHardwareError(

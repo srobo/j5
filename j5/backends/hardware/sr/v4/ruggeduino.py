@@ -262,10 +262,6 @@ class SRV4RuggeduinoHardwareBackend(
             raise NotSupportedByHardwareError(
                 "Analogue functions not supported on digital pins",
             )
-        if identifier >= FIRST_ANALOGUE_PIN + 4:
-            raise NotSupportedByHardwareError(
-                f"Ruggeduino firmware only supports analogue pins 0-3 (IDs 14-17)",
-            )
         analogue_pin_num = identifier - 14
         results = self._command("a")
         for result in results:
