@@ -7,7 +7,10 @@ from serial import Serial, SerialException, SerialTimeoutException
 from serial.tools.list_ports_common import ListPortInfo
 
 from j5.backends import CommunicationError
-from j5.backends.hardware.j5.arduino import ArduinoHardwareBackend, FIRST_ANALOGUE_PIN
+from j5.backends.hardware.j5.arduino import (
+    FIRST_ANALOGUE_PIN,
+    ArduinoHardwareBackend,
+)
 from j5.boards.sr.v4.ruggeduino import Ruggeduino
 from j5.components import GPIOPinMode
 
