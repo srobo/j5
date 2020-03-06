@@ -65,7 +65,7 @@ class ArduinoHardwareBackend(
                 ),
             )
 
-            return boards
+        return boards
 
     def __init__(
             self,
