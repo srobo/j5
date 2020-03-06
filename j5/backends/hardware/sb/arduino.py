@@ -27,9 +27,7 @@ class SBArduinoHardwareBackend(
     UltrasoundInterface,
     ArduinoHardwareBackend,
 ):
-    """
-    Hardware Backend for the SourceBots Arduino Uno.
-    """
+    """Hardware Backend for the SourceBots Arduino Uno."""
 
     @staticmethod
     def is_arduino(port: ListPortInfo) -> bool:
@@ -57,7 +55,7 @@ class SBArduinoHardwareBackend(
             count += 1
             if count > 25:
                 raise CommunicationError(
-                    f"Arduino ({self.serial_port}) is not responding"
+                    f"Arduino ({self.serial_port}) is not responding",
                 )
 
         if line != "booted":
@@ -205,7 +203,7 @@ class SBArduinoHardwareBackend(
     @staticmethod
     def _check_ultrasound_pins(
             trigger_pin_identifier: int,
-            echo_pin_identifier: int
+            echo_pin_identifier: int,
     ) -> None:
         """Verify the validity of a pair of ultrasound pins."""
         if trigger_pin_identifier >= FIRST_ANALOGUE_PIN:
