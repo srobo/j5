@@ -1,4 +1,5 @@
 """Base backend for Arduino Uno and its derivatives."""
+
 from abc import abstractmethod
 from datetime import timedelta
 from threading import Lock
@@ -28,7 +29,7 @@ class DigitalPinData:
         self.state = state
 
 
-class ArduinoHardwareBackend(  # TODO maybe specify metaclass in here?
+class ArduinoHardwareBackend(
     LEDInterface,
     GPIOPinInterface,
     SerialHardwareBackend,
@@ -36,6 +37,7 @@ class ArduinoHardwareBackend(  # TODO maybe specify metaclass in here?
     """An abstract class to create backends for different Arduinos."""
 
     board: Type[ArduinoUno]
+    DEFAULT_TIMEOUT = timedelta(milliseconds=1250)
 
     @staticmethod
     @abstractmethod
@@ -60,17 +62,9 @@ class ArduinoHardwareBackend(  # TODO maybe specify metaclass in here?
                 cls.board(
                     port.serial_number,
                     cls(port.device, serial_class),  # type: ignore
-                ),
-            )
-
-        return boards
-
-    def __init__(
-            self,
-            serial_port: str,
             serial_class: Type[Serial] = Serial,
-            baud=115200,
-            timeout=timedelta(milliseconds=1250),
+            baud: int = 115200,
+            timeout=DEFAULT_TIMEOUT,
     ) -> None:
         super(ArduinoHardwareBackend, self).__init__(
             serial_port=serial_port,
