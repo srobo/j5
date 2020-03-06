@@ -37,7 +37,7 @@ class ArduinoHardwareBackend(
     """An abstract class to create backends for different Arduinos."""
 
     board: Type[ArduinoUno]
-    DEFAULT_TIMEOUT = timedelta(milliseconds=1250)
+    DEFAULT_TIMEOUT: timedelta = timedelta(milliseconds=1250)
 
     @staticmethod
     @abstractmethod
@@ -62,9 +62,17 @@ class ArduinoHardwareBackend(
                 cls.board(
                     port.serial_number,
                     cls(port.device, serial_class),  # type: ignore
+                ),
+            )
+
+            return boards
+
+    def __init__(
+            self,
+            serial_port: str,
             serial_class: Type[Serial] = Serial,
             baud: int = 115200,
-            timeout=DEFAULT_TIMEOUT,
+            timeout: timedelta = DEFAULT_TIMEOUT,
     ) -> None:
         super(ArduinoHardwareBackend, self).__init__(
             serial_port=serial_port,
