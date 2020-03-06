@@ -15,9 +15,12 @@ from j5.boards.sr.v4.ruggeduino import Ruggeduino
 from j5.components import GPIOPinMode
 
 
-def encode_pin(pin: int) -> str:
+def encode_pin(pin: Optional[int]) -> str:
     """Encode a pin number as a letter of the alphabet."""
-    return chr(ord('a') + pin)
+    if pin is None:
+        return ""
+    else:
+        return chr(ord('a') + pin)
 
 
 class FirmwareType(Enum):
