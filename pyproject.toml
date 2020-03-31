@@ -38,7 +38,7 @@ flake8-todo = "^0.7.0"
 mypy = "^0.770"
 pytest = "^5.3"
 pytest-cov = "^2.8"
-sphinx = "^2.3"
+sphinx = "^2.4"
 sphinx-rtd-theme = "^0.4.3"
 rope = "^0.16.0"
 isort = {version = "^4.3",extras = ["pyproject"]}
