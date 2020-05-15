@@ -132,7 +132,7 @@ description = "Check for python builtins being used as variables or parameters."
 name = "flake8-builtins"
 optional = false
 python-versions = "*"
-version = "1.5.2"
+version = "1.5.3"
 
 [package.dependencies]
 flake8 = "*"
@@ -782,7 +782,7 @@ viewer = ["Pillow (>=7.0.0)"]
 zoloto-vision = ["zoloto"]
 
 [metadata]
-content-hash = "c5b9675efbdd667bf2c5ab1daaa916dfac97b2de5c5f84ec7b50bd3d0c4cbd65"
+content-hash = "98df2c24fc01bb81e230d6f77ed18265125d26c46cb456babec64be20a933202"
 python-versions = "^3.6"
 
 [metadata.files]
@@ -868,8 +868,8 @@ flake8-bugbear = [
     {file = "flake8_bugbear-20.1.4-py36.py37.py38-none-any.whl", hash = "sha256:a3ddc03ec28ba2296fc6f89444d1c946a6b76460f859795b35b77d4920a51b63"},
 ]
 flake8-builtins = [
-    {file = "flake8-builtins-1.5.2.tar.gz", hash = "sha256:fe7be13fe51bfb06bdae6096c6488e328c822c3aa080e24b91b77116a4fbb8b0"},
-    {file = "flake8_builtins-1.5.2-py2.py3-none-any.whl", hash = "sha256:a0296d23da92a6f2494243b9f2039bfdb73f34aba20054c1b70b2a60c84745bb"},
+    {file = "flake8-builtins-1.5.3.tar.gz", hash = "sha256:09998853b2405e98e61d2ff3027c47033adbdc17f9fe44ca58443d876eb00f3b"},
+    {file = "flake8_builtins-1.5.3-py2.py3-none-any.whl", hash = "sha256:7706babee43879320376861897e5d1468e396a40b8918ed7bccf70e5f90b8687"},
 ]
 flake8-commas = [
     {file = "flake8-commas-2.0.0.tar.gz", hash = "sha256:d3005899466f51380387df7151fb59afec666a0f4f4a2c6a8995b975de0f44b7"},
