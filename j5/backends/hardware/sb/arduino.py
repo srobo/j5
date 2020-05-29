@@ -119,7 +119,7 @@ class SBArduinoHardwareBackend(
 
         if version_ids < (2019, 6, 0):
             raise CommunicationError(
-                f"Unexpected firmware version: {self.firmware_version},",
+                f"Unexpected firmware version: {self.firmware_version},"
                 f" expected at least: \"2019.6.0\".",
             )
 
@@ -259,7 +259,7 @@ class SBArduinoHardwareBackend(
             )
         if identifier >= FIRST_ANALOGUE_PIN + 4:
             raise NotSupportedByHardwareError(
-                f"Arduino Uno firmware only supports analogue pins 0-3 (IDs 14-17)",
+                "Arduino Uno firmware only supports analogue pins 0-3 (IDs 14-17)",
             )
         analogue_pin_num = identifier - 14
         results = self._command("A")

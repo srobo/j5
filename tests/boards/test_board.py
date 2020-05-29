@@ -43,13 +43,13 @@ def test_testing_board_str() -> None:
     """Test the __str__ method of the board class."""
     tb = MockBoard("TESTSERIAL1")
 
-    assert str(tb) == f"Testing Board - TESTSERIAL1"
+    assert str(tb) == "Testing Board - TESTSERIAL1"
 
 
 def test_testing_board_repr() -> None:
     """Test the __repr__ method of the board class."""
     tb = MockBoard("TESTSERIAL1")
-    assert repr(tb) == f"<MockBoard serial=TESTSERIAL1>"
+    assert repr(tb) == "<MockBoard serial=TESTSERIAL1>"
 
 
 def test_discover() -> None:
