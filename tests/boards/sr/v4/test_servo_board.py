@@ -1,6 +1,8 @@
 """Tests for the SR v4 Servo Board."""
 from typing import List, Optional, Set
 
+import pytest
+
 from j5.backends import Backend
 from j5.boards import Board
 from j5.boards.sr.v4 import ServoBoard
@@ -85,3 +87,15 @@ def test_servo_board_servos() -> None:
     sb = ServoBoard("SERIAL0", MockServoBoardBackend())
 
     assert all(type(s) is Servo for s in sb.servos)
+
+
+def test_servo_mutability() -> None:
+    """
+    Test the mutability of Motors.
+
+    Ensures that Motor objects cannot be lost.
+    """
+    sb = ServoBoard("SERIAL0", MockServoBoardBackend())
+
+    with pytest.raises(TypeError):
+        sb.servos[1] = 0.5  # type: ignore
