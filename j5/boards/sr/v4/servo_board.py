@@ -1,5 +1,5 @@
 """Classes for the SR v4 Servo Board."""
-from typing import TYPE_CHECKING, List, Optional, Set, Type, cast
+from typing import TYPE_CHECKING, Optional, Set, Tuple, Type, cast
 
 from j5.backends import Backend
 from j5.boards import Board
@@ -20,10 +20,10 @@ class ServoBoard(Board):
         self._serial = serial
         self._backend = backend
 
-        self._servos: List[Servo] = [
+        self._servos: Tuple[Servo] = (
             Servo(servo, cast(ServoInterface, self._backend))
             for servo in range(0, 12)
-        ]
+        )
 
     @property
     def serial(self) -> str:
@@ -49,6 +49,6 @@ class ServoBoard(Board):
         return {Servo}
 
     @property
-    def servos(self) -> List[Servo]:
+    def servos(self) -> Tuple[Servo]:
         """Get the servos on this board."""
         return self._servos
