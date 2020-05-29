@@ -1,7 +1,7 @@
 ## Checklist
 
 - [ ] I have updated the relevant documentation
-- [ ] I have added `semver-major`, `semver-minor` and `semver-patch` labels appropriately
+- [ ] I have added the `semver-major`, `semver-minor` or `semver-patch` label as appropriate
 - [ ] I would like multiple reviewers to approve my code before merging
 
 ## Why do you want to make these changes?
