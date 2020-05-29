@@ -36,7 +36,7 @@ When making your PR, consider the following:
 * Why do you want to make these changes?
 * Which parts of the codebase do your changes affect?
 * Have you updated the relevant documentation?
-* Are your changes breaking to the external API?
+* Do your changes break the external API? Add ``semver-major``, ``semver-minor`` and ``semver-patch`` labels appropriately.
 * Do you want multiple reviewers to approve your code before merging?
 
 If there is a related issue, make sure that your reference the issue number in your PR.
