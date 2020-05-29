@@ -60,7 +60,7 @@ class UltrasoundSensor(DerivedComponent):
         if self.__class__ not in gpio_trigger.firmware_modes or \
                 self.__class__ not in gpio_echo.firmware_modes:
             raise NotSupportedByComponentError(
-                f"Pins {gpio_trigger.identifier} and {gpio_echo.identifier}",
+                f"Pins {gpio_trigger.identifier} and {gpio_echo.identifier}"
                 f" must support Ultrasound.",
             )
 

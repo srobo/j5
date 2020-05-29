@@ -27,6 +27,7 @@ def _wrap_method_with_logging(
 ) -> None:
     old_method = getattr(backend_class, method_name)
     signature = inspect.signature(old_method)
+
     @wraps(old_method)
     def new_method(*args, **kwargs):  # type: ignore
         retval = old_method(*args, **kwargs)
