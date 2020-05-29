@@ -14,6 +14,14 @@ should not be submitted there.
 .. _GitHub: https://github.com/j5api/j5
 .. _GitLab: https://gitlab.com/j5api/j5
 
+Discussing Changes
+------------------
+
+In many cases, changes should be discussed on an issue prior to beginning work on them, particularly where the changes
+make a breaking change to external APIs or are otherwise significant.
+
+At the discussion stage, other contributors can give early feedback on the idea and suggest ways to implement it.
+
 Publishing Changes
 ------------------
 
