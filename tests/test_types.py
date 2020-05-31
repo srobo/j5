@@ -59,10 +59,10 @@ def test_immutable_list_get_item() -> None:
     assert li[-1] == 2
 
     with pytest.raises(IndexError):
-        li[7]
+        assert li[7]
 
     with pytest.raises(TypeError):
-        li["foo"]  # type:ignore
+        assert li["foo"]  # type:ignore
 
 
 def test_immutable_list_length() -> None:
