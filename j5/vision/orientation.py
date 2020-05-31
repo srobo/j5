@@ -28,9 +28,9 @@ class Orientation:
         """
         r_m = self._quaternion.rotation_matrix
         return (
-            (r_m[0][0], r_m[0][1], r_m[0][2]),
-            (r_m[1][0], r_m[1][1], r_m[1][2]),
-            (r_m[2][0], r_m[2][1], r_m[2][2]),
+            (float(r_m[0][0]), float(r_m[0][1]), float(r_m[0][2])),
+            (float(r_m[1][0]), float(r_m[1][1]), float(r_m[1][2])),
+            (float(r_m[2][0]), float(r_m[2][1]), float(r_m[2][2])),
         )
 
     @property
@@ -42,22 +42,22 @@ class Orientation:
 
         See pyquaternion for details.
         """
-        return self._quaternion.yaw_pitch_roll
+        return self.yaw, self.pitch, self.roll
 
     @property
     def yaw(self) -> float:
         """Rotation angle around the z-axis in radians."""
-        return self.yaw_pitch_roll[0]
+        return float(self.yaw_pitch_roll[0])
 
     @property
     def pitch(self) -> float:
         """Rotation angle around the y'-axis in radians."""
-        return self.yaw_pitch_roll[1]
+        return float(self.yaw_pitch_roll[1])
 
     @property
     def roll(self) -> float:
         """Rotation angle around the x''-axis in radians."""
-        return self.yaw_pitch_roll[2]
+        return float(self.yaw_pitch_roll[2])
 
     @property
     def rot_x(self) -> float:
