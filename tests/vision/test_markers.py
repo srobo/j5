@@ -131,6 +131,10 @@ def test_marker_list_instantiation() -> None:
     marker = marker_list[0]
     assert isinstance(marker, Marker)
 
+    empty_marker_list = MarkerList()
+    assert isinstance(empty_marker_list, MarkerList)
+    assert len(empty_marker_list) == 0
+
 
 def test_marker_list_friendly_error() -> None:
     """Test that MarkerList is friendly."""

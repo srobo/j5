@@ -106,7 +106,12 @@ class MarkerList(List[Marker]):
     accessing indexes and the list is empty.
     This is to mitigate a common beginners issue where a list is indexed
     without checking that the list has any items.
+
+    The markers are also sorted by distance, with the closest marker first.
     """
+
+    def __init__(self, markers: Sequence[Marker] = ()) -> None:
+        super().__init__(markers)
 
     @overload
     def __getitem__(self, index: int) -> Marker:
