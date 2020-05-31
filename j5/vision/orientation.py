@@ -47,17 +47,17 @@ class Orientation:
     @property
     def yaw(self) -> float:
         """Rotation angle around the z-axis in radians."""
-        return float(self.yaw_pitch_roll[0])
+        return float(self.quaternion.yaw_pitch_roll[0])
 
     @property
     def pitch(self) -> float:
         """Rotation angle around the y'-axis in radians."""
-        return float(self.yaw_pitch_roll[1])
+        return float(self.quaternion.yaw_pitch_roll[1])
 
     @property
     def roll(self) -> float:
         """Rotation angle around the x''-axis in radians."""
-        return float(self.yaw_pitch_roll[2])
+        return float(self.quaternion.yaw_pitch_roll[2])
 
     @property
     def rot_x(self) -> float:
