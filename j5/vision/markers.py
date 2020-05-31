@@ -111,7 +111,8 @@ class MarkerList(List[Marker]):
     """
 
     def __init__(self, markers: Sequence[Marker] = ()) -> None:
-        super().__init__(markers)
+        sorted_markers = sorted(markers, key=lambda m: m.distance)
+        super().__init__(sorted_markers)
 
     @overload
     def __getitem__(self, index: int) -> Marker:
