@@ -27,11 +27,7 @@ Publishing Changes
 
 The first step to submit changes is to publish them so that other contributors can review and give feedback.
 
-The mechanism to publish your changes depends on whether you have write access to the repository. Write access
-is granted by the Steering Council to recurrent, or trusted contributors.
-
-* Contributors with write access should publish a branch on the repository.
-* Contributors without write access should publish as a branch on a fork of the repository.
+Branches should be published on GitHub on a fork of the j5 repository.
 
 Pull Requests
 -------------
