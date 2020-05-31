@@ -27,7 +27,7 @@ Publishing Changes
 
 The first step to submit changes is to publish them so that other contributors can review and give feedback.
 
-Branches should be published on GitHub on a fork of the j5 repository.
+Branches should be published on GitHub to a fork of the j5 repository.
 
 Pull Requests
 -------------
