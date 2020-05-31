@@ -1,9 +1,10 @@
 """Classes for the SR v4 Servo Board."""
-from typing import TYPE_CHECKING, Optional, Set, Tuple, Type, cast
+from typing import TYPE_CHECKING, Optional, Set, Type, cast
 
 from j5.backends import Backend
 from j5.boards import Board
 from j5.components.servo import Servo, ServoInterface
+from j5.types import ImmutableList
 
 if TYPE_CHECKING:  # pragma: no cover
     from j5.components import (  # noqa: F401
@@ -20,7 +21,7 @@ class ServoBoard(Board):
         self._serial = serial
         self._backend = backend
 
-        self._servos: Tuple[Servo] = (
+        self._servos = ImmutableList[Servo](
             Servo(servo, cast(ServoInterface, self._backend))
             for servo in range(0, 12)
         )
@@ -49,6 +50,6 @@ class ServoBoard(Board):
         return {Servo}
 
     @property
-    def servos(self) -> Tuple[Servo]:
+    def servos(self) -> ImmutableList[Servo]:
         """Get the servos on this board."""
         return self._servos

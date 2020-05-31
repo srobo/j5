@@ -1,9 +1,10 @@
 """Classes for the SR v4 Motor Board."""
-from typing import TYPE_CHECKING, Optional, Set, Tuple, Type, cast
+from typing import TYPE_CHECKING, Optional, Set, Type, cast
 
 from j5.backends import Backend
 from j5.boards import Board
 from j5.components.motor import Motor, MotorInterface, MotorSpecialState
+from j5.types import ImmutableList
 
 if TYPE_CHECKING:  # pragma: no cover
     from j5.components import (  # noqa: F401
@@ -20,7 +21,7 @@ class MotorBoard(Board):
         self._serial = serial
         self._backend = backend
 
-        self._outputs: Tuple[Motor] = (
+        self._outputs = ImmutableList[Motor](
             Motor(output, cast(MotorInterface, self._backend))
             for output in range(0, 2)
         )
@@ -36,7 +37,7 @@ class MotorBoard(Board):
         return self._backend.firmware_version
 
     @property
-    def motors(self) -> Tuple[Motor]:
+    def motors(self) -> ImmutableList[Motor]:
         """Get the motors on this board."""
         return self._outputs
 
