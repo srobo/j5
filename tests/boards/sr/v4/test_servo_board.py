@@ -91,9 +91,9 @@ def test_servo_board_servos() -> None:
 
 def test_servo_mutability() -> None:
     """
-    Test the mutability of Motors.
+    Test the mutability of Servos.
 
-    Ensures that Motor objects cannot be lost.
+    Ensures that Servo objects cannot be lost.
     """
     sb = ServoBoard("SERIAL0", MockServoBoardBackend())
 

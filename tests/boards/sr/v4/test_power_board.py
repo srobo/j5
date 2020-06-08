@@ -187,9 +187,9 @@ def test_power_board_wait_start() -> None:
 
 def test_output_mutability() -> None:
     """
-    Test the mutability of Motors.
+    Test the mutability of outputs.
 
-    Ensures that Motor objects cannot be lost.
+    Ensures that Output objects cannot be lost.
     """
     pb = PowerBoard("SERIAL0", MockPowerBoardBackend())
 
