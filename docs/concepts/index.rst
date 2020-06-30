@@ -6,4 +6,3 @@ Concepts
     abstractions
     comparison
     philosophy
-    structure
