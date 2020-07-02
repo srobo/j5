@@ -67,10 +67,10 @@ class ZolotoCameraBoardHardwareBackend(
 
         for zmarker in marker_gen:
             position = Coordinate(
-                # Convert to metres
-                zmarker.cartesian.x / 100,
-                zmarker.cartesian.y / 100,
-                zmarker.cartesian.z / 100,
+                # Convert to metres and python floats
+                float(zmarker.cartesian.x / 100),
+                float(zmarker.cartesian.y / 100),
+                float(zmarker.cartesian.z / 100),
             )
             orientation = Orientation(zmarker.orientation.quaternion)
             pixel_corners = list(
