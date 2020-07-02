@@ -13,6 +13,7 @@ from j5.components import (
     LEDInterface,
 )
 from j5.components.derived import UltrasoundInterface, UltrasoundSensor
+from j5.types import ImmutableDict
 
 
 class AnaloguePin(IntEnum):
@@ -92,13 +93,13 @@ class SBArduinoBoard(Board):
         return self._backend.firmware_version
 
     @property
-    def pins(self) -> Mapping[PinNumber, GPIOPin]:
+    def pins(self) -> ImmutableDict[PinNumber, GPIOPin]:
         """Get the GPIO pins."""
-        pins: Mapping[PinNumber, GPIOPin] = {
+        pins = ImmutableDict[PinNumber, GPIOPin]({
             **cast(Mapping[PinNumber, GPIOPin], self._analogue_pins),
             **cast(Mapping[PinNumber, GPIOPin], self._digital_pins),
 
-        }
+        })
         return pins
 
     def make_safe(self) -> None:
