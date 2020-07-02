@@ -131,6 +131,10 @@ def test_marker_list_instantiation() -> None:
     marker = marker_list[0]
     assert isinstance(marker, Marker)
 
+    empty_marker_list = MarkerList()
+    assert isinstance(empty_marker_list, MarkerList)
+    assert len(empty_marker_list) == 0
+
 
 def test_marker_list_friendly_error() -> None:
     """Test that MarkerList is friendly."""
@@ -149,3 +153,18 @@ def test_marker_list_friendly_error() -> None:
         marker_list[1]
 
         assert e.value != "Trying to index an empty list"
+
+
+def test_marker_list_sorted_by_distance() -> None:
+    """Test that the MarkerList is sorted by distance."""
+    marker_list = MarkerList(
+        Marker(
+            1,
+            get_random_coordinate(),
+        ) for _ in range(10)
+    )
+
+    assert all(
+        marker_list[i].distance < marker_list[i + 1].distance
+        for i in range(len(marker_list) - 1)
+    )
