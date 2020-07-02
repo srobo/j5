@@ -14,7 +14,7 @@ class Marker:
     A fiducial marker.
 
     Specifically, this class represents a specific measurement of a marker,
-    and its position, ID, and in the future, orientation in 3D space.
+    including the ID, position, and orientation in 3D space.
     """
 
     _id: int
