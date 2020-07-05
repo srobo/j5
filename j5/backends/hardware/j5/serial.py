@@ -6,7 +6,7 @@ from typing import Optional, Set, Type
 from serial import Serial, SerialException, SerialTimeoutException
 from typing_extensions import Protocol
 
-from j5.backends import BackendMeta, CommunicationError
+from j5.backends import Backend, BackendMeta, CommunicationError
 from j5.boards import Board
 
 
@@ -43,7 +43,7 @@ class Seriallike(Protocol):
         ...  # pragma: nocover
 
 
-class SerialHardwareBackend(metaclass=BackendMeta):
+class SerialHardwareBackend(Backend, metaclass=BackendMeta):
     """An abstract class for creating backends that use USB serial communication."""
 
     DEFAULT_TIMEOUT: timedelta = timedelta(milliseconds=250)
