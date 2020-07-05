@@ -36,6 +36,13 @@ def test_immutable_dict_cannot_set_member() -> None:
         d['foo'] = '12'  # type: ignore
 
 
+def test_immutable_dict_repr() -> None:
+    """Test that the repr of the immutable dict is correct."""
+    data = {'foo': 'bar', 'bar': 'doo'}
+    d = ImmutableDict(data)
+    assert repr(d) == "ImmutableDict({'foo': 'bar', 'bar': 'doo'})"
+
+
 def test_immutable_list_construct_from_list() -> None:
     """Test that we can construct an ImmutableList from a list."""
     data = [1, 3, 4, 6, 2]
@@ -80,3 +87,10 @@ def test_immutable_list_cannot_set_item() -> None:
 
     with pytest.raises(TypeError):
         li[0] = 12  # type: ignore
+
+
+def test_immutable_list_repr() -> None:
+    """Test that the repr of the immutable list is correct."""
+    data = [1, 3, 4, 6, 2]
+    d = ImmutableList(data)
+    assert repr(d) == "ImmutableList([1, 3, 4, 6, 2])"
