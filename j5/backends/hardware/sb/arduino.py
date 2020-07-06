@@ -71,7 +71,7 @@ class SBArduinoHardwareBackend(
             boards.add(
                 SBArduinoBoard(
                     port.serial_number,
-                    cls(port.device, serial_class),  # type: ignore
+                    cls(port.device, serial_class),
                 ),
             )
 
