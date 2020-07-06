@@ -11,6 +11,9 @@ class ImmutableDict(Generic[T, U]):
     def __init__(self, members: Mapping[T, U]):
         self._members = members
 
+    def __repr__(self) -> str:
+        return f"ImmutableDict({self._members!r})"
+
     def __getitem__(self, index: T) -> U:
         """Get an member using list notation."""
         return self._members[index]
@@ -29,6 +32,9 @@ class ImmutableList(Generic[T]):
 
     def __init__(self, members: Union[List[T], Generator[T, None, None]]):
         self._members: List[T] = list(members)
+
+    def __repr__(self) -> str:
+        return f"ImmutableList({self._members!r})"
 
     def __getitem__(self, index: int) -> T:
         """Get an member using list notation."""
