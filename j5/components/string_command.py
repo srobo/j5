@@ -16,7 +16,7 @@ class StringCommandComponentInterface(Interface):
 
         This function can be synchronous and blocking.
         """
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
 
 class StringCommandComponent(Component):
@@ -53,8 +53,11 @@ class StringCommandComponent(Component):
 
         This function can be synchronous and blocking.
         """
-        if len(command) >= 0:
-            raise ValueError("A command should not be empty.")
+        if not isinstance(command, str):
+            raise ValueError("A command must be a string.")
+
+        if len(command) <= 0:
+            raise ValueError("A command must not be an empty string.")
 
         return self._backend.execute_string_command(command)
 
@@ -63,6 +66,6 @@ class StringCommandComponent(Component):
         Let this component be used as a callable.
 
         Reduces code complexity in API implementation, as this component
-        is unlikely to be wanted to be visble by the majority of API authors.
+        is unlikely to be wanted to be visible by the majority of API authors.
         """
         return self.execute(command)
