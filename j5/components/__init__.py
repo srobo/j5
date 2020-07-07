@@ -15,6 +15,7 @@ from .motor import Motor, MotorInterface, MotorSpecialState
 from .piezo import Piezo, PiezoInterface
 from .power_output import PowerOutput, PowerOutputGroup, PowerOutputInterface
 from .servo import Servo, ServoInterface
+from .string_command import StringCommandComponent, StringCommandComponentInterface
 
 __all__ = [
     "BatterySensor",
@@ -42,4 +43,6 @@ __all__ = [
     "PowerOutputGroup",
     "Servo",
     "ServoInterface",
+    "StringCommandComponent",
+    "StringCommandComponentInterface",
 ]
