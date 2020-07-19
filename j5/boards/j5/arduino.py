@@ -32,6 +32,7 @@ class AnaloguePin(IntEnum):
 
 
 PinNumber = Union[int, AnaloguePin]
+FIRST_ANALOGUE_PIN = AnaloguePin.A0
 
 
 class ArduinoUno(Board):
@@ -67,7 +68,7 @@ class ArduinoUno(Board):
                     GPIOPinMode.DIGITAL_OUTPUT,
                 },
             )
-            for i in range(2, 14)
+            for i in range(2, FIRST_ANALOGUE_PIN)
         }
 
         self._analogue_pins = {
