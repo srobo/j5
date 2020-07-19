@@ -5,7 +5,6 @@ from j5.backends import Backend
 from j5.boards.j5 import ArduinoUno, PinNumber
 from j5.components import LED, Component, GPIOPin
 from j5.components.derived import UltrasoundInterface, UltrasoundSensor
-from j5.types import ImmutableDict
 
 
 class SBArduinoBoard(ArduinoUno):
@@ -24,16 +23,6 @@ class SBArduinoBoard(ArduinoUno):
     def firmware_version(self) -> Optional[str]:
         """Get the firmware version of the board."""
         return self._backend.firmware_version
-
-    @property
-    def pins(self) -> ImmutableDict[PinNumber, GPIOPin]:
-        """Get the GPIO pins."""
-        pins = ImmutableDict[PinNumber, GPIOPin]({
-            **cast(Mapping[PinNumber, GPIOPin], self._analogue_pins),
-            **cast(Mapping[PinNumber, GPIOPin], self._digital_pins),
-
-        })
-        return pins
 
     def make_safe(self) -> None:
         """Make this board safe."""

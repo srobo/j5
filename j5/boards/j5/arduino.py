@@ -17,6 +17,7 @@ from j5.components import (
     GPIOPinMode,
     LEDInterface,
 )
+from j5.types import ImmutableDict
 
 
 class AnaloguePin(IntEnum):
@@ -96,13 +97,13 @@ class ArduinoUno(Board):
         raise NotImplementedError
 
     @property
-    def pins(self) -> Mapping[PinNumber, GPIOPin]:
+    def pins(self) -> ImmutableDict[PinNumber, GPIOPin]:
         """Get the GPIO pins."""
-        pins: Mapping[PinNumber, GPIOPin] = {
+        pins = ImmutableDict[PinNumber, GPIOPin]({
             **cast(Mapping[PinNumber, GPIOPin], self._analogue_pins),
             **cast(Mapping[PinNumber, GPIOPin], self._digital_pins),
 
-        }
+        })
         return pins
 
     @abstractmethod
