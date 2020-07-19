@@ -36,28 +36,6 @@ class SBArduinoHardwareBackend(
 
     board = SBArduinoBoard
 
-    @classmethod
-    def discover(
-            cls,
-            comports: Callable = comports,
-            serial_class: Type[Serial] = Serial,
-    ) -> Set[Board]:
-        """Discover all connected motor boards."""
-        # Find all serial ports.
-        ports: List[ListPortInfo] = comports()
-
-        # Get a list of boards from the ports.
-        boards: Set[Board] = set()
-        for port in filter(is_arduino_uno, ports):
-            boards.add(
-                SBArduinoBoard(
-                    port.serial_number,
-                    cls(port.device, serial_class),
-                ),
-            )
-
-        return boards
-
     def __init__(
             self,
             serial_port: str,
