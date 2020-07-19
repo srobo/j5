@@ -1,6 +1,8 @@
 """Tests for the SR v4 Motor Board."""
 from typing import List, Optional, Set
 
+import pytest
+
 from j5.backends import Backend
 from j5.boards import Board
 from j5.boards.sr.v4 import MotorBoard
@@ -97,3 +99,15 @@ def test_motor_board_motors() -> None:
 
     for m in mb.motors:
         assert type(m) is Motor
+
+
+def test_motor_mutability() -> None:
+    """
+    Test the mutability of Motors.
+
+    Ensures that Motor objects cannot be lost.
+    """
+    mb = MotorBoard("SERIAL0", MockMotorBoardBackend())
+
+    with pytest.raises(TypeError):
+        mb.motors[1] = 1  # type: ignore

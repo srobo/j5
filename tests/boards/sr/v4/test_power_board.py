@@ -2,6 +2,8 @@
 from datetime import timedelta
 from typing import TYPE_CHECKING, Optional, Set
 
+import pytest
+
 from j5.backends import Backend
 from j5.boards.sr.v4 import PowerBoard, PowerOutputGroup, PowerOutputPosition
 from j5.components import (
@@ -181,3 +183,15 @@ def test_power_board_wait_start() -> None:
     pb.wait_for_start_flash()
 
     assert pb._run_led.state
+
+
+def test_output_mutability() -> None:
+    """
+    Test the mutability of outputs.
+
+    Ensures that Output objects cannot be lost.
+    """
+    pb = PowerBoard("SERIAL0", MockPowerBoardBackend())
+
+    with pytest.raises(TypeError):
+        pb.outputs[PowerOutputPosition.L0] = True  # type: ignore

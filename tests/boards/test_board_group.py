@@ -223,3 +223,15 @@ def test_board_group_make_safe() -> None:
     assert not any(board._safe for board in board_group)
     board_group.make_safe()
     assert all(board._safe for board in board_group)
+
+
+def test_board_group_mutability() -> None:
+    """
+    Test that the members of BoardGroup are immutable.
+
+    This is to try and ensure that an error would be thrown on a student typo.
+    """
+    board_group = BoardGroup.get_board_group(MockBoard, TwoBoardsMockBackend)
+
+    with pytest.raises(TypeError):
+        board_group["TESTSERIAL1"] = 12  # type: ignore

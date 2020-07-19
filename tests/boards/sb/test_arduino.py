@@ -3,6 +3,8 @@
 from datetime import timedelta
 from typing import TYPE_CHECKING, Optional, Set
 
+import pytest
+
 from j5.backends import Backend
 from j5.boards.j5 import AnaloguePin
 from j5.boards.sb import SBArduinoBoard
@@ -147,3 +149,15 @@ def test_uno_ultrasound_sensors() -> None:
     assert type(sensor) is UltrasoundSensor
     assert sensor._gpio_trigger._identifier == 3
     assert sensor._gpio_echo._identifier == 4
+
+
+def test_pin_mutability() -> None:
+    """
+    Test the mutability of GPIOPins.
+
+    Ensures that GPIOPin objects cannot be lost.
+    """
+    uno = SBArduinoBoard("SERIAL0", MockSBArduinoBackend())
+
+    with pytest.raises(TypeError):
+        uno.pins[2] = True  # type: ignore

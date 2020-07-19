@@ -14,7 +14,7 @@ class Marker:
     A fiducial marker.
 
     Specifically, this class represents a specific measurement of a marker,
-    and its position, ID, and in the future, orientation in 3D space.
+    including the ID, position, and orientation in 3D space.
     """
 
     _id: int
@@ -106,7 +106,13 @@ class MarkerList(List[Marker]):
     accessing indexes and the list is empty.
     This is to mitigate a common beginners issue where a list is indexed
     without checking that the list has any items.
+
+    The markers are also sorted by distance, with the closest marker first.
     """
+
+    def __init__(self, markers: Sequence[Marker] = ()) -> None:
+        sorted_markers = sorted(markers, key=lambda m: m.distance)
+        super().__init__(sorted_markers)
 
     @overload
     def __getitem__(self, index: int) -> Marker:
