@@ -56,7 +56,7 @@ class SBArduinoHardwareBackend(
                     f"Arduino ({self.serial_port}) is not responding",
                 )
 
-        if line != "booted":
+        if line != "# Booted":
             raise CommunicationError("Arduino Boot Error.")
 
         return self.read_serial_line()
