@@ -153,8 +153,8 @@ class ArduinoHardwareBackend(
         """Get the hardware mode of a GPIO pin."""
         if identifier < FIRST_ANALOGUE_PIN:
             return self._digital_pins[identifier].mode
-        else:
-            return GPIOPinMode.ANALOGUE_INPUT
+
+        return GPIOPinMode.ANALOGUE_INPUT
 
     def write_gpio_pin_digital_state(self, identifier: int, state: bool) -> None:
         """Write to the digital state of a GPIO pin."""

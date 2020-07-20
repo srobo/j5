@@ -27,7 +27,6 @@ class Ruggeduino(ArduinoUno):
 
     def make_safe(self) -> None:
         """Make this board safe."""
-        pass
 
     @staticmethod
     def supported_components() -> Set[Type[Component]]:

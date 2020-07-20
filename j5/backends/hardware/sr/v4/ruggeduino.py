@@ -15,10 +15,8 @@ from j5.components import GPIOPinMode
 
 def encode_pin(pin: Optional[int]) -> str:
     """Encode a pin number as a letter of the alphabet."""
-    if pin is None:
-        return ""
-    else:
-        return chr(ord('a') + pin)
+
+    return chr(ord('a') + pin) if pin is not None else ""
 
 
 class FirmwareType(Enum):
@@ -91,12 +89,10 @@ class SRV4RuggeduinoHardwareBackend(ArduinoHardwareBackend):
     def firmware_type(self) -> FirmwareType:
         """The type of firmware on the board."""
         flavour: str = self._version_line.split(":")[0]
-        if flavour == FirmwareType.OFFICIAL.value:
-            return FirmwareType.OFFICIAL
-        elif flavour == FirmwareType.EXTENDED.value:
-            return FirmwareType.EXTENDED
-        else:
-            return FirmwareType.CUSTOM
+        if flavour in (firmwareType.value for firmwareType in FirmwareType):
+            return FirmwareType(flavour)
+
+        return FirmwareType.CUSTOM
 
     def _verify_firmware_version(self) -> None:
         """Verify that the Ruggeduino firmware meets or exceeds the minimum version."""
@@ -142,12 +138,11 @@ class SRV4RuggeduinoHardwareBackend(ArduinoHardwareBackend):
         if len(results) != 1:
             raise CommunicationError(f"Invalid response from Ruggeduino: {results!r}")
         result = results[0]
-        if result == "h":
-            return True
-        elif result == "l":
-            return False
-        else:
-            raise CommunicationError(f"Invalid response from Ruggeduino: {result!r}")
+        result_map = {"h": True, "l": False}
+        if result in result_map:
+            return result_map[result]
+
+        raise CommunicationError(f"Invalid response from Ruggeduino: {result!r}")
 
     def _read_analogue_pin(self, identifier: int) -> float:
         """Read the value of an analogue pin from the Arduino."""
