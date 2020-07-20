@@ -187,22 +187,27 @@ class GPIOPin(Component):
         """Set the analogue value of the pin."""
         self._require_pin_modes({
             GPIOPinMode.ANALOGUE_OUTPUT,
-            GPIOPinMode.PWM_OUTPUT,
         })
         if new_value < 0 or new_value > 1:
             raise ValueError("An analogue pin value must be between 0 and 1.")
 
-        if self.mode is GPIOPinMode.ANALOGUE_OUTPUT:
-            self._backend.write_gpio_pin_dac_value(
-                self._identifier,
-                new_value,
-            )
-        else:
-            # We must be a PWM_OUTPUT
-            self._backend.write_gpio_pin_pwm_value(
-                self._identifier,
-                new_value,
-            )
+        self._backend.write_gpio_pin_dac_value(
+            self._identifier,
+            new_value,
+        )
+
+    def pwm_write(self, new_value: float) -> None:
+        """Set the PWM value of the pin."""
+        self._require_pin_modes({
+            GPIOPinMode.PWM_OUTPUT,
+        })
+        if new_value < 0 or new_value > 1:
+            raise ValueError("An PWM pin value must be between 0 and 1.")
+
+        self._backend.write_gpio_pin_pwm_value(
+            self._identifier,
+            new_value,
+        )
 
     @property
     def firmware_modes(self) -> Set[FirmwareMode]:

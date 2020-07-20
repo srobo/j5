@@ -317,11 +317,27 @@ def test_analogue_value_setter() -> None:
     pin.mode = GPIOPinMode.ANALOGUE_OUTPUT
     pin.analogue_write(0.6)
 
-    pin.mode = GPIOPinMode.PWM_OUTPUT
-    pin.analogue_write(0.7)
-
     with pytest.raises(ValueError):
         pin.analogue_write(-1)
+
+
+def test_pwm_value_setter() -> None:
+    """Test that we can set a scaled PWM value."""
+    driver = MockGPIOPinDriver()
+    pin = GPIOPin(
+        0,
+        driver,
+        initial_mode=GPIOPinMode.PWM_OUTPUT,
+        hardware_modes={
+            GPIOPinMode.PWM_OUTPUT,
+        },
+    )
+
+    pin.mode = GPIOPinMode.PWM_OUTPUT
+    pin.pwm_write(0.7)
+
+    with pytest.raises(ValueError):
+        pin.pwm_write(-1)
 
 
 class Peripheral(DerivedComponent):
