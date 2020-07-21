@@ -60,7 +60,7 @@ class ArduinoHardwareBackend(
             boards.add(
                 cls.board(
                     port.serial_number,
-                    cls(port.device, serial_class),  # type: ignore
+                    cls(port.device, serial_class),
                 ),
             )
 

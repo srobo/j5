@@ -15,7 +15,6 @@ from j5.components import GPIOPinMode
 
 def encode_pin(pin: Optional[int]) -> str:
     """Encode a pin number as a letter of the alphabet."""
-
     return chr(ord('a') + pin) if pin is not None else ""
 
 
