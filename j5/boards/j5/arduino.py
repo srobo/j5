@@ -5,7 +5,7 @@ This is to avoid duplicating code that is common between different Arduino board
 """
 from abc import abstractmethod
 from enum import IntEnum
-from typing import Mapping, Optional, Set, Type, Union, cast
+from typing import Iterable, Mapping, Optional, Set, Type, Union, cast
 
 from j5.backends import Backend
 from j5.boards import Board
@@ -17,6 +17,7 @@ from j5.components import (
     GPIOPinMode,
     LEDInterface,
 )
+from j5.components.gpio_pin import FirmwareMode, PinMode
 from j5.types import ImmutableDict
 
 
@@ -32,7 +33,7 @@ class AnaloguePin(IntEnum):
 
 
 PinNumber = Union[int, AnaloguePin]
-FIRST_ANALOGUE_PIN = AnaloguePin.A0
+FIRST_ANALOGUE_PIN: PinNumber = AnaloguePin.A0
 
 
 class ArduinoUno(Board):
@@ -55,26 +56,11 @@ class ArduinoUno(Board):
         self._led = LED(0, cast(LEDInterface, self._backend))
         self._name = name
 
-        # Digital Pins
-        # Note that pins 0 and 1 are used for serial comms.
-        self._digital_pins = {
-            i: GPIOPin(
-                i,
-                cast(GPIOPinInterface, self._backend),
-                initial_mode=GPIOPinMode.DIGITAL_INPUT,
-                hardware_modes={
-                    GPIOPinMode.DIGITAL_INPUT,
-                    GPIOPinMode.DIGITAL_INPUT_PULLUP,
-                    GPIOPinMode.DIGITAL_OUTPUT,
-                },
-            )
-            for i in range(2, FIRST_ANALOGUE_PIN)
-        }
+        self._analogue_pins = cast(
+            Mapping[AnaloguePin, GPIOPin],
 
-        self._analogue_pins = {
-            i: GPIOPin(
-                i,
-                cast(GPIOPinInterface, self._backend),
+            self._generate_gpio_pins(
+                AnaloguePin.__members__.values(),
                 initial_mode=GPIOPinMode.ANALOGUE_INPUT,
                 hardware_modes={
                     GPIOPinMode.ANALOGUE_INPUT,
@@ -82,12 +68,30 @@ class ArduinoUno(Board):
                     GPIOPinMode.DIGITAL_INPUT_PULLUP,
                     GPIOPinMode.DIGITAL_OUTPUT,
                 },
+            ),
+        )
+
+    def _generate_gpio_pins(
+            self,
+            numbering: Iterable[PinNumber],
+            initial_mode: PinMode,
+            hardware_modes: Set[GPIOPinMode] = GPIOPin.DEFAULT_HW_MODE,
+            firmware_modes: Set[FirmwareMode] = GPIOPin.DEFAULT_FW_MODE,
+    ) -> Mapping[PinNumber, GPIOPin]:
+        return {
+            i: GPIOPin(
+                i,
+                cast(GPIOPinInterface, self._backend),
+                initial_mode=initial_mode,
+                hardware_modes=hardware_modes,
+                firmware_modes=firmware_modes,
             )
-            for i in AnaloguePin
+            for i in numbering
         }
 
     @property
     def name(self) -> str:
+        """The human-friendly name of this board."""
         return self._name
 
     @property

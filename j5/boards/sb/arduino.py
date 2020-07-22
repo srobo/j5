@@ -3,7 +3,8 @@ from typing import Optional, Set, Tuple, Type, cast
 
 from j5.backends import Backend
 from j5.boards.j5 import ArduinoUno, PinNumber
-from j5.components import LED, Component, GPIOPin
+from j5.boards.j5.arduino import FIRST_ANALOGUE_PIN
+from j5.components import LED, Component, GPIOPin, GPIOPinMode
 from j5.components.derived import UltrasoundInterface, UltrasoundSensor
 
 
@@ -17,6 +18,18 @@ class SBArduinoBoard(ArduinoUno):
     ):
         super().__init__(serial, backend)
 
+        # Digital Pins
+        # Note that pins 0 and 1 are used for serial comms.
+        self._digital_pins = self._generate_gpio_pins(
+            range(2, FIRST_ANALOGUE_PIN),
+            initial_mode=GPIOPinMode.DIGITAL_INPUT,
+            hardware_modes={
+                GPIOPinMode.DIGITAL_INPUT,
+                GPIOPinMode.DIGITAL_INPUT_PULLUP,
+                GPIOPinMode.DIGITAL_OUTPUT,
+            },
+            firmware_modes={UltrasoundSensor},
+        )
         self.ultrasound_sensors = UltrasoundSensors(self)
 
     @property

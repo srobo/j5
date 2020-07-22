@@ -7,7 +7,8 @@ from typing import Optional, Set, Type
 
 from j5.backends import Backend
 from j5.boards.j5 import ArduinoUno
-from j5.components import LED, Component, GPIOPin
+from j5.boards.j5.arduino import FIRST_ANALOGUE_PIN
+from j5.components import LED, Component, GPIOPin, GPIOPinMode
 
 
 class Ruggeduino(ArduinoUno):
@@ -19,6 +20,18 @@ class Ruggeduino(ArduinoUno):
             backend: Backend,
     ):
         super().__init__(serial, backend, name="Ruggeduino")
+
+        # Digital Pins
+        # Note that pins 0 and 1 are used for serial comms.
+        self._digital_pins = self._generate_gpio_pins(
+            range(2, FIRST_ANALOGUE_PIN),
+            initial_mode=GPIOPinMode.DIGITAL_INPUT,
+            hardware_modes={
+                GPIOPinMode.DIGITAL_INPUT,
+                GPIOPinMode.DIGITAL_INPUT_PULLUP,
+                GPIOPinMode.DIGITAL_OUTPUT,
+            },
+        )
 
     @property
     def firmware_version(self) -> Optional[str]:
