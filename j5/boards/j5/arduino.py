@@ -41,7 +41,7 @@ class ArduinoUno(Board):
     _led: LED
     _digital_pins: Mapping[int, GPIOPin]
     _analogue_pins: Mapping[AnaloguePin, GPIOPin]
-    name: str
+    _name: str
 
     def __init__(
             self,
@@ -53,7 +53,7 @@ class ArduinoUno(Board):
         self._backend = backend
 
         self._led = LED(0, cast(LEDInterface, self._backend))
-        self.name = name
+        self._name = name
 
         # Digital Pins
         # Note that pins 0 and 1 are used for serial comms.
@@ -85,6 +85,10 @@ class ArduinoUno(Board):
             )
             for i in AnaloguePin
         }
+
+    @property
+    def name(self) -> str:
+        return self._name
 
     @property
     def serial(self) -> str:
