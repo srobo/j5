@@ -93,9 +93,7 @@ class ArduinoHardwareBackend(
             for i in range(2, ArduinoUno.FIRST_ANALOGUE_PIN)
         }
 
-        with self._lock:
-            self._version_line = self._verify_boot()
-
+        self._version_line = self._verify_boot()
         self._verify_firmware_version()
 
         for pin_number in self._digital_pins.keys():
