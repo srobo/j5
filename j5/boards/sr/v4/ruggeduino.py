@@ -3,16 +3,25 @@ Classes for the Student Robotics Ruggeduino.
 
 It's similar to the Sourcebots Arduino, but without official ultrasound support.
 """
-from typing import Optional, Set, Type
+from typing import Optional, Set, Type, cast
 
 from j5.backends import Backend
 from j5.boards.j5 import ArduinoUno
 from j5.boards.j5.arduino import FIRST_ANALOGUE_PIN
-from j5.components import LED, Component, GPIOPin, GPIOPinMode
+from j5.components import (
+    LED,
+    Component,
+    GPIOPin,
+    GPIOPinMode,
+    StringCommandComponent,
+    StringCommandComponentInterface,
+)
 
 
 class Ruggeduino(ArduinoUno):
     """Student Robotics Ruggeduino board."""
+
+    command: StringCommandComponent
 
     def __init__(
             self,
@@ -32,6 +41,10 @@ class Ruggeduino(ArduinoUno):
                 GPIOPinMode.DIGITAL_OUTPUT,
             },
         )
+        self.command = StringCommandComponent(
+            0,
+            cast(StringCommandComponentInterface, self._backend),
+        )
 
     @property
     def firmware_version(self) -> Optional[str]:
@@ -47,4 +60,5 @@ class Ruggeduino(ArduinoUno):
         return {
             GPIOPin,
             LED,
+            StringCommandComponent,
         }

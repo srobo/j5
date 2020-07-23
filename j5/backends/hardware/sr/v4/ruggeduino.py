@@ -10,7 +10,7 @@ from j5.backends import CommunicationError
 from j5.backends.hardware.j5.arduino import ArduinoHardwareBackend
 from j5.boards.j5.arduino import FIRST_ANALOGUE_PIN
 from j5.boards.sr.v4.ruggeduino import Ruggeduino
-from j5.components import GPIOPinMode
+from j5.components import GPIOPinMode, StringCommandComponentInterface
 
 
 def encode_pin(pin: Optional[int]) -> str:
@@ -35,7 +35,10 @@ class FirmwareType(Enum):
     CUSTOM = "SRother"
 
 
-class SRV4RuggeduinoHardwareBackend(ArduinoHardwareBackend):
+class SRV4RuggeduinoHardwareBackend(
+    StringCommandComponentInterface,
+    ArduinoHardwareBackend,
+):
     """
     Hardware Backend for the Ruggeduino SE.
 
@@ -88,9 +91,10 @@ class SRV4RuggeduinoHardwareBackend(ArduinoHardwareBackend):
     def firmware_type(self) -> FirmwareType:
         """The type of firmware on the board."""
         flavour: str = self._version_line.split(":")[0]
-        if flavour in (firmwareType.value for firmwareType in FirmwareType):
-            return FirmwareType(flavour)
-
+        if flavour == FirmwareType.OFFICIAL.value:
+            return FirmwareType.OFFICIAL
+        if flavour == FirmwareType.EXTENDED.value:
+            return FirmwareType.EXTENDED
         return FirmwareType.CUSTOM
 
     def _verify_firmware_version(self) -> None:
@@ -102,16 +106,7 @@ class SRV4RuggeduinoHardwareBackend(ArduinoHardwareBackend):
         if len(command) != 1:
             raise RuntimeError("Commands should be 1 character long.")
 
-        try:
-            with self._lock:
-                message: str = command + encode_pin(pin)
-                self._serial.write(message.encode("utf-8"))
-
-                return self.read_serial_line(empty=True)
-        except SerialTimeoutException as e:
-            raise CommunicationError(f"Serial Timeout Error: {e}") from e
-        except SerialException as e:
-            raise CommunicationError(f"Serial Error: {e}") from e
+        return self.execute_string_command(command + encode_pin(pin))
 
     def _update_digital_pin(self, identifier: int) -> None:
         if identifier >= FIRST_ANALOGUE_PIN:
@@ -147,3 +142,15 @@ class SRV4RuggeduinoHardwareBackend(ArduinoHardwareBackend):
         """Read the value of an analogue pin from the Arduino."""
         result = self._command("a", identifier - 14)
         return (int(result) / 1024.0) * 5.0
+
+    def execute_string_command(self, command: str) -> str:
+        """Send a string command to the Ruggeduino and return the result."""
+        try:
+            with self._lock:
+                self._serial.write(command.encode("utf-8"))
+
+                return self.read_serial_line(empty=True)
+        except SerialTimeoutException as e:
+            raise CommunicationError(f"Serial Timeout Error: {e}") from e
+        except SerialException as e:
+            raise CommunicationError(f"Serial Error: {e}") from e
