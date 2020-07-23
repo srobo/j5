@@ -21,14 +21,14 @@ from j5.components import (
 class Ruggeduino(ArduinoUno):
     """Student Robotics Ruggeduino board."""
 
-    command: StringCommandComponent
+    name: str = "Ruggeduino"
 
     def __init__(
             self,
             serial: str,
             backend: Backend,
     ):
-        super().__init__(serial, backend, name="Ruggeduino")
+        super().__init__(serial, backend)
 
         # Digital Pins
         # Note that pins 0 and 1 are used for serial comms.

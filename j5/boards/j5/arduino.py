@@ -37,24 +37,23 @@ FIRST_ANALOGUE_PIN: PinNumber = AnaloguePin.A0
 
 
 class ArduinoUno(Board):
-    """Generic Arduino Uno."""
+    """Arduino Uno."""
 
     _led: LED
     _digital_pins: Mapping[int, GPIOPin]
     _analogue_pins: Mapping[AnaloguePin, GPIOPin]
-    _name: str
+
+    name: str = "Arduino Uno"
 
     def __init__(
             self,
             serial: str,
             backend: Backend,
-            name: str = "Arduino Uno",
     ):
         self._serial = serial
         self._backend = backend
 
         self._led = LED(0, cast(LEDInterface, self._backend))
-        self._name = name
 
         self._analogue_pins = cast(
             Mapping[AnaloguePin, GPIOPin],
@@ -78,6 +77,7 @@ class ArduinoUno(Board):
             hardware_modes: Set[GPIOPinMode] = GPIOPin.DEFAULT_HW_MODE,
             firmware_modes: Set[FirmwareMode] = GPIOPin.DEFAULT_FW_MODE,
     ) -> Mapping[PinNumber, GPIOPin]:
+        """Generate a dict of GPIOPins with the same properties."""
         return {
             i: GPIOPin(
                 i,
@@ -88,11 +88,6 @@ class ArduinoUno(Board):
             )
             for i in numbering
         }
-
-    @property
-    def name(self) -> str:
-        """The human-friendly name of this board."""
-        return self._name
 
     @property
     def serial(self) -> str:
