@@ -1,9 +1,9 @@
 """Student Robotics Ruggeduino Hardware Implementation."""
 
 from enum import Enum
-from typing import Optional, Type
+from typing import Optional
 
-from serial import Serial, SerialException, SerialTimeoutException
+from serial import SerialException, SerialTimeoutException
 from serial.tools.list_ports_common import ListPortInfo
 
 from j5.backends import CommunicationError
@@ -50,17 +50,6 @@ class SRV4RuggeduinoHardwareBackend(
     def is_arduino(port: ListPortInfo) -> bool:
         """Check whether a USB device is a Ruggeduino."""
         return (port.vid, port.pid) == (0x10c4, 0xea60)  # Ruggeduino uses a CP2104
-
-    def __init__(
-            self,
-            serial_port: str,
-            serial_class: Type[Serial] = Serial,
-
-    ) -> None:
-        super(SRV4RuggeduinoHardwareBackend, self).__init__(
-            serial_port=serial_port,
-            serial_class=serial_class,
-        )
 
     def _verify_boot(self) -> str:
         """
