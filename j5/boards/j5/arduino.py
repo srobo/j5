@@ -74,6 +74,7 @@ class ArduinoUno(Board):
             self,
             numbering: Iterable[PinNumber],
             initial_mode: PinMode,
+            *,
             hardware_modes: Set[GPIOPinMode] = GPIOPin.DEFAULT_HW_MODE,
             firmware_modes: Set[FirmwareMode] = GPIOPin.DEFAULT_FW_MODE,
     ) -> Mapping[PinNumber, GPIOPin]:
