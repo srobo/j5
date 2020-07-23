@@ -3,12 +3,14 @@ from typing import Optional, Set, Tuple, Type, cast
 
 from j5.backends import Backend
 from j5.boards.arduino.uno import ArduinoUno
-from j5.components import LED, Component, GPIOPin, GPIOPinMode
+from j5.components import LED, Component, DerivedComponent, GPIOPin
 from j5.components.derived import UltrasoundInterface, UltrasoundSensor
 
 
 class SBArduinoBoard(ArduinoUno):
     """SourceBots Arduino Board."""
+
+    FIRMWARE_MODES: Set[Type[DerivedComponent]] = {UltrasoundSensor}
 
     def __init__(
             self,
@@ -17,18 +19,9 @@ class SBArduinoBoard(ArduinoUno):
     ):
         super().__init__(serial, backend)
 
-        # Digital Pins
-        # Note that pins 0 and 1 are used for serial comms.
-        self._digital_pins = self._generate_gpio_pins(
-            range(2, ArduinoUno.FIRST_ANALOGUE_PIN),
-            initial_mode=GPIOPinMode.DIGITAL_INPUT,
-            hardware_modes={
-                GPIOPinMode.DIGITAL_INPUT,
-                GPIOPinMode.DIGITAL_INPUT_PULLUP,
-                GPIOPinMode.DIGITAL_OUTPUT,
-            },
-            firmware_modes={UltrasoundSensor},
-        )
+        for pin in self._digital_pins.values():
+            pin.firmware_modes = SBArduinoBoard.FIRMWARE_MODES
+
         self.ultrasound_sensors = UltrasoundSensors(self)
 
     @property

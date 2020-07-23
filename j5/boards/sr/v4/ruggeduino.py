@@ -11,7 +11,6 @@ from j5.components import (
     LED,
     Component,
     GPIOPin,
-    GPIOPinMode,
     StringCommandComponent,
     StringCommandComponentInterface,
 )
@@ -29,17 +28,6 @@ class Ruggeduino(ArduinoUno):
     ):
         super().__init__(serial, backend)
 
-        # Digital Pins
-        # Note that pins 0 and 1 are used for serial comms.
-        self._digital_pins = self._generate_gpio_pins(
-            range(2, ArduinoUno.FIRST_ANALOGUE_PIN),
-            initial_mode=GPIOPinMode.DIGITAL_INPUT,
-            hardware_modes={
-                GPIOPinMode.DIGITAL_INPUT,
-                GPIOPinMode.DIGITAL_INPUT_PULLUP,
-                GPIOPinMode.DIGITAL_OUTPUT,
-            },
-        )
         self.command = StringCommandComponent(
             0,
             cast(StringCommandComponentInterface, self._backend),
