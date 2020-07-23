@@ -53,6 +53,17 @@ class ArduinoUno(Board):
 
         self._led = LED(0, cast(LEDInterface, self._backend))
 
+        # Note that pins 0 and 1 are used for serial comms.
+        self._digital_pins = self._generate_gpio_pins(
+            range(2, ArduinoUno.FIRST_ANALOGUE_PIN),
+            initial_mode=GPIOPinMode.DIGITAL_INPUT,
+            hardware_modes={
+                GPIOPinMode.DIGITAL_INPUT,
+                GPIOPinMode.DIGITAL_INPUT_PULLUP,
+                GPIOPinMode.DIGITAL_OUTPUT,
+            },
+        )
+
         self._analogue_pins = cast(
             Mapping[ArduinoUno.AnaloguePin, GPIOPin],
 
