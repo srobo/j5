@@ -1,12 +1,12 @@
 """Student Robotics Ruggeduino Hardware Implementation."""
 
-from enum import Enum
 from typing import Optional
 
 from serial import SerialException, SerialTimeoutException
 from serial.tools.list_ports_common import ListPortInfo
 
 from j5.backends import CommunicationError
+from j5.backends.hardware import NotSupportedByHardwareError
 from j5.backends.hardware.j5.arduino import ArduinoHardwareBackend
 from j5.boards.sr.v4.ruggeduino import Ruggeduino
 from j5.components import GPIOPinMode, StringCommandComponentInterface
@@ -15,23 +15,6 @@ from j5.components import GPIOPinMode, StringCommandComponentInterface
 def encode_pin(pin: Optional[int]) -> str:
     """Encode a pin number as a letter of the alphabet."""
     return chr(ord('a') + pin) if pin is not None else ""
-
-
-class FirmwareType(Enum):
-    """
-    The types of firmware that can be present on the Ruggeduino.
-
-    OFFICIAL - Unmodified firmware. Students probably won't know that the default
-               firmware sends this value, unless they pore through j5 or sr-robot.
-    EXTENDED - Official, but with added commands. This value is sent by the open version
-             of the firmware. This firmware should support all official commands.
-    CUSTOM - Bespoke firmware entirely devised by the students themselves. Compatibility
-            should not be assumed.
-    """
-
-    OFFICIAL = "SRduino"
-    EXTENDED = "SRcustom"
-    CUSTOM = "SRother"
 
 
 class SRV4RuggeduinoHardwareBackend(
@@ -76,25 +59,20 @@ class SRV4RuggeduinoHardwareBackend(
         return self._version_line.split(":")[-1]
 
     @property
-    def firmware_type(self) -> FirmwareType:
+    def is_official_firmware(self) -> bool:
         """The type of firmware on the board."""
-        flavour: str = self._version_line.split(":")[0]
-        if flavour == FirmwareType.OFFICIAL.value:
-            return FirmwareType.OFFICIAL
-        if flavour == FirmwareType.EXTENDED.value:
-            return FirmwareType.EXTENDED
-        return FirmwareType.CUSTOM
+        return self._version_line.split(":")[0] == "SRduino"
 
     def _verify_firmware_version(self) -> None:
         """Verify that the Ruggeduino firmware meets or exceeds the minimum version."""
-        return
+        pass
 
     def _command(self, command: str, pin: Optional[int] = None) -> str:
         """Send a command to the board."""
         if len(command) != 1:
             raise RuntimeError("Commands should be 1 character long.")
 
-        return self.execute_string_command(command + encode_pin(pin))
+        return self._execute_raw_string_command(command + encode_pin(pin))
 
     def _update_digital_pin(self, identifier: int) -> None:
         if identifier >= Ruggeduino.FIRST_ANALOGUE_PIN:
@@ -133,6 +111,14 @@ class SRV4RuggeduinoHardwareBackend(
 
     def execute_string_command(self, command: str) -> str:
         """Send a string command to the Ruggeduino and return the result."""
+        if self.is_official_firmware:
+            raise NotSupportedByHardwareError(
+                "Ruggeduino should run custom firmware for command support",
+            )
+        return self._execute_raw_string_command(command)
+
+    def _execute_raw_string_command(self, command: str) -> str:
+        """Send a raw string command to the Ruggeduino and return the result."""
         try:
             with self._lock:
                 self._serial.write(command.encode("utf-8"))
