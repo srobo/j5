@@ -3,7 +3,6 @@ Base classes for Arduino Unos.
 
 This is to avoid duplicating code that is common between different Arduino boards.
 """
-from abc import abstractmethod
 from enum import IntEnum
 from typing import Iterable, Mapping, Optional, Set, Type, Union, cast
 
@@ -105,10 +104,9 @@ class ArduinoUno(Board):
         return self._serial
 
     @property
-    @abstractmethod
     def firmware_version(self) -> Optional[str]:
         """Get the firmware version of the board."""
-        raise NotImplementedError
+        return self._backend.firmware_version
 
     @property
     def pins(self) -> ImmutableDict[PinNumber, GPIOPin]:

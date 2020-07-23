@@ -3,7 +3,7 @@ Classes for the Student Robotics Ruggeduino.
 
 It's similar to the Sourcebots Arduino, but without official ultrasound support.
 """
-from typing import Optional, Set, Type, cast
+from typing import Set, Type, cast
 
 from j5.backends import Backend
 from j5.boards.arduino.uno import ArduinoUno
@@ -32,11 +32,6 @@ class Ruggeduino(ArduinoUno):
             0,
             cast(StringCommandComponentInterface, self._backend),
         )
-
-    @property
-    def firmware_version(self) -> Optional[str]:
-        """Get the firmware version of the board."""
-        return self._backend.firmware_version
 
     @staticmethod
     def supported_components() -> Set[Type[Component]]:

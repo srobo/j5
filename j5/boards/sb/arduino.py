@@ -1,5 +1,5 @@
 """Classes for the SourceBots Arduino."""
-from typing import Optional, Set, Tuple, Type, cast
+from typing import Set, Tuple, Type, cast
 
 from j5.backends import Backend
 from j5.boards.arduino.uno import ArduinoUno
@@ -23,11 +23,6 @@ class SBArduinoBoard(ArduinoUno):
             pin.firmware_modes = SBArduinoBoard.FIRMWARE_MODES
 
         self.ultrasound_sensors = UltrasoundSensors(self)
-
-    @property
-    def firmware_version(self) -> Optional[str]:
-        """Get the firmware version of the board."""
-        return self._backend.firmware_version
 
     @staticmethod
     def supported_components() -> Set[Type[Component]]:
