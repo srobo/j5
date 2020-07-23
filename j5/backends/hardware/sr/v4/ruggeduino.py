@@ -1,8 +1,8 @@
 """Student Robotics Ruggeduino Hardware Implementation."""
 
-from typing import Optional
+from typing import Optional, Type
 
-from serial import SerialException, SerialTimeoutException
+from serial import Serial, SerialException, SerialTimeoutException
 
 from j5.backends import CommunicationError
 from j5.backends.hardware import NotSupportedByHardwareError
@@ -28,13 +28,17 @@ class SRV4RuggeduinoHardwareBackend(
 
     board = Ruggeduino
 
-    def _verify_boot(self) -> str:
-        """
-        Verify that the Ruggeduino has booted and return its version string.
+    def __init__(
+            self,
+            serial_port: str,
+            serial_class: Type[Serial] = Serial,
+    ):
+        super(SRV4RuggeduinoHardwareBackend, self).__init__(
+            serial_port=serial_port,
+            serial_class=serial_class,
+        )
 
-        This only works if the firmware supports the SRduino verson command.
-        It may have unexpected behaviour on custom firmware.
-        """
+        # Verify that the Ruggeduino has booted
         count = 0
         line = self._command("v")
         while len(line) == 0:
@@ -45,7 +49,10 @@ class SRV4RuggeduinoHardwareBackend(
                     f"Ruggeduino ({self.serial_port}) is not responding "
                     f"or runs custom firmware.",
                 )
-        return line
+        self._version_line = line
+
+        for pin_number in self._digital_pins.keys():
+            self.set_gpio_pin_mode(pin_number, GPIOPinMode.DIGITAL_INPUT)
 
     @property
     def firmware_version(self) -> Optional[str]:
@@ -56,10 +63,6 @@ class SRV4RuggeduinoHardwareBackend(
     def is_official_firmware(self) -> bool:
         """The type of firmware on the board."""
         return self._version_line.split(":")[0] == "SRduino"
-
-    def _verify_firmware_version(self) -> None:
-        """Verify that the Ruggeduino firmware meets or exceeds the minimum version."""
-        pass
 
     def _command(self, command: str, pin: Optional[int] = None) -> str:
         """Send a command to the board."""

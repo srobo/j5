@@ -45,6 +45,7 @@ class SBArduinoSerial(MockSerial):
 
     def check_data_sent_by_constructor(self) -> None:
         """Check that the backend constructor sent expected data to the serial port."""
+        # TODO we don't need to set everything to input - the firmware does that already
         data = "".join(f"W {i} Z\n" for i in range(2, 14))
         self.check_sent_data(data.encode("utf-8"))
 

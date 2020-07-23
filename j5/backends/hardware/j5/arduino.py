@@ -93,26 +93,10 @@ class ArduinoHardwareBackend(
             for i in range(2, ArduinoUno.FIRST_ANALOGUE_PIN)
         }
 
-        self._version_line = self._verify_boot()
-        self._verify_firmware_version()
-
-        for pin_number in self._digital_pins.keys():
-            self.set_gpio_pin_mode(pin_number, GPIOPinMode.DIGITAL_INPUT)
-
-    @abstractmethod
-    def _verify_boot(self) -> str:
-        """Verify that the Arduino has booted and return its version string."""
-        raise NotImplementedError
-
     @property
     @abstractmethod
     def firmware_version(self) -> Optional[str]:
         """The firmware version of the board."""
-        raise NotImplementedError
-
-    @abstractmethod
-    def _verify_firmware_version(self) -> None:
-        """Verify that the Arduino firmware meets or exceeds the minimum version."""
         raise NotImplementedError
 
     @abstractmethod

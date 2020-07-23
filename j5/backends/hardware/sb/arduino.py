@@ -1,9 +1,9 @@
 """SourceBots Arduino Hardware Implementation."""
 
 from datetime import timedelta
-from typing import List, Optional
+from typing import List, Optional, Type
 
-from serial import SerialException, SerialTimeoutException
+from serial import Serial, SerialException, SerialTimeoutException
 
 from j5.backends import CommunicationError
 from j5.backends.hardware.env import NotSupportedByHardwareError
@@ -21,8 +21,17 @@ class SBArduinoHardwareBackend(
 
     board = SBArduinoBoard
 
-    def _verify_boot(self) -> str:
-        """Verify that the Arduino has booted and return its version string."""
+    def __init__(
+            self,
+            serial_port: str,
+            serial_class: Type[Serial] = Serial,
+    ):
+        super(SBArduinoHardwareBackend, self).__init__(
+            serial_port=serial_port,
+            serial_class=serial_class,
+        )
+
+        # Verify that the Arduino has booted
         count = 0
         line = self.read_serial_line(empty=True)
         while len(line) == 0:
@@ -32,19 +41,11 @@ class SBArduinoHardwareBackend(
                 raise CommunicationError(
                     f"Arduino ({self.serial_port}) is not responding",
                 )
-
         if line != "# Booted":
             raise CommunicationError("Arduino Boot Error.")
+        self._version_line = self.read_serial_line()
 
-        return self.read_serial_line()
-
-    @property
-    def firmware_version(self) -> Optional[str]:
-        """The firmware version of the board."""
-        return self._version_line.split("v")[1]
-
-    def _verify_firmware_version(self) -> None:
-        """Verify that the Arduino firmware meets or exceeds the minimum version."""
+        # Verify that the Arduino firmware meets or exceeds the minimum version
         if self.firmware_version is not None:
             version_ids = tuple(map(int, self.firmware_version.split(".")))
         else:
@@ -55,6 +56,11 @@ class SBArduinoHardwareBackend(
                 f"Unexpected firmware version: {self.firmware_version},"
                 f" expected at least: \"2019.6.0\".",
             )
+
+    @property
+    def firmware_version(self) -> Optional[str]:
+        """The firmware version of the board."""
+        return self._version_line.split("v")[1]
 
     def _command(self, command: str, *params: str) -> List[str]:
         """Send a command to the board."""
