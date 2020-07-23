@@ -13,12 +13,6 @@ from j5.boards.sb.arduino import SBArduinoBoard
 from j5.components import GPIOPinMode
 from j5.components.derived import UltrasoundInterface
 
-USB_IDS: Set[Tuple[int, int]] = {
-    (0x2341, 0x0043),  # Fake Uno
-    (0x2a03, 0x0043),  # Fake Uno
-    (0x1a86, 0x7523),  # Real Uno
-}
-
 
 class SBArduinoHardwareBackend(
     UltrasoundInterface,
@@ -26,22 +20,7 @@ class SBArduinoHardwareBackend(
 ):
     """Hardware Backend for the SourceBots Arduino Uno."""
 
-    @staticmethod
-    def is_arduino(port: ListPortInfo) -> bool:
-        """Check if a ListPortInfo represents an Arduino Uno."""
-        return (port.vid, port.pid) in USB_IDS
-
     board = SBArduinoBoard
-
-    def __init__(
-            self,
-            serial_port: str,
-            serial_class: Type[Serial] = Serial,
-    ) -> None:
-        super(SBArduinoHardwareBackend, self).__init__(
-            serial_port=serial_port,
-            serial_class=serial_class,
-        )
 
     def _verify_boot(self) -> str:
         """Verify that the Arduino has booted and return its version string."""

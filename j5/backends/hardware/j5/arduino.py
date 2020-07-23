@@ -35,13 +35,18 @@ class ArduinoHardwareBackend(
     """An abstract class to create backends for different Arduinos."""
 
     board: Type[ArduinoUno]
+    USB_IDS: Set[Tuple[int, int]] = {
+        (0x2341, 0x0043),  # Fake Uno
+        (0x2a03, 0x0043),  # Fake Uno
+        (0x1a86, 0x7523),  # Real Uno
+        (0x10c4, 0xea60),  # Ruggeduino
+    }
     DEFAULT_TIMEOUT: timedelta = timedelta(milliseconds=1250)
 
-    @staticmethod
-    @abstractmethod
+    @classmethod
     def is_arduino(port: ListPortInfo) -> bool:
         """Check if a ListPortInfo represents a valid Arduino derivative."""
-        raise NotImplementedError
+        return (port.vid, port.pid) in USB_IDS
 
     @classmethod
     def discover(

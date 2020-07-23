@@ -29,11 +29,6 @@ class SRV4RuggeduinoHardwareBackend(
 
     board = Ruggeduino
 
-    @staticmethod
-    def is_arduino(port: ListPortInfo) -> bool:
-        """Check whether a USB device is a Ruggeduino."""
-        return (port.vid, port.pid) == (0x10c4, 0xea60)  # Ruggeduino uses a CP2104
-
     def _verify_boot(self) -> str:
         """
         Verify that the Ruggeduino has booted and return its version string.
