@@ -50,9 +50,6 @@ class Ruggeduino(ArduinoUno):
         """Get the firmware version of the board."""
         return self._backend.firmware_version
 
-    def make_safe(self) -> None:
-        """Make this board safe."""
-
     @staticmethod
     def supported_components() -> Set[Type[Component]]:
         """List the types of components supported by this board."""

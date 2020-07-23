@@ -109,13 +109,13 @@ class ArduinoUno(Board):
         })
         return pins
 
-    @abstractmethod
     def make_safe(self) -> None:
         """Make this board safe."""
-        raise NotImplementedError
 
     @staticmethod
-    @abstractmethod
     def supported_components() -> Set[Type[Component]]:
         """List the types of components supported by this board."""
-        raise NotImplementedError
+        return {
+            GPIOPin,
+            LED,
+        }
