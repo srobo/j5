@@ -233,9 +233,12 @@ def test_digital_state_getter() -> None:
 
     # Digital Output
     pin.mode = GPIOPinMode.DIGITAL_OUTPUT
-    assert pin.digital_state is driver._written_digital_state[0]
+    assert pin.last_digital_write is driver._written_digital_state[0]
     driver._written_digital_state[0] = not driver._written_digital_state[0]
-    assert pin.digital_state is driver._written_digital_state[0]
+    assert pin.last_digital_write is driver._written_digital_state[0]
+
+    with pytest.raises(BadGPIOPinModeError):
+        _ = pin.digital_read()
 
     # Digital Input
     for mode in [
@@ -244,14 +247,14 @@ def test_digital_state_getter() -> None:
         GPIOPinMode.DIGITAL_INPUT_PULLDOWN,
     ]:
         pin.mode = mode
-        assert pin.digital_state is driver._digital_state[0]
+        assert pin.digital_read() is driver._digital_state[0]
         driver._digital_state[0] = not driver._digital_state[0]
-        assert pin.digital_state is driver._digital_state[0]
+        assert pin.digital_read() is driver._digital_state[0]
 
     # Analogue
     pin.mode = GPIOPinMode.ANALOGUE_INPUT
     with pytest.raises(BadGPIOPinModeError):
-        _ = pin.digital_state
+        _ = pin.last_digital_write
 
 
 def test_digital_state_setter() -> None:
@@ -270,9 +273,9 @@ def test_digital_state_setter() -> None:
     )
 
     pin.mode = GPIOPinMode.DIGITAL_OUTPUT
-    pin.digital_state = True
+    pin.digital_write(True)
     assert driver._written_digital_state[0]
-    pin.digital_state = False
+    pin.digital_write(False)
     assert not driver._written_digital_state[0]
 
 
@@ -291,11 +294,11 @@ def test_analogue_value_getter() -> None:
         },
     )
     pin.mode = GPIOPinMode.ANALOGUE_INPUT
-    assert pin.analogue_value == 0.6
+    assert pin.analogue_read() == 0.6
 
     with pytest.raises(BadGPIOPinModeError):
         pin.mode = GPIOPinMode.DIGITAL_OUTPUT
-        _ = pin.analogue_value
+        _ = pin.analogue_read()
 
 
 def test_analogue_value_setter() -> None:
@@ -312,13 +315,29 @@ def test_analogue_value_setter() -> None:
     )
 
     pin.mode = GPIOPinMode.ANALOGUE_OUTPUT
-    pin.analogue_value = 0.6
-
-    pin.mode = GPIOPinMode.PWM_OUTPUT
-    pin.analogue_value = 0.7
+    pin.analogue_write(0.6)
 
     with pytest.raises(ValueError):
-        pin.analogue_value = -1
+        pin.analogue_write(-1)
+
+
+def test_pwm_value_setter() -> None:
+    """Test that we can set a scaled PWM value."""
+    driver = MockGPIOPinDriver()
+    pin = GPIOPin(
+        0,
+        driver,
+        initial_mode=GPIOPinMode.PWM_OUTPUT,
+        hardware_modes={
+            GPIOPinMode.PWM_OUTPUT,
+        },
+    )
+
+    pin.mode = GPIOPinMode.PWM_OUTPUT
+    pin.pwm_write(0.7)
+
+    with pytest.raises(ValueError):
+        pin.pwm_write(-1)
 
 
 class Peripheral(DerivedComponent):

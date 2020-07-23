@@ -152,55 +152,62 @@ class GPIOPin(Component):
         if isinstance(pin_mode, GPIOPinMode):
             self._backend.set_gpio_pin_mode(self._identifier, pin_mode)
 
-    @property
-    def digital_state(self) -> bool:
-        """Get the digital state of the pin."""
-        self._require_pin_modes({
-            GPIOPinMode.DIGITAL_OUTPUT,
-            GPIOPinMode.DIGITAL_INPUT,
-            GPIOPinMode.DIGITAL_INPUT_PULLUP,
-            GPIOPinMode.DIGITAL_INPUT_PULLDOWN},
-        )
-
-        # Behave differently depending on the hardware mode.
-        if self.mode is GPIOPinMode.DIGITAL_OUTPUT:
-            return self._backend.get_gpio_pin_digital_state(self._identifier)
-
-        return self._backend.read_gpio_pin_digital_state(self._identifier)
-
-    @digital_state.setter
-    def digital_state(self, state: bool) -> None:
+    def digital_write(self, state: bool) -> None:
         """Set the digital state of the pin."""
         self._require_pin_modes({GPIOPinMode.DIGITAL_OUTPUT})
         self._backend.write_gpio_pin_digital_state(self._identifier, state)
 
     @property
-    def analogue_value(self) -> float:
+    def last_digital_write(self) -> bool:
+        """
+        Get the last set digital state of the pin.
+
+        This does not perform a read operation, it only gets the last set
+        value, which is usually cached in memory.
+        """
+        self._require_pin_modes({GPIOPinMode.DIGITAL_OUTPUT})
+        return self._backend.get_gpio_pin_digital_state(self._identifier)
+
+    def digital_read(self) -> bool:
+        """Get the digital state of the pin."""
+        self._require_pin_modes({
+            GPIOPinMode.DIGITAL_INPUT,
+            GPIOPinMode.DIGITAL_INPUT_PULLUP,
+            GPIOPinMode.DIGITAL_INPUT_PULLDOWN},
+        )
+
+        return self._backend.read_gpio_pin_digital_state(self._identifier)
+
+    def analogue_read(self) -> float:
         """Get the scaled analogue reading of the pin."""
         self._require_pin_modes({GPIOPinMode.ANALOGUE_INPUT})
         return self._backend.read_gpio_pin_analogue_value(self._identifier)
 
-    @analogue_value.setter
-    def analogue_value(self, new_value: float) -> None:
+    def analogue_write(self, new_value: float) -> None:
         """Set the analogue value of the pin."""
         self._require_pin_modes({
             GPIOPinMode.ANALOGUE_OUTPUT,
-            GPIOPinMode.PWM_OUTPUT,
         })
         if new_value < 0 or new_value > 1:
             raise ValueError("An analogue pin value must be between 0 and 1.")
 
-        if self.mode is GPIOPinMode.ANALOGUE_OUTPUT:
-            self._backend.write_gpio_pin_dac_value(
-                self._identifier,
-                new_value,
-            )
-        else:
-            # We must be a PWM_OUTPUT
-            self._backend.write_gpio_pin_pwm_value(
-                self._identifier,
-                new_value,
-            )
+        self._backend.write_gpio_pin_dac_value(
+            self._identifier,
+            new_value,
+        )
+
+    def pwm_write(self, new_value: float) -> None:
+        """Set the PWM value of the pin."""
+        self._require_pin_modes({
+            GPIOPinMode.PWM_OUTPUT,
+        })
+        if new_value < 0 or new_value > 1:
+            raise ValueError("An PWM pin value must be between 0 and 1.")
+
+        self._backend.write_gpio_pin_pwm_value(
+            self._identifier,
+            new_value,
+        )
 
     @property
     def firmware_modes(self) -> Set[FirmwareMode]:
