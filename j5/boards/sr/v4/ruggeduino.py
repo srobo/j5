@@ -6,8 +6,7 @@ It's similar to the Sourcebots Arduino, but without official ultrasound support.
 from typing import Optional, Set, Type, cast
 
 from j5.backends import Backend
-from j5.boards.j5 import ArduinoUno
-from j5.boards.j5.arduino import FIRST_ANALOGUE_PIN
+from j5.boards.arduino.uno import ArduinoUno
 from j5.components import (
     LED,
     Component,
@@ -33,7 +32,7 @@ class Ruggeduino(ArduinoUno):
         # Digital Pins
         # Note that pins 0 and 1 are used for serial comms.
         self._digital_pins = self._generate_gpio_pins(
-            range(2, FIRST_ANALOGUE_PIN),
+            range(2, ArduinoUno.FIRST_ANALOGUE_PIN),
             initial_mode=GPIOPinMode.DIGITAL_INPUT,
             hardware_modes={
                 GPIOPinMode.DIGITAL_INPUT,

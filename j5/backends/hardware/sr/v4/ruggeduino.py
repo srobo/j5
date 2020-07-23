@@ -8,7 +8,6 @@ from serial.tools.list_ports_common import ListPortInfo
 
 from j5.backends import CommunicationError
 from j5.backends.hardware.j5.arduino import ArduinoHardwareBackend
-from j5.boards.j5.arduino import FIRST_ANALOGUE_PIN
 from j5.boards.sr.v4.ruggeduino import Ruggeduino
 from j5.components import GPIOPinMode, StringCommandComponentInterface
 
@@ -109,7 +108,7 @@ class SRV4RuggeduinoHardwareBackend(
         return self.execute_string_command(command + encode_pin(pin))
 
     def _update_digital_pin(self, identifier: int) -> None:
-        if identifier >= FIRST_ANALOGUE_PIN:
+        if identifier >= Ruggeduino.FIRST_ANALOGUE_PIN:
             raise RuntimeError("Reached an unreachable statement.")
         pin = self._digital_pins[identifier]
         command: str

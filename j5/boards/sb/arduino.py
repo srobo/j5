@@ -2,8 +2,7 @@
 from typing import Optional, Set, Tuple, Type, cast
 
 from j5.backends import Backend
-from j5.boards.j5 import ArduinoUno, PinNumber
-from j5.boards.j5.arduino import FIRST_ANALOGUE_PIN
+from j5.boards.arduino.uno import ArduinoUno
 from j5.components import LED, Component, GPIOPin, GPIOPinMode
 from j5.components.derived import UltrasoundInterface, UltrasoundSensor
 
@@ -21,7 +20,7 @@ class SBArduinoBoard(ArduinoUno):
         # Digital Pins
         # Note that pins 0 and 1 are used for serial comms.
         self._digital_pins = self._generate_gpio_pins(
-            range(2, FIRST_ANALOGUE_PIN),
+            range(2, ArduinoUno.FIRST_ANALOGUE_PIN),
             initial_mode=GPIOPinMode.DIGITAL_INPUT,
             hardware_modes={
                 GPIOPinMode.DIGITAL_INPUT,
@@ -63,7 +62,10 @@ class UltrasoundSensors:
     def __init__(self, arduino: SBArduinoBoard):
         self._arduino = arduino
 
-    def __getitem__(self, key: Tuple[PinNumber, PinNumber]) -> UltrasoundSensor:
+    def __getitem__(
+        self,
+        key: Tuple[SBArduinoBoard.PinNumber, SBArduinoBoard.PinNumber],
+    ) -> UltrasoundSensor:
         """Get an ultrasound sensor with the given pin configuration."""
         trigger_pin, echo_pin = key
         return UltrasoundSensor(

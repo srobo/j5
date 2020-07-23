@@ -21,23 +21,21 @@ from j5.components.gpio_pin import FirmwareMode, PinMode
 from j5.types import ImmutableDict
 
 
-class AnaloguePin(IntEnum):
-    """Analogue Pins numbering."""
-
-    A0 = 14
-    A1 = 15
-    A2 = 16
-    A3 = 17
-    A4 = 18
-    A5 = 19
-
-
-PinNumber = Union[int, AnaloguePin]
-FIRST_ANALOGUE_PIN: PinNumber = AnaloguePin.A0
-
-
 class ArduinoUno(Board):
     """Arduino Uno."""
+
+    class AnaloguePin(IntEnum):
+        """Analogue Pins numbering."""
+
+        A0 = 14
+        A1 = 15
+        A2 = 16
+        A3 = 17
+        A4 = 18
+        A5 = 19
+
+    PinNumber = Union[int, AnaloguePin]
+    FIRST_ANALOGUE_PIN: PinNumber = AnaloguePin.A0
 
     _led: LED
     _digital_pins: Mapping[int, GPIOPin]
@@ -56,10 +54,10 @@ class ArduinoUno(Board):
         self._led = LED(0, cast(LEDInterface, self._backend))
 
         self._analogue_pins = cast(
-            Mapping[AnaloguePin, GPIOPin],
+            Mapping[ArduinoUno.AnaloguePin, GPIOPin],
 
             self._generate_gpio_pins(
-                AnaloguePin.__members__.values(),
+                ArduinoUno.AnaloguePin.__members__.values(),
                 initial_mode=GPIOPinMode.ANALOGUE_INPUT,
                 hardware_modes={
                     GPIOPinMode.ANALOGUE_INPUT,
@@ -104,9 +102,9 @@ class ArduinoUno(Board):
     @property
     def pins(self) -> ImmutableDict[PinNumber, GPIOPin]:
         """Get the GPIO pins."""
-        pins = ImmutableDict[PinNumber, GPIOPin]({
-            **cast(Mapping[PinNumber, GPIOPin], self._analogue_pins),
-            **cast(Mapping[PinNumber, GPIOPin], self._digital_pins),
+        pins = ImmutableDict[ArduinoUno.PinNumber, GPIOPin]({
+            **cast(Mapping[ArduinoUno.PinNumber, GPIOPin], self._analogue_pins),
+            **cast(Mapping[ArduinoUno.PinNumber, GPIOPin], self._digital_pins),
 
         })
         return pins

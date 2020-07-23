@@ -12,8 +12,7 @@ from serial.tools.list_ports_common import ListPortInfo
 from j5.backends.hardware.env import NotSupportedByHardwareError
 from j5.backends.hardware.j5.serial import SerialHardwareBackend
 from j5.boards import Board
-from j5.boards.j5 import ArduinoUno
-from j5.boards.j5.arduino import FIRST_ANALOGUE_PIN
+from j5.boards.arduino import ArduinoUno
 from j5.components import GPIOPinInterface, GPIOPinMode, LEDInterface
 
 
@@ -86,7 +85,7 @@ class ArduinoHardwareBackend(
 
         self._digital_pins: Mapping[int, DigitalPinData] = {
             i: DigitalPinData(mode=GPIOPinMode.DIGITAL_INPUT, state=False)
-            for i in range(2, FIRST_ANALOGUE_PIN)
+            for i in range(2, ArduinoUno.FIRST_ANALOGUE_PIN)
         }
 
         with self._lock:
@@ -135,7 +134,7 @@ class ArduinoHardwareBackend(
             GPIOPinMode.DIGITAL_INPUT_PULLUP,
             GPIOPinMode.DIGITAL_OUTPUT,
         }
-        if identifier < FIRST_ANALOGUE_PIN:
+        if identifier < ArduinoUno.FIRST_ANALOGUE_PIN:
             # Digital pin
             if pin_mode in digital_pin_modes:
                 self._digital_pins[identifier].mode = pin_mode
@@ -151,14 +150,14 @@ class ArduinoHardwareBackend(
 
     def get_gpio_pin_mode(self, identifier: int) -> GPIOPinMode:
         """Get the hardware mode of a GPIO pin."""
-        if identifier < FIRST_ANALOGUE_PIN:
+        if identifier < ArduinoUno.FIRST_ANALOGUE_PIN:
             return self._digital_pins[identifier].mode
 
         return GPIOPinMode.ANALOGUE_INPUT
 
     def write_gpio_pin_digital_state(self, identifier: int, state: bool) -> None:
         """Write to the digital state of a GPIO pin."""
-        if identifier >= FIRST_ANALOGUE_PIN:
+        if identifier >= ArduinoUno.FIRST_ANALOGUE_PIN:
             raise NotSupportedByHardwareError(
                 "Digital functions not supported on analogue pins",
             )
@@ -170,7 +169,7 @@ class ArduinoHardwareBackend(
 
     def get_gpio_pin_digital_state(self, identifier: int) -> bool:
         """Get the last written state of the GPIO pin."""
-        if identifier >= FIRST_ANALOGUE_PIN:
+        if identifier >= ArduinoUno.FIRST_ANALOGUE_PIN:
             raise NotSupportedByHardwareError(
                 "Digital functions not supported on analogue pins.",
             )
@@ -181,7 +180,7 @@ class ArduinoHardwareBackend(
 
     def read_gpio_pin_digital_state(self, identifier: int) -> bool:
         """Read the digital state of the GPIO pin."""
-        if identifier >= FIRST_ANALOGUE_PIN:
+        if identifier >= ArduinoUno.FIRST_ANALOGUE_PIN:
             raise NotSupportedByHardwareError(
                 "Digital functions not supported on analogue pins.",
             )
@@ -195,7 +194,7 @@ class ArduinoHardwareBackend(
 
     def read_gpio_pin_analogue_value(self, identifier: int) -> float:
         """Read the analogue voltage of the GPIO pin."""
-        if identifier < FIRST_ANALOGUE_PIN:
+        if identifier < ArduinoUno.FIRST_ANALOGUE_PIN:
             raise NotSupportedByHardwareError(
                 "Analogue functions not supported on digital pins.",
             )
