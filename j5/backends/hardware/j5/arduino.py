@@ -3,7 +3,7 @@
 from abc import abstractmethod
 from datetime import timedelta
 from threading import Lock
-from typing import Callable, List, Mapping, Optional, Set, Type
+from typing import Callable, List, Mapping, Optional, Set, Tuple, Type
 
 from serial import Serial
 from serial.tools.list_ports import comports
@@ -44,9 +44,9 @@ class ArduinoHardwareBackend(
     DEFAULT_TIMEOUT: timedelta = timedelta(milliseconds=1250)
 
     @classmethod
-    def is_arduino(port: ListPortInfo) -> bool:
+    def is_arduino(cls, port: ListPortInfo) -> bool:
         """Check if a ListPortInfo represents a valid Arduino derivative."""
-        return (port.vid, port.pid) in USB_IDS
+        return (port.vid, port.pid) in cls.USB_IDS
 
     @classmethod
     def discover(

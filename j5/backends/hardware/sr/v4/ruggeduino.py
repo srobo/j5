@@ -3,7 +3,6 @@
 from typing import Optional
 
 from serial import SerialException, SerialTimeoutException
-from serial.tools.list_ports_common import ListPortInfo
 
 from j5.backends import CommunicationError
 from j5.backends.hardware import NotSupportedByHardwareError

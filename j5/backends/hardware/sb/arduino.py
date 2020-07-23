@@ -1,10 +1,9 @@
 """SourceBots Arduino Hardware Implementation."""
 
 from datetime import timedelta
-from typing import List, Optional, Set, Tuple, Type
+from typing import List, Optional
 
-from serial import Serial, SerialException, SerialTimeoutException
-from serial.tools.list_ports_common import ListPortInfo
+from serial import SerialException, SerialTimeoutException
 
 from j5.backends import CommunicationError
 from j5.backends.hardware.env import NotSupportedByHardwareError
