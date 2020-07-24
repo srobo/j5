@@ -45,9 +45,7 @@ class SBArduinoSerial(MockSerial):
 
     def check_data_sent_by_constructor(self) -> None:
         """Check that the backend constructor sent expected data to the serial port."""
-        # TODO we don't need to set everything to input - the firmware does that already
-        data = "".join(f"W {i} Z\n" for i in range(2, 14))
-        self.check_sent_data(data.encode("utf-8"))
+        self.check_sent_data(b"")
 
 
 class SBArduinoSerialOldVersion1(SBArduinoSerial):
@@ -126,8 +124,12 @@ def test_backend_firmware_version() -> None:
 
 def test_backend_handles_failure() -> None:
     """Test that an exception is raised when a failure response is received."""
+    backend = SBArduinoHardwareBackend(
+        "COM0",
+        SBArduinoSerialFailureResponse,  # type: ignore
+    )
     with pytest.raises(CommunicationError):
-        SBArduinoHardwareBackend("COM0", SBArduinoSerialFailureResponse)  # type: ignore
+        backend.set_gpio_pin_mode(2, GPIOPinMode.DIGITAL_INPUT)
 
 
 def test_backend_get_set_pin_mode() -> None:
