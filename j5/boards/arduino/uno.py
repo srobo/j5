@@ -36,7 +36,6 @@ class ArduinoUno(Board):
     PinNumber = Union[int, AnaloguePin]
     FIRST_ANALOGUE_PIN: PinNumber = AnaloguePin.A0
 
-    _led: LED
     _digital_pins: Mapping[int, GPIOPin]
     _analogue_pins: Mapping[AnaloguePin, GPIOPin]
 
@@ -50,7 +49,7 @@ class ArduinoUno(Board):
         self._serial = serial
         self._backend = backend
 
-        self._led = LED(0, cast(LEDInterface, self._backend))
+        self.led = LED(0, cast(LEDInterface, self._backend))
 
         # Note that pins 0 and 1 are used for serial comms.
         self._digital_pins = self._generate_gpio_pins(
