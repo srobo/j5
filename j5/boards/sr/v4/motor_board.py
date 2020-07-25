@@ -3,7 +3,12 @@ from typing import TYPE_CHECKING, Optional, Set, Type, cast
 
 from j5.backends import Backend
 from j5.boards import Board
-from j5.components.motor import Motor, MotorInterface, MotorSpecialState
+from j5.components.motor import (
+    Motor,
+    MotorInterface,
+    MotorSpecialState,
+    MotorState,
+)
 from j5.types import ImmutableList
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -17,9 +22,16 @@ class MotorBoard(Board):
 
     name: str = "Student Robotics v4 Motor Board"
 
-    def __init__(self, serial: str, backend: Backend):
+    def __init__(
+            self,
+            serial: str,
+            backend: Backend,
+            *,
+            safe_state: MotorState = MotorSpecialState.BRAKE,
+    ):
         self._serial = serial
         self._backend = backend
+        self._safe_state = safe_state
 
         self._outputs = ImmutableList[Motor](
             Motor(output, cast(MotorInterface, self._backend))
@@ -44,8 +56,8 @@ class MotorBoard(Board):
     def make_safe(self) -> None:
         """Make this board safe."""
         for output in self._outputs:
-            # Brake both motors.
-            output.power = MotorSpecialState.BRAKE
+            # Put both motors in the safe state.
+            output.power = self._safe_state
 
     @staticmethod
     def supported_components() -> Set[Type['Component']]:

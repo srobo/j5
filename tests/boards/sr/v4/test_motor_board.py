@@ -80,8 +80,8 @@ def test_motor_board_serial() -> None:
     assert mb.serial == "SERIAL0"
 
 
-def test_motor_board_make_safe() -> None:
-    """Test the make_safe method of the motor board."""
+def test_motor_board_make_safe_default() -> None:
+    """Test the default make_safe method of the motor board."""
     mb = MotorBoard("SERIAL0", MockMotorBoardBackend())
 
     for m in mb.motors:
@@ -91,6 +91,28 @@ def test_motor_board_make_safe() -> None:
 
     for m in mb.motors:
         assert m.power == MotorSpecialState.BRAKE
+
+
+def test_motor_board_make_safe_option() -> None:
+    """Test the default make_safe method of the motor board."""
+    TEST_SAFE_STATES: List[MotorState] = [
+        MotorSpecialState.BRAKE,
+        MotorSpecialState.COAST,
+        0,
+        0.1,
+    ]
+
+    for safe_state in TEST_SAFE_STATES:
+
+        mb = MotorBoard("SERIAL0", MockMotorBoardBackend(), safe_state=safe_state)
+
+        for m in mb.motors:
+            m.power = 1
+
+        mb.make_safe()
+
+        for m in mb.motors:
+            assert m.power == safe_state
 
 
 def test_motor_board_motors() -> None:
