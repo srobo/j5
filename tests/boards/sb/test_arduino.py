@@ -26,7 +26,6 @@ class MockSBArduinoBackend(
 
     def set_gpio_pin_mode(self, identifier: int, pin_mode: GPIOPinMode) -> None:
         """Set the GPIO pin mode."""
-        pass
 
     def get_gpio_pin_mode(self, identifier: int) -> GPIOPinMode:
         """Get the GPIO pin mode."""
@@ -34,7 +33,6 @@ class MockSBArduinoBackend(
 
     def write_gpio_pin_digital_state(self, identifier: int, state: bool) -> None:
         """Set the GPIO pin digital state."""
-        pass
 
     def get_gpio_pin_digital_state(self, identifier: int) -> bool:
         """Get the GPIO pin digital state."""
@@ -54,7 +52,6 @@ class MockSBArduinoBackend(
 
     def write_gpio_pin_pwm_value(self, identifier: int, duty_cycle: float) -> None:
         """Write a PWM value to the GPIO pin."""
-        pass
 
     def get_led_state(self, identifier: int) -> bool:
         """Get the state of the LED."""
@@ -135,17 +132,17 @@ def test_uno_pins() -> None:
     assert len(uno.pins) == 12 + 6
 
     for i in range(2, 14):
-        assert type(uno.pins[i]) is GPIOPin
+        assert isinstance(uno.pins[i], GPIOPin)
 
     for j in SBArduinoBoard.AnaloguePin:
-        assert type(uno.pins[j]) is GPIOPin
+        assert isinstance(uno.pins[j], GPIOPin)
 
 
 def test_uno_ultrasound_sensors() -> None:
     """Test the ultrasound sensors of the arduino."""
     uno = SBArduinoBoard("SERIAL0", MockSBArduinoBackend())
     sensor = uno.ultrasound_sensors[3, 4]
-    assert type(sensor) is UltrasoundSensor
+    assert isinstance(sensor, UltrasoundSensor)
     assert sensor._gpio_trigger._identifier == 3
     assert sensor._gpio_echo._identifier == 4
 

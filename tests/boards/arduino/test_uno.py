@@ -1,5 +1,7 @@
-"""Tests for the Arduino Uno base class."""
+"""Tests for the Arduino Uno base class and related classes."""
 from typing import Optional, Set
+
+import pytest
 
 from j5.backends import Backend
 from j5.boards import Board
@@ -24,7 +26,6 @@ class MockArduinoUnoBackend(
 
     def set_gpio_pin_mode(self, identifier: int, pin_mode: GPIOPinMode) -> None:
         """Set the GPIO pin mode."""
-        pass
 
     def get_gpio_pin_mode(self, identifier: int) -> GPIOPinMode:
         """Get the GPIO pin mode."""
@@ -32,7 +33,6 @@ class MockArduinoUnoBackend(
 
     def write_gpio_pin_digital_state(self, identifier: int, state: bool) -> None:
         """Set the GPIO pin digital state."""
-        pass
 
     def get_gpio_pin_digital_state(self, identifier: int) -> bool:
         """Get the GPIO pin digital state."""
@@ -52,7 +52,6 @@ class MockArduinoUnoBackend(
 
     def write_gpio_pin_pwm_value(self, identifier: int, duty_cycle: float) -> None:
         """Write a PWM value to the GPIO pin."""
-        pass
 
     def get_led_state(self, identifier: int) -> bool:
         """Get the state of the LED."""
@@ -102,7 +101,7 @@ def test_uno_led() -> None:
     """Test the LED of the Uno."""
     uno = ArduinoUno("SERIAL0", MockArduinoUnoBackend())
 
-    assert type(uno.led) is LED
+    assert isinstance(uno.led, LED)
 
 
 def test_uno_serial() -> None:
@@ -126,10 +125,10 @@ def test_uno_pins() -> None:
     assert len(uno.pins) == 12 + 6
 
     for i in range(2, 14):
-        assert type(uno.pins[i]) is GPIOPin
+        assert isinstance(uno.pins[i], GPIOPin)
 
     for j in ArduinoUno.AnaloguePin:
-        assert type(uno.pins[j]) is GPIOPin
+        assert isinstance(uno.pins[j], GPIOPin)
 
 
 def test_pin_mutability() -> None:
