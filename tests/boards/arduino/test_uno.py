@@ -132,6 +132,18 @@ def test_uno_pins() -> None:
         assert type(uno.pins[j]) is GPIOPin
 
 
+def test_pin_mutability() -> None:
+    """
+    Test the mutability of GPIOPins.
+
+    Ensures that GPIOPin objects cannot be lost.
+    """
+    uno = ArduinoUno("SERIAL0", MockArduinoUnoBackend())
+
+    with pytest.raises(TypeError):
+        uno.pins[2] = True  # type: ignore
+
+
 def test_uno_make_safe() -> None:
     """Test the make_safe method of the Uno."""
     uno = ArduinoUno("SERIAL0", MockArduinoUnoBackend())
