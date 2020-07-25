@@ -97,22 +97,22 @@ class ArduinoHardwareBackend(
     @abstractmethod
     def firmware_version(self) -> Optional[str]:
         """The firmware version of the board."""
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: nocover
 
     @abstractmethod
     def _update_digital_pin(self, identifier: int) -> None:
         """Write the stored value of a digital pin to the Arduino."""
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: nocover
 
     @abstractmethod
     def _read_digital_pin(self, identifier: int) -> bool:
         """Read the value of a digital pin from the Arduino."""
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: nocover
 
     @abstractmethod
     def _read_analogue_pin(self, identifier: int) -> float:
         """Read the value of an analogue pin from the Arduino."""
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: nocover
 
     def set_gpio_pin_mode(self, identifier: int, pin_mode: GPIOPinMode) -> None:
         """Set the hardware mode of a GPIO pin."""
