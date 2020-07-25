@@ -4,7 +4,6 @@ from typing import Optional, Set
 import pytest
 
 from j5.backends import Backend
-from j5.backends.hardware import NotSupportedByHardwareError
 from j5.boards import Board
 from j5.boards.arduino import ArduinoUno
 from j5.boards.sr.v4.ruggeduino import Ruggeduino
@@ -53,7 +52,7 @@ class MockRuggeduinoBackend(
 
     def write_gpio_pin_dac_value(self, identifier: int, scaled_value: float) -> None:
         """Write a DAC value to the GPIO pin."""
-        raise NotSupportedByHardwareError
+        raise NotImplementedError
 
     def write_gpio_pin_pwm_value(self, identifier: int, duty_cycle: float) -> None:
         """Write a PWM value to the GPIO pin."""
@@ -96,13 +95,6 @@ def test_ruggeduino_name() -> None:
     ruggeduino = Ruggeduino("SERIAL0", MockRuggeduinoBackend())
 
     assert ruggeduino.name == "Ruggeduino"
-
-
-def test_ruggeduino_led() -> None:
-    """Test that the Ruggeduino has an LED component."""
-    ruggeduino = Ruggeduino("SERIAL0", MockRuggeduinoBackend())
-
-    assert isinstance(ruggeduino.led, LED)
 
 
 def test_ruggeduino_serial() -> None:
@@ -152,9 +144,11 @@ def test_ruggeduino_make_safe() -> None:
 
 def test_ruggeduino_supported_components() -> None:
     """Test that the Ruggeduino supports the required components."""
-    assert GPIOPin in Ruggeduino.supported_components()
-    assert LED in Ruggeduino.supported_components()
-    assert StringCommandComponent in Ruggeduino.supported_components()
+    assert {
+        GPIOPin,
+        LED,
+        StringCommandComponent,
+    }.issubset(Ruggeduino.supported_components())
 
 
 def test_ruggeduino_command() -> None:

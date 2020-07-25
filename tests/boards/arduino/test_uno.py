@@ -4,7 +4,6 @@ from typing import Optional, Set
 import pytest
 
 from j5.backends import Backend
-from j5.backends.hardware import NotSupportedByHardwareError
 from j5.boards import Board
 from j5.boards.arduino import ArduinoUno
 from j5.components import (
@@ -49,7 +48,7 @@ class MockArduinoUnoBackend(
 
     def write_gpio_pin_dac_value(self, identifier: int, scaled_value: float) -> None:
         """Write a DAC value to the GPIO pin."""
-        raise NotSupportedByHardwareError
+        raise NotImplementedError
 
     def write_gpio_pin_pwm_value(self, identifier: int, duty_cycle: float) -> None:
         """Write a PWM value to the GPIO pin."""
@@ -91,13 +90,6 @@ def test_uno_name() -> None:
     uno = ArduinoUno("SERIAL0", MockArduinoUnoBackend())
 
     assert uno.name == "Arduino Uno"
-
-
-def test_uno_led() -> None:
-    """Test that the Uno has an LED component."""
-    uno = ArduinoUno("SERIAL0", MockArduinoUnoBackend())
-
-    assert isinstance(uno.led, LED)
 
 
 def test_uno_serial() -> None:
@@ -147,5 +139,7 @@ def test_uno_make_safe() -> None:
 
 def test_uno_supported_components() -> None:
     """Test that the Uno supports the required components."""
-    assert GPIOPin in ArduinoUno.supported_components()
-    assert LED in ArduinoUno.supported_components()
+    assert {
+        GPIOPin,
+        LED,
+    }.issubset(ArduinoUno.supported_components())

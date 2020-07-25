@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Optional, Set
 import pytest
 
 from j5.backends import Backend
-from j5.backends.hardware import NotSupportedByHardwareError
 from j5.boards.arduino import ArduinoUno
 from j5.boards.sb import SBArduinoBoard
 from j5.components import (
@@ -56,7 +55,7 @@ class MockSBArduinoBackend(
 
     def write_gpio_pin_dac_value(self, identifier: int, scaled_value: float) -> None:
         """Write a DAC value to the GPIO pin."""
-        raise NotSupportedByHardwareError
+        raise NotImplementedError
 
     def write_gpio_pin_pwm_value(self, identifier: int, duty_cycle: float) -> None:
         """Write a PWM value to the GPIO pin."""
@@ -113,13 +112,6 @@ def test_uno_name() -> None:
     assert uno.name == "Arduino Uno"
 
 
-def test_uno_led() -> None:
-    """Test that the Uno has an LED component."""
-    uno = SBArduinoBoard("SERIAL0", MockSBArduinoBackend())
-
-    assert isinstance(uno.led, LED)
-
-
 def test_uno_serial() -> None:
     """Test the serial attribute of the Uno."""
     uno = SBArduinoBoard("SERIAL0", MockSBArduinoBackend())
@@ -167,9 +159,11 @@ def test_uno_make_safe() -> None:
 
 def test_uno_supported_components() -> None:
     """Test that the Uno supports the required components."""
-    assert GPIOPin in SBArduinoBoard.supported_components()
-    assert LED in SBArduinoBoard.supported_components()
-    assert UltrasoundSensor in SBArduinoBoard.supported_components()
+    assert {
+        GPIOPin,
+        LED,
+        UltrasoundSensor,
+    }.issubset(SBArduinoBoard.supported_components())
 
 
 def test_uno_ultrasound_sensors() -> None:
