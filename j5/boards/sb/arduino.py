@@ -48,7 +48,7 @@ class UltrasoundSensors:
 
     def __getitem__(
         self,
-        key: Tuple[SBArduinoBoard.PinNumber, SBArduinoBoard.PinNumber],
+        key: Tuple[ArduinoUno.PinNumber, ArduinoUno.PinNumber],
     ) -> UltrasoundSensor:
         """Get an ultrasound sensor with the given pin configuration."""
         trigger_pin, echo_pin = key

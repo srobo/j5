@@ -77,11 +77,6 @@ def test_uno_initialisation() -> None:
     ArduinoUno("SERIAL0", MockArduinoUnoBackend())
 
 
-def test_uno_discover() -> None:
-    """Test that we can discover Unos."""
-    assert MockArduinoUnoBackend.discover() == set()
-
-
 def test_uno_analogue_pin() -> None:
     """Test that AnaloguePin has the required values."""
     assert ArduinoUno.FIRST_ANALOGUE_PIN is ArduinoUno.AnaloguePin.A0
@@ -98,7 +93,7 @@ def test_uno_name() -> None:
 
 
 def test_uno_led() -> None:
-    """Test the LED of the Uno."""
+    """Test that the Uno has an LED."""
     uno = ArduinoUno("SERIAL0", MockArduinoUnoBackend())
 
     assert isinstance(uno.led, LED)

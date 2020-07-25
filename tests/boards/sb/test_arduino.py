@@ -6,8 +6,9 @@ from typing import TYPE_CHECKING, Optional, Set
 import pytest
 
 from j5.backends import Backend
+from j5.boards.arduino import ArduinoUno
 from j5.boards.sb import SBArduinoBoard
-from j5.components import GPIOPin, GPIOPinInterface, GPIOPinMode, LEDInterface
+from j5.components import GPIOPin, GPIOPinInterface, GPIOPinMode, LEDInterface, LED
 from j5.components.derived import UltrasoundInterface, UltrasoundSensor
 
 if TYPE_CHECKING:
@@ -93,9 +94,9 @@ def test_uno_initialisation() -> None:
     SBArduinoBoard("SERIAL0", MockSBArduinoBackend())
 
 
-def test_uno_discover() -> None:
-    """Test that we can discover Unos."""
-    assert MockSBArduinoBackend.discover() == set()
+def test_uno_analogue_pin() -> None:
+    """Test that the class doesn't change AnaloguePin."""
+    assert SBArduinoBoard.AnaloguePin is ArduinoUno.AnaloguePin
 
 
 def test_uno_name() -> None:
@@ -103,6 +104,13 @@ def test_uno_name() -> None:
     uno = SBArduinoBoard("SERIAL0", MockSBArduinoBackend())
 
     assert uno.name == "Arduino Uno"
+
+
+def test_uno_led() -> None:
+    """Test that the Uno has an LED."""
+    uno = SBArduinoBoard("SERIAL0", MockSBArduinoBackend())
+
+    assert isinstance(uno.led, LED)
 
 
 def test_uno_serial() -> None:
@@ -119,12 +127,6 @@ def test_uno_firmware_version() -> None:
     assert uno.firmware_version is None
 
 
-def test_uno_make_safe() -> None:
-    """Test the make_safe method of the Uno."""
-    uno = SBArduinoBoard("SERIAL0", MockSBArduinoBackend())
-    uno.make_safe()
-
-
 def test_uno_pins() -> None:
     """Test the pins of the Uno."""
     uno = SBArduinoBoard("SERIAL0", MockSBArduinoBackend())
@@ -138,15 +140,6 @@ def test_uno_pins() -> None:
         assert isinstance(uno.pins[j], GPIOPin)
 
 
-def test_uno_ultrasound_sensors() -> None:
-    """Test the ultrasound sensors of the arduino."""
-    uno = SBArduinoBoard("SERIAL0", MockSBArduinoBackend())
-    sensor = uno.ultrasound_sensors[3, 4]
-    assert isinstance(sensor, UltrasoundSensor)
-    assert sensor._gpio_trigger._identifier == 3
-    assert sensor._gpio_echo._identifier == 4
-
-
 def test_pin_mutability() -> None:
     """
     Test the mutability of GPIOPins.
@@ -157,3 +150,18 @@ def test_pin_mutability() -> None:
 
     with pytest.raises(TypeError):
         uno.pins[2] = True  # type: ignore
+
+
+def test_uno_make_safe() -> None:
+    """Test the make_safe method of the Uno."""
+    uno = SBArduinoBoard("SERIAL0", MockSBArduinoBackend())
+    uno.make_safe()
+
+
+def test_uno_ultrasound_sensors() -> None:
+    """Test the ultrasound sensors of the arduino."""
+    uno = SBArduinoBoard("SERIAL0", MockSBArduinoBackend())
+    sensor = uno.ultrasound_sensors[3, 4]
+    assert isinstance(sensor, UltrasoundSensor)
+    assert sensor._gpio_trigger._identifier == 3
+    assert sensor._gpio_echo._identifier == 4
