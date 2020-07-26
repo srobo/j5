@@ -1,7 +1,7 @@
 """Tests for the base Arduino hardware implementation."""
 from datetime import timedelta
 from math import pi
-from typing import List, Optional, Set, Type
+from typing import List, Optional, Set, Tuple, Type, cast
 
 import pytest
 from serial import Serial
@@ -45,20 +45,67 @@ class MockArduinoBackend(ArduinoHardwareBackend):
 
     def _update_digital_pin(self, identifier: int) -> None:
         """Write the stored value of a digital pin to the Arduino."""
-        # TODO Write something to confirm that these have been called
+        self._serial.write(update_digital_pin_command(
+            identifier,
+            self._digital_pins[identifier].mode,
+            self._digital_pins[identifier].state,
+        ))
 
     def _read_digital_pin(self, identifier: int) -> bool:
         """Read the value of a digital pin from the Arduino."""
-        return True
+        message, result = read_digital_pin_command(identifier)
+        self._serial.write(message)
+        return result
 
     def _read_analogue_pin(self, identifier: int) -> float:
         """Read the value of an analogue pin from the Arduino."""
-        return pi
+        message, result = read_analogue_pin_command(identifier)
+        self._serial.write(message)
+        return result
 
 
 def make_backend() -> MockArduinoBackend:
-    """Instantiate a MockArduinoBackend with default arguments."""
+    """Instantiate a MockArduinoBackend with some default arguments."""
     return MockArduinoBackend("COM0", MockSerial)  # type: ignore
+
+
+def update_digital_pin_command(identifier: int, mode: GPIOPinMode, state: bool) -> bytes:
+    """Generate a pin update command to send to the mock arduino board."""
+    if mode in {GPIOPinMode.ANALOGUE_INPUT, GPIOPinMode.ANALOGUE_OUTPUT}:
+        return b""
+
+    return "_".join([
+        "update",
+        str(identifier),
+        mode.name,
+        str(state),
+    ]).encode("utf-8")
+
+
+def read_digital_pin_command(identifier: int) -> Tuple[bytes, bool]:
+    """Generate a digital pin read command to send to the mock arduino board."""
+    result: bool = identifier % 2 == 0
+    return (
+        "_".join([
+            "readdigital",
+            str(identifier),
+            str(result),
+        ]).encode("utf-8"),
+        result,
+    )
+
+
+def read_analogue_pin_command(identifier: int) -> Tuple[bytes, float]:
+    """Generate an analogue pin read command to send to the mock arduino board."""
+    result: int = identifier
+    return (
+        "_".join([
+            "readanalogue",
+            str(identifier),
+            str(result),
+        ]).encode("utf-8"),
+        float(result),
+    )
 
 
 def test_backend_default_timeout() -> None:
@@ -138,10 +185,13 @@ def test_backend_get_set_pin_mode() -> None:
     pin = EDGE_DIGITAL_PIN
     backend = make_backend()
 
-    assert backend.get_gpio_pin_mode(pin) is GPIOPinMode.DIGITAL_INPUT
-    backend.set_gpio_pin_mode(pin, GPIOPinMode.DIGITAL_OUTPUT)
-    assert backend.get_gpio_pin_mode(pin) is GPIOPinMode.DIGITAL_OUTPUT
     assert backend.get_gpio_pin_mode(EDGE_ANALOGUE_PIN) is GPIOPinMode.ANALOGUE_INPUT
+    assert backend.get_gpio_pin_mode(pin) is GPIOPinMode.DIGITAL_INPUT
+    serial = cast(MockSerial, backend._serial)
+    mode = GPIOPinMode.DIGITAL_OUTPUT
+    backend.set_gpio_pin_mode(pin, mode)
+    serial.check_sent_data(update_digital_pin_command(pin, mode, False))
+    assert backend.get_gpio_pin_mode(pin) is mode
 
 
 def test_backend_digital_pin_modes() -> None:
@@ -170,10 +220,26 @@ def check_pin_modes(
     """Check that a set of modes is supported on a backend for a pin."""
     for mode in GPIOPinMode:
         if mode in legal_modes:
+            serial = cast(MockSerial, backend._serial)
             backend.set_gpio_pin_mode(pin, mode)
+            serial.check_sent_data(update_digital_pin_command(pin, mode, False))
         else:
             with pytest.raises(NotSupportedByHardwareError):
                 backend.set_gpio_pin_mode(pin, mode)
+
+
+def test_backend_write_digital_state() -> None:
+    """Test that we can write a new digital state to a pin."""
+    pin = 2
+    mode = GPIOPinMode.DIGITAL_OUTPUT
+    backend = make_backend()
+    serial = cast(MockSerial, backend._serial)
+
+    backend.set_gpio_pin_mode(pin, mode)
+    serial.check_sent_data(update_digital_pin_command(pin, mode, False))
+    backend.write_gpio_pin_digital_state(pin, True)
+    assert backend.get_gpio_pin_digital_state(pin) is True
+    serial.check_sent_data(update_digital_pin_command(pin, mode, True))
 
 
 def test_backend_write_digital_state_requires_pin_mode() -> None:
@@ -226,9 +292,12 @@ def test_backend_read_digital_state() -> None:
     """Test that we can read the digital state of a pin."""
     pin = 2
     backend = make_backend()
+    serial = cast(MockSerial, backend._serial)
 
-    backend.set_gpio_pin_mode(pin, GPIOPinMode.DIGITAL_INPUT)
-    assert backend.read_gpio_pin_digital_state(pin) is True
+    assert backend.get_gpio_pin_mode(pin) is GPIOPinMode.DIGITAL_INPUT
+    expected_message, expected_result = read_digital_pin_command(pin)
+    assert backend.read_gpio_pin_digital_state(pin) is expected_result
+    serial.check_sent_data(expected_message)
 
 
 def test_backend_read_digital_state_requires_pin_mode() -> None:
@@ -250,7 +319,13 @@ def test_backend_read_digital_state_requires_digital_pin() -> None:
 
 def test_backend_read_analogue() -> None:
     """Test that we can read the digital state of a pin."""
-    assert make_backend().read_gpio_pin_analogue_value(EDGE_ANALOGUE_PIN) is pi
+    pin = EDGE_ANALOGUE_PIN
+    backend = make_backend()
+    serial = cast(MockSerial, backend._serial)
+
+    expected_message, expected_result = read_analogue_pin_command(pin)
+    assert backend.read_gpio_pin_analogue_value(pin) == expected_result
+    serial.check_sent_data(expected_message)
 
 
 def test_backend_read_analogue_requires_analogue_pin() -> None:
@@ -273,10 +348,15 @@ def test_backend_write_pwm_not_supported() -> None:
 
 def test_backend_get_set_led_state() -> None:
     """Test that we can recall and set the state of the LED."""
+    pin = 13
+    mode = GPIOPinMode.DIGITAL_OUTPUT
     backend = make_backend()
+    serial = cast(MockSerial, backend._serial)
 
-    backend.set_gpio_pin_mode(13, GPIOPinMode.DIGITAL_OUTPUT)
+    backend.set_gpio_pin_mode(pin, mode)
+    serial.check_sent_data(update_digital_pin_command(pin, mode, False))
     backend.set_led_state(0, True)
+    serial.check_sent_data(update_digital_pin_command(pin, mode, True))
     assert backend.get_led_state(0) is True
 
 
