@@ -1,14 +1,16 @@
 """Tests for the base Arduino hardware implementation."""
 from datetime import timedelta
 from math import pi
-from typing import Optional, Set, Type
+from typing import List, Optional, Set, Type
 
 import pytest
 from serial import Serial
+from serial.tools.list_ports_common import ListPortInfo
 from tests.backends.hardware.j5.mock_serial import MockSerial
 
 from j5.backends.hardware import NotSupportedByHardwareError
 from j5.backends.hardware.j5.arduino import ArduinoHardwareBackend
+from j5.boards import Board
 from j5.boards.arduino import ArduinoUno
 from j5.components import GPIOPinMode
 
@@ -62,6 +64,62 @@ def make_backend() -> MockArduinoBackend:
 def test_backend_default_timeout() -> None:
     """Test that a default timeout exists that is a timedelta."""
     assert isinstance(ArduinoHardwareBackend.DEFAULT_TIMEOUT, timedelta)
+
+
+def test_backend_is_arduino() -> None:
+    """Test that the USB IDs listed are recognised as Arduinos."""
+    assert len(ArduinoHardwareBackend.USB_IDS) > 0
+    assert all(
+        ArduinoHardwareBackend.is_arduino(make_port_info(vid, pid))
+        for vid, pid in ArduinoHardwareBackend.USB_IDS
+    )
+
+
+def test_backend_discover() -> None:
+    """Test that we can discover Arduinos and only Arduinos."""
+    arduino_ports: List[ListPortInfo] = [
+        make_port_info(vid, pid)
+        for vid, pid in ArduinoHardwareBackend.USB_IDS
+    ]
+    other_ports: List[ListPortInfo] = [
+        make_port_info(vid, pid)
+        for vid, pid in [
+            (0x1e7d, 0x307a),  # Keyboard
+            (0x1bda, 0x0010),  # Power board
+            (0x0781, 0x5581),  # USB flash drive
+        ]
+    ]
+
+    def discover_arduinos(ports: List[ListPortInfo]) -> Set[Board]:
+        return MockArduinoBackend.discover(
+            comports=lambda: ports,
+            serial_class=MockSerial,  # type: ignore
+        )
+
+    # Find nothing
+    assert discover_arduinos([]) == set()
+    # Only find other devices
+    assert discover_arduinos(other_ports) == set()
+    # Only find one Arduino
+    assert len(discover_arduinos([arduino_ports[0]])) == 1
+    # Find one Arduino in a mixture
+    assert len(discover_arduinos(other_ports + [arduino_ports[0]])) == 1
+    # Find lots of Arduinos
+    assert len(discover_arduinos(arduino_ports)) == len(arduino_ports)
+    # Find lots of Arduinos in a mixture
+    assert len(discover_arduinos(other_ports + arduino_ports)) == len(arduino_ports)
+    # Make sure they're all Arduinos
+    assert all(
+        isinstance(board, MockArduinoBackend.board)
+        for board in discover_arduinos(other_ports + arduino_ports)
+    )
+
+
+def make_port_info(vid: int, pid: int) -> ListPortInfo:
+    """Make a ListPortInfo object from a USB vendor ID and product ID."""
+    list_port_info = ListPortInfo("/dev/null")
+    list_port_info.vid, list_port_info.pid = vid, pid
+    return list_port_info
 
 
 def test_backend_initialisation() -> None:
@@ -227,7 +285,7 @@ def test_backend_write_pwm_not_supported() -> None:
     backend = make_backend()
 
     with pytest.raises(NotSupportedByHardwareError):
-        backend.write_gpio_pin_dac_value(3, 0.3)
+        backend.write_gpio_pin_pwm_value(3, 0.3)
 
 
 def test_backend_get_set_led_state() -> None:
