@@ -54,6 +54,11 @@ class MockArduinoBackend(ArduinoHardwareBackend):
         return pi
 
 
+def make_backend() -> MockArduinoBackend:
+    """Instantiate a MockArduinoBackend with default arguments."""
+    return MockArduinoBackend("COM0", MockSerial)  # type: ignore
+
+
 def test_backend_default_timeout() -> None:
     """Test that a default timeout exists that is a timedelta."""
     assert isinstance(ArduinoHardwareBackend.DEFAULT_TIMEOUT, timedelta)
@@ -61,7 +66,7 @@ def test_backend_default_timeout() -> None:
 
 def test_backend_initialisation() -> None:
     """Test that we can initialise an ArduinoHardwareBackend."""
-    backend = MockArduinoBackend("COM0", MockSerial)  # type: ignore
+    backend = make_backend()
     assert backend.serial_port == "COM0"
     assert isinstance(backend._serial, MockSerial)
     assert all(
@@ -73,7 +78,7 @@ def test_backend_initialisation() -> None:
 def test_backend_get_set_pin_mode() -> None:
     """Test that we can get and set pin modes."""
     pin = EDGE_DIGITAL_PIN
-    backend = MockArduinoBackend("COM0", MockSerial)  # type: ignore
+    backend = make_backend()
 
     assert backend.get_gpio_pin_mode(pin) is GPIOPinMode.DIGITAL_INPUT
     backend.set_gpio_pin_mode(pin, GPIOPinMode.DIGITAL_OUTPUT)
@@ -83,7 +88,7 @@ def test_backend_get_set_pin_mode() -> None:
 
 def test_backend_digital_pin_modes() -> None:
     """Test that only certain modes are valid on digital pins."""
-    backend = MockArduinoBackend("COM0", MockSerial)  # type: ignore
+    backend = make_backend()
 
     legal_modes: Set[GPIOPinMode] = {
         GPIOPinMode.DIGITAL_INPUT,
@@ -95,7 +100,7 @@ def test_backend_digital_pin_modes() -> None:
 
 def test_backend_analogue_pin_modes() -> None:
     """Test that only certain modes are valid on digital pins."""
-    backend = MockArduinoBackend("COM0", MockSerial)  # type: ignore
+    backend = make_backend()
 
     legal_modes: Set[GPIOPinMode] = {
         GPIOPinMode.ANALOGUE_INPUT,
@@ -120,7 +125,7 @@ def check_pin_modes(
 def test_backend_write_digital_state_requires_pin_mode() -> None:
     """Check that pin must be in DIGITAL_OUTPUT mode for write digital state to work."""
     pin = 2
-    backend = MockArduinoBackend("COM0", MockSerial)  # type: ignore
+    backend = make_backend()
 
     assert backend.get_gpio_pin_mode(pin) is not GPIOPinMode.DIGITAL_OUTPUT
     with pytest.raises(ValueError):
@@ -129,7 +134,7 @@ def test_backend_write_digital_state_requires_pin_mode() -> None:
 
 def test_backend_write_digital_state_requires_digital_pin() -> None:
     """Check that pins 14-19 are not supported by write digital state."""
-    backend = MockArduinoBackend("COM0", MockSerial)  # type: ignore
+    backend = make_backend()
 
     with pytest.raises(NotSupportedByHardwareError):
         backend.write_gpio_pin_digital_state(EDGE_ANALOGUE_PIN, True)
@@ -138,7 +143,7 @@ def test_backend_write_digital_state_requires_digital_pin() -> None:
 def test_backend_get_digital_state() -> None:
     """Test that we can recall the digital state of a pin."""
     pin = 2
-    backend = MockArduinoBackend("COM0", MockSerial)  # type: ignore
+    backend = make_backend()
 
     # This should put the pin into the most recent (or default) output state.
     backend.set_gpio_pin_mode(pin, GPIOPinMode.DIGITAL_OUTPUT)
@@ -152,7 +157,7 @@ def test_backend_get_digital_state() -> None:
 def test_backend_get_digital_state_requires_pin_mode() -> None:
     """Check that pin must not be in DIGITAL_OUTPUT mode for get digital state to work."""
     pin = 2
-    backend = MockArduinoBackend("COM0", MockSerial)  # type: ignore
+    backend = make_backend()
 
     assert backend.get_gpio_pin_mode(pin) is not GPIOPinMode.DIGITAL_OUTPUT
     with pytest.raises(ValueError):
@@ -161,7 +166,7 @@ def test_backend_get_digital_state_requires_pin_mode() -> None:
 
 def test_backend_get_digital_state_requires_digital_pin() -> None:
     """Check that pins 14-19 are not supported by get digital state."""
-    backend = MockArduinoBackend("COM0", MockSerial)  # type: ignore
+    backend = make_backend()
 
     with pytest.raises(NotSupportedByHardwareError):
         backend.get_gpio_pin_digital_state(EDGE_ANALOGUE_PIN)
@@ -170,7 +175,7 @@ def test_backend_get_digital_state_requires_digital_pin() -> None:
 def test_backend_read_digital_state() -> None:
     """Test that we can read the digital state of a pin."""
     pin = 2
-    backend = MockArduinoBackend("COM0", MockSerial)  # type: ignore
+    backend = make_backend()
 
     backend.set_gpio_pin_mode(pin, GPIOPinMode.DIGITAL_INPUT)
     assert backend.read_gpio_pin_digital_state(pin) is True
@@ -179,7 +184,7 @@ def test_backend_read_digital_state() -> None:
 def test_backend_read_digital_state_requires_pin_mode() -> None:
     """Check that pin must be in DIGITAL_INPUT* mode for read digital state to work."""
     pin = 2
-    backend = MockArduinoBackend("COM0", MockSerial)  # type: ignore
+    backend = make_backend()
 
     backend.set_gpio_pin_mode(pin, GPIOPinMode.DIGITAL_OUTPUT)
     assert backend.get_gpio_pin_mode(pin) is not GPIOPinMode.DIGITAL_INPUT
@@ -189,21 +194,21 @@ def test_backend_read_digital_state_requires_pin_mode() -> None:
 
 def test_backend_read_digital_state_requires_digital_pin() -> None:
     """Check that pins 14-19 are not supported by read digital state."""
-    backend = MockArduinoBackend("COM0", MockSerial)  # type: ignore
+    backend = make_backend()
     with pytest.raises(NotSupportedByHardwareError):
         backend.read_gpio_pin_digital_state(EDGE_ANALOGUE_PIN)
 
 
 def test_backend_read_analogue() -> None:
     """Test that we can read the digital state of a pin."""
-    backend = MockArduinoBackend("COM0", MockSerial)  # type: ignore
+    backend = make_backend()
 
     assert backend.read_gpio_pin_analogue_value(EDGE_ANALOGUE_PIN) is pi
 
 
 def test_backend_read_analogue_requires_analogue_pin() -> None:
     """Check that pins 2-13 are not supported by read analogue."""
-    backend = MockArduinoBackend("COM0", MockSerial)  # type: ignore
+    backend = make_backend()
 
     with pytest.raises(NotSupportedByHardwareError):
         backend.read_gpio_pin_analogue_value(EDGE_DIGITAL_PIN)
@@ -211,7 +216,7 @@ def test_backend_read_analogue_requires_analogue_pin() -> None:
 
 def test_backend_write_analogue_not_supported() -> None:
     """Test that writing an analogue value to a pin is unsupported."""
-    backend = MockArduinoBackend("COM0", MockSerial)  # type: ignore
+    backend = make_backend()
 
     with pytest.raises(NotSupportedByHardwareError):
         backend.write_gpio_pin_dac_value(2, pi)
@@ -219,7 +224,7 @@ def test_backend_write_analogue_not_supported() -> None:
 
 def test_backend_write_pwm_not_supported() -> None:
     """Test that writing a PWM value to a pin is unsupported."""
-    backend = MockArduinoBackend("COM0", MockSerial)  # type: ignore
+    backend = make_backend()
 
     with pytest.raises(NotSupportedByHardwareError):
         backend.write_gpio_pin_dac_value(3, 0.3)
@@ -227,7 +232,7 @@ def test_backend_write_pwm_not_supported() -> None:
 
 def test_backend_get_set_led_state() -> None:
     """Test that we can recall and set the state of the LED."""
-    backend = MockArduinoBackend("COM0", MockSerial)  # type: ignore
+    backend = make_backend()
 
     backend.set_gpio_pin_mode(13, GPIOPinMode.DIGITAL_OUTPUT)
     backend.set_led_state(0, True)
@@ -236,7 +241,7 @@ def test_backend_get_set_led_state() -> None:
 
 def test_backend_nonzero_led_identifier() -> None:
     """Test that the only allowed LED identifier is 0."""
-    backend = MockArduinoBackend("COM0", MockSerial)  # type: ignore
+    backend = make_backend()
 
     backend.set_gpio_pin_mode(13, GPIOPinMode.DIGITAL_OUTPUT)
     with pytest.raises(ValueError):
