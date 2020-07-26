@@ -39,8 +39,7 @@ class Console:
                     # as static type checking is not powerful enough to confirm
                     # that it is correct at runtime.
                     if return_type == bool:
-                        return str(response).lower() in \
-                            ("yes", "true", "1")  # type: ignore
+                        return str(response).lower() in ("yes", "true", "1")  # type: ignore  # noqa: E501
                     return return_type(response)  # type: ignore
                 except ValueError:
                     self.info(f"Unable to construct a {return_type.__name__}"
