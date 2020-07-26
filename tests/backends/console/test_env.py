@@ -77,3 +77,35 @@ def test_console_read_bad_type() -> None:
     )
 
     assert console.read("I want an int", int) == 6
+
+
+def test_console_handle_boolean_correctly() -> None:
+    """Test that the console handles bools correctly."""
+    class MockConsoleState:
+        """A mock console with state."""
+
+        cases = ["yes", "YES", "YeS", "True", "1", "no", "bees"]
+
+        def __init__(self) -> None:
+            self._pos = 0
+
+        def input(self, prompt: str) -> str:  # noqa: A003
+            """Mock some input."""
+            val = self.cases[self._pos]
+            self._pos += 1
+            return val
+
+        def print(self, text: str) -> None:  # noqa: A003,T002
+            """Mock printing function."""
+            assert text == "unreachable"
+
+    mock = MockConsoleState()
+
+    console = Console(
+        "TestConsole",
+        print_function=mock.print,
+        input_function=mock.input,
+    )
+
+    for _ in MockConsoleState.cases:
+        assert isinstance(console.read("I want an bool", bool), bool)
