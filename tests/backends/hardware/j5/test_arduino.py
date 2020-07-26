@@ -146,24 +146,20 @@ def test_backend_get_set_pin_mode() -> None:
 
 def test_backend_digital_pin_modes() -> None:
     """Test that only certain modes are valid on digital pins."""
-    backend = make_backend()
-
     legal_modes: Set[GPIOPinMode] = {
         GPIOPinMode.DIGITAL_INPUT,
         GPIOPinMode.DIGITAL_INPUT_PULLUP,
         GPIOPinMode.DIGITAL_OUTPUT,
     }
-    check_pin_modes(backend, EDGE_DIGITAL_PIN, legal_modes)
+    check_pin_modes(make_backend(), EDGE_DIGITAL_PIN, legal_modes)
 
 
 def test_backend_analogue_pin_modes() -> None:
     """Test that only certain modes are valid on digital pins."""
-    backend = make_backend()
-
     legal_modes: Set[GPIOPinMode] = {
         GPIOPinMode.ANALOGUE_INPUT,
     }
-    check_pin_modes(backend, EDGE_ANALOGUE_PIN, legal_modes)
+    check_pin_modes(make_backend(), EDGE_ANALOGUE_PIN, legal_modes)
 
 
 def check_pin_modes(
@@ -192,10 +188,8 @@ def test_backend_write_digital_state_requires_pin_mode() -> None:
 
 def test_backend_write_digital_state_requires_digital_pin() -> None:
     """Check that pins 14-19 are not supported by write digital state."""
-    backend = make_backend()
-
     with pytest.raises(NotSupportedByHardwareError):
-        backend.write_gpio_pin_digital_state(EDGE_ANALOGUE_PIN, True)
+        make_backend().write_gpio_pin_digital_state(EDGE_ANALOGUE_PIN, True)
 
 
 def test_backend_get_digital_state() -> None:
@@ -224,10 +218,8 @@ def test_backend_get_digital_state_requires_pin_mode() -> None:
 
 def test_backend_get_digital_state_requires_digital_pin() -> None:
     """Check that pins 14-19 are not supported by get digital state."""
-    backend = make_backend()
-
     with pytest.raises(NotSupportedByHardwareError):
-        backend.get_gpio_pin_digital_state(EDGE_ANALOGUE_PIN)
+        make_backend().get_gpio_pin_digital_state(EDGE_ANALOGUE_PIN)
 
 
 def test_backend_read_digital_state() -> None:
@@ -252,40 +244,31 @@ def test_backend_read_digital_state_requires_pin_mode() -> None:
 
 def test_backend_read_digital_state_requires_digital_pin() -> None:
     """Check that pins 14-19 are not supported by read digital state."""
-    backend = make_backend()
     with pytest.raises(NotSupportedByHardwareError):
-        backend.read_gpio_pin_digital_state(EDGE_ANALOGUE_PIN)
+        make_backend().read_gpio_pin_digital_state(EDGE_ANALOGUE_PIN)
 
 
 def test_backend_read_analogue() -> None:
     """Test that we can read the digital state of a pin."""
-    backend = make_backend()
-
-    assert backend.read_gpio_pin_analogue_value(EDGE_ANALOGUE_PIN) is pi
+    assert make_backend().read_gpio_pin_analogue_value(EDGE_ANALOGUE_PIN) is pi
 
 
 def test_backend_read_analogue_requires_analogue_pin() -> None:
     """Check that pins 2-13 are not supported by read analogue."""
-    backend = make_backend()
-
     with pytest.raises(NotSupportedByHardwareError):
-        backend.read_gpio_pin_analogue_value(EDGE_DIGITAL_PIN)
+        make_backend().read_gpio_pin_analogue_value(EDGE_DIGITAL_PIN)
 
 
 def test_backend_write_analogue_not_supported() -> None:
     """Test that writing an analogue value to a pin is unsupported."""
-    backend = make_backend()
-
     with pytest.raises(NotSupportedByHardwareError):
-        backend.write_gpio_pin_dac_value(2, pi)
+        make_backend().write_gpio_pin_dac_value(2, pi)
 
 
 def test_backend_write_pwm_not_supported() -> None:
     """Test that writing a PWM value to a pin is unsupported."""
-    backend = make_backend()
-
     with pytest.raises(NotSupportedByHardwareError):
-        backend.write_gpio_pin_pwm_value(3, 0.3)
+        make_backend().write_gpio_pin_pwm_value(3, 0.3)
 
 
 def test_backend_get_set_led_state() -> None:
