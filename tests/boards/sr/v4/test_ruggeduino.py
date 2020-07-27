@@ -67,7 +67,7 @@ class MockRuggeduinoBackend(
 
     def execute_string_command(self, command: str) -> str:
         """Send a string command to the Ruggeduino and return the result."""
-        return "h"
+        return command[::-1]
 
     @classmethod
     def discover(cls) -> Set['Board']:
