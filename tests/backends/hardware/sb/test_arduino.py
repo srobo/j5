@@ -2,15 +2,21 @@
 
 from datetime import timedelta
 from math import isclose
-from typing import Optional, cast
+from typing import List, Optional, cast
 
 import pytest
+from serial import SerialException, SerialTimeoutException
 from tests.backends.hardware.j5.mock_serial import MockSerial
 
 from j5.backends import CommunicationError
 from j5.backends.hardware.env import NotSupportedByHardwareError
 from j5.backends.hardware.sb.arduino import SBArduinoHardwareBackend
+from j5.boards.arduino import ArduinoUno
 from j5.components import GPIOPinMode
+
+# Pins on the digital-analogue border
+EDGE_ANALOGUE_PIN = ArduinoUno.FIRST_ANALOGUE_PIN
+EDGE_DIGITAL_PIN = EDGE_ANALOGUE_PIN - 1
 
 
 class SBArduinoSerial(MockSerial):
@@ -46,6 +52,42 @@ class SBArduinoSerial(MockSerial):
     def check_data_sent_by_constructor(self) -> None:
         """Check that the backend constructor sent expected data to the serial port."""
         self.check_sent_data(b"")
+
+
+class SBArduinoSerialBootFail(MockSerial):
+    """Like SBArduinoSerial, but sends unintelligible data on boot."""
+
+    expected_baudrate = 115200
+
+    def __init__(self,
+                 port: Optional[str] = None,
+                 baudrate: int = 9600,
+                 bytesize: int = 8,
+                 parity: str = 'N',
+                 stopbits: float = 1,
+                 timeout: Optional[float] = None,
+                 ):
+        super().__init__(
+            port=port,
+            baudrate=baudrate,
+            bytesize=bytesize,
+            parity=parity,
+            stopbits=stopbits,
+            timeout=timeout,
+        )
+        self.append_received_data(b"wserzuhigfdiou", newline=True)
+
+
+class SBArduinoSerialNoBoot(MockSerial):
+    """Like MockSerial, but with a faster baudrate. Receives nothing on initialisation."""
+
+    expected_baudrate = 115200
+
+
+class SBArduinoSerialBadVersion(SBArduinoSerial):
+    """Like SBArduinoSerial, but reports a malformed version number."""
+
+    firmware_version = "2019.7"
 
 
 class SBArduinoSerialOldVersion1(SBArduinoSerial):
@@ -86,9 +128,48 @@ class SBArduinoSerialFailureResponse(SBArduinoSerial):
         self.append_received_data(b"- Something went wrong", newline=True)
 
 
+class SBArduinoSerialCommentResponse(SBArduinoSerial):
+    """Like SBArduinoSerial, but returns a failure response rather than success."""
+
+    def respond_to_write(self, data: bytes) -> None:
+        """Hook that can be overriden by subclasses to respond to sent data."""
+        self.append_received_data(b"# Comment", newline=True)
+        # super(SBArduinoSerialCommentResponse, self).respond_to_write(data)
+        self.append_received_data(b"+ OK", newline=True)
+
+
+class SBArduinoSerialErrorResponse(SBArduinoSerial):
+    """Like SBArduinoSerial, but returns an unitelligible response rather than success."""
+
+    def respond_to_write(self, data: bytes) -> None:
+        """Hook that can be overriden by subclasses to respond to sent data."""
+        self.append_received_data(b"dxbuwae souiqeon", newline=True)
+
+
+class SBArduinoSerialTimeout(SBArduinoSerial):
+    """Like SBArduinoSerial, but times out when trying to write."""
+
+    def write(self, data: bytes) -> int:
+        """Write the data to the serial port."""
+        raise SerialTimeoutException()
+
+
+class SBArduinoSerialException(SBArduinoSerial):
+    """Like SBArduinoSerial, but raises a SerialException when trying to write."""
+
+    def write(self, data: bytes) -> int:
+        """Write the data to the serial port."""
+        raise SerialException()
+
+
+def make_backend() -> SBArduinoHardwareBackend:
+    """Instantiate an SBArduinoHardwareBackend  with some default arguments."""
+    return SBArduinoHardwareBackend("COM0", SBArduinoSerial)  # type: ignore
+
+
 def test_backend_initialisation() -> None:
     """Test that we can initialise a SBArduinoHardwareBackend."""
-    backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)  # type: ignore
+    backend = make_backend()
     assert type(backend) is SBArduinoHardwareBackend
     assert type(backend._serial) is SBArduinoSerial
     assert all(
@@ -99,14 +180,21 @@ def test_backend_initialisation() -> None:
 
 def test_backend_initialisation_serial() -> None:
     """Test commands/responses are sent/received during initialisation."""
-    backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)  # type: ignore
+    backend = make_backend()
     serial = cast(SBArduinoSerial, backend._serial)
     serial.check_data_sent_by_constructor()
     serial.check_all_received_data_consumed()
 
+    with pytest.raises(CommunicationError):
+        SBArduinoHardwareBackend("COM0", SBArduinoSerialBootFail)  # type: ignore
+    with pytest.raises(CommunicationError):
+        SBArduinoHardwareBackend("COM0", SBArduinoSerialNoBoot)  # type: ignore
+
 
 def test_backend_version_check() -> None:
     """Test that an exception is raised if the arduino reports an unsupported version."""
+    with pytest.raises(CommunicationError):
+        SBArduinoHardwareBackend("COM0", SBArduinoSerialBadVersion)  # type: ignore
     with pytest.raises(CommunicationError):
         SBArduinoHardwareBackend("COM0", SBArduinoSerialOldVersion1)  # type: ignore
     with pytest.raises(CommunicationError):
@@ -118,68 +206,82 @@ def test_backend_version_check() -> None:
 
 def test_backend_firmware_version() -> None:
     """Test that the firmware version is parsed correctly."""
-    backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)  # type: ignore
+    backend = make_backend()
     assert backend.firmware_version == SBArduinoSerial.firmware_version
 
 
-def test_backend_handles_failure() -> None:
-    """Test that an exception is raised when a failure response is received."""
-    backend = SBArduinoHardwareBackend(
-        "COM0",
-        SBArduinoSerialFailureResponse,  # type: ignore
-    )
+def check_for_communication_error(backend: SBArduinoHardwareBackend) -> None:
+    """Check that performing an operation on the backend raises a CommunicationError."""
     with pytest.raises(CommunicationError):
         backend.set_gpio_pin_mode(2, GPIOPinMode.DIGITAL_INPUT)
 
 
-def test_backend_get_set_pin_mode() -> None:
-    """Test that we can get and set pin modes."""
+def test_backend_handles_failure() -> None:
+    """Test that an exception is raised when a failure response is received."""
+    check_for_communication_error(SBArduinoHardwareBackend(
+        "COM0",
+        SBArduinoSerialFailureResponse,  # type: ignore
+    ))
+
+
+def test_backend_handles_unrecognised_response() -> None:
+    """Test that an exception is raised when an unrecognised response is received."""
+    check_for_communication_error(SBArduinoHardwareBackend(
+        "COM0",
+        SBArduinoSerialErrorResponse,  # type: ignore
+    ))
+
+
+def test_backend_handles_comment_response() -> None:
+    """Test that comments in the Arduino's response are ignored."""
+    backends: List[SBArduinoHardwareBackend] = [
+        make_backend(),  # Normal
+        SBArduinoHardwareBackend(  # Comment
+            "COM0",
+            SBArduinoSerialCommentResponse,  # type: ignore
+        ),
+    ]
+    results: List[bool] = []
+    for backend in backends:
+        cast(SBArduinoSerial, backend._serial).append_received_data(b"> H", newline=True)
+        results.append(backend.read_gpio_pin_digital_state(2))
+
+    assert results[0] is results[1]
+
+
+def test_backend_handles_serial_exeption() -> None:
+    """Test that an exception is raised when a SerialException happens."""
+    check_for_communication_error(SBArduinoHardwareBackend(
+        "COM0",
+        SBArduinoSerialTimeout,  # type: ignore
+    ))
+    check_for_communication_error(SBArduinoHardwareBackend(
+        "COM0",
+        SBArduinoSerialException,  # type: ignore
+    ))
+
+
+def test_backend_update_digital_pin_requires_digital_pin() -> None:
+    """Test that analogue pins are invalid for _update_digital_pin."""
+    backend = make_backend()
+
+    with pytest.raises(RuntimeError):
+        backend._update_digital_pin(EDGE_ANALOGUE_PIN)
+
+
+def test_backend_update_digital_pin_requires_pin_mode() -> None:
+    """Test that analogue pin modes are invalid for _update_digital_pin."""
     pin = 2
-    backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)  # type: ignore
-    assert backend.get_gpio_pin_mode(pin) is GPIOPinMode.DIGITAL_INPUT
-    backend.set_gpio_pin_mode(pin, GPIOPinMode.DIGITAL_OUTPUT)
-    assert backend.get_gpio_pin_mode(pin) is GPIOPinMode.DIGITAL_OUTPUT
+    backend = make_backend()
 
-
-def test_backend_digital_pin_modes() -> None:
-    """Test that only certain modes are valid on digital pins."""
-    pin = 2
-    backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)  # type: ignore
-    backend.set_gpio_pin_mode(pin, GPIOPinMode.DIGITAL_INPUT)
-    backend.set_gpio_pin_mode(pin, GPIOPinMode.DIGITAL_INPUT_PULLUP)
-    with pytest.raises(NotSupportedByHardwareError):
-        backend.set_gpio_pin_mode(pin, GPIOPinMode.DIGITAL_INPUT_PULLDOWN)
-    backend.set_gpio_pin_mode(pin, GPIOPinMode.DIGITAL_OUTPUT)
-    with pytest.raises(NotSupportedByHardwareError):
-        backend.set_gpio_pin_mode(pin, GPIOPinMode.ANALOGUE_INPUT)
-    with pytest.raises(NotSupportedByHardwareError):
-        backend.set_gpio_pin_mode(pin, GPIOPinMode.ANALOGUE_OUTPUT)
-    with pytest.raises(NotSupportedByHardwareError):
-        backend.set_gpio_pin_mode(pin, GPIOPinMode.PWM_OUTPUT)
-
-
-def test_backend_analogue_pin_modes() -> None:
-    """Test that only certain modes are valid on digital pins."""
-    pin = 14
-    backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)  # type: ignore
-    with pytest.raises(NotSupportedByHardwareError):
-        backend.set_gpio_pin_mode(pin, GPIOPinMode.DIGITAL_INPUT)
-    with pytest.raises(NotSupportedByHardwareError):
-        backend.set_gpio_pin_mode(pin, GPIOPinMode.DIGITAL_INPUT_PULLUP)
-    with pytest.raises(NotSupportedByHardwareError):
-        backend.set_gpio_pin_mode(pin, GPIOPinMode.DIGITAL_INPUT_PULLDOWN)
-    with pytest.raises(NotSupportedByHardwareError):
-        backend.set_gpio_pin_mode(pin, GPIOPinMode.DIGITAL_OUTPUT)
-    backend.set_gpio_pin_mode(pin, GPIOPinMode.ANALOGUE_INPUT)
-    with pytest.raises(NotSupportedByHardwareError):
-        backend.set_gpio_pin_mode(pin, GPIOPinMode.ANALOGUE_OUTPUT)
-    with pytest.raises(NotSupportedByHardwareError):
-        backend.set_gpio_pin_mode(pin, GPIOPinMode.PWM_OUTPUT)
+    backend._digital_pins[pin].mode = GPIOPinMode.ANALOGUE_INPUT
+    with pytest.raises(RuntimeError):
+        backend._update_digital_pin(pin)
 
 
 def test_backend_write_digital_state() -> None:
     """Test that we can write the digital state of a pin."""
-    backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)  # type: ignore
+    backend = make_backend()
     serial = cast(SBArduinoSerial, backend._serial)
     serial.check_data_sent_by_constructor()
     # This should put the pin into the most recent (or default) output state.
@@ -190,26 +292,11 @@ def test_backend_write_digital_state() -> None:
     backend.write_gpio_pin_digital_state(2, False)
     serial.check_sent_data(b"W 2 L\n")
     serial.check_all_received_data_consumed()
-
-
-def test_backend_write_digital_state_requires_pin_mode() -> None:
-    """Check that pin must be in DIGITAL_OUTPUT mode for write digital state to work."""
-    backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)  # type: ignore
-    assert backend.get_gpio_pin_mode(2) is not GPIOPinMode.DIGITAL_OUTPUT
-    with pytest.raises(ValueError):
-        backend.write_gpio_pin_digital_state(2, True)
-
-
-def test_backend_write_digital_state_requires_digital_pin() -> None:
-    """Check that pins 14-19 are not supported by write digital state."""
-    backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)  # type: ignore
-    with pytest.raises(NotSupportedByHardwareError):
-        backend.write_gpio_pin_digital_state(14, True)
 
 
 def test_backend_digital_state_persists() -> None:
     """Test switching to a different mode and then back to output."""
-    backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)  # type: ignore
+    backend = make_backend()
     serial = cast(SBArduinoSerial, backend._serial)
     serial.check_data_sent_by_constructor()
     backend.set_gpio_pin_mode(2, GPIOPinMode.DIGITAL_OUTPUT)
@@ -229,36 +316,9 @@ def test_backend_digital_state_persists() -> None:
     serial.check_all_received_data_consumed()
 
 
-def test_backend_get_digital_state() -> None:
-    """Test that we can read back the digital state of a pin."""
-    backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)  # type: ignore
-    # This should put the pin into the most recent (or default) output state.
-    backend.set_gpio_pin_mode(2, GPIOPinMode.DIGITAL_OUTPUT)
-    assert backend.get_gpio_pin_digital_state(2) is False
-    backend.write_gpio_pin_digital_state(2, True)
-    assert backend.get_gpio_pin_digital_state(2) is True
-    backend.write_gpio_pin_digital_state(2, False)
-    assert backend.get_gpio_pin_digital_state(2) is False
-
-
-def test_backend_get_digital_state_requires_pin_mode() -> None:
-    """Check that pin must be in DIGITAL_OUTPUT mode for get digital state to work."""
-    backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)  # type: ignore
-    assert backend.get_gpio_pin_mode(2) is not GPIOPinMode.DIGITAL_OUTPUT
-    with pytest.raises(ValueError):
-        backend.get_gpio_pin_digital_state(2)
-
-
-def test_backend_get_digital_state_requires_digital_pin() -> None:
-    """Check that pins 14-19 are not supported by get digital state."""
-    backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)  # type: ignore
-    with pytest.raises(NotSupportedByHardwareError):
-        backend.get_gpio_pin_digital_state(14)
-
-
 def test_backend_input_modes() -> None:
     """Check that the correct commands are send when setting pins to input modes."""
-    backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)  # type: ignore
+    backend = make_backend()
     serial = cast(SBArduinoSerial, backend._serial)
     serial.check_data_sent_by_constructor()
     backend.set_gpio_pin_mode(2, GPIOPinMode.DIGITAL_INPUT)
@@ -272,7 +332,7 @@ def test_backend_input_modes() -> None:
 
 def test_backend_read_digital_state() -> None:
     """Test that we can read the digital state of a pin."""
-    backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)  # type: ignore
+    backend = make_backend()
     serial = cast(SBArduinoSerial, backend._serial)
     serial.check_data_sent_by_constructor()
 
@@ -287,6 +347,11 @@ def test_backend_read_digital_state() -> None:
     assert backend.read_gpio_pin_digital_state(2) is False
     serial.check_sent_data(b"R 2\n")
 
+    # Append no received data - invalid
+    with pytest.raises(CommunicationError):
+        backend.read_gpio_pin_digital_state(2)
+    serial.check_sent_data(b"R 2\n")
+
     serial.append_received_data(b"> X", newline=True)  # invalid
     with pytest.raises(CommunicationError):
         backend.read_gpio_pin_digital_state(2)
@@ -295,25 +360,9 @@ def test_backend_read_digital_state() -> None:
     serial.check_all_received_data_consumed()
 
 
-def test_backend_read_digital_state_requires_pin_mode() -> None:
-    """Check that pin must be in DIGITAL_INPUT* mode for read digital state to work."""
-    backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)  # type: ignore
-    backend.set_gpio_pin_mode(2, GPIOPinMode.DIGITAL_OUTPUT)
-    assert backend.get_gpio_pin_mode(2) is not GPIOPinMode.DIGITAL_INPUT
-    with pytest.raises(ValueError):
-        backend.read_gpio_pin_digital_state(2)
-
-
-def test_backend_read_digital_state_requires_digital_pin() -> None:
-    """Check that pins 14-19 are not supported by read digital state."""
-    backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)  # type: ignore
-    with pytest.raises(NotSupportedByHardwareError):
-        backend.read_gpio_pin_digital_state(14)
-
-
 def test_backend_read_analogue() -> None:
     """Test that we can read the digital state of a pin."""
-    backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)  # type: ignore
+    backend = make_backend()
     serial = cast(SBArduinoSerial, backend._serial)
     serial.check_data_sent_by_constructor()
 
@@ -328,19 +377,22 @@ def test_backend_read_analogue() -> None:
         assert isclose(measured_voltage, expected_voltage)
         serial.check_sent_data(b"A\n")
 
-    serial.check_all_received_data_consumed()
-
-
-def test_backend_read_analogue_requires_analogue_pin() -> None:
-    """Check that pins 2-13 are not supported by read analogue."""
-    backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)  # type: ignore
     with pytest.raises(NotSupportedByHardwareError):
-        backend.read_gpio_pin_analogue_value(13)
+        backend.read_gpio_pin_analogue_value(ArduinoUno.FIRST_ANALOGUE_PIN + 4)  # invalid
+    # Append no received results
+    with pytest.raises(CommunicationError):
+        backend.read_gpio_pin_analogue_value(ArduinoUno.FIRST_ANALOGUE_PIN)
+    # Append an invalid received result
+    serial.append_received_data(b"> a_cdwenh 583")
+    with pytest.raises(CommunicationError):
+        backend.read_gpio_pin_analogue_value(ArduinoUno.FIRST_ANALOGUE_PIN)
+
+    serial.check_all_received_data_consumed()
 
 
 def test_ultrasound_pulse() -> None:
     """Test that we can read an ultrasound pulse time."""
-    backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)  # type: ignore
+    backend = make_backend()
     serial = cast(SBArduinoSerial, backend._serial)
     serial.check_data_sent_by_constructor()
 
@@ -354,12 +406,17 @@ def test_ultrasound_pulse() -> None:
     assert backend.get_gpio_pin_digital_state(3) is False
     assert backend.get_gpio_pin_mode(4) is GPIOPinMode.DIGITAL_INPUT
 
+    # Receive no results - invalid
+    with pytest.raises(CommunicationError):
+        backend.get_ultrasound_pulse(3, 4)
+    serial.check_sent_data(b"T 3 4\n")
+
     serial.check_all_received_data_consumed()
 
 
 def test_ultrasound_pulse_on_same_pin() -> None:
     """Test same pin for trigger and echo."""
-    backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)  # type: ignore
+    backend = make_backend()
     serial = cast(SBArduinoSerial, backend._serial)
     serial.check_data_sent_by_constructor()
 
@@ -376,7 +433,7 @@ def test_ultrasound_pulse_on_same_pin() -> None:
 
 def test_ultrasound_pulse_timeout() -> None:
     """Test that None is returned upon a timeout occurring."""
-    backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)  # type: ignore
+    backend = make_backend()
     serial = cast(SBArduinoSerial, backend._serial)
     serial.check_data_sent_by_constructor()
 
@@ -388,9 +445,19 @@ def test_ultrasound_pulse_timeout() -> None:
     serial.check_all_received_data_consumed()
 
 
+def test_ultrasound_pulse_requires_digital_pins() -> None:
+    """Test that an exception is raised if the trigger or echo pins are analogue."""
+    backend = make_backend()
+
+    with pytest.raises(NotSupportedByHardwareError):
+        backend.get_ultrasound_pulse(EDGE_ANALOGUE_PIN, 2)
+    with pytest.raises(NotSupportedByHardwareError):
+        backend.get_ultrasound_pulse(2, EDGE_ANALOGUE_PIN)
+
+
 def test_ultrasound_distance() -> None:
     """Test that we can read an ultrasound distance."""
-    backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)  # type: ignore
+    backend = make_backend()
     serial = cast(SBArduinoSerial, backend._serial)
     serial.check_data_sent_by_constructor()
 
@@ -405,12 +472,17 @@ def test_ultrasound_distance() -> None:
     assert backend.get_gpio_pin_digital_state(3) is False
     assert backend.get_gpio_pin_mode(4) is GPIOPinMode.DIGITAL_INPUT
 
+    # Receive no results - invalid
+    with pytest.raises(CommunicationError):
+        backend.get_ultrasound_distance(3, 4)
+    serial.check_sent_data(b"U 3 4\n")
+
     serial.check_all_received_data_consumed()
 
 
 def test_ultrasound_distance_on_same_pin() -> None:
     """Test same pin for trigger and echo."""
-    backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)  # type: ignore
+    backend = make_backend()
     serial = cast(SBArduinoSerial, backend._serial)
     serial.check_data_sent_by_constructor()
 
@@ -428,7 +500,7 @@ def test_ultrasound_distance_on_same_pin() -> None:
 
 def test_ultrasound_distance_timeout() -> None:
     """Test that None is returned upon a timeout occurring."""
-    backend = SBArduinoHardwareBackend("COM0", SBArduinoSerial)  # type: ignore
+    backend = make_backend()
     serial = cast(SBArduinoSerial, backend._serial)
     serial.check_data_sent_by_constructor()
 
@@ -438,3 +510,13 @@ def test_ultrasound_distance_timeout() -> None:
     assert metres is None
 
     serial.check_all_received_data_consumed()
+
+
+def test_ultrasound_distance_requires_digital_pins() -> None:
+    """Test that an exception is raised if the trigger or echo pins are analogue."""
+    backend = make_backend()
+
+    with pytest.raises(NotSupportedByHardwareError):
+        backend.get_ultrasound_distance(EDGE_ANALOGUE_PIN, 2)
+    with pytest.raises(NotSupportedByHardwareError):
+        backend.get_ultrasound_distance(2, EDGE_ANALOGUE_PIN)

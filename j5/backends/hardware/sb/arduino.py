@@ -46,19 +46,15 @@ class SBArduinoHardwareBackend(
         self._version_line = self.read_serial_line()
 
         # Verify that the Arduino firmware meets or exceeds the minimum version
-        if self.firmware_version is not None:
-            version_ids = tuple(map(int, self.firmware_version.split(".")))
-        else:
-            version_ids = (0, 0, 0)
-
-        if version_ids < (2019, 6, 0):
+        version_ids = tuple(map(int, self.firmware_version.split(".")))
+        if version_ids < (2019, 6, 0) or len(version_ids) != 3:
             raise CommunicationError(
                 f"Unexpected firmware version: {self.firmware_version},"
                 f" expected at least: \"2019.6.0\".",
             )
 
     @property
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str:
         """The firmware version of the board."""
         return self._version_line.split("v")[1]
 

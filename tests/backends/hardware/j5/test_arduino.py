@@ -1,4 +1,5 @@
 """Tests for the base Arduino hardware implementation."""
+
 from datetime import timedelta
 from math import pi
 from typing import List, Optional, Set, Tuple, Type, cast
@@ -113,6 +114,13 @@ def test_backend_default_timeout() -> None:
     assert isinstance(ArduinoHardwareBackend.DEFAULT_TIMEOUT, timedelta)
 
 
+def make_port_info(vid: int, pid: int) -> ListPortInfo:
+    """Make a ListPortInfo object from a USB vendor ID and product ID."""
+    list_port_info = ListPortInfo("/dev/null")
+    list_port_info.vid, list_port_info.pid = vid, pid
+    return list_port_info
+
+
 def test_backend_is_arduino() -> None:
     """Test that the USB IDs listed are recognised as Arduinos."""
     assert len(ArduinoHardwareBackend.USB_IDS) > 0
@@ -160,13 +168,6 @@ def test_backend_discover() -> None:
         isinstance(board, MockArduinoBackend.board)
         for board in discover_arduinos(other_ports + arduino_ports)
     )
-
-
-def make_port_info(vid: int, pid: int) -> ListPortInfo:
-    """Make a ListPortInfo object from a USB vendor ID and product ID."""
-    list_port_info = ListPortInfo("/dev/null")
-    list_port_info.vid, list_port_info.pid = vid, pid
-    return list_port_info
 
 
 def test_backend_initialisation() -> None:
