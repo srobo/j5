@@ -4,9 +4,10 @@ import atexit
 import logging
 import os
 import signal
+import sys
 from abc import ABCMeta, abstractmethod
 from types import FrameType
-from typing import TYPE_CHECKING, Dict, Optional, Set, Type, TypeVar
+from typing import TYPE_CHECKING, Dict, List, Optional, Set, Type, TypeVar
 
 from j5.backends import Backend
 
@@ -23,6 +24,14 @@ if TYPE_CHECKING:  # pragma: nocover
 
 T = TypeVar('T', bound='Board')
 U = TypeVar('U', bound=Backend)
+
+KILL_SIGNALS: List[signal.Signals] = [signal.SIGTERM, signal.SIGINT]
+
+if sys.platform != "win32":
+    # Windows does not support SIGHUP, and thus it is not included in the
+    # Python signal library.
+    from signal import SIGHUP
+    KILL_SIGNALS.append(SIGHUP)
 
 
 class Board(metaclass=ABCMeta):
@@ -96,7 +105,7 @@ class Board(metaclass=ABCMeta):
             signal.signal(signal_type, old_signal_handlers[signal_type])
             os.kill(0, signal_type)  # 0 = current process
 
-        for signal_type in (signal.SIGHUP, signal.SIGINT, signal.SIGTERM):
+        for signal_type in KILL_SIGNALS:
             old_signal_handler = signal.signal(signal_type, new_signal_handler)
             old_signal_handlers[signal_type] = old_signal_handler
 
