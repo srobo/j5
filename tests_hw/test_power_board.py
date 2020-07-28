@@ -31,7 +31,7 @@ if __name__ == '__main__':
     print("Waiting for start button...")
     r.power_board.wait_for_start_flash()
 
-    print(f"Serial number: {r.power_board.serial}")
+    print(f"Serial number: {r.power_board.serial_number}")
     print(f"Firmware version: {r.power_board.firmware_version}")
 
     print(f"Battery voltage: {r.power_board.battery_sensor.voltage} V")

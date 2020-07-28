@@ -108,11 +108,11 @@ def test_power_board_name() -> None:
     assert pb.name == "Student Robotics v4 Power Board"
 
 
-def test_power_board_serial() -> None:
+def test_power_board_serial_number() -> None:
     """Test the serial attribute of the PowerBoard."""
     pb = PowerBoard("SERIAL0", MockPowerBoardBackend())
 
-    assert pb.serial == "SERIAL0"
+    assert pb.serial_number == "SERIAL0"
 
 
 def test_firmware_version() -> None:

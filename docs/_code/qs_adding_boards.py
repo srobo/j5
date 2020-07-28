@@ -24,7 +24,7 @@ class MyRobot(BaseRobot):
 
 r = MyRobot()
 
-print(f"Found Power Board: {r.power_board.serial}")
+print(f"Found Power Board: {r.power_board.serial_number}")
 print(f"Power Board Firmware: {r.power_board.firmware_version}")
 
 # Access a board specific function
@@ -34,7 +34,7 @@ print(f"Found {len(r.motor_boards)} Motor Board(s):")
 
 # Iterate over the boards in a board group
 for board in r.motor_boards:
-    print(f" - {board.serial} - Version {board.firmware_version}")
+    print(f" - {board.serial_number} - Version {board.firmware_version}")
 
 # Access board by serial number
 r.motor_boards["218312"].make_safe()

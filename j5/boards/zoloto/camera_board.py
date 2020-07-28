@@ -19,7 +19,7 @@ class ZolotoCameraBoard(Board):
         self._camera = MarkerCamera(0, cast(MarkerCameraInterface, backend))
 
     @property
-    def serial(self) -> str:
+    def serial_number(self) -> str:
         """Get the serial number."""
         return self._serial
 

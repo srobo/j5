@@ -92,11 +92,11 @@ def test_uno_name() -> None:
     assert uno.name == "Arduino Uno"
 
 
-def test_uno_serial() -> None:
-    """Test the serial attribute of the Uno."""
+def test_uno_serial_number() -> None:
+    """Test the serial_number attribute of the Uno."""
     uno = ArduinoUno("SERIAL0", MockArduinoUnoBackend())
 
-    assert uno.serial == "SERIAL0"
+    assert uno.serial_number == "SERIAL0"
 
 
 def test_uno_firmware_version() -> None:

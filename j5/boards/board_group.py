@@ -44,8 +44,8 @@ class BoardGroup(Generic[T, U]):
         """Update the boards in this group to see if new boards have been added."""
         self._boards.clear()
         discovered_boards = self._backend_class.discover()
-        for board in sorted(discovered_boards, key=lambda b: b.serial):
-            self._boards.update({board.serial: cast(T, board)})
+        for board in sorted(discovered_boards, key=lambda b: b.serial_number):
+            self._boards.update({board.serial_number: cast(T, board)})
 
     def singular(self) -> T:
         """If there is only a single board in the group, return that board."""
@@ -77,9 +77,9 @@ class BoardGroup(Generic[T, U]):
         """Get the number of boards in this group."""
         return len(self._boards)
 
-    def __contains__(self, serial: str) -> bool:
+    def __contains__(self, serial_number: str) -> bool:
         """Check if a board is in this group."""
-        return serial in self._boards
+        return serial_number in self._boards
 
     def __iter__(self) -> Iterator[T]:
         """
@@ -89,14 +89,16 @@ class BoardGroup(Generic[T, U]):
         """
         return iter(self._boards.values())
 
-    def __getitem__(self, serial: str) -> T:
+    def __getitem__(self, serial_number: str) -> T:
         """Get the board from serial."""
         try:
-            return self._boards[serial]
+            return self._boards[serial_number]
         except KeyError:
-            if type(serial) != str:
-                raise TypeError("Serial must be a string")
-            raise KeyError(f"Could not find a board with the serial {serial}")
+            if type(serial_number) != str:
+                raise TypeError("Serial number must be a string")
+            raise KeyError(
+                f"Could not find a board with the serial number {serial_number}",
+            )
 
     @property
     def backend_class(self) -> Type[U]:

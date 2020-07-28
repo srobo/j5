@@ -19,7 +19,7 @@ class MockBoard(Board):
         return "Testing Board"
 
     @property
-    def serial(self) -> str:
+    def serial_number(self) -> str:
         """Get the serial number of this board."""
         return self._serial
 

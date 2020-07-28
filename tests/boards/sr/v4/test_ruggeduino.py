@@ -97,11 +97,11 @@ def test_ruggeduino_name() -> None:
     assert ruggeduino.name == "Ruggeduino"
 
 
-def test_ruggeduino_serial() -> None:
-    """Test the serial attribute of the Ruggeduino."""
+def test_ruggeduino_serial_number() -> None:
+    """Test the serial_number attribute of the Ruggeduino."""
     ruggeduino = Ruggeduino("SERIAL0", MockRuggeduinoBackend())
 
-    assert ruggeduino.serial == "SERIAL0"
+    assert ruggeduino.serial_number == "SERIAL0"
 
 
 def test_ruggeduino_firmware_version() -> None:

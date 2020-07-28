@@ -25,7 +25,7 @@ if __name__ == '__main__':
 
     r = Robot()
 
-    print(f"Serial number: {r.arduino.serial}")
+    print(f"Serial number: {r.arduino.serial_number}")
     print(f"Firmware version: {r.arduino.firmware_version}")
 
     print("Setting all pins high.")

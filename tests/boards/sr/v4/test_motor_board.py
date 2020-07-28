@@ -73,11 +73,11 @@ def test_motor_board_name() -> None:
     assert mb.name == "Student Robotics v4 Motor Board"
 
 
-def test_motor_board_serial() -> None:
+def test_motor_board_serial_number() -> None:
     """Test the serial attribute of the motor board."""
     mb = MotorBoard("SERIAL0", MockMotorBoardBackend())
 
-    assert mb.serial == "SERIAL0"
+    assert mb.serial_number == "SERIAL0"
 
 
 def test_motor_board_make_safe_default() -> None:

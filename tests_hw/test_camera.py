@@ -54,7 +54,7 @@ if __name__ == '__main__':
 
     r = Robot()
 
-    print(f"Serial number: {r.camera_board.serial}")
+    print(f"Serial number: {r.camera_board.serial_number}")
     print(f"Firmware version: {r.camera_board.firmware_version}")
 
     while True:
