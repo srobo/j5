@@ -168,10 +168,10 @@ def make_backend() -> SBArduinoHardwareBackend:
 
 
 def test_backend_initialisation() -> None:
-    """Test that we can initialise a SBArduinoHardwareBackend."""
+    """Test that we can initialise an SBArduinoHardwareBackend."""
     backend = make_backend()
-    assert type(backend) is SBArduinoHardwareBackend
-    assert type(backend._serial) is SBArduinoSerial
+    assert backend.serial_port == "COM0"
+    assert isinstance(backend._serial, SBArduinoSerial)
     assert all(
         pin.mode is GPIOPinMode.DIGITAL_INPUT for pin in backend._digital_pins.values()
     )

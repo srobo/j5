@@ -11,11 +11,6 @@ from j5.boards.sr.v4.ruggeduino import Ruggeduino
 from j5.components import GPIOPinMode, StringCommandComponentInterface
 
 
-def encode_pin(pin: Optional[int]) -> str:
-    """Encode a pin number as a letter of the alphabet."""
-    return chr(ord('a') + pin) if pin is not None else ""
-
-
 class SRV4RuggeduinoHardwareBackend(
     StringCommandComponentInterface,
     ArduinoHardwareBackend,
@@ -51,11 +46,18 @@ class SRV4RuggeduinoHardwareBackend(
                 )
         self._version_line = line
 
+        # Verify the firmware version
+        if int(self.firmware_version) != 1:
+            raise CommunicationError(
+                f"Unexpected firmware version: {self.firmware_version}, "
+                f"expected \"1\".",
+            )
+
         for pin_number in self._digital_pins.keys():
             self.set_gpio_pin_mode(pin_number, GPIOPinMode.DIGITAL_INPUT)
 
     @property
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str:
         """The firmware version of the board."""
         return self._version_line.split(":")[-1]
 
@@ -69,7 +71,12 @@ class SRV4RuggeduinoHardwareBackend(
         if len(command) != 1:
             raise RuntimeError("Commands should be 1 character long.")
 
-        return self._execute_raw_string_command(command + encode_pin(pin))
+        return self._execute_raw_string_command(command + self.encode_pin(pin))
+
+    @staticmethod
+    def encode_pin(pin: Optional[int]) -> str:
+        """Encode a pin number as a letter of the alphabet."""
+        return chr(ord('a') + pin) if pin is not None else ""
 
     def _update_digital_pin(self, identifier: int) -> None:
         if identifier >= Ruggeduino.FIRST_ANALOGUE_PIN:
@@ -103,6 +110,10 @@ class SRV4RuggeduinoHardwareBackend(
 
     def _read_analogue_pin(self, identifier: int) -> float:
         """Read the value of an analogue pin from the Arduino."""
+        if identifier >= Ruggeduino.FIRST_ANALOGUE_PIN + 6:
+            raise NotSupportedByHardwareError(
+                "Ruggeduino firmware only has 6 analogue inputs (IDs 14-19)",
+            )
         result = self._command("a", identifier - 14)
         return (int(result) / 1024.0) * 5.0
 
