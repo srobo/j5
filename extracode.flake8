@@ -12,7 +12,9 @@ ignore =
     #Don't require docstrings on magic methods.
     D105,
     #Don't require docstrings for __init__ methods.
-    D107
+    D107,
+    # Don't require docstring in public module
+    D100,
     #Don't require imperative mood docstrings.
     D401
 
