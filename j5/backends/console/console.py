@@ -1,6 +1,6 @@
 """Console helper classes."""
 
-from typing import Callable, Optional, Type, TypeVar
+from typing import Callable, Dict, Optional, Type, TypeVar
 
 T = TypeVar("T")
 
@@ -38,9 +38,26 @@ class Console:
                     # We have to ignore the types on this function unfortunately,
                     # as static type checking is not powerful enough to confirm
                     # that it is correct at runtime.
+                    if return_type == bool:
+                        return self._get_bool(response)  # type: ignore
                     return return_type(response)  # type: ignore
                 except ValueError:
                     self.info(f"Unable to construct a {return_type.__name__}"
                               f" from '{response}'")
         else:
             self._input(f"{self._descriptor}: {prompt}: ")
+
+    @staticmethod
+    def _get_bool(case: str) -> bool:
+        """Check if a string is a bool, if so return it."""
+        response_map: Dict[str, bool] = {
+            "true": True,
+            "yes": True,
+            "false": False,
+            "no": False,
+        }
+        normalised = case.lower().strip()
+        if normalised not in response_map:
+            raise ValueError()
+        else:
+            return response_map[normalised]

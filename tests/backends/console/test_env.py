@@ -77,3 +77,61 @@ def test_console_read_bad_type() -> None:
     )
 
     assert console.read("I want an int", int) == 6
+
+
+def test_console_handle_boolean_correctly() -> None:
+    """Test that the console handles bools correctly."""
+    class MockConsoleState:
+        """A mock console with state."""
+
+        true_cases = ["yes", "YES", "YeS", "True"]
+        false_cases = ["no", "NO", "No", "False"]
+        extra_cases = ["bees", "foo", "0", "True"]
+
+        def __init__(self) -> None:
+            self._pos = 0
+            self.cases = self.true_cases + self.false_cases + self.extra_cases
+
+        def input(self, prompt: str) -> str:  # noqa: A003
+            """Mock some input."""
+            val = self.cases[self._pos]
+            self._pos += 1
+            return val
+
+        def print(self, text: str) -> None:  # noqa: A003,T002
+            """Mock printing function."""
+            if self._pos in [8, 9, 10, 11]:
+                assert text == f"TestConsole: Unable to construct a bool " \
+                    f"from '{self.cases[self._pos - 1]}'"
+            else:
+                raise AssertionError()
+
+        @property
+        def is_finished(self) -> bool:
+            """Check if all of the cases have been consumed."""
+            return self._pos == len(self.cases)
+
+    mock = MockConsoleState()
+
+    console = Console(
+        "TestConsole",
+        print_function=mock.print,
+        input_function=mock.input,
+    )
+
+    for _ in MockConsoleState.true_cases:
+        val = console.read("I want an bool", bool)
+        assert isinstance(val, bool)
+        assert val
+
+    for _ in MockConsoleState.false_cases:
+        val = console.read("I want an bool", bool)
+        assert isinstance(val, bool)
+        assert not val
+
+    # Test if false inputs are skipped.
+    val = console.read("I want an bool", bool)
+    assert isinstance(val, bool)
+    assert val
+
+    assert mock.is_finished
