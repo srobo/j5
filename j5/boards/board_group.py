@@ -11,13 +11,13 @@ from typing import (
     cast,
 )
 
-from j5.backends import CommunicationError
+from j5.backends import Backend, CommunicationError
 
 if TYPE_CHECKING:
     from j5.boards import Board  # noqa: F401
 
 T = TypeVar('T', bound='Board')
-U = TypeVar('U')  # See #489
+U = TypeVar('U', bound=Backend)
 
 
 class BoardGroup(Generic[T, U]):
@@ -43,8 +43,7 @@ class BoardGroup(Generic[T, U]):
     def update_boards(self) -> None:
         """Update the boards in this group to see if new boards have been added."""
         self._boards.clear()
-        # See  #489 for type ignore explanation
-        discovered_boards = self._backend_class.discover()  # type: ignore
+        discovered_boards = self._backend_class.discover()
         for board in sorted(discovered_boards, key=lambda b: b.serial):
             self._boards.update({board.serial: cast(T, board)})
 
@@ -54,8 +53,7 @@ class BoardGroup(Generic[T, U]):
         if num == 1:
             return list(self._boards.values())[0]
         else:
-            # See  #489 for type ignore explanation
-            name = self._backend_class.board.__name__  # type: ignore
+            name = self._backend_class.board.__name__
             raise CommunicationError(
                 f"expected exactly one {name} to be connected, but found {num}",
             )

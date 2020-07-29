@@ -31,20 +31,20 @@ if __name__ == '__main__':
     print("Setting all pins high.")
     for pin in range(2, 14):
         r.arduino.pins[pin].mode = GPIOPinMode.DIGITAL_OUTPUT
-        r.arduino.pins[pin].digital_state = True
+        r.arduino.pins[pin].digital_write(True)
 
     sleep(1)
 
     print("Setting all pins low.")
     for pin in range(2, 14):
         r.arduino.pins[pin].mode = GPIOPinMode.DIGITAL_OUTPUT
-        r.arduino.pins[pin].digital_state = False
+        r.arduino.pins[pin].digital_write(False)
 
     sleep(1)
 
     for pin in range(2, 14):
         r.arduino.pins[pin].mode = GPIOPinMode.DIGITAL_INPUT
-        print(f"Pin {pin} digital state = {r.arduino.pins[pin].digital_state}")
+        print(f"Pin {pin} digital state = {r.arduino.pins[pin].digital_read()}")
     for pin in range(14, 18):
         r.arduino.pins[pin].mode = GPIOPinMode.ANALOGUE_INPUT
-        print(f"Pin {pin} analogue voltage = {r.arduino.pins[pin].analogue_value}")
+        print(f"Pin {pin} analogue voltage = {r.arduino.pins[pin].analogue_read()}")
