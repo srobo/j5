@@ -44,9 +44,9 @@ class RuggeduinoSerial(MockSerial):
         """Hook that can be overriden by subclasses to respond to sent data."""
         if data == b"v":
             version_line: bytes = b"SRduino:" + self.firmware_version.encode("utf-8")
-            self.append_received_data(version_line, newline=True)
+            self.append_received_data(version_line)
         elif data == b"foo":
-            self.append_received_data(data[::-1], newline=True)
+            self.append_received_data(data[::-1])
 
     def check_data_sent_by_constructor(self) -> None:
         """Check that the backend constructor sent expected data to the serial port."""
@@ -251,11 +251,11 @@ def test_backend_read_digital_state() -> None:
     backend.set_gpio_pin_mode(pin, GPIOPinMode.DIGITAL_INPUT)
     check_sent_data(serial, b"i", pin)
 
-    serial.append_received_data(b"h", newline=True)
+    serial.append_received_data(b"h")
     assert backend.read_gpio_pin_digital_state(pin) is True
     check_sent_data(serial, b"r", pin)
 
-    serial.append_received_data(b"l", newline=True)
+    serial.append_received_data(b"l")
     assert backend.read_gpio_pin_digital_state(pin) is False
     check_sent_data(serial, b"r", pin)
 
@@ -264,7 +264,7 @@ def test_backend_read_digital_state() -> None:
         backend.read_gpio_pin_digital_state(pin)
     check_sent_data(serial, b"r", pin)
 
-    serial.append_received_data(b"x", newline=True)  # invalid
+    serial.append_received_data(b"x")  # invalid
     with pytest.raises(CommunicationError):
         backend.read_gpio_pin_digital_state(pin)
     check_sent_data(serial, b"r", pin)
@@ -281,7 +281,7 @@ def test_backend_read_analogue() -> None:
     readings = [212, 535, 662, 385]
     for i, expected_reading in enumerate(readings):
         identifier = 14 + i
-        serial.append_received_data(str(expected_reading).encode("utf-8"), newline=True)
+        serial.append_received_data(str(expected_reading).encode("utf-8"))
         expected_voltage = (expected_reading / 1024.0) * 5.0
         measured_voltage = backend.read_gpio_pin_analogue_value(identifier)
         assert isclose(measured_voltage, expected_voltage)
@@ -302,9 +302,9 @@ def test_backend_execute_string_command() -> None:
             """Hook that can be overriden by subclasses to respond to sent data."""
             if data == b"v":
                 version_line: bytes = b"SRcustom:" + self.firmware_version.encode("utf-8")
-                self.append_received_data(version_line, newline=True)
+                self.append_received_data(version_line)
             elif data == b"foo":
-                self.append_received_data(data[::-1], newline=True)
+                self.append_received_data(data[::-1])
 
     backend = SRV4RuggeduinoHardwareBackend(
         "COM0",

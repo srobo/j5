@@ -130,8 +130,8 @@ class SRV4RuggeduinoHardwareBackend(
         try:
             with self._lock:
                 self._serial.write(command.encode("utf-8"))
-
-                return self.read_serial_line(empty=True)
+                # Get all the characters in the input buffer
+                return self.read_serial_chars(self._serial.in_waiting)
         except SerialTimeoutException as e:
             raise CommunicationError(f"Serial Timeout Error: {e}") from e
         except SerialException as e:

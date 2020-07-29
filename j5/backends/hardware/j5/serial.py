@@ -38,6 +38,16 @@ class Seriallike(Protocol):
         """Read a line from the serial port."""
         ...  # pragma: nocover
 
+    @property
+    @abstractmethod
+    def in_waiting(self) -> int:
+        """Return the number of characters currently in the input buffer."""
+        ...  # pragma: nocover
+
+    def read(self, size: int = 1) -> bytes:
+        """Read size bytes from the serial port."""
+        ...  # pragma: nocover
+
     def write(self, data: bytes) -> int:
         """Write data to the serial port."""
         ...  # pragma: nocover
@@ -94,6 +104,25 @@ class SerialHardwareBackend(Backend, metaclass=BackendMeta):
             raise CommunicationError(
                 "No response from board. "
                 "Is it correctly powered?",
+            )
+
+        ldata = bdata.decode('utf-8')
+        return ldata.rstrip()
+
+    def read_serial_chars(self, size: int = 1) -> str:
+        """Read size bytes from the serial interface."""
+        assert self._serial.in_waiting >= size
+
+        try:
+            bdata = self._serial.read(size)
+        except SerialTimeoutException as e:
+            raise CommunicationError(f"Serial Timeout Error: {e}") from e
+        except SerialException as e:
+            raise CommunicationError(f"Serial Error: {e}") from e
+
+        if len(bdata) != size:
+            raise CommunicationError(
+                f"Expected to receive {size} chars, got {len(bdata)} instead.",
             )
 
         ldata = bdata.decode('utf-8')
