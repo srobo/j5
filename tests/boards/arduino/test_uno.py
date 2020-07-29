@@ -1,13 +1,11 @@
-"""Tests for the SourceBots Arduino and related classes."""
-
-from datetime import timedelta
-from typing import TYPE_CHECKING, Optional, Set
+"""Tests for the Arduino Uno base class and related classes."""
+from typing import Optional, Set
 
 import pytest
 
 from j5.backends import Backend
+from j5.boards import Board
 from j5.boards.arduino import ArduinoUno
-from j5.boards.sb import SBArduinoBoard
 from j5.components import (
     LED,
     GPIOPin,
@@ -15,21 +13,16 @@ from j5.components import (
     GPIOPinMode,
     LEDInterface,
 )
-from j5.components.derived import UltrasoundInterface, UltrasoundSensor
-
-if TYPE_CHECKING:
-    from j5.boards import Board  # noqa
 
 
-class MockSBArduinoBackend(
+class MockArduinoUnoBackend(
     GPIOPinInterface,
     LEDInterface,
-    UltrasoundInterface,
     Backend,
 ):
-    """Mock Backend for testing the SourceBots Arduino Uno."""
+    """Mock Backend for testing the Arduino Uno."""
 
-    board = SBArduinoBoard
+    board = ArduinoUno
 
     def set_gpio_pin_mode(self, identifier: int, pin_mode: GPIOPinMode) -> None:
         """Set the GPIO pin mode."""
@@ -68,22 +61,6 @@ class MockSBArduinoBackend(
         """Set the state of the LED."""
         self.write_gpio_pin_digital_state(13, state)
 
-    def get_ultrasound_pulse(
-        self,
-        trigger_pin_identifier: int,
-        echo_pin_identifier: int,
-    ) -> Optional[timedelta]:
-        """Get a timedelta for the ultrasound time."""
-        return timedelta(milliseconds=3)
-
-    def get_ultrasound_distance(
-        self,
-        trigger_pin_identifier: int,
-        echo_pin_identifier: int,
-    ) -> Optional[float]:
-        """Get a distance in metres."""
-        return 1.0
-
     @classmethod
     def discover(cls) -> Set['Board']:
         """Discover boards."""
@@ -97,45 +74,48 @@ class MockSBArduinoBackend(
 
 def test_uno_initialisation() -> None:
     """Test that we can initialise an Uno."""
-    SBArduinoBoard("SERIAL0", MockSBArduinoBackend())
+    ArduinoUno("SERIAL0", MockArduinoUnoBackend())
 
 
 def test_uno_analogue_pin() -> None:
-    """Test that the class doesn't change AnaloguePin."""
-    assert SBArduinoBoard.AnaloguePin is ArduinoUno.AnaloguePin
+    """Test that AnaloguePin has the required values."""
+    assert ArduinoUno.FIRST_ANALOGUE_PIN is ArduinoUno.AnaloguePin.A0
+    assert ArduinoUno.AnaloguePin.A0.value == 14
+    assert ArduinoUno.AnaloguePin.A5.value == 19
+    assert len(ArduinoUno.AnaloguePin) == 6
 
 
 def test_uno_name() -> None:
     """Test the name attribute of the Uno."""
-    uno = SBArduinoBoard("SERIAL0", MockSBArduinoBackend())
+    uno = ArduinoUno("SERIAL0", MockArduinoUnoBackend())
 
     assert uno.name == "Arduino Uno"
 
 
 def test_uno_serial() -> None:
     """Test the serial attribute of the Uno."""
-    uno = SBArduinoBoard("SERIAL0", MockSBArduinoBackend())
+    uno = ArduinoUno("SERIAL0", MockArduinoUnoBackend())
 
     assert uno.serial == "SERIAL0"
 
 
 def test_uno_firmware_version() -> None:
     """Test the firmware_version attribute of the Uno."""
-    uno = SBArduinoBoard("SERIAL0", MockSBArduinoBackend())
+    uno = ArduinoUno("SERIAL0", MockArduinoUnoBackend())
 
     assert uno.firmware_version is None
 
 
 def test_uno_pins() -> None:
     """Test the pins of the Uno."""
-    uno = SBArduinoBoard("SERIAL0", MockSBArduinoBackend())
+    uno = ArduinoUno("SERIAL0", MockArduinoUnoBackend())
 
     assert len(uno.pins) == 12 + 6
 
     for i in range(2, 14):
         assert isinstance(uno.pins[i], GPIOPin)
 
-    for j in SBArduinoBoard.AnaloguePin:
+    for j in ArduinoUno.AnaloguePin:
         assert isinstance(uno.pins[j], GPIOPin)
 
 
@@ -145,7 +125,7 @@ def test_pin_mutability() -> None:
 
     Ensures that GPIOPin objects cannot be lost.
     """
-    uno = SBArduinoBoard("SERIAL0", MockSBArduinoBackend())
+    uno = ArduinoUno("SERIAL0", MockArduinoUnoBackend())
 
     with pytest.raises(TypeError):
         uno.pins[2] = True  # type: ignore
@@ -153,7 +133,7 @@ def test_pin_mutability() -> None:
 
 def test_uno_make_safe() -> None:
     """Test the make_safe method of the Uno."""
-    uno = SBArduinoBoard("SERIAL0", MockSBArduinoBackend())
+    uno = ArduinoUno("SERIAL0", MockArduinoUnoBackend())
     uno.make_safe()
 
 
@@ -162,14 +142,4 @@ def test_uno_supported_components() -> None:
     assert {
         GPIOPin,
         LED,
-        UltrasoundSensor,
-    }.issubset(SBArduinoBoard.supported_components())
-
-
-def test_uno_ultrasound_sensors() -> None:
-    """Test the ultrasound sensors of the arduino."""
-    uno = SBArduinoBoard("SERIAL0", MockSBArduinoBackend())
-    sensor = uno.ultrasound_sensors[3, 4]
-    assert isinstance(sensor, UltrasoundSensor)
-    assert sensor._gpio_trigger._identifier == 3
-    assert sensor._gpio_echo._identifier == 4
+    }.issubset(ArduinoUno.supported_components())

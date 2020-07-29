@@ -1,133 +1,60 @@
 """SourceBots Arduino Hardware Implementation."""
 
 from datetime import timedelta
-from threading import Lock
-from typing import Callable, List, Mapping, Optional, Set, Tuple, Type
+from typing import List, Optional, Type
 
 from serial import Serial, SerialException, SerialTimeoutException
-from serial.tools.list_ports import comports
-from serial.tools.list_ports_common import ListPortInfo
 
 from j5.backends import CommunicationError
 from j5.backends.hardware.env import NotSupportedByHardwareError
-from j5.backends.hardware.j5.serial import SerialHardwareBackend
-from j5.boards import Board
+from j5.backends.hardware.j5.arduino import ArduinoHardwareBackend
 from j5.boards.sb.arduino import SBArduinoBoard
-from j5.components import GPIOPinInterface, GPIOPinMode, LEDInterface
+from j5.components import GPIOPinMode
 from j5.components.derived import UltrasoundInterface
-
-USB_IDS: Set[Tuple[int, int]] = {
-    (0x2341, 0x0043),  # Fake Uno
-    (0x2a03, 0x0043),  # Fake Uno
-    (0x1a86, 0x7523),  # Real Uno
-}
-
-FIRST_ANALOGUE_PIN = 14
-
-
-def is_arduino_uno(port: ListPortInfo) -> bool:
-    """Check if a ListPortInfo represents an Arduino Uno."""
-    return (port.vid, port.pid) in USB_IDS
-
-
-class DigitalPinData:
-    """Contains data about a digital pin."""
-
-    mode: GPIOPinMode
-    state: bool
-
-    def __init__(self, *, mode: GPIOPinMode, state: bool):
-        self.mode = mode
-        self.state = state
 
 
 class SBArduinoHardwareBackend(
-    LEDInterface,
-    GPIOPinInterface,
     UltrasoundInterface,
-    SerialHardwareBackend,
+    ArduinoHardwareBackend,
 ):
-    """
-    Hardware Backend for the Arduino Uno.
-
-    Currently only for the SourceBots Arduino Firmware.
-    """
+    """Hardware Backend for the SourceBots Arduino Uno."""
 
     board = SBArduinoBoard
-
-    @classmethod
-    def discover(
-            cls,
-            comports: Callable = comports,
-            serial_class: Type[Serial] = Serial,
-    ) -> Set[Board]:
-        """Discover all connected motor boards."""
-        # Find all serial ports.
-        ports: List[ListPortInfo] = comports()
-
-        # Get a list of boards from the ports.
-        boards: Set[Board] = set()
-        for port in filter(is_arduino_uno, ports):
-            boards.add(
-                SBArduinoBoard(
-                    port.serial_number,
-                    cls(port.device, serial_class),
-                ),
-            )
-
-        return boards
 
     def __init__(
             self,
             serial_port: str,
             serial_class: Type[Serial] = Serial,
-    ) -> None:
+    ):
         super(SBArduinoHardwareBackend, self).__init__(
             serial_port=serial_port,
             serial_class=serial_class,
-            baud=115200,
-            timeout=timedelta(milliseconds=1250),
         )
 
-        self._lock = Lock()
-
-        self._digital_pins: Mapping[int, DigitalPinData] = {
-            i: DigitalPinData(mode=GPIOPinMode.DIGITAL_INPUT, state=False)
-            for i in range(2, FIRST_ANALOGUE_PIN)
-        }
-
-        with self._lock:
-            count = 0
+        # Verify that the Arduino has booted
+        count = 0
+        line = self.read_serial_line(empty=True)
+        while len(line) == 0:
             line = self.read_serial_line(empty=True)
-            while len(line) == 0:
-                line = self.read_serial_line(empty=True)
-                count += 1
-                if count > 25:
-                    raise CommunicationError(
-                        f"Arduino ({serial_port}) is not responding.",
-                    )
+            count += 1
+            if count > 25:
+                raise CommunicationError(
+                    f"Arduino ({self.serial_port}) is not responding",
+                )
+        if line != "# Booted":
+            raise CommunicationError("Arduino Boot Error.")
+        self._version_line = self.read_serial_line()
 
-            if line != "# Booted":
-                raise CommunicationError("Arduino Boot Error.")
-
-            self._version_line = self.read_serial_line()
-
-        if self.firmware_version is not None:
-            version_ids = tuple(map(int, self.firmware_version.split(".")))
-        else:
-            version_ids = (0, 0, 0)
-
-        if version_ids < (2019, 6, 0):
+        # Verify that the Arduino firmware meets or exceeds the minimum version
+        version_ids = tuple(map(int, self.firmware_version.split(".")))
+        if version_ids < (2019, 6, 0) or len(version_ids) != 3:
             raise CommunicationError(
                 f"Unexpected firmware version: {self.firmware_version},"
                 f" expected at least: \"2019.6.0\".",
             )
 
-        for pin_number in self._digital_pins.keys():
-            self.set_gpio_pin_mode(pin_number, GPIOPinMode.DIGITAL_INPUT)
-
     @property
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str:
         """The firmware version of the board."""
         return self._version_line.split("v")[1]
 
@@ -160,7 +87,8 @@ class SBArduinoHardwareBackend(
             raise CommunicationError(f"Serial Error: {e}") from e
 
     def _update_digital_pin(self, identifier: int) -> None:
-        if identifier >= FIRST_ANALOGUE_PIN:
+        """Write the stored value of a digital pin to the Arduino."""
+        if identifier >= SBArduinoBoard.FIRST_ANALOGUE_PIN:
             raise RuntimeError("Reached an unreachable statement.")
         pin = self._digital_pins[identifier]
         char: str
@@ -177,69 +105,8 @@ class SBArduinoHardwareBackend(
             raise RuntimeError("Reached an unreachable statement.")
         self._command("W", str(identifier), char)
 
-    def set_gpio_pin_mode(self, identifier: int, pin_mode: GPIOPinMode) -> None:
-        """Set the hardware mode of a GPIO pin."""
-        digital_pin_modes = (
-            GPIOPinMode.DIGITAL_INPUT,
-            GPIOPinMode.DIGITAL_INPUT_PULLUP,
-            GPIOPinMode.DIGITAL_OUTPUT,
-        )
-        if identifier < FIRST_ANALOGUE_PIN:
-            # Digital pin
-            if pin_mode in digital_pin_modes:
-                self._digital_pins[identifier].mode = pin_mode
-                self._update_digital_pin(identifier)
-                return
-        else:
-            # Analogue pin
-            if pin_mode is GPIOPinMode.ANALOGUE_INPUT:
-                return
-        raise NotSupportedByHardwareError(
-            f"Arduino Uno does not support mode {pin_mode} on pin {identifier}",
-        )
-
-    def get_gpio_pin_mode(self, identifier: int) -> GPIOPinMode:
-        """Get the hardware mode of a GPIO pin."""
-        if identifier < FIRST_ANALOGUE_PIN:
-            return self._digital_pins[identifier].mode
-        else:
-            return GPIOPinMode.ANALOGUE_INPUT
-
-    def write_gpio_pin_digital_state(self, identifier: int, state: bool) -> None:
-        """Write to the digital state of a GPIO pin."""
-        if identifier >= FIRST_ANALOGUE_PIN:
-            raise NotSupportedByHardwareError(
-                "Digital functions not supported on analogue pins",
-            )
-        if self._digital_pins[identifier].mode is not GPIOPinMode.DIGITAL_OUTPUT:
-            raise ValueError(f"Pin {identifier} mode needs to be DIGITAL_OUTPUT"
-                             f"in order to set the digital state.")
-        self._digital_pins[identifier].state = state
-        self._update_digital_pin(identifier)
-
-    def get_gpio_pin_digital_state(self, identifier: int) -> bool:
-        """Get the last written state of the GPIO pin."""
-        if identifier >= FIRST_ANALOGUE_PIN:
-            raise NotSupportedByHardwareError(
-                "Digital functions not supported on analogue pins",
-            )
-        if self._digital_pins[identifier].mode is not GPIOPinMode.DIGITAL_OUTPUT:
-            raise ValueError(f"Pin {identifier} mode needs to be DIGITAL_OUTPUT"
-                             f"in order to read the digital state.")
-        return self._digital_pins[identifier].state
-
-    def read_gpio_pin_digital_state(self, identifier: int) -> bool:
-        """Read the digital state of the GPIO pin."""
-        if identifier >= FIRST_ANALOGUE_PIN:
-            raise NotSupportedByHardwareError(
-                "Digital functions not supported on analogue pins",
-            )
-        if self._digital_pins[identifier].mode not in (
-            GPIOPinMode.DIGITAL_INPUT,
-            GPIOPinMode.DIGITAL_INPUT_PULLUP,
-        ):
-            raise ValueError(f"Pin {identifier} mode needs to be DIGITAL_INPUT_*"
-                             f"in order to read the digital state.")
+    def _read_digital_pin(self, identifier: int) -> bool:
+        """Read the value of a digital pin from the Arduino."""
         results = self._command("R", str(identifier))
         if len(results) != 1:
             raise CommunicationError(f"Invalid response from Arduino: {results!r}")
@@ -251,13 +118,9 @@ class SBArduinoHardwareBackend(
         else:
             raise CommunicationError(f"Invalid response from Arduino: {result!r}")
 
-    def read_gpio_pin_analogue_value(self, identifier: int) -> float:
-        """Read the analogue voltage of the GPIO pin."""
-        if identifier < FIRST_ANALOGUE_PIN:
-            raise NotSupportedByHardwareError(
-                "Analogue functions not supported on digital pins",
-            )
-        if identifier >= FIRST_ANALOGUE_PIN + 4:
+    def _read_analogue_pin(self, identifier: int) -> float:
+        """Read the value of an analogue pin from the Arduino."""
+        if identifier >= SBArduinoBoard.FIRST_ANALOGUE_PIN + 4:
             raise NotSupportedByHardwareError(
                 "Arduino Uno firmware only supports analogue pins 0-3 (IDs 14-17)",
             )
@@ -269,28 +132,6 @@ class SBArduinoHardwareBackend(
                 voltage = (int(reading) / 1024.0) * 5.0
                 return voltage
         raise CommunicationError(f"Invalid response from Arduino: {results!r}")
-
-    def write_gpio_pin_dac_value(self, identifier: int, scaled_value: float) -> None:
-        """Write a scaled analogue value to the DAC on the GPIO pin."""
-        raise NotSupportedByHardwareError("SB Arduino does not have a DAC")
-
-    def write_gpio_pin_pwm_value(self, identifier: int, duty_cycle: float) -> None:
-        """Write a scaled analogue value to the PWM on the GPIO pin."""
-        raise NotSupportedByHardwareError(
-            "SB Arduino firmware does not implement PWM output",
-        )
-
-    def get_led_state(self, identifier: int) -> bool:
-        """Get the state of an LED."""
-        if identifier != 0:
-            raise ValueError("Arduino Uno only has LED 0 (digital pin 13).")
-        return self.get_gpio_pin_digital_state(13)
-
-    def set_led_state(self, identifier: int, state: bool) -> None:
-        """Set the state of an LED."""
-        if identifier != 0:
-            raise ValueError("Arduino Uno only has LED 0 (digital pin 13)")
-        self.write_gpio_pin_digital_state(13, state)
 
     def get_ultrasound_pulse(
         self,
@@ -336,16 +177,17 @@ class SBArduinoHardwareBackend(
         else:
             return millimetres / 1000.0
 
+    @staticmethod
     def _check_ultrasound_pins(
-        self,
-        trigger_pin_identifier: int,
-        echo_pin_identifier: int,
+            trigger_pin_identifier: int,
+            echo_pin_identifier: int,
     ) -> None:
-        if trigger_pin_identifier >= FIRST_ANALOGUE_PIN:
+        """Verify the validity of a pair of ultrasound pins."""
+        if trigger_pin_identifier >= SBArduinoBoard.FIRST_ANALOGUE_PIN:
             raise NotSupportedByHardwareError(
                 "Ultrasound functions not supported on analogue pins",
             )
-        if echo_pin_identifier >= FIRST_ANALOGUE_PIN:
+        if echo_pin_identifier >= SBArduinoBoard.FIRST_ANALOGUE_PIN:
             raise NotSupportedByHardwareError(
                 "Ultrasound functions not supported on analogue pins",
             )
@@ -355,7 +197,7 @@ class SBArduinoHardwareBackend(
         trigger_pin_identifier: int,
         echo_pin_identifier: int,
     ) -> None:
-        # Ultrasound functions force the pins into particular modes.
+        """Force the pins into the modes required for ultrasound."""
         self._digital_pins[trigger_pin_identifier].mode = GPIOPinMode.DIGITAL_OUTPUT
         self._digital_pins[trigger_pin_identifier].state = False
         self._digital_pins[echo_pin_identifier].mode = GPIOPinMode.DIGITAL_INPUT

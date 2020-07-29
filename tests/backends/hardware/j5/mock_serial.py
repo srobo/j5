@@ -37,9 +37,14 @@ class MockSerial:
         """Ensure all data written to the serial port has been sent."""
         pass
 
+    @property
+    def in_waiting(self) -> int:
+        """Return the number of characters currently in the input buffer."""
+        return len(self._receive_buffer)
+
     def read(self, size: int = 1) -> bytes:
         """Read size bytes from the input buffer."""
-        assert len(self._receive_buffer) >= size
+        assert self.in_waiting >= size
 
         data = self._receive_buffer[:size]
         self._receive_buffer = self._receive_buffer[size:]

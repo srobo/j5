@@ -1,110 +1,28 @@
 """Classes for the SourceBots Arduino."""
-from enum import IntEnum
-from typing import Mapping, Optional, Set, Tuple, Type, Union, cast
+from typing import Set, Tuple, Type, cast
 
 from j5.backends import Backend
-from j5.boards import Board
-from j5.components import (
-    LED,
-    Component,
-    GPIOPin,
-    GPIOPinInterface,
-    GPIOPinMode,
-    LEDInterface,
-)
+from j5.boards.arduino.uno import ArduinoUno
+from j5.components import LED, Component, DerivedComponent, GPIOPin
 from j5.components.derived import UltrasoundInterface, UltrasoundSensor
-from j5.types import ImmutableDict
 
 
-class AnaloguePin(IntEnum):
-    """Analogue Pins numbering."""
-
-    A0 = 14
-    A1 = 15
-    A2 = 16
-    A3 = 17
-    A4 = 18
-    A5 = 19
-
-
-PinNumber = Union[int, AnaloguePin]
-
-
-class SBArduinoBoard(Board):
+class SBArduinoBoard(ArduinoUno):
     """SourceBots Arduino Board."""
 
-    _led: LED
-    _digital_pins: Mapping[int, GPIOPin]
-    _analogue_pins: Mapping[AnaloguePin, GPIOPin]
-    name: str = "Arduino Uno"
+    FIRMWARE_MODES: Set[Type[DerivedComponent]] = {UltrasoundSensor}
 
     def __init__(
             self,
             serial: str,
             backend: Backend,
     ):
-        self._serial = serial
-        self._backend = backend
+        super().__init__(serial, backend)
 
-        self._led = LED(0, cast(LEDInterface, self._backend))
-
-        # Digital Pins
-        # Note that pins 0 and 1 are used for serial comms.
-        self._digital_pins = {
-            i: GPIOPin(
-                i,
-                cast(GPIOPinInterface, self._backend),
-                initial_mode=GPIOPinMode.DIGITAL_INPUT,
-                hardware_modes={
-                    GPIOPinMode.DIGITAL_INPUT,
-                    GPIOPinMode.DIGITAL_INPUT_PULLUP,
-                    GPIOPinMode.DIGITAL_OUTPUT,
-                },
-                firmware_modes={UltrasoundSensor},
-            )
-            for i in range(2, 14)
-        }
-
-        self._analogue_pins = {
-            i: GPIOPin(
-                i,
-                cast(GPIOPinInterface, self._backend),
-                initial_mode=GPIOPinMode.ANALOGUE_INPUT,
-                hardware_modes={
-                    GPIOPinMode.ANALOGUE_INPUT,
-                    GPIOPinMode.DIGITAL_INPUT,
-                    GPIOPinMode.DIGITAL_INPUT_PULLUP,
-                    GPIOPinMode.DIGITAL_OUTPUT,
-                },
-            )
-            for i in AnaloguePin
-        }
+        for pin in self._digital_pins.values():
+            pin.firmware_modes = SBArduinoBoard.FIRMWARE_MODES
 
         self.ultrasound_sensors = UltrasoundSensors(self)
-
-    @property
-    def serial(self) -> str:
-        """Get the serial number."""
-        return self._serial
-
-    @property
-    def firmware_version(self) -> Optional[str]:
-        """Get the firmware version of the board."""
-        return self._backend.firmware_version
-
-    @property
-    def pins(self) -> ImmutableDict[PinNumber, GPIOPin]:
-        """Get the GPIO pins."""
-        pins = ImmutableDict[PinNumber, GPIOPin]({
-            **cast(Mapping[PinNumber, GPIOPin], self._analogue_pins),
-            **cast(Mapping[PinNumber, GPIOPin], self._digital_pins),
-
-        })
-        return pins
-
-    def make_safe(self) -> None:
-        """Make this board safe."""
-        pass
 
     @staticmethod
     def supported_components() -> Set[Type[Component]]:
@@ -128,7 +46,10 @@ class UltrasoundSensors:
     def __init__(self, arduino: SBArduinoBoard):
         self._arduino = arduino
 
-    def __getitem__(self, key: Tuple[PinNumber, PinNumber]) -> UltrasoundSensor:
+    def __getitem__(
+        self,
+        key: Tuple[ArduinoUno.PinNumber, ArduinoUno.PinNumber],
+    ) -> UltrasoundSensor:
         """Get an ultrasound sensor with the given pin configuration."""
         trigger_pin, echo_pin = key
         return UltrasoundSensor(

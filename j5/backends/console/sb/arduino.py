@@ -66,7 +66,7 @@ class SBArduinoConsoleBackend(
     def write_gpio_pin_digital_state(self, identifier: int, state: bool) -> None:
         """Write to the digital state of a GPIO pin."""
         if self._pins[identifier].mode is not GPIOPinMode.DIGITAL_OUTPUT:
-            raise ValueError(f"Pin {identifier} mode needs to be DIGITAL_OUTPUT"
+            raise ValueError(f"Pin {identifier} mode needs to be DIGITAL_OUTPUT "
                              f"in order to set the digital state.")
         self._console.info(f"Set pin {identifier} state to {state}")
         self._pins[identifier].digital_state = state
@@ -74,7 +74,7 @@ class SBArduinoConsoleBackend(
     def get_gpio_pin_digital_state(self, identifier: int) -> bool:
         """Get the last written state of the GPIO pin."""
         if self._pins[identifier].mode is not GPIOPinMode.DIGITAL_OUTPUT:
-            raise ValueError(f"Pin {identifier} mode needs to be DIGITAL_OUTPUT"
+            raise ValueError(f"Pin {identifier} mode needs to be DIGITAL_OUTPUT "
                              f"in order to read the digital state.")
         return self._pins[identifier].digital_state
 
@@ -85,15 +85,15 @@ class SBArduinoConsoleBackend(
             GPIOPinMode.DIGITAL_INPUT,
             GPIOPinMode.DIGITAL_INPUT_PULLDOWN,
         ]:
-            raise ValueError(f"Pin {identifier} mode needs to be DIGITAL_INPUT_*"
+            raise ValueError(f"Pin {identifier} mode needs to be DIGITAL_INPUT_* "
                              f"in order to read the digital state.")
         return self._console.read(f"Pin {identifier} digital state [true/false]", bool)
 
     def read_gpio_pin_analogue_value(self, identifier: int) -> float:
         """Read the scaled analogue value of the GPIO pin."""
         if self._pins[identifier].mode is not GPIOPinMode.ANALOGUE_INPUT:
-            raise ValueError(f"Pin {identifier} mode needs to be ANALOGUE_INPUT"
-                             f"in order to read the digital state.")
+            raise ValueError(f"Pin {identifier} mode needs to be ANALOGUE_INPUT "
+                             f"in order to read the analogue value.")
         return self._console.read(f"Pin {identifier} ADC state [float]", float)
 
     def write_gpio_pin_dac_value(self, identifier: int, scaled_value: float) -> None:
