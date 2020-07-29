@@ -39,7 +39,7 @@ class SRV4MotorBoardHardwareBackend(
     def discover(
             cls,
             find: Callable = comports,
-            serial_class: Type[Seriallike] = Serial,
+            serial_class: Type[Seriallike] = cast(Type[Seriallike], Serial),  # noqa: B008
     ) -> Set[Board]:
         """Discover all connected motor boards."""
         # Find all serial ports.
@@ -60,7 +60,11 @@ class SRV4MotorBoardHardwareBackend(
 
         return boards
 
-    def __init__(self, serial_port: str, serial_class: Type[Seriallike] = Serial) -> None:
+    def __init__(
+        self,
+        serial_port: str,
+        serial_class: Type[Seriallike] = cast(Type[Seriallike], Serial),  # noqa: B008
+    ) -> None:
         super(SRV4MotorBoardHardwareBackend, self).__init__(
             serial_port=serial_port,
             serial_class=serial_class,

@@ -3,14 +3,14 @@
 from abc import abstractmethod
 from datetime import timedelta
 from threading import Lock
-from typing import Callable, List, Mapping, Optional, Set, Tuple, Type
+from typing import Callable, List, Mapping, Optional, Set, Tuple, Type, cast
 
 from serial import Serial
 from serial.tools.list_ports import comports
 from serial.tools.list_ports_common import ListPortInfo
 
 from j5.backends.hardware.env import NotSupportedByHardwareError
-from j5.backends.hardware.j5.serial import SerialHardwareBackend
+from j5.backends.hardware.j5.serial import SerialHardwareBackend, Seriallike
 from j5.boards import Board
 from j5.boards.arduino import ArduinoUno
 from j5.components import GPIOPinInterface, GPIOPinMode, LEDInterface
@@ -79,7 +79,7 @@ class ArduinoHardwareBackend(
     ) -> None:
         super(ArduinoHardwareBackend, self).__init__(
             serial_port=serial_port,
-            serial_class=serial_class,
+            serial_class=cast(Type[Seriallike], serial_class),  # noqa: B008
             baud=baud,
             timeout=timeout,
         )

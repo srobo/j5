@@ -1,7 +1,7 @@
 """Abstract hardware backend implementation provided by j5 for serial comms."""
 from abc import abstractmethod
 from datetime import timedelta
-from typing import Optional, Set, Type
+from typing import Optional, Set, Type, cast
 
 from serial import Serial, SerialException, SerialTimeoutException
 from typing_extensions import Protocol
@@ -61,7 +61,8 @@ class SerialHardwareBackend(Backend, metaclass=BackendMeta):
     def __init__(
             self,
             serial_port: str,
-            serial_class: Type[Seriallike] = Serial,
+            *,
+            serial_class: Type[Seriallike] = cast(Type[Seriallike], Serial),  # noqa: B008
             baud: int = 115200,
             timeout: timedelta = DEFAULT_TIMEOUT,
     ) -> None:
