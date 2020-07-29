@@ -112,7 +112,9 @@ class SerialHardwareBackend(Backend, metaclass=BackendMeta):
 
     def read_serial_chars(self, size: int = 1) -> str:
         """Read size bytes from the serial interface."""
-        assert self._serial.in_waiting >= size
+        if size > self._serial.in_waiting:
+            raise ValueError(f"Tried to read {size} bytes from the serial buffer, "
+                             f"only {self._serial.in_waiting} were available.")
 
         try:
             bdata = self._serial.read(size)
