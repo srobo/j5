@@ -119,9 +119,10 @@ def test_board_group_boards_zero() -> None:
 def test_board_group_board_by_serial_number() -> None:
     """Test that the boards property works with serial indices."""
     board_group = BoardGroup.get_board_group(MockBoard, OneBoardMockBackend)
-    assert type(
+    assert isinstance(
         board_group[list(board_group._boards.values())[0].serial_number],
-    ) == MockBoard
+        MockBoard,
+    )
 
 
 def test_board_group_board_by_unknown() -> None:

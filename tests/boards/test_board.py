@@ -36,7 +36,7 @@ def test_testing_board_serial_number() -> None:
     tb = MockBoard("TESTSERIAL1")
 
     assert tb.serial_number == "TESTSERIAL1"
-    assert type(tb.serial_number) == str
+    assert isinstance(tb.serial_number, str)
 
 
 def test_testing_board_str() -> None:
