@@ -3,14 +3,14 @@ from math import isclose
 from typing import Optional, cast
 
 import pytest
-from serial import SerialTimeoutException, SerialException
+from serial import SerialException, SerialTimeoutException
+from tests.backends.hardware.j5.mock_serial import MockSerial
 
 from j5.backends import CommunicationError
 from j5.backends.hardware import NotSupportedByHardwareError
 from j5.backends.hardware.sr.v4 import SRV4RuggeduinoHardwareBackend
 from j5.boards.arduino import ArduinoUno
 from j5.components import GPIOPinMode
-from tests.backends.hardware.j5.mock_serial import MockSerial
 
 # Pins on the digital-analogue border
 EDGE_ANALOGUE_PIN = ArduinoUno.FIRST_ANALOGUE_PIN
@@ -177,10 +177,10 @@ def test_backend_update_digital_pin_requires_pin_mode() -> None:
         backend._update_digital_pin(pin)
 
 
-def check_sent_data(serial: RuggeduinoSerial, command: bytes, pin: Optional[int]):
+def check_sent_data(serial: RuggeduinoSerial, command: bytes, pin: Optional[int]) -> None:
     """Verify the data sent in a Ruggeduino command."""
     serial.check_sent_data(
-        command + SRV4RuggeduinoHardwareBackend.encode_pin(pin).encode("utf-8")
+        command + SRV4RuggeduinoHardwareBackend.encode_pin(pin).encode("utf-8"),
     )
 
 
