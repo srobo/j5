@@ -9,10 +9,9 @@ starting with "```".
 
 import argparse
 from pathlib import Path
+from typing import Set
 
-ignored_flake8_rules = {
-    "D100",  # missing module-level docstring
-}
+ignored_flake8_rules: Set[str] = set()
 
 
 class SnippetWriter:
