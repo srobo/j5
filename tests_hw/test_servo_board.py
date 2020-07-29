@@ -43,7 +43,7 @@ if __name__ == '__main__':
     print("Waiting for start button...")
     r.power_board.wait_for_start_flash()
 
-    print(f"Serial Number: {r.servo_board.serial}")
+    print(f"Serial Number: {r.servo_board.serial_number}")
     print(f"Firmware version: {r.servo_board.firmware_version}")
 
     for servo in r.servo_board.servos:

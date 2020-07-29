@@ -68,11 +68,11 @@ def test_servo_board_firmware_version() -> None:
     assert sb.firmware_version is None
 
 
-def test_servo_board_serial() -> None:
+def test_servo_board_serial_number() -> None:
     """Test the serial attribute of the servo board."""
     sb = ServoBoard("SERIAL0", MockServoBoardBackend())
 
-    assert sb.serial == "SERIAL0"
+    assert sb.serial_number == "SERIAL0"
 
 
 def test_servo_board_make_safe() -> None:

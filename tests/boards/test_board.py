@@ -31,12 +31,12 @@ def test_testing_board_name() -> None:
     assert type(tb.name) == str
 
 
-def test_testing_board_serial() -> None:
+def test_testing_board_serial_number() -> None:
     """Test the serial property of the board class."""
     tb = MockBoard("TESTSERIAL1")
 
-    assert tb.serial == "TESTSERIAL1"
-    assert type(tb.serial) == str
+    assert tb.serial_number == "TESTSERIAL1"
+    assert isinstance(tb.serial_number, str)
 
 
 def test_testing_board_str() -> None:
@@ -49,7 +49,7 @@ def test_testing_board_str() -> None:
 def test_testing_board_repr() -> None:
     """Test the __repr__ method of the board class."""
     tb = MockBoard("TESTSERIAL1")
-    assert repr(tb) == "<MockBoard serial=TESTSERIAL1>"
+    assert repr(tb) == "<MockBoard serial_number=TESTSERIAL1>"
 
 
 def test_discover() -> None:

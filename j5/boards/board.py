@@ -34,7 +34,7 @@ class Board(metaclass=ABCMeta):
 
     def __str__(self) -> str:
         """A string representation of this board."""
-        return f"{self.name} - {self.serial}"
+        return f"{self.name} - {self.serial_number}"
 
     def __new__(cls, *args, **kwargs):  # type: ignore
         """Ensure any instantiated board is added to the boards list."""
@@ -44,7 +44,7 @@ class Board(metaclass=ABCMeta):
 
     def __repr__(self) -> str:
         """A representation of this board."""
-        return f"<{self.__class__.__name__} serial={self.serial}>"
+        return f"<{self.__class__.__name__} serial_number={self.serial_number}>"
 
     @property
     @abstractmethod
@@ -54,7 +54,7 @@ class Board(metaclass=ABCMeta):
 
     @property
     @abstractmethod
-    def serial(self) -> str:
+    def serial_number(self) -> str:
         """The serial number of the board."""
         raise NotImplementedError  # pragma: no cover
 

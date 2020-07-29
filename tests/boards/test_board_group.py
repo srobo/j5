@@ -116,10 +116,13 @@ def test_board_group_boards_zero() -> None:
         board_group._boards["SERIAL0"]
 
 
-def test_board_group_board_by_serial() -> None:
+def test_board_group_board_by_serial_number() -> None:
     """Test that the boards property works with serial indices."""
     board_group = BoardGroup.get_board_group(MockBoard, OneBoardMockBackend)
-    assert type(board_group[list(board_group._boards.values())[0].serial]) == MockBoard
+    assert isinstance(
+        board_group[list(board_group._boards.values())[0].serial_number],
+        MockBoard,
+    )
 
 
 def test_board_group_board_by_unknown() -> None:
@@ -200,9 +203,9 @@ def test_board_group_iteration() -> None:
 def test_board_group_iteration_sorted_by_serial() -> None:
     """Test that the boards yielded by iterating over a BoardGroup are sorted."""
     board_group = BoardGroup.get_board_group(MockBoard, TwoBoardsMockBackend)
-    serials = [board.serial for board in board_group]
-    assert len(serials) == 2
-    assert serials[0] < serials[1]
+    serial_numbers = [board.serial_number for board in board_group]
+    assert len(serial_numbers) == 2
+    assert serial_numbers[0] < serial_numbers[1]
 
 
 def test_board_group_simultaneous_iteration() -> None:

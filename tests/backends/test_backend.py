@@ -30,7 +30,7 @@ def test_backend_has_required_interface() -> None:
             return "Test Board 2"
 
         @property
-        def serial(self) -> str:
+        def serial_number(self) -> str:
             """The serial number of the board."""
             return "TEST2"
 

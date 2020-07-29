@@ -98,7 +98,7 @@ class ArduinoUno(Board):
         }
 
     @property
-    def serial(self) -> str:
+    def serial_number(self) -> str:
         """Get the serial number."""
         return self._serial
 

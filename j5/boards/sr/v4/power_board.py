@@ -71,7 +71,7 @@ class PowerBoard(Board):
         self._error_led = LED(1, cast("LEDInterface", self._backend))
 
     @property
-    def serial(self) -> str:
+    def serial_number(self) -> str:
         """Get the serial number."""
         return self._serial
 

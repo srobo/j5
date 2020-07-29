@@ -132,7 +132,7 @@ def test_backend_discover() -> None:
     assert len(found_boards) == 2
     assert all(type(board) is MotorBoard for board in found_boards)
 
-    assert all((int(board.serial[6:])) < 2 for board in found_boards)
+    assert all((int(board.serial_number[6:])) < 2 for board in found_boards)
 
 
 def test_backend_send_command() -> None:
