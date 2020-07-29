@@ -1,13 +1,12 @@
 """Test the Student Robotics Ruggeduino."""
 
+import logging
 from time import sleep
 
 from j5 import BaseRobot, BoardGroup
 from j5.backends.hardware.sr.v4.ruggeduino import SRV4RuggeduinoHardwareBackend
 from j5.boards.sr.v4.ruggeduino import Ruggeduino
 from j5.components.gpio_pin import GPIOPinMode
-
-import logging
 
 LOGGER = logging.Logger(__name__)
 
