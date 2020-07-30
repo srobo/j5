@@ -2,6 +2,7 @@
 
 from .motor_board import MotorBoard
 from .power_board import PowerBoard, PowerOutputGroup, PowerOutputPosition
+from .ruggeduino import Ruggeduino
 from .servo_board import ServoBoard
 
 __all__ = [
@@ -9,5 +10,6 @@ __all__ = [
     'PowerBoard',
     'PowerOutputGroup',
     'PowerOutputPosition',
+    'Ruggeduino',
     'ServoBoard',
 ]
