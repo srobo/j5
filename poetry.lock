@@ -461,10 +461,14 @@ description = "A fully featured, pythonic library for representing and using qua
 name = "pyquaternion"
 optional = false
 python-versions = "*"
-version = "0.9.5"
+version = "0.9.9"
 
 [package.dependencies]
 numpy = "*"
+
+[package.extras]
+dev = ["mkdocs"]
+test = ["nose"]
 
 [[package]]
 category = "main"
@@ -779,6 +783,7 @@ zoloto-vision = ["zoloto"]
 
 [metadata]
 content-hash = "7f03c17465714c756660277a55f11324c6ab60636c74b519b50bbc24863c9f07"
+lock-version = "1.0"
 python-versions = "^3.6"
 
 [metadata.files]
@@ -1063,9 +1068,9 @@ pyparsing = [
     {file = "pyparsing-2.4.6.tar.gz", hash = "sha256:4c830582a84fb022400b85429791bc551f1f4871c33f23e44f353119e92f969f"},
 ]
 pyquaternion = [
-    {file = "pyquaternion-0.9.5-py2-none-any.whl", hash = "sha256:9da8a22375783c1d5f2d65d195b4eb6c1ce2c5a5cab4700860b3bacc4dacb460"},
-    {file = "pyquaternion-0.9.5-py3-none-any.whl", hash = "sha256:bac5945d08b9a2f4106dc76206e40f353c7240fdf37a370e13b03113c135f59b"},
-    {file = "pyquaternion-0.9.5.tar.gz", hash = "sha256:2d89d19259d62a8fbd25219eee7dacc1f6bb570becb70e1e883f622597c7d81d"},
+    {file = "pyquaternion-0.9.9-py2-none-any.whl", hash = "sha256:d0eb69219ca99bfcbc25c1e2c4f82e58c61dce3e907e929f13c5f3615e4b6518"},
+    {file = "pyquaternion-0.9.9-py3-none-any.whl", hash = "sha256:e65f6e3f7b1fdf1a9e23f82434334a1ae84f14223eee835190cd2e841f8172ec"},
+    {file = "pyquaternion-0.9.9.tar.gz", hash = "sha256:b1f61af219cb2fe966b5fb79a192124f2e63a3f7a777ac3cadf2957b1a81bea8"},
 ]
 pyserial = [
     {file = "pyserial-3.4-py2.py3-none-any.whl", hash = "sha256:e0770fadba80c31013896c7e6ef703f72e7834965954a78e71a3049488d4d7d8"},
