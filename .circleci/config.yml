@@ -6,6 +6,7 @@ workflows:
       - test-3.6
       - test-3.7
       - test-3.8
+      - test-3.9
 
 jobs:
   test-3.6: &template
@@ -46,3 +47,7 @@ jobs:
     <<: *template
     docker:
       - image: j5api/ci:3.8
+  test-3.9:
+    <<: *template
+    docker:
+      - image: j5api/ci:3.9
