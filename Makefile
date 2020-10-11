@@ -26,7 +26,7 @@ test-ci:
 	$(CMD) pytest --cov=$(PYMODULE) $(TESTS) --cov-report xml
 
 isort:
-	$(CMD) isort --recursive $(PYMODULE) $(TESTS) $(EXTRACODE)
+	$(CMD) isort $(PYMODULE) $(TESTS) $(EXTRACODE)
 
 extract_snippets:
 	rm -rf $(SNIPPETS)
