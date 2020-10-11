@@ -536,7 +536,7 @@ socks = ["PySocks (>=1.5.6,<1.5.7 || >1.5.7)", "win-inet-pton"]
 
 [[package]]
 name = "rope"
-version = "0.17.0"
+version = "0.18.0"
 description = "a python refactoring library..."
 category = "dev"
 optional = false
@@ -762,7 +762,7 @@ zoloto-vision = ["zoloto"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6"
-content-hash = "203ff3c24e72ede762e437f2d2203c5cc0fa06c1b7f5f2735d2e568b8729ba2c"
+content-hash = "484b884d32c7b15bd6beb87bb7978b7e75b9173abd4d0725f8e288829200b42c"
 
 [metadata.files]
 alabaster = [
@@ -1075,7 +1075,7 @@ requests = [
     {file = "requests-2.23.0.tar.gz", hash = "sha256:b3f43d496c6daba4493e7c431722aeb7dbc6288f52a6e04e7b6023b0247817e6"},
 ]
 rope = [
-    {file = "rope-0.17.0.tar.gz", hash = "sha256:658ad6705f43dcf3d6df379da9486529cf30e02d9ea14c5682aa80eb33b649e1"},
+    {file = "rope-0.18.0.tar.gz", hash = "sha256:786b5c38c530d4846aa68a42604f61b4e69a493390e3ca11b88df0fbfdc3ed04"},
 ]
 six = [
     {file = "six-1.14.0-py2.py3-none-any.whl", hash = "sha256:8f3cd2e254d8f793e7f3d6d9df77b92252b52637291d0f0da013c76ea2724b6c"},
