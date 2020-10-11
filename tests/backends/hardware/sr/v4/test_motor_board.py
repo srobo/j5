@@ -3,7 +3,6 @@
 from typing import List, cast
 
 import pytest
-from tests.backends.hardware.j5.mock_serial import MockSerial
 
 from j5.backends import CommunicationError
 from j5.backends.hardware.sr.v4.motor_board import (
@@ -17,6 +16,7 @@ from j5.backends.hardware.sr.v4.motor_board import (
 )
 from j5.boards.sr.v4 import MotorBoard
 from j5.components import MotorSpecialState
+from tests.backends.hardware.j5.mock_serial import MockSerial
 
 
 def test_cmd_constants() -> None:

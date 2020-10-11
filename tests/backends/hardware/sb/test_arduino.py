@@ -6,13 +6,13 @@ from typing import List, Optional, cast
 
 import pytest
 from serial import SerialException, SerialTimeoutException
-from tests.backends.hardware.j5.mock_serial import MockSerial
 
 from j5.backends import CommunicationError
 from j5.backends.hardware.env import NotSupportedByHardwareError
 from j5.backends.hardware.sb.arduino import SBArduinoHardwareBackend
 from j5.boards.arduino import ArduinoUno
 from j5.components import GPIOPinMode
+from tests.backends.hardware.j5.mock_serial import MockSerial
 
 # Pins on the digital-analogue border
 EDGE_ANALOGUE_PIN = ArduinoUno.FIRST_ANALOGUE_PIN

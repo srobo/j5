@@ -1,11 +1,11 @@
 """Tests for the SRv4 Motor Board console backend."""
 
 import pytest
-from tests.backends.console.helpers import MockConsole
 
 from j5.backends.console.sr.v4.motor_board import SRV4MotorBoardConsoleBackend
 from j5.boards.sr.v4.motor_board import MotorBoard
 from j5.components.motor import MotorSpecialState
+from tests.backends.console.helpers import MockConsole
 
 
 def test_backend_initialisation() -> None:

@@ -1,10 +1,10 @@
 """Tests for the SR v4 Servo Board console backend."""
 
 import pytest
-from tests.backends.console.helpers import MockConsole
 
 from j5.backends.console.sr.v4.servo_board import SRV4ServoBoardConsoleBackend
 from j5.boards.sr.v4.servo_board import ServoBoard
+from tests.backends.console.helpers import MockConsole
 
 
 def test_backend_initialisation() -> None:

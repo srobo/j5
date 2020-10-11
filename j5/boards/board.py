@@ -11,8 +11,9 @@ from typing import TYPE_CHECKING, Dict, Optional, Set, Type, TypeVar
 from j5.backends import Backend
 
 if TYPE_CHECKING:  # pragma: nocover
-    from j5.components import Component  # noqa: F401
     from typing import Callable, Union
+
+    from j5.components import Component  # noqa: F401
 
     SignalHandler = Union[
         Callable[[signal.Signals, FrameType], None],
