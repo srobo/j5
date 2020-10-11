@@ -7,9 +7,7 @@ from j5.components.servo import Servo, ServoInterface
 from j5.types import ImmutableList
 
 if TYPE_CHECKING:  # pragma: no cover
-    from j5.components import (  # noqa: F401
-        Component,
-    )
+    from j5.components import Component  # noqa: F401
 
 
 class ServoBoard(Board):

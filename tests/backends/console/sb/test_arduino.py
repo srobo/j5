@@ -4,11 +4,11 @@ from datetime import timedelta
 from math import isclose
 
 import pytest
-from tests.backends.console.helpers import MockConsole
 
 from j5.backends.console.sb.arduino import SBArduinoConsoleBackend
 from j5.boards.sb.arduino import SBArduinoBoard
 from j5.components.gpio_pin import GPIOPinMode
+from tests.backends.console.helpers import MockConsole
 
 
 def test_backend_initialisation() -> None:

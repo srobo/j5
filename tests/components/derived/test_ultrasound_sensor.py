@@ -3,7 +3,6 @@ from datetime import timedelta
 from typing import Optional
 
 import pytest
-from tests.components.test_gpio_pin import MockGPIOPinDriver
 
 from j5.components import NotSupportedByComponentError
 from j5.components.derived.ultrasound import (
@@ -11,6 +10,7 @@ from j5.components.derived.ultrasound import (
     UltrasoundSensor,
 )
 from j5.components.gpio_pin import GPIOPin, GPIOPinMode
+from tests.components.test_gpio_pin import MockGPIOPinDriver
 
 
 class MockUltrasoundSensorDriver(UltrasoundInterface):

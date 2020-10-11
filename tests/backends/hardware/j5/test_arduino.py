@@ -7,13 +7,13 @@ from typing import List, Optional, Set, Tuple, Type, cast
 import pytest
 from serial import Serial
 from serial.tools.list_ports_common import ListPortInfo
-from tests.backends.hardware.j5.mock_serial import MockSerial
 
 from j5.backends.hardware import NotSupportedByHardwareError
 from j5.backends.hardware.j5.arduino import ArduinoHardwareBackend
 from j5.boards import Board
 from j5.boards.arduino import ArduinoUno
 from j5.components import GPIOPinMode
+from tests.backends.hardware.j5.mock_serial import MockSerial
 
 # Pins on the digital-analogue border
 EDGE_ANALOGUE_PIN = ArduinoUno.FIRST_ANALOGUE_PIN

@@ -16,15 +16,16 @@ from j5.components import (
 )
 
 if TYPE_CHECKING:  # pragma: no cover
-    from j5.components import (  # noqa: F401
-        Component,
-        ButtonInterface,
-        PowerOutputInterface,
-        PiezoInterface,
-        BatterySensorInterface,
-        LEDInterface,
-    )
     from typing import Type  # noqa: F401
+
+    from j5.components import (  # noqa: F401
+        BatterySensorInterface,
+        ButtonInterface,
+        Component,
+        LEDInterface,
+        PiezoInterface,
+        PowerOutputInterface,
+    )
 
 
 class PowerOutputPosition(Enum):
