@@ -447,11 +447,14 @@ test = ["nose"]
 
 [[package]]
 name = "pyserial"
-version = "3.4"
+version = "3.5"
 description = "Python Serial Port Extension"
 category = "main"
 optional = false
 python-versions = "*"
+
+[package.extras]
+cp2110 = ["hidapi"]
 
 [[package]]
 name = "pytest"
@@ -1038,8 +1041,8 @@ pyquaternion = [
     {file = "pyquaternion-0.9.9.tar.gz", hash = "sha256:b1f61af219cb2fe966b5fb79a192124f2e63a3f7a777ac3cadf2957b1a81bea8"},
 ]
 pyserial = [
-    {file = "pyserial-3.4-py2.py3-none-any.whl", hash = "sha256:e0770fadba80c31013896c7e6ef703f72e7834965954a78e71a3049488d4d7d8"},
-    {file = "pyserial-3.4.tar.gz", hash = "sha256:6e2d401fdee0eab996cf734e67773a0143b932772ca8b42451440cfed942c627"},
+    {file = "pyserial-3.5-py2.py3-none-any.whl", hash = "sha256:c4451db6ba391ca6ca299fb3ec7bae67a5c55dde170964c7a14ceefec02f2cf0"},
+    {file = "pyserial-3.5.tar.gz", hash = "sha256:3c77e014170dfffbd816e6ffc205e9842efb10be9f58ec16d3e8675b4925cddb"},
 ]
 pytest = [
     {file = "pytest-6.1.1-py3-none-any.whl", hash = "sha256:7a8190790c17d79a11f847fba0b004ee9a8122582ebff4729a082c109e81a4c9"},
