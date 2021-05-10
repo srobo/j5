@@ -26,7 +26,7 @@ typing-extensions = "^3.7"
 cached_property = "^1.5.1"
 
 [tool.poetry.dev-dependencies]
-flake8 = "^3.8"
+flake8 = "^3.9"
 flake8-commas = "^2.0"
 flake8-comprehensions = "^3.2"
 flake8-debugger = "^3.2"
