@@ -98,7 +98,7 @@ def test_marker_orientation() -> None:
     assert m.orientation is None
 
     m = Marker(0, get_random_coordinate(), orientation=Orientation(quaternion))
-    assert m.orientation is not None 
+    assert m.orientation is not None
     assert m.orientation.quaternion is quaternion
 
 

@@ -760,7 +760,7 @@ zoloto-vision = ["zoloto"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6"
-content-hash = "0f89e1051755e612cf9237c40d3f2016041d65639440ecc578ee258ca4f3a69f"
+content-hash = "18568500f024a8b140f1db176401ac978dbda707f7b226e662df7906b2c7a9bf"
 
 [metadata.files]
 alabaster = [
