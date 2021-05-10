@@ -92,12 +92,13 @@ def test_marker_pixel_centre() -> None:
 
 def test_marker_orientation() -> None:
     """Test that we can store and retrieve the orientation."""
-    quaternion = Quaternion()
+    quaternion = Quaternion.random()
 
     m = Marker(0, get_random_coordinate())
     assert m.orientation is None
 
     m = Marker(0, get_random_coordinate(), orientation=Orientation(quaternion))
+    assert m.orientation is not None 
     assert m.orientation.quaternion is quaternion
 
 
@@ -142,7 +143,7 @@ def test_marker_list_friendly_error() -> None:
 
     with pytest.raises(IndexError) as e:
         marker_list[0]
-
+        assert e is not None
         assert e.value == "Trying to index an empty list"
 
     # Check that it still does it normally too.
@@ -151,7 +152,7 @@ def test_marker_list_friendly_error() -> None:
 
     with pytest.raises(IndexError) as e:
         marker_list[1]
-
+        assert e is not None
         assert e.value != "Trying to index an empty list"
 
 
