@@ -1,6 +1,6 @@
 """Tests for orientation class."""
 
-from numpy import allclose
+from numpy import allclose  # type: ignore
 from pyquaternion import Quaternion
 
 from j5.vision.orientation import Orientation

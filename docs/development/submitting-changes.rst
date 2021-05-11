@@ -70,10 +70,10 @@ Guidelines for Reviewers
 When reviewing, ensure that you consider the following:
 
 * Most importantly, give *positive* feedback. Our contributors dedicate their time and energy to submitting changes and
-we need to ensure that we appreciated that.
+    we need to ensure that we appreciated that.
 * Check the results of the CI. Has it failed? Consider suggesting to the contributor why?
 * Where possible, use the "Suggest Changes" feature on GitHub, this makes it easy to show what you are suggesting, and
-allows the contributor to instantly apply your suggestions.
+    allows the contributor to instantly apply your suggestions.
 * In general, if you think many changes will be needed, focus on the major changes in the first round of review.
 * Check any referenced issues to ensure that you have context for the changes.
 
@@ -85,4 +85,4 @@ some circumstances where this may not be desired:
 
 * Contributor has requested multiple review approvals
 * Changes would be breaking and we cannot release a major version currently. This issue will be mitigated with LTS
-branches, but we do not have any of these at this time.
+    branches, but we do not have any of these at this time.

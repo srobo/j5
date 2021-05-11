@@ -13,6 +13,7 @@ from j5.backends.hardware.j5.raw_usb import (
 )
 from j5.boards import Board
 from j5.components import Component
+from tests.backends.hardware.sr.v4.test_power_board import MockUSBContext
 
 
 def test_read_command() -> None:
@@ -80,6 +81,11 @@ class MockRawUSBDevice(usb.core.Device):
     def serial_number(self) -> str:
         """Get the serial number of the USB device."""
         raise usb.core.USBError("Oh no.")
+
+    @property
+    def _ctx(self) -> MockUSBContext:
+        """Get the USB context."""
+        return MockUSBContext()
 
     def ctrl_transfer(
         self,

@@ -5,21 +5,21 @@ from math import isclose
 from j5.vision.coordinates import Coordinate, Cylindrical, Spherical
 
 
-def assert_coordinate_isclose(coord1: Coordinate, coord2: Coordinate):
+def assert_coordinate_isclose(coord1: Coordinate, coord2: Coordinate) -> None:
     """Checks two coordinates are roughly equal."""
     assert isclose(coord1.cartesian.x, coord2.cartesian.x)
     assert isclose(coord1.cartesian.y, coord2.cartesian.y)
     assert isclose(coord1.cartesian.z, coord2.cartesian.z)
 
 
-def assert_cylindrical_isclose(cyl1: Cylindrical, cyl2: Cylindrical):
+def assert_cylindrical_isclose(cyl1: Cylindrical, cyl2: Cylindrical) -> None:
     """Checks two cylindricals are roughly equal."""
     assert isclose(cyl1.p, cyl2.p)
     assert isclose(cyl1.phi, cyl2.phi)
     assert isclose(cyl1.z, cyl2.z)
 
 
-def assert_spherical_isclose(sph1: Spherical, sph2: Spherical):
+def assert_spherical_isclose(sph1: Spherical, sph2: Spherical) -> None:
     """Checks two sphericals are roughly equal."""
     assert isclose(sph1.r, sph2.r)
     assert isclose(sph1.theta, sph2.theta)

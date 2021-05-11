@@ -1,7 +1,7 @@
 """Marker Class."""
 
 from math import degrees
-from typing import List, Optional, Sequence, Tuple, overload
+from typing import Iterable, List, Optional, Sequence, Tuple, overload
 
 from .coordinates import Coordinate
 from .orientation import Orientation
@@ -110,7 +110,7 @@ class MarkerList(List[Marker]):
     The markers are also sorted by distance, with the closest marker first.
     """
 
-    def __init__(self, markers: Sequence[Marker] = ()) -> None:
+    def __init__(self, markers: Iterable[Marker] = ()) -> None:
         sorted_markers = sorted(markers, key=lambda m: m.distance)
         super().__init__(sorted_markers)
 
