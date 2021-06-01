@@ -742,7 +742,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 
 [[package]]
 name = "zoloto"
-version = "0.5.2"
+version = "0.6.1"
 description = "A fiducial marker system powered by OpenCV - Supports ArUco and April"
 category = "main"
 optional = true
@@ -763,7 +763,7 @@ zoloto-vision = ["zoloto"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6"
-content-hash = "6f78365c890810796bf178d697a853799548af5bb22ff1701453b68adf5ad243"
+content-hash = "9539a903a4d1ff60eb1ae14da73706920e0aa9748a4f4bf11d2cf7d739e015fc"
 
 [metadata.files]
 alabaster = [
@@ -1232,5 +1232,6 @@ zipp = [
     {file = "zipp-3.4.1.tar.gz", hash = "sha256:3607921face881ba3e026887d8150cca609d517579abe052ac81fc5aeffdbd76"},
 ]
 zoloto = [
-    {file = "zoloto-0.5.2.tar.gz", hash = "sha256:857c3fa8e962a316721e1b247cce712e686dca79e5ee120d8f637d138cd627c0"},
+    {file = "zoloto-0.6.1-py3-none-any.whl", hash = "sha256:600771b8a15da1e2ba78ed730e33fa7d49429fe902bbf39a9ca58e2e10314544"},
+    {file = "zoloto-0.6.1.tar.gz", hash = "sha256:debe21b101b3d8f66a5755468d7b8e34b4d5dc1e43b74f6d40e339048a1a1568"},
 ]
