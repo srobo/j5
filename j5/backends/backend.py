@@ -65,17 +65,17 @@ class BackendMeta(ABCMeta):
 
     def __new__(mcs, name, bases, namespace, **kwargs):  # type:ignore
         """Create a new class object."""
-        cls = super().__new__(mcs, name, bases, namespace, **kwargs)  # type: ignore
+        cls = super().__new__(mcs, name, bases, namespace, **kwargs)
 
         if cls.__name__ == "Backend":
             return cls
 
         # Check if this is an abstract Backend.
-        if bool(cls.__abstractmethods__):
+        if getattr(cls, "__abstractmethods__", None):
             return cls
 
         mcs._check_component_interfaces(cls)  # type: ignore
-        _wrap_methods_with_logging(cls)
+        _wrap_methods_with_logging(cls)  # type: ignore
 
         return cls
 
