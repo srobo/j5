@@ -1,7 +1,7 @@
 """Marker Class."""
 
 from math import degrees
-from typing import Iterable, List, Optional, Sequence, Tuple, overload
+from typing import Iterable, List, Optional, Sequence, Tuple, Union
 
 from .coordinates import Coordinate
 from .orientation import Orientation
@@ -114,15 +114,7 @@ class MarkerList(List[Marker]):
         sorted_markers = sorted(markers, key=lambda m: m.distance)
         super().__init__(sorted_markers)
 
-    @overload
-    def __getitem__(self, index: int) -> Marker:
-        ...  # pragma: nocover
-
-    @overload  # noqa: F811
-    def __getitem__(self, index: slice) -> List[Marker]:  # noqa: F811
-        ...  # pragma: nocover
-
-    def __getitem__(self, index):  # type:ignore  # noqa: F811
+    def __getitem__(self, index: Union[int, slice]):  # type:ignore  # noqa: F811
         try:
             return super().__getitem__(index)
         except IndexError:
