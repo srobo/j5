@@ -1,5 +1,5 @@
 """Console helper classes."""
-
+import sys
 from typing import Callable, Dict, Optional, Type, TypeVar
 
 T = TypeVar("T")
@@ -29,9 +29,12 @@ class Console:
             self,
             prompt: str,
             return_type: Optional[Type[T]] = str,  # type: ignore
+            check_stdin: bool = True,
     ) -> T:
         """Get a value of type 'return_type' from the user."""
-        if return_type is not None:
+        if check_stdin and return_type is bool and not sys.stdin.isatty():
+            return False  # type: ignore
+        elif return_type is not None:
             while True:
                 response = self._input(f"{self._descriptor}: {prompt}: ")
                 try:

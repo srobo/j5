@@ -120,17 +120,17 @@ def test_console_handle_boolean_correctly() -> None:
     )
 
     for _ in MockConsoleState.true_cases:
-        val = console.read("I want an bool", bool)
+        val = console.read("I want an bool", bool, check_stdin=False)
         assert isinstance(val, bool)
         assert val
 
     for _ in MockConsoleState.false_cases:
-        val = console.read("I want an bool", bool)
+        val = console.read("I want an bool", bool, check_stdin=False)
         assert isinstance(val, bool)
         assert not val
 
     # Test if false inputs are skipped.
-    val = console.read("I want an bool", bool)
+    val = console.read("I want an bool", bool, check_stdin=False)
     assert isinstance(val, bool)
     assert val
 
