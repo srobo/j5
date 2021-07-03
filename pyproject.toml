@@ -20,10 +20,6 @@ classifiers = [
 python = "^3.6"
 pyusb = "^1.0"
 pyserial = "^3.4"
-pyquaternion = "^0.9.5"
-zoloto = {version = ">=0.5,<0.6", optional = true}
-typing-extensions = "^3.7"
-cached_property = "^1.5.1"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.8"
@@ -45,9 +41,6 @@ flake8-bugbear = "^21.4.3"
 flake8-builtins = "^1.5.3"
 flake8-print = "^4.0.0"
 numpy = "^1.19.5"  # This is the last version that supports Python 3.6
-
-[tool.poetry.extras]
-zoloto-vision = ["zoloto"]
 
 [build-system]
 requires = ["poetry>=0.12"]
