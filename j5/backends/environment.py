@@ -37,15 +37,28 @@ class Environment:
 
     @property
     def supported_boards(self) -> Set[Type['Board']]:
-        """The boards that are supported by this environment."""
+        """
+        The boards that are supported by this environment.
+        
+        :returns: set of boards that are supported by this environment.
+        """
         return set(self.board_backend_mapping.keys())
 
     def __str__(self) -> str:
-        """Get a string representation of this group."""
+        """
+        Get a string representation of this environment.
+        
+        :returns: string representation of the environment.
+        """
         return self.name
 
     def register_backend(self, backend: Type[Backend]) -> None:
-        """Register a new backend with this environment."""
+        """
+        Register a new backend with this environment.
+        
+        :param backend: The backend to register in the environment.
+        :raises RuntimeError: The backend has already been registered.
+        """
         board_type: Type['Board'] = cast(Type['Board'], backend.board)
         if board_type in self.board_backend_mapping.keys():
             raise RuntimeError(f"Attempted to register multiple backends for"
@@ -53,14 +66,26 @@ class Environment:
         self.board_backend_mapping[board_type] = backend
 
     def get_backend(self, board: Type['Board']) -> Type[Backend]:
-        """Get the backend for a board."""
+        """
+        Get the backend for a board.
+        
+        :param board: board type to fetch a backend for.
+        :returns: Backend in this environment for the given board.
+        :raises NotImplementedError: The environment does not support the board.
+        """
         if board not in self.supported_boards:
             raise NotImplementedError(f"The {str(self)} does not support {str(board)}")
 
         return self.board_backend_mapping[board]
 
     def get_board_group(self, board: Type[BoardT]) -> 'BoardGroup[BoardT, Backend]':
-        """Get a board group for the given board type."""
+        """
+        Get a board group for the given board type.
+        
+        :param board: board type to fetch a backend for.
+        :returns: BoardGroup in this environment for the given board.
+        :raises NotImplementedError: The environment does not support the board.
+        """
         if board not in self.supported_boards:
             raise NotImplementedError(f"The {str(self)} does not support {str(board)}")
 
@@ -79,6 +104,9 @@ class Environment:
 
         This method will fail if any board is defined in both environments,
          as it is unclear which one has the correct mapping.
+
+        :param other: environment to merge into this one.
+        :raises RuntimeError: a board was implemented in both backends, conflict.
         """
         intersection = self.supported_boards & other.supported_boards
 
