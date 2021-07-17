@@ -41,8 +41,8 @@ class PowerOutput(Component):
         self._identifier = identifier
         self._backend = backend
 
-    @staticmethod
-    def interface_class() -> Type[PowerOutputInterface]:
+    @classmethod
+    def interface_class(cls) -> Type[PowerOutputInterface]:
         """Get the interface class that is required to use this component."""
         return PowerOutputInterface
 

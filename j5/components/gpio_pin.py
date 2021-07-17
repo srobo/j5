@@ -120,8 +120,8 @@ class GPIOPin(Component):
 
         self.mode = initial_mode
 
-    @staticmethod
-    def interface_class() -> Type[GPIOPinInterface]:
+    @classmethod
+    def interface_class(cls) -> Type[GPIOPinInterface]:
         """Get the interface class that is required to use this component."""
         return GPIOPinInterface
 
