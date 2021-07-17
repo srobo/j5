@@ -64,7 +64,13 @@ class BackendMeta(ABCMeta):
     """
 
     def __new__(mcs, name, bases, namespace, **kwargs):  # type:ignore
-        """Create a new class object."""
+        """
+        Create a new class object.
+
+        :returns: a new backend object.
+        
+        # noqa: DAR101
+        """
         cls = super().__new__(mcs, name, bases, namespace, **kwargs)
 
         if cls.__name__ == "Backend":
@@ -86,6 +92,8 @@ class BackendMeta(ABCMeta):
         Certain interfaces are required to support components,
         and we want to make sure that the Backend implements
         them. This is a run-time type check.
+
+        :raises TypeError: The backend class doesn't have a required interface.
         """
         for component in cls.board.supported_components():  # type: ignore
             if not issubclass(cls, component.interface_class()):
