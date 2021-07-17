@@ -26,7 +26,11 @@ class SBArduinoBoard(ArduinoUno):
 
     @staticmethod
     def supported_components() -> Set[Type[Component]]:
-        """List the types of components supported by this board."""
+        """
+        List the types of components supported by this board.
+        
+        :returns: Set of components supported by the board.
+        """
         return {
             GPIOPin,
             LED,
@@ -50,7 +54,12 @@ class UltrasoundSensors:
         self,
         key: Tuple[ArduinoUno.PinNumber, ArduinoUno.PinNumber],
     ) -> UltrasoundSensor:
-        """Get an ultrasound sensor with the given pin configuration."""
+        """
+        Get an ultrasound sensor with the given pin configuration.
+        
+        :param key: The pin numbers of the trigger and echo pins.
+        :returns: An ultrasound sensor object.
+        """
         trigger_pin, echo_pin = key
         return UltrasoundSensor(
             gpio_trigger=self._arduino.pins[trigger_pin],
