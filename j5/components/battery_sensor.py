@@ -29,8 +29,8 @@ class BatterySensor(Component):
         self._backend = backend
         self._identifier = identifier
 
-    @staticmethod
-    def interface_class() -> Type[BatterySensorInterface]:
+    @classmethod
+    def interface_class(cls) -> Type[BatterySensorInterface]:
         """Get the interface class that is required to use this component."""
         return BatterySensorInterface
 

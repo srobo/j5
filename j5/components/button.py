@@ -27,8 +27,8 @@ class Button(Component):
         self._backend = backend
         self._identifier = identifier
 
-    @staticmethod
-    def interface_class() -> Type[ButtonInterface]:
+    @classmethod
+    def interface_class(cls) -> Type[ButtonInterface]:
         """Get the interface class that is required to use this component."""
         return ButtonInterface
 

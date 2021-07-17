@@ -52,8 +52,8 @@ class Piezo(Component):
         self._backend = backend
         self._identifier = identifier
 
-    @staticmethod
-    def interface_class() -> Type[PiezoInterface]:
+    @classmethod
+    def interface_class(cls) -> Type[PiezoInterface]:
         """Get the interface class that is required to use this component."""
         return PiezoInterface
 

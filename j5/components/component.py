@@ -17,9 +17,9 @@ class Component(metaclass=ABCMeta):
         """An integer to identify the component on a board."""
         raise NotImplementedError  # pragma: no cover
 
-    @staticmethod
+    @classmethod
     @abstractmethod
-    def interface_class() -> Type[Interface]:
+    def interface_class(cls) -> Type[Interface]:
         """Get the interface class that is required to use this component."""
         raise NotImplementedError  # pragma: no cover
 

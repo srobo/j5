@@ -37,8 +37,8 @@ class StringCommandComponent(Component):
         self._backend = backend
         self._identifier = identifier
 
-    @staticmethod
-    def interface_class() -> Type[Interface]:
+    @classmethod
+    def interface_class(cls) -> Type[Interface]:
         """Get the interface class that is required to use this component."""
         return StringCommandComponentInterface
 

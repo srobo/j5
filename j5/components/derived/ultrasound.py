@@ -69,8 +69,8 @@ class UltrasoundSensor(DerivedComponent):
         self._backend = backend
         self._distance_mode = distance_mode
 
-    @staticmethod
-    def interface_class() -> Type[Interface]:
+    @classmethod
+    def interface_class(cls) -> Type[Interface]:
         """Get the interface class that is required to use this component."""
         return UltrasoundInterface
 
