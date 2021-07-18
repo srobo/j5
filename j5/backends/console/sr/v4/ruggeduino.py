@@ -18,7 +18,11 @@ class SRV4RuggeduinoConsoleBackend(
 
     @classmethod
     def discover(cls) -> Set[Board]:
-        """Discover boards that this backend can control."""
+        """
+        Discover boards that this backend can control.
+        
+        :returns: set of boards that this backend can control.
+        """
         return {cast(Board, Ruggeduino("SERIAL", cls("SERIAL")))}
 
     def execute_string_command(self, command: str) -> str:
@@ -26,6 +30,9 @@ class SRV4RuggeduinoConsoleBackend(
         Execute the string command and return the result.
 
         This function can be synchronous and blocking.
+
+        :param command: command to send.
+        :returns: result from the command.
         """
         return self._console.read(
             f"Response to string command \"{command}\" [str]: ",
