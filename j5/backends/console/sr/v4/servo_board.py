@@ -19,7 +19,11 @@ class SRV4ServoBoardConsoleBackend(
 
     @classmethod
     def discover(cls) -> Set[Board]:
-        """Discover boards that this backend can control."""
+        """
+        Discover boards that this backend can control.
+        
+        :returns: set of boards that this backend can control.
+        """
         return {cast(Board, ServoBoard("SERIAL", cls("SERIAL")))}
 
     def __init__(self, serial: str, console_class: Type[Console] = Console) -> None:
@@ -33,22 +37,41 @@ class SRV4ServoBoardConsoleBackend(
 
     @property
     def serial(self) -> str:
-        """The serial number reported by the board."""
+        """
+        The serial number reported by the board.
+        
+        :returns: serial number reported by the board.
+        """
         return self._serial
 
     @property
     def firmware_version(self) -> Optional[str]:
-        """The firmware version reported by the board."""
+        """
+        The firmware version reported by the board.
+        
+        :returns: firmware version reported by the board, if any.
+        """
         return None  # Console, so no firmware
 
     def get_servo_position(self, identifier: int) -> ServoPosition:
-        """Get the servo position."""
+        """
+        Get the servo position.
+        
+        :param identifier: Port of servo to check.
+        :returns: Position of servo.
+        """
         # We are unable to read the state from the servo board, in hardware
         # so instead of asking, we'll get the last set value.
         return self._positions[identifier]
 
     def set_servo_position(self, identifier: int, position: ServoPosition) -> None:
-        """Set the servo position."""
+        """
+        Set the servo position.
+        
+        :param identifier: Port of servo to set position.
+        :param position: Position to set the servo to.
+        :raises ValueError: Unknown servo identifier.
+        """
         if identifier not in range(0, 12):
             raise ValueError(
                 f"Invalid servo identifier: {identifier}, valid values are: 0 - 11",
