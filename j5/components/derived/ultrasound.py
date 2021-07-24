@@ -26,7 +26,9 @@ class UltrasoundInterface(Interface):
         """
         Get a timedelta for the ultrasound time.
 
-        Returns None if the sensor times out.
+        :param trigger_pin_identifier: pin number of the trigger pin.
+        :param echo_pin_identifier: pin number of the echo pin.
+        :returns: Time taken for the pulse, or None if it timed out.
         """
         raise NotImplementedError  # pragma: no cover
 
@@ -36,7 +38,13 @@ class UltrasoundInterface(Interface):
             trigger_pin_identifier: int,
             echo_pin_identifier: int,
     ) -> Optional[float]:
-        """Get a distance in metres."""
+        """
+        Get a distance in metres.
+        
+        :param trigger_pin_identifier: pin number of the trigger pin.
+        :param echo_pin_identifier: pin number of the echo pin.
+        :returns: Distance measured in metres, or None if it timed out.
+        """
         raise NotImplementedError  # pragma: no cover
 
 
@@ -71,14 +79,18 @@ class UltrasoundSensor(DerivedComponent):
 
     @staticmethod
     def interface_class() -> Type[Interface]:
-        """Get the interface class that is required to use this component."""
+        """
+        Get the interface class that is required to use this component.
+        
+        :returns: interface class.
+        """
         return UltrasoundInterface
 
     def pulse(self) -> Optional[timedelta]:
         """
         Send a pulse and return the time taken.
 
-        Returns None if timeout occurred.
+        :returns: Time taken for the pulse, or None if it timed out.
         """
         return self._backend.get_ultrasound_pulse(
             self._gpio_trigger.identifier,
@@ -89,7 +101,8 @@ class UltrasoundSensor(DerivedComponent):
         """
         Send a pulse and return the distance to the object.
 
-        Returns none if a timeout occurred.
+        :returns: Distance measured in metres, or None if it timed out.
+        :raises Exception: distance mode is disabled.
         """
         if not self._distance_mode:
             raise Exception("Distance mode is disabled. Use pulse() to get the time.")
