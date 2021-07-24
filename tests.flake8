@@ -7,19 +7,11 @@ exclude =
     .venv
 
 ignore =
-    # Allow printing
-    T001,
     #Don't require docstrings on magic methods.
     D105,
     #Don't require docstrings for __init__ methods.
-    D107,
-    # Don't require docstring in public module
-    D100,
+    D107
     #Don't require imperative mood docstrings.
     D401
 
 max_line_length = 90
-
-# Darglint settings
-strictness=full
-docstring_style=sphinx
