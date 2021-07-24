@@ -36,7 +36,13 @@ class SRV4ServoBoardHardwareBackend(
 
     @classmethod
     def discover(cls, find: Callable = usb.core.find) -> Set[Board]:
-        """Discover boards that this backend can control."""
+        """
+        Discover boards that this backend can control.
+        
+        :param find: libusb find function.
+        :returns: set of boards that this backend can control.
+        :raises USBCommunicationError: Unable to query USB.
+        """
         boards: Set[Board] = set()
         try:
             device_list = find(idVendor=0x1bda, idProduct=0x0011, find_all=True)
@@ -66,7 +72,12 @@ class SRV4ServoBoardHardwareBackend(
 
     @property
     def firmware_version(self) -> str:
-        """The firmware version reported by the board."""
+        """
+        The firmware version reported by the board.
+        
+        :returns: firmware version reported by the board, if any.
+        :raises CommunicationError: servo board is not responding.
+        """
         try:
             version, = struct.unpack("<I", self._read(CMD_READ_FWVER))
             return str(cast(int, version))
@@ -79,7 +90,11 @@ class SRV4ServoBoardHardwareBackend(
             raise
 
     def check_firmware_version_supported(self) -> None:
-        """Raises an exception if the firmware version is not supported."""
+        """
+        Raises an exception if the firmware version is not supported.
+        
+        :raises NotImplementedError: servo board is running unsupported firmware
+        """
         v = self.firmware_version
         if v != "2":
             raise NotImplementedError(f"Servo Board ({self.serial}) is running firmware "
@@ -90,13 +105,24 @@ class SRV4ServoBoardHardwareBackend(
         Get the position of a servo.
 
         Currently reads back the last known position as we cannot read from the hardware.
+        
+        :param identifier: Port of servo to check.
+        :returns: Position of servo.
+        :raises ValueError: invalid servo identifier.
         """
         if identifier not in range(0, 12) or not isinstance(identifier, int):
             raise ValueError("Only integers 0 - 11 are valid servo identifiers.")
         return self._positions[identifier]
 
     def set_servo_position(self, identifier: int, position: ServoPosition) -> None:
-        """Set the position of a servo."""
+        """
+        Set the position of a servo.
+        
+        :param identifier: Port of servo to set position.
+        :param position: Position to set the servo to.
+        :raises ValueError: Unknown servo identifier.
+        :raises NotSupportedByHardwareError: unpowered servos not supported by board.
+        """
         if identifier not in range(0, 12) or not isinstance(identifier, int):
             raise ValueError("Only integers 0 - 11 are valid servo identifiers.")
 
