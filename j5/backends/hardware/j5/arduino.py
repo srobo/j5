@@ -45,7 +45,12 @@ class ArduinoHardwareBackend(
 
     @classmethod
     def is_arduino(cls, port: ListPortInfo) -> bool:
-        """Check if a ListPortInfo represents a valid Arduino derivative."""
+        """
+        Check if a ListPortInfo represents a valid Arduino derivative.
+        
+        :param port: ListPortInfo object.
+        :returns: True if object represents valid Arduino derivative.
+        """
         return (port.vid, port.pid) in cls.USB_IDS
 
     @classmethod
@@ -54,7 +59,13 @@ class ArduinoHardwareBackend(
             comports: Callable = comports,
             serial_class: Type[Serial] = Serial,
     ) -> Set[Board]:
-        """Discover all connected arduino boards."""
+        """
+        Discover boards that this backend can control.
+        
+        :param comports: serial lib find function.
+        :param serial_class: class to use for serial comms.
+        :returns: set of boards that this backend can control.
+        """
         # Find all serial ports.
         ports: List[ListPortInfo] = comports()
 
@@ -96,26 +107,52 @@ class ArduinoHardwareBackend(
     @property
     @abstractmethod
     def firmware_version(self) -> Optional[str]:
-        """The firmware version of the board."""
+        """
+        The firmware version reported by the board.
+        
+        :returns: firmware version reported by the board, if any.
+        """
         raise NotImplementedError  # pragma: nocover
 
     @abstractmethod
     def _update_digital_pin(self, identifier: int) -> None:
-        """Write the stored value of a digital pin to the Arduino."""
+        """
+        Write the stored value of a digital pin to the Arduino.
+
+        Reads the state out of self._digital_pins.
+        
+        :param identifier: Pin number to update.
+        """
         raise NotImplementedError  # pragma: nocover
 
     @abstractmethod
     def _read_digital_pin(self, identifier: int) -> bool:
-        """Read the value of a digital pin from the Arduino."""
+        """
+        Read the value of a digital pin from the Arduino.
+        
+        :param identifier: pin number to read value of.
+        :returns: state of the pin.
+        """
         raise NotImplementedError  # pragma: nocover
 
     @abstractmethod
     def _read_analogue_pin(self, identifier: int) -> float:
-        """Read the value of an analogue pin from the Arduino."""
+        """
+        Read the value of an analogue pin from the Arduino.
+        
+        :param identifier: pin number to read value of.
+        :returns: analogue value of the pin.
+        """
         raise NotImplementedError  # pragma: nocover
 
     def set_gpio_pin_mode(self, identifier: int, pin_mode: GPIOPinMode) -> None:
-        """Set the hardware mode of a GPIO pin."""
+        """
+        Set the hardware mode of a GPIO pin.
+        
+        :param identifier: pin number to set.
+        :param pin_mode: mode to set the pin to.
+        :raises NotSupportedByHardwareError: function not supported.
+        """
         digital_pin_modes = {
             GPIOPinMode.DIGITAL_INPUT,
             GPIOPinMode.DIGITAL_INPUT_PULLUP,
@@ -136,14 +173,26 @@ class ArduinoHardwareBackend(
         )
 
     def get_gpio_pin_mode(self, identifier: int) -> GPIOPinMode:
-        """Get the hardware mode of a GPIO pin."""
+        """
+        Get the hardware mode of a GPIO pin.
+        
+        :param identifier: pin number.
+        :returns: mode of the pin.
+        """
         if identifier < ArduinoUno.FIRST_ANALOGUE_PIN:
             return self._digital_pins[identifier].mode
 
         return GPIOPinMode.ANALOGUE_INPUT
 
     def write_gpio_pin_digital_state(self, identifier: int, state: bool) -> None:
-        """Write to the digital state of a GPIO pin."""
+        """
+        Write to the digital state of a GPIO pin.
+        
+        :param identifier: pin number
+        :param state: desired digital state.
+        :raises ValueError: pin is not in correct mode.
+        :raises NotSupportedByHardwareError: function not supported.
+        """
         if identifier >= ArduinoUno.FIRST_ANALOGUE_PIN:
             raise NotSupportedByHardwareError(
                 "Digital functions not supported on analogue pins",
@@ -155,7 +204,14 @@ class ArduinoHardwareBackend(
         self._update_digital_pin(identifier)
 
     def get_gpio_pin_digital_state(self, identifier: int) -> bool:
-        """Get the last written state of the GPIO pin."""
+        """
+        Get the last written state of the GPIO pin.
+        
+        :param identifier: pin number
+        :returns: Last known digital state of the pin.
+        :raises ValueError: pin is not in correct mode.
+        :raises NotSupportedByHardwareError: function not supported.
+        """
         if identifier >= ArduinoUno.FIRST_ANALOGUE_PIN:
             raise NotSupportedByHardwareError(
                 "Digital functions not supported on analogue pins.",
@@ -166,7 +222,14 @@ class ArduinoHardwareBackend(
         return self._digital_pins[identifier].state
 
     def read_gpio_pin_digital_state(self, identifier: int) -> bool:
-        """Read the digital state of the GPIO pin."""
+        """
+        Read the digital state of the GPIO pin.
+        
+        :param identifier: pin number
+        :returns: digital state of the pin.
+        :raises ValueError: pin is not in correct mode.
+        :raises NotSupportedByHardwareError: function not supported.
+        """
         if identifier >= ArduinoUno.FIRST_ANALOGUE_PIN:
             raise NotSupportedByHardwareError(
                 "Digital functions not supported on analogue pins.",
@@ -180,7 +243,13 @@ class ArduinoHardwareBackend(
         return self._read_digital_pin(identifier)
 
     def read_gpio_pin_analogue_value(self, identifier: int) -> float:
-        """Read the analogue voltage of the GPIO pin."""
+        """
+        Read the scaled analogue value of the GPIO pin.
+        
+        :param identifier: pin number
+        :returns: scaled analogue value of the pin.
+        :raises NotSupportedByHardwareError: function not supported.
+        """
         if identifier < ArduinoUno.FIRST_ANALOGUE_PIN:
             raise NotSupportedByHardwareError(
                 "Analogue functions not supported on digital pins.",
@@ -188,23 +257,47 @@ class ArduinoHardwareBackend(
         return self._read_analogue_pin(identifier)
 
     def write_gpio_pin_dac_value(self, identifier: int, scaled_value: float) -> None:
-        """Write a scaled analogue value to the DAC on the GPIO pin."""
+        """"
+        Write a scaled analogue value to the DAC on the GPIO pin.
+        
+        :param identifier: pin number
+        :param scaled_value: scaled analogue value to write
+        :raises NotSupportedByHardwareError: Arduino Uno does not have a DAC.
+        """
         raise NotSupportedByHardwareError(f"{self.board.name} does not have a DAC.")
 
     def write_gpio_pin_pwm_value(self, identifier: int, duty_cycle: float) -> None:
-        """Write a scaled analogue value to the PWM on the GPIO pin."""
+        """
+        Write a scaled analogue value to the PWM on the GPIO pin.
+        
+        :param identifier: pin number
+        :param duty_cycle: duty cycle to writee
+        :raises NotSupportedByHardwareError: Not implemented in any supported firmware yet.
+        """
         raise NotSupportedByHardwareError(
             f"{self.board.name} firmware does not implement PWM output.",
         )
 
     def get_led_state(self, identifier: int) -> bool:
-        """Get the state of an LED."""
+        """
+        Get the state of an LED.
+        
+        :param identifier: LED identifier.
+        :returns: current state of the LED.
+        :raises ValueError: invalid LED identifier.
+        """
         if identifier != 0:
             raise ValueError(f"{self.board.name} only has LED 0 (digital pin 13).")
         return self.get_gpio_pin_digital_state(13)
 
     def set_led_state(self, identifier: int, state: bool) -> None:
-        """Set the state of an LED."""
+        """
+        Set the state of an LED.
+        
+        :param identifier: LED identifier.
+        :param state: desired state of the LED.
+        :raises ValueError: invalid LED identifier.
+        """
         if identifier != 0:
             raise ValueError(f"{self.board.name} only has LED 0 (digital pin 13).")
         self.write_gpio_pin_digital_state(13, state)
