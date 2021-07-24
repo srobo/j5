@@ -55,7 +55,7 @@ class BoardGroup(Generic[T, U]):
         If there is only a single board in the group, return that board.
         
         :returns: The instance of the only board in the group.
-        :raises j5.backends.CommunicationError: Multiple boards were found.
+        :raises CommunicationError: Multiple boards were found.
         """
         num = len(self)
         if num == 1:
