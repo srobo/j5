@@ -19,7 +19,11 @@ class SBArduinoConsoleBackend(
 
     @classmethod
     def discover(cls) -> Set[Board]:
-        """Discover boards that this backend can control."""
+        """
+        Discover boards that this backend can control.
+        
+        :returns: set of boards that this backend can control.
+        """
         return {cast(Board, SBArduinoBoard("SERIAL", cls("SERIAL")))}
 
     def get_ultrasound_pulse(
@@ -30,7 +34,9 @@ class SBArduinoConsoleBackend(
         """
         Get a timedelta for the ultrasound time.
 
-        Returns None if the sensor times out.
+        :param trigger_pin_identifier: pin number of the trigger pin.
+        :param echo_pin_identifier: pin number of the echo pin.
+        :returns: Time taken for the pulse, or None if it timed out.
         """
         microseconds = self._console.read(
             f"Response time for ultrasound sensor on pins "
@@ -45,7 +51,13 @@ class SBArduinoConsoleBackend(
             trigger_pin_identifier: int,
             echo_pin_identifier: int,
     ) -> Optional[float]:
-        """Get a distance in metres."""
+        """
+        Get a distance in metres.
+        
+        :param trigger_pin_identifier: pin number of the trigger pin.
+        :param echo_pin_identifier: pin number of the echo pin.
+        :returns: Distance measured in metres, or None if it timed out.
+        """
         metres = self._console.read(
             f"Distance for ultrasound sensor on pins "
             f"{trigger_pin_identifier}/{echo_pin_identifier} [metres]",
@@ -59,7 +71,12 @@ class SBArduinoConsoleBackend(
         trigger_pin_identifier: int,
         echo_pin_identifier: int,
     ) -> None:
-        # Ultrasound functions force the pins into particular modes.
+        """
+        Ultrasound functions force the pins into particular modes.
+
+        :param trigger_pin_identifier: pin number of the trigger pin.
+        :param echo_pin_identifier: pin number of the echo pin.
+        """
         self._pins[trigger_pin_identifier].mode = GPIOPinMode.DIGITAL_OUTPUT
         self._pins[trigger_pin_identifier].digital_state = False
         self._pins[echo_pin_identifier].mode = GPIOPinMode.DIGITAL_INPUT
