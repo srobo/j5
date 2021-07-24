@@ -22,12 +22,22 @@ class MotorInterface(Interface):
 
     @abstractmethod
     def get_motor_state(self, identifier: int) -> MotorState:
-        """Get the motor state."""
+        """
+        Get the current motor state.
+        
+        :param identifier: identifier of the motor
+        :returns: state of the motor.
+        """
         raise NotImplementedError  # pragma: no cover
 
     @abstractmethod
     def set_motor_state(self, identifier: int, power: MotorState) -> None:
-        """Set the motor state."""
+        """
+        Set the state of a motor.
+        
+        :param identifier: identifier of the motor
+        :param power: state of the motor.
+        """
         raise NotImplementedError  # pragma: no cover
 
 
@@ -44,22 +54,39 @@ class Motor(Component):
 
     @staticmethod
     def interface_class() -> Type[Interface]:
-        """Get the interface class that is required to use this component."""
+        """
+        Get the interface class that is required to use this component.
+        
+        :returns: interface class.
+        """
         return MotorInterface
 
     @property
     def identifier(self) -> int:
-        """An integer to identify the component on a board."""
+        """
+        An integer to identify the component on a board.
+        
+        :returns: component identifier.
+        """
         return self._identifier
 
     @property
     def power(self) -> MotorState:
-        """Get the current power of this output."""
+        """
+        Get the current power of this output.
+        
+        :returns: current power of this output.
+        """
         return self._backend.get_motor_state(self._identifier)
 
     @power.setter
     def power(self, new_power: MotorState) -> None:
-        """Set the current state of this output."""
+        """
+        Set the current state of this output.
+        
+        :param new_power: state to set the motor to.
+        :raises ValueError: invalid motor power.
+        """
         if not isinstance(new_power, MotorSpecialState):
             if new_power < -1 or new_power > 1:
                 raise ValueError("Motor power must be between 1 and -1.")
