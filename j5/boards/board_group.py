@@ -53,7 +53,7 @@ class BoardGroup(Generic[T, U]):
     def singular(self) -> T:
         """
         If there is only a single board in the group, return that board.
-        
+
         :returns: The instance of the only board in the group.
         :raises CommunicationError: Multiple boards were found.
         """
@@ -74,7 +74,7 @@ class BoardGroup(Generic[T, U]):
     def __str__(self) -> str:
         """
         A string representation of the board group.
-        
+
         :returns: string representation of the board group.
         """
         list_str = ', '.join(map(str, self._boards.values()))
@@ -84,7 +84,7 @@ class BoardGroup(Generic[T, U]):
     def __repr__(self) -> str:
         """
         A representation of this board.
-        
+
         :returns: string representation of the board group.
         """
         return f"BoardGroup(backend_class={self._backend_class.__name__})"
@@ -92,7 +92,7 @@ class BoardGroup(Generic[T, U]):
     def __len__(self) -> int:
         """
         Get the number of boards in this group.
-        
+
         :returns: number of boards in this group.
         """
         return len(self._boards)
@@ -100,7 +100,7 @@ class BoardGroup(Generic[T, U]):
     def __contains__(self, serial_number: str) -> bool:
         """
         Check if a board is in this group.
-        
+
         :param serial_number: Serial Number of the board to look for.
         :returns: True if the board with the serial number is in the group.
         """
@@ -119,7 +119,7 @@ class BoardGroup(Generic[T, U]):
     def __getitem__(self, serial_number: str) -> T:
         """
         Get the board from serial.
-        
+
         :param serial_number: Serial number of the board to fetch.
         :returns: Board instance with the provided serial number.
         :raises KeyError: The board was not found.
@@ -138,7 +138,7 @@ class BoardGroup(Generic[T, U]):
     def backend_class(self) -> Type[U]:
         """
         The Backend that this group uses for Boards.
-        
+
         :returns: The backend used to interact with boards.
         """
         return self._backend_class
@@ -147,7 +147,7 @@ class BoardGroup(Generic[T, U]):
     def boards(self) -> List[T]:
         """
         Get an unordered list of boards in this group.
-        
+
         :returns: unordered list of boards in this group.
         """
         return list(self._boards.values())

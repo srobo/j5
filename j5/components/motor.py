@@ -24,7 +24,7 @@ class MotorInterface(Interface):
     def get_motor_state(self, identifier: int) -> MotorState:
         """
         Get the current motor state.
-        
+
         :param identifier: identifier of the motor
         :returns: state of the motor.
         """
@@ -34,7 +34,7 @@ class MotorInterface(Interface):
     def set_motor_state(self, identifier: int, power: MotorState) -> None:
         """
         Set the state of a motor.
-        
+
         :param identifier: identifier of the motor
         :param power: state of the motor.
         """
@@ -56,7 +56,7 @@ class Motor(Component):
     def interface_class() -> Type[Interface]:
         """
         Get the interface class that is required to use this component.
-        
+
         :returns: interface class.
         """
         return MotorInterface
@@ -65,7 +65,7 @@ class Motor(Component):
     def identifier(self) -> int:
         """
         An integer to identify the component on a board.
-        
+
         :returns: component identifier.
         """
         return self._identifier
@@ -74,7 +74,7 @@ class Motor(Component):
     def power(self) -> MotorState:
         """
         Get the current power of this output.
-        
+
         :returns: current power of this output.
         """
         return self._backend.get_motor_state(self._identifier)
@@ -83,7 +83,7 @@ class Motor(Component):
     def power(self, new_power: MotorState) -> None:
         """
         Set the current state of this output.
-        
+
         :param new_power: state to set the motor to.
         :raises ValueError: invalid motor power.
         """

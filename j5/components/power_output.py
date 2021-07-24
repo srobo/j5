@@ -13,7 +13,7 @@ class PowerOutputInterface(Interface):
     def get_power_output_enabled(self, identifier: int) -> bool:
         """
         Get whether a power output is enabled.
-        
+
         :param identifier: power output to fetch status of.
         :returns: status of the power output.
         """
@@ -25,7 +25,7 @@ class PowerOutputInterface(Interface):
     ) -> None:
         """
         Set whether a power output is enabled.
-        
+
         :param identifier: power output to enable / disable
         :param enabled: status of the power output.
         """
@@ -35,7 +35,7 @@ class PowerOutputInterface(Interface):
     def get_power_output_current(self, identifier: int) -> float:
         """
         Get the current being drawn on a power output, in amperes.
-        
+
         :param identifier: power output to fetch current of.
         :returns: current of the output.
         """
@@ -60,7 +60,7 @@ class PowerOutput(Component):
     def interface_class() -> Type[PowerOutputInterface]:
         """
         Get the interface class that is required to use this component.
-        
+
         :returns: interface class.
         """
         return PowerOutputInterface
@@ -69,7 +69,7 @@ class PowerOutput(Component):
     def identifier(self) -> int:
         """
         An integer to identify the component on a board.
-        
+
         :returns: component identifier.
         """
         return self._identifier
@@ -78,7 +78,7 @@ class PowerOutput(Component):
     def is_enabled(self) -> bool:
         """
         Get whether the output is enabled.
-        
+
         :returns: output enabled
         """
         return self._backend.get_power_output_enabled(self._identifier)
@@ -87,7 +87,7 @@ class PowerOutput(Component):
     def is_enabled(self, new_state: bool) -> None:
         """
         Set whether the output is enabled.
-        
+
         :param new_state: state of output.
         """
         self._backend.set_power_output_enabled(self._identifier, new_state)
@@ -96,7 +96,7 @@ class PowerOutput(Component):
     def current(self) -> float:
         """
         Get the current being drawn on this power output, in amperes.
-        
+
         :returns: current being drawn on this power output, in amperes.
         """
         return self._backend.get_power_output_current(self._identifier)
@@ -124,7 +124,7 @@ class PowerOutputGroup:
     def __getitem__(self, index: T) -> PowerOutput:
         """
         Get an output using list notation.
-        
+
         :param index: position of output.
         :returns: output at index.
         """
@@ -143,7 +143,7 @@ class PowerOutputGroup:
     def __len__(self) -> int:
         """
         Get the number of outputs in the group.
-        
+
         :returns: number of outputs in the group.
         """
         return len(self._outputs)

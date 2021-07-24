@@ -57,7 +57,7 @@ class SBArduinoHardwareBackend(
     def firmware_version(self) -> str:
         """
         The firmware version reported by the board.
-        
+
         :returns: firmware version reported by the board.
         """
         return self._version_line.split("v")[1]
@@ -65,7 +65,7 @@ class SBArduinoHardwareBackend(
     def _command(self, command: str, *params: str) -> List[str]:
         """
         Send a command to the board.
-        
+
         :param command: Command to send to the board:
         :param params: Additional parameters to the command.
         :returns: List of responses from the board.
@@ -102,7 +102,7 @@ class SBArduinoHardwareBackend(
         Write the stored value of a digital pin to the Arduino.
 
         Reads the state out of self._digital_pins.
-        
+
         :param identifier: Pin number to update.
         :raises RuntimeError: Pin is an analogue pin.
         """
@@ -126,7 +126,7 @@ class SBArduinoHardwareBackend(
     def _read_digital_pin(self, identifier: int) -> bool:
         """
         Read the value of a digital pin from the Arduino.
-        
+
         :param identifier: pin number to read value of.
         :returns: state of the pin.
         :raises CommunicationError: something went wrong during arduino comms.
@@ -145,7 +145,7 @@ class SBArduinoHardwareBackend(
     def _read_analogue_pin(self, identifier: int) -> float:
         """
         Read the value of an analogue pin from the Arduino.
-        
+
         :param identifier: pin number to read value of.
         :returns: analogue value of the pin.
         :raises NotSupportedByHardwareError: pin does not have ADC functionality.
@@ -198,7 +198,7 @@ class SBArduinoHardwareBackend(
     ) -> Optional[float]:
         """
         Get a distance in metres.
-        
+
         :param trigger_pin_identifier: pin number of the trigger pin.
         :param echo_pin_identifier: pin number of the echo pin.
         :returns: Distance measured in metres, or None if it timed out.
@@ -228,7 +228,7 @@ class SBArduinoHardwareBackend(
 
         :param trigger_pin_identifier: pin number of the trigger pin.
         :param echo_pin_identifier: pin number of the echo pin.
-        :raises NotSupportedByHardwareError: Ultrasound functions not supported on analogue pins
+        :raises NotSupportedByHardwareError: Ultrasound not supported on analogue pins
         """
         if trigger_pin_identifier >= SBArduinoBoard.FIRST_ANALOGUE_PIN:
             raise NotSupportedByHardwareError(

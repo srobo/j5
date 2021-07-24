@@ -38,7 +38,7 @@ class SRV4ServoBoardHardwareBackend(
     def discover(cls, find: Callable = usb.core.find) -> Set[Board]:
         """
         Discover boards that this backend can control.
-        
+
         :param find: libusb find function.
         :returns: set of boards that this backend can control.
         :raises USBCommunicationError: Unable to query USB.
@@ -74,7 +74,7 @@ class SRV4ServoBoardHardwareBackend(
     def firmware_version(self) -> str:
         """
         The firmware version reported by the board.
-        
+
         :returns: firmware version reported by the board, if any.
         :raises CommunicationError: servo board is not responding.
         """
@@ -92,7 +92,7 @@ class SRV4ServoBoardHardwareBackend(
     def check_firmware_version_supported(self) -> None:
         """
         Raises an exception if the firmware version is not supported.
-        
+
         :raises NotImplementedError: servo board is running unsupported firmware
         """
         v = self.firmware_version
@@ -105,7 +105,7 @@ class SRV4ServoBoardHardwareBackend(
         Get the position of a servo.
 
         Currently reads back the last known position as we cannot read from the hardware.
-        
+
         :param identifier: Port of servo to check.
         :returns: Position of servo.
         :raises ValueError: invalid servo identifier.
@@ -117,7 +117,7 @@ class SRV4ServoBoardHardwareBackend(
     def set_servo_position(self, identifier: int, position: ServoPosition) -> None:
         """
         Set the position of a servo.
-        
+
         :param identifier: Port of servo to set position.
         :param position: Position to set the servo to.
         :raises ValueError: Unknown servo identifier.

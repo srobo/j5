@@ -44,7 +44,7 @@ class StringCommandComponent(Component):
     def interface_class() -> Type[Interface]:
         """
         Get the interface class that is required to use this component.
-        
+
         :returns: interface class.
         """
         return StringCommandComponentInterface
@@ -53,7 +53,7 @@ class StringCommandComponent(Component):
     def identifier(self) -> int:
         """
         An integer to identify the component on a board.
-        
+
         :returns: component identifier.
         """
         return self._identifier

@@ -68,7 +68,7 @@ class RawUSBHardwareBackend(Backend, metaclass=BackendMeta):
     def discover(cls) -> Set[Board]:
         """
         Discover boards that this backend can control.
-        
+
         :returns: set of boards that this backend can control.
         """
         raise NotImplementedError  # pragma: no cover
@@ -78,7 +78,7 @@ class RawUSBHardwareBackend(Backend, metaclass=BackendMeta):
     def firmware_version(self) -> Optional[str]:
         """
         The firmware version reported by the board.
-        
+
         :returns: firmware version reported by the board, if any.
         """
         raise NotImplementedError  # pragma: no cover
@@ -87,7 +87,7 @@ class RawUSBHardwareBackend(Backend, metaclass=BackendMeta):
     def serial(self) -> str:
         """
         The serial number reported by the board.
-        
+
         :returns: serial number reported by the board.
         :raises USBCommunicationError: Unable to query USB.
         """
@@ -100,7 +100,7 @@ class RawUSBHardwareBackend(Backend, metaclass=BackendMeta):
     def __del__(self) -> None:
         """
         Clean up device on destruction of object.
-        
+
         :raises USBCommunicationError: USB Error occurred.
         """
         # Note: we do not obtain the lock here.
@@ -113,7 +113,7 @@ class RawUSBHardwareBackend(Backend, metaclass=BackendMeta):
     def _read(self, command: ReadCommand) -> bytes:
         """
         Read bytes from the USB control endpoint.
-        
+
         :param command: Read command instance.
         :returns: bytes result from command.
         :raises USBCommunicationError: USB Error occurred.
@@ -133,7 +133,7 @@ class RawUSBHardwareBackend(Backend, metaclass=BackendMeta):
     def _write(self, command: WriteCommand, param: Union[int, bytes]) -> None:
         """
         Write bytes to the USB control endpoint.
-        
+
         :param command: WriteCommand instance.
         :param param: USB parameter for write command.
         :raises USBCommunicationError: USB Error occurred.

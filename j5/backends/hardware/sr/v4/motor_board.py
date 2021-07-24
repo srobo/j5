@@ -24,7 +24,7 @@ SPEED_BRAKE = 2
 def is_motor_board(port: ListPortInfo) -> bool:
     """
     Check if a ListPortInfo represents a MCV4B.
-    
+
     :param port: ListPortInfo object.
     :returns: True if object represents motor board.
     """
@@ -48,7 +48,7 @@ class SRV4MotorBoardHardwareBackend(
     ) -> Set[Board]:
         """
         Discover boards that this backend can control.
-        
+
         :param find: serial lib find function.
         :param serial_class: class to use for serial comms.
         :returns: set of boards that this backend can control.
@@ -104,7 +104,7 @@ class SRV4MotorBoardHardwareBackend(
     def __del__(self) -> None:
         """
         Clean up device on destruction of object.
-        
+
         :raises CommunicationError: Error occurred during motor board comms.
         """
         # Brake both of the motors for safety
@@ -126,7 +126,7 @@ class SRV4MotorBoardHardwareBackend(
     def send_command(self, command: int, data: Optional[int] = None) -> None:
         """
         Send a serial command to the board.
-        
+
         :param command: Command ID to send.
         :param data: Data for command, if any.
         """
@@ -136,7 +136,7 @@ class SRV4MotorBoardHardwareBackend(
     def _send_command_no_lock(self, command: int, data: Optional[int] = None) -> None:
         """
         Send a serial command to the board without acquiring the lock.
-        
+
         :param command: Command ID to send.
         :param data: Data for command, if any.
         :raises CommunicationError: Error occurred during motor board comms.
@@ -159,7 +159,7 @@ class SRV4MotorBoardHardwareBackend(
     def firmware_version(self) -> Optional[str]:
         """
         The firmware version reported by the board.
-        
+
         :returns: firmware version reported by the board, if any.
         :raises CommunicationError: Not a motor board!
         """
@@ -176,7 +176,7 @@ class SRV4MotorBoardHardwareBackend(
     def get_motor_state(self, identifier: int) -> MotorState:
         """
         Get the current motor state.
-        
+
         :param identifier: identifier of the motor
         :returns: state of the motor.
         """
@@ -192,7 +192,7 @@ class SRV4MotorBoardHardwareBackend(
     ) -> None:
         """
         Set the state of a motor.
-        
+
         :param identifier: identifier of the motor
         :param power: state of the motor.
         :param acquire_lock: whether to acquire lock. dangerous if false.

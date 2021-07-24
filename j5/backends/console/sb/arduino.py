@@ -21,7 +21,7 @@ class SBArduinoConsoleBackend(
     def discover(cls) -> Set[Board]:
         """
         Discover boards that this backend can control.
-        
+
         :returns: set of boards that this backend can control.
         """
         return {cast(Board, SBArduinoBoard("SERIAL", cls("SERIAL")))}
@@ -53,7 +53,7 @@ class SBArduinoConsoleBackend(
     ) -> Optional[float]:
         """
         Get a distance in metres.
-        
+
         :param trigger_pin_identifier: pin number of the trigger pin.
         :param echo_pin_identifier: pin number of the echo pin.
         :returns: Distance measured in metres, or None if it timed out.

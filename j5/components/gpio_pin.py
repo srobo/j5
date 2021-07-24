@@ -47,7 +47,7 @@ class GPIOPinInterface(Interface):
                           ) -> None:
         """
         Set the hardware mode of a GPIO pin.
-        
+
         :param identifier: pin number to set.
         :param pin_mode: mode to set the pin to.
         """
@@ -57,7 +57,7 @@ class GPIOPinInterface(Interface):
     def get_gpio_pin_mode(self, identifier: int) -> GPIOPinMode:
         """
         Get the hardware mode of a GPIO pin.
-        
+
         :param identifier: pin number.
         :returns: mode of the pin.
         """
@@ -70,7 +70,7 @@ class GPIOPinInterface(Interface):
                                      ) -> None:
         """
         Write to the digital state of a GPIO pin.
-        
+
         :param identifier: pin number
         :param state: desired digital state.
         """
@@ -80,7 +80,7 @@ class GPIOPinInterface(Interface):
     def get_gpio_pin_digital_state(self, identifier: int) -> bool:
         """
         Get the last written state of the GPIO pin.
-        
+
         :param identifier: pin number
         :returns: Last known digital state of the pin.
         """
@@ -90,7 +90,7 @@ class GPIOPinInterface(Interface):
     def read_gpio_pin_digital_state(self, identifier: int) -> bool:
         """
         Read the digital state of the GPIO pin.
-        
+
         :param identifier: pin number
         :returns: digital state of the pin.
         """
@@ -100,7 +100,7 @@ class GPIOPinInterface(Interface):
     def read_gpio_pin_analogue_value(self, identifier: int) -> float:
         """
         Read the scaled analogue value of the GPIO pin.
-        
+
         :param identifier: pin number
         :returns: scaled analogue value of the pin.
         """
@@ -112,9 +112,9 @@ class GPIOPinInterface(Interface):
             identifier: int,
             scaled_value: float,
     ) -> None:
-        """"
+        """
         Write a scaled analogue value to the DAC on the GPIO pin.
-        
+
         :param identifier: pin number
         :param scaled_value: scaled analogue value to write
         """
@@ -128,7 +128,7 @@ class GPIOPinInterface(Interface):
     ) -> None:
         """
         Write a scaled analogue value to the PWM on the GPIO pin.
-        
+
         :param identifier: pin number
         :param duty_cycle: duty cycle to writee
         """
@@ -164,7 +164,7 @@ class GPIOPin(Component):
     def interface_class() -> Type[GPIOPinInterface]:
         """
         Get the interface class that is required to use this component.
-        
+
         :returns: interface class.
         """
         return GPIOPinInterface
@@ -172,7 +172,7 @@ class GPIOPin(Component):
     def _require_pin_modes(self, pin_modes: Set[PinMode]) -> None:
         """
         Ensure that this pin is in the specified hardware mode.
-        
+
         :param pin_modes: set of valid pin modes.
         :raises BadGPIOPinModeError: pin not in a valid mode.
         """
@@ -185,7 +185,7 @@ class GPIOPin(Component):
     def identifier(self) -> int:
         """
         An integer to identify the component on a board.
-        
+
         :returns: component identifier.
         """
         return self._identifier
@@ -194,7 +194,7 @@ class GPIOPin(Component):
     def mode(self) -> PinMode:
         """
         Get the mode of this pin.
-        
+
         :returns: current mode of the pin.
         """
         return self._backend.get_gpio_pin_mode(self._identifier)
@@ -203,7 +203,7 @@ class GPIOPin(Component):
     def mode(self, pin_mode: PinMode) -> None:
         """
         Set the mode of this pin.
-        
+
         :param pin_mode: mode to switch to.
         :raises NotSupportedByComponentError: pin doesn't support mode.
         """
@@ -217,7 +217,7 @@ class GPIOPin(Component):
     def digital_write(self, state: bool) -> None:
         """
         Set the digital state of the pin.
-        
+
         :param state: digital state.
         """
         self._require_pin_modes({GPIOPinMode.DIGITAL_OUTPUT})
@@ -239,7 +239,7 @@ class GPIOPin(Component):
     def digital_read(self) -> bool:
         """
         Get the digital state of the pin.
-        
+
         :returns: digital read state of the pin.
         """
         self._require_pin_modes({
@@ -253,7 +253,7 @@ class GPIOPin(Component):
     def analogue_read(self) -> float:
         """
         Get the scaled analogue reading of the pin.
-        
+
         :returns: scaled analogue reading
         """
         self._require_pin_modes({GPIOPinMode.ANALOGUE_INPUT})
@@ -262,7 +262,7 @@ class GPIOPin(Component):
     def analogue_write(self, new_value: float) -> None:
         """
         Set the analogue value of the pin.
-        
+
         :param new_value: analogue value
         :raises ValueError: pin value must be between 0 and 1
         """
@@ -280,7 +280,7 @@ class GPIOPin(Component):
     def pwm_write(self, new_value: float) -> None:
         """
         Set the PWM value of the pin.
-        
+
         :param new_value: new duty cycle
         :raises ValueError: pin value must be between 0 and 1
         """
@@ -299,7 +299,7 @@ class GPIOPin(Component):
     def firmware_modes(self) -> Set[FirmwareMode]:
         """
         Get the supported firmware modes.
-        
+
         :returns: supported firmware modes.
         """
         return self._firmware_modes
@@ -308,7 +308,7 @@ class GPIOPin(Component):
     def firmware_modes(self, modes: Set[FirmwareMode]) -> None:
         """
         Set the supported firmware modes.
-        
+
         :param modes: firmware modes to support.
         """
         self._firmware_modes = modes

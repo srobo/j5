@@ -39,7 +39,7 @@ class Environment:
     def supported_boards(self) -> Set[Type['Board']]:
         """
         The boards that are supported by this environment.
-        
+
         :returns: set of boards that are supported by this environment.
         """
         return set(self.board_backend_mapping.keys())
@@ -47,7 +47,7 @@ class Environment:
     def __str__(self) -> str:
         """
         Get a string representation of this environment.
-        
+
         :returns: string representation of the environment.
         """
         return self.name
@@ -55,7 +55,7 @@ class Environment:
     def register_backend(self, backend: Type[Backend]) -> None:
         """
         Register a new backend with this environment.
-        
+
         :param backend: The backend to register in the environment.
         :raises RuntimeError: The backend has already been registered.
         """
@@ -68,7 +68,7 @@ class Environment:
     def get_backend(self, board: Type['Board']) -> Type[Backend]:
         """
         Get the backend for a board.
-        
+
         :param board: board type to fetch a backend for.
         :returns: Backend in this environment for the given board.
         :raises NotImplementedError: The environment does not support the board.
@@ -81,7 +81,7 @@ class Environment:
     def get_board_group(self, board: Type[BoardT]) -> 'BoardGroup[BoardT, Backend]':
         """
         Get a board group for the given board type.
-        
+
         :param board: board type to fetch a backend for.
         :returns: BoardGroup in this environment for the given board.
         :raises NotImplementedError: The environment does not support the board.

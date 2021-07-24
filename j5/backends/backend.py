@@ -68,7 +68,7 @@ class BackendMeta(ABCMeta):
         Create a new class object.
 
         :returns: a new backend object.
-        
+
         # noqa: DAR101
         """
         cls = super().__new__(mcs, name, bases, namespace, **kwargs)

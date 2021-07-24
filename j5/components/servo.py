@@ -30,7 +30,7 @@ class ServoInterface(Interface):
     ) -> None:
         """
         Set the position of a servo.
-        
+
         :param identifier: Port of servo to set position.
         :param position: Position to set the servo to.
         """
@@ -48,7 +48,7 @@ class Servo(Component):
     def interface_class() -> Type[ServoInterface]:
         """
         Get the interface class that is required to use this component.
-        
+
         :returns: interface class.
         """
         return ServoInterface
@@ -57,7 +57,7 @@ class Servo(Component):
     def identifier(self) -> int:
         """
         An integer to identify the component on a board.
-        
+
         :returns: component identifier.
         """
         return self._identifier
@@ -66,7 +66,7 @@ class Servo(Component):
     def position(self) -> ServoPosition:
         """
         Get the current position of the Servo.
-        
+
         :returns: current position of the Servo
         """
         return self._backend.get_servo_position(self._identifier)
@@ -75,7 +75,7 @@ class Servo(Component):
     def position(self, new_position: ServoPosition) -> None:
         """
         Set the position of the Servo.
-        
+
         :param new_position: new position for the servo.
         :raises ValueError: invalid servo position
         """

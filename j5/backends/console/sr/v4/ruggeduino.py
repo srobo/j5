@@ -20,7 +20,7 @@ class SRV4RuggeduinoConsoleBackend(
     def discover(cls) -> Set[Board]:
         """
         Discover boards that this backend can control.
-        
+
         :returns: set of boards that this backend can control.
         """
         return {cast(Board, Ruggeduino("SERIAL", cls("SERIAL")))}

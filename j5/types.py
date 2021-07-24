@@ -17,7 +17,7 @@ class ImmutableDict(Generic[T, U]):
     def __getitem__(self, index: T) -> U:
         """
         Get an member using list notation.
-        
+
         :param index: The key in the dict to fetch.
         :returns: The value of the key in the dict.
         """
@@ -26,7 +26,7 @@ class ImmutableDict(Generic[T, U]):
     def __iter__(self) -> Iterator[U]:
         """
         Iterate over the members of the dict.
-        
+
         :returns: Iterator over the members of the dict.
         """
         return iter(self._members.values())
@@ -34,7 +34,7 @@ class ImmutableDict(Generic[T, U]):
     def __len__(self) -> int:
         """
         Get the number of members in the dict.
-        
+
         :returns: Number of members in the dict.
         """
         return len(self._members)
@@ -52,7 +52,7 @@ class ImmutableList(Generic[T]):
     def __getitem__(self, index: int) -> T:
         """
         Get an member using list notation.
-        
+
         :param index: The index of the value to fetch.
         :returns: The value at the index.
         """
@@ -61,7 +61,7 @@ class ImmutableList(Generic[T]):
     def __iter__(self) -> Iterator[T]:
         """
         Iterate over the members of the list.
-        
+
         :returns: Iterator over the members of the list.
         """
         return iter(self._members)
@@ -69,7 +69,7 @@ class ImmutableList(Generic[T]):
     def __len__(self) -> int:
         """
         Get the number of members in the list.
-        
+
         :returns: Number of members in the list.
         """
         return len(self._members)

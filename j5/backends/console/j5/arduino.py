@@ -42,7 +42,7 @@ class ArduinoConsoleBackend(
     def firmware_version(self) -> Optional[str]:
         """
         The firmware version reported by the board.
-        
+
         :returns: firmware version reported by the board, if any.
         """
         return None  # Console, so no firmware
@@ -50,7 +50,7 @@ class ArduinoConsoleBackend(
     def set_gpio_pin_mode(self, identifier: int, pin_mode: GPIOPinMode) -> None:
         """
         Set the hardware mode of a GPIO pin.
-        
+
         :param identifier: pin number to set.
         :param pin_mode: mode to set the pin to.
         """
@@ -60,7 +60,7 @@ class ArduinoConsoleBackend(
     def get_gpio_pin_mode(self, identifier: int) -> GPIOPinMode:
         """
         Get the hardware mode of a GPIO pin.
-        
+
         :param identifier: pin number.
         :returns: mode of the pin.
         """
@@ -69,7 +69,7 @@ class ArduinoConsoleBackend(
     def write_gpio_pin_digital_state(self, identifier: int, state: bool) -> None:
         """
         Write to the digital state of a GPIO pin.
-        
+
         :param identifier: pin number
         :param state: desired digital state.
         :raises ValueError: pin is not in correct mode.
@@ -83,7 +83,7 @@ class ArduinoConsoleBackend(
     def get_gpio_pin_digital_state(self, identifier: int) -> bool:
         """
         Get the last written state of the GPIO pin.
-        
+
         :param identifier: pin number
         :returns: Last known digital state of the pin.
         :raises ValueError: pin is not in correct mode.
@@ -96,7 +96,7 @@ class ArduinoConsoleBackend(
     def read_gpio_pin_digital_state(self, identifier: int) -> bool:
         """
         Read the digital state of the GPIO pin.
-        
+
         :param identifier: pin number
         :returns: digital state of the pin.
         :raises ValueError: pin is not in correct mode.
@@ -113,7 +113,7 @@ class ArduinoConsoleBackend(
     def read_gpio_pin_analogue_value(self, identifier: int) -> float:
         """
         Read the scaled analogue value of the GPIO pin.
-        
+
         :param identifier: pin number
         :returns: scaled analogue value of the pin.
         :raises ValueError: pin is not in correct mode.
@@ -126,7 +126,7 @@ class ArduinoConsoleBackend(
     def write_gpio_pin_dac_value(self, identifier: int, scaled_value: float) -> None:
         """
         Write a scaled analogue value to the DAC on the GPIO pin.
-        
+
         :param identifier: pin number
         :param scaled_value: scaled analogue value to write
         :raises NotImplementedError: Arduino Uno does not have a DAC.
@@ -137,7 +137,7 @@ class ArduinoConsoleBackend(
     def write_gpio_pin_pwm_value(self, identifier: int, duty_cycle: float) -> None:
         """
         Write a scaled analogue value to the PWM on the GPIO pin.
-        
+
         :param identifier: pin number
         :param duty_cycle: duty cycle to writee
         :raises NotImplementedError: Not implemented in any supported firmware yet.
@@ -148,7 +148,7 @@ class ArduinoConsoleBackend(
     def get_led_state(self, identifier: int) -> bool:
         """
         Get the state of an LED.
-        
+
         :param identifier: LED identifier.
         :returns: current state of the LED.
         :raises ValueError: invalid LED identifier.
@@ -160,7 +160,7 @@ class ArduinoConsoleBackend(
     def set_led_state(self, identifier: int, state: bool) -> None:
         """
         Set the state of an LED.
-        
+
         :param identifier: LED identifier.
         :param state: desired state of the LED.
         :raises ValueError: invalid LED identifier.

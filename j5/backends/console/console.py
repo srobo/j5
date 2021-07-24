@@ -24,7 +24,7 @@ class Console:
     def info(self, message: str) -> None:
         """
         Print information to the user.
-        
+
         :param message: Message to print to the user.
         """
         self._print(f"{self._descriptor}: {message}")
@@ -37,7 +37,7 @@ class Console:
     ) -> T:
         """
         Get a value of type 'return_type' from the user.
-        
+
         :param prompt: Prompt to display to the user.
         :param return_type: type to cast the input as, defaults to str.
         :param check_stdin: Check if stdin is available is a tty.
@@ -65,7 +65,7 @@ class Console:
     def _get_bool(case: str) -> bool:
         """
         Check if a string is a bool, if so return it.
-        
+
         :param case: string to check.
         :return: boolean representation of case
         :raises ValueError: case is not a bool.

@@ -28,7 +28,7 @@ class SBArduinoBoard(ArduinoUno):
     def supported_components() -> Set[Type[Component]]:
         """
         List the types of components supported by this board.
-        
+
         :returns: Set of components supported by the board.
         """
         return {
@@ -56,7 +56,7 @@ class UltrasoundSensors:
     ) -> UltrasoundSensor:
         """
         Get an ultrasound sensor with the given pin configuration.
-        
+
         :param key: The pin numbers of the trigger and echo pins.
         :returns: An ultrasound sensor object.
         """

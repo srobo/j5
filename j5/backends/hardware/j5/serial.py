@@ -47,7 +47,7 @@ class Seriallike(Protocol):
     def read(self, size: int = 1) -> bytes:
         """
         Read bytes from the serial port.
-        
+
         :param size: number of bytes to read.
         """
         ...  # pragma: nocover
@@ -55,7 +55,7 @@ class Seriallike(Protocol):
     def write(self, data: bytes) -> int:
         """
         Write data to the serial port.
-        
+
         :param data: data to write.
         """
         ...  # pragma: nocover
@@ -97,7 +97,7 @@ class SerialHardwareBackend(Backend, metaclass=BackendMeta):
     def firmware_version(self) -> Optional[str]:
         """
         The firmware version reported by the board.
-        
+
         :returns: firmware version reported by the board, if any.
         """
         raise NotImplementedError  # pragma: no cover
@@ -105,7 +105,7 @@ class SerialHardwareBackend(Backend, metaclass=BackendMeta):
     def read_serial_line(self, empty: bool = False) -> str:
         """
         Read a line from the serial interface.
-        
+
         :param empty: Allow empty line.
         :returns: line read from serial port.
         :raises CommunicationError: serial error whilst reading line.
@@ -131,7 +131,7 @@ class SerialHardwareBackend(Backend, metaclass=BackendMeta):
     def read_serial_chars(self, size: int = 1) -> str:
         """
         Read chars from the serial interface.
-        
+
         :param size: number of bytes to read.
         :returns: decoded characters
         :raises ValueError: insufficient data in serial buffer.

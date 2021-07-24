@@ -60,7 +60,7 @@ class SRV4RuggeduinoHardwareBackend(
     def firmware_version(self) -> str:
         """
         The firmware version reported by the board.
-        
+
         :returns: firmware version reported by the board, if any.
         """
         return self._version_line.split(":")[-1]
@@ -69,7 +69,7 @@ class SRV4RuggeduinoHardwareBackend(
     def is_official_firmware(self) -> bool:
         """
         Check whether the firmware is official.
-        
+
         :returns: true if firmware is official
         """
         return self._version_line.split(":")[0] == "SRduino"
@@ -77,7 +77,7 @@ class SRV4RuggeduinoHardwareBackend(
     def _command(self, command: str, pin: Optional[int] = None) -> str:
         """
         Send a command to the board.
-        
+
         :param command: single character command to send.
         :param pin: pin number for command, if any.
         :returns: Response from command.
@@ -92,7 +92,7 @@ class SRV4RuggeduinoHardwareBackend(
     def encode_pin(pin: Optional[int]) -> str:
         """
         Encode a pin number as a letter of the alphabet.
-        
+
         :param pin: pin number to encode, if any.
         :returns: encoded pin number.
         """
@@ -119,7 +119,7 @@ class SRV4RuggeduinoHardwareBackend(
     def _read_digital_pin(self, identifier: int) -> bool:
         """
         Read the value of a digital pin from the Arduino.
-        
+
         :param identifier: pin number.
         :returns: value of digital pin.
         :raises CommunicationError: Invalid response from ruggeduino
@@ -154,7 +154,7 @@ class SRV4RuggeduinoHardwareBackend(
         Send a string command to the Ruggeduino and return the result.
 
         :param command: command to execute.
-        :returns: result from ruggeduino        
+        :returns: result from ruggeduino
         :raises NotSupportedByHardwareError: custom needed firmware for command support
         """
         if self.is_official_firmware:
@@ -166,9 +166,9 @@ class SRV4RuggeduinoHardwareBackend(
     def _execute_raw_string_command(self, command: str) -> str:
         """
         Send a raw string command to the Ruggeduino and return the result.
-        
+
         :param command: command to execute.
-        :returns: result from ruggeduino  
+        :returns: result from ruggeduino
         :raises CommunicationError: error occurred during ruggeduino comms.
         """
         try:

@@ -87,7 +87,7 @@ class ArduinoUno(Board):
     ) -> Mapping[PinNumber, GPIOPin]:
         """
         Generate a dict of GPIOPins with the same properties.
-        
+
         :param numbering: The pin numbers to use for the generated pins.
         :param initial_mode: Initial mode of the generated pins.
         :param hardware_modes: Set of hardware modes supported by the pins.
@@ -109,7 +109,7 @@ class ArduinoUno(Board):
     def serial_number(self) -> str:
         """
         Get the serial number.
-        
+
         :returns: Serial number of the board.
         """
         return self._serial
@@ -118,7 +118,7 @@ class ArduinoUno(Board):
     def firmware_version(self) -> Optional[str]:
         """
         Get the firmware version of the board.
-        
+
         :returns: Firmware version of the board.
         """
         return self._backend.firmware_version
@@ -127,7 +127,7 @@ class ArduinoUno(Board):
     def pins(self) -> ImmutableDict[PinNumber, GPIOPin]:
         """
         Get the GPIO pins.
-        
+
         :returns: Dictionary of pins on the Arduino.
         """
         pins = ImmutableDict[ArduinoUno.PinNumber, GPIOPin]({
@@ -144,7 +144,7 @@ class ArduinoUno(Board):
     def supported_components() -> Set[Type[Component]]:
         """
         List the types of components supported by this board.
-        
+
         :returns: Set of components supported by the board.
         """
         return {

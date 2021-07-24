@@ -40,7 +40,7 @@ class MotorBoard(Board):
     def serial_number(self) -> str:
         """
         Get the serial number.
-        
+
         :returns: Serial number of the board.
         """
         return self._serial
@@ -49,7 +49,7 @@ class MotorBoard(Board):
     def firmware_version(self) -> Optional[str]:
         """
         Get the firmware version of the board.
-        
+
         :returns: Firmware version of the board.
         """
         return self._backend.firmware_version
@@ -58,7 +58,7 @@ class MotorBoard(Board):
     def motors(self) -> ImmutableList[Motor]:
         """
         Get the motors on this board.
-        
+
         :returns: List of motors attached to the board.
         """
         return self._outputs
@@ -73,7 +73,7 @@ class MotorBoard(Board):
     def supported_components() -> Set[Type['Component']]:
         """
         List the types of components supported by this board.
-        
+
         :returns: Set of components supported by the board.
         """
         return {Motor}

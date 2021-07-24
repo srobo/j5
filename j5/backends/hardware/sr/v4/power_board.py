@@ -61,7 +61,7 @@ class SRV4PowerBoardHardwareBackend(
     def discover(cls, find: Callable = usb.core.find) -> Set[Board]:
         """
         Discover boards that this backend can control.
-        
+
         :param find: libusb find function.
         :returns: set of boards that this backend can control.
         :raises USBCommunicationError: Unable to query USB.
@@ -96,7 +96,7 @@ class SRV4PowerBoardHardwareBackend(
     def check_firmware_version_supported(self) -> None:
         """
         Raises an exception if the firmware version is not supported.
-        
+
         :raises NotImplementedError: servo board is running unsupported firmware
         """
         v = self.firmware_version
@@ -108,7 +108,7 @@ class SRV4PowerBoardHardwareBackend(
     def firmware_version(self) -> str:
         """
         The firmware version reported by the board.
-        
+
         :returns: firmware version reported by the board, if any.
         """
         version, = struct.unpack("<I", self._read(CMD_READ_FWVER))
@@ -117,7 +117,7 @@ class SRV4PowerBoardHardwareBackend(
     def get_power_output_enabled(self, identifier: int) -> bool:
         """
         Get whether a power output is enabled.
-        
+
         :param identifier: power output to fetch status of.
         :returns: status of the power output.
         :raises ValueError: Invalid power output identifier.
@@ -135,7 +135,7 @@ class SRV4PowerBoardHardwareBackend(
     ) -> None:
         """
         Set whether a power output is enabled.
-        
+
         :param identifier: power output to enable / disable
         :param enabled: status of the power output.
         :raises ValueError: Invalid power output identifier.
@@ -153,7 +153,7 @@ class SRV4PowerBoardHardwareBackend(
     def get_power_output_current(self, identifier: int) -> float:
         """
         Get the current being drawn on a power output, in amperes.
-        
+
         :param identifier: power output to fetch current of.
         :returns: current of the output.
         :raises ValueError: Invalid power output identifier.
@@ -170,7 +170,7 @@ class SRV4PowerBoardHardwareBackend(
              duration: timedelta, frequency: float) -> None:
         """
         Queue a pitch to be played.
-        
+
         :param identifier: piezo identifier to play pitch on.
         :param duration: duration of the tone.
         :param frequency: Pitch of the tone in Hz.
@@ -204,7 +204,7 @@ class SRV4PowerBoardHardwareBackend(
     def get_button_state(self, identifier: int) -> bool:
         """
         Get the state of a button.
-        
+
         :param identifier: Button identifier to fetch state of.
         :returns: state of the button.
         :raises ValueError: invalid button identifier.
@@ -218,7 +218,7 @@ class SRV4PowerBoardHardwareBackend(
     def wait_until_button_pressed(self, identifier: int) -> None:
         """
         Halt the program until this button is pushed.
-        
+
         :param identifier: Button identifier to wait for.
         """
         while not self.get_button_state(identifier):
@@ -227,7 +227,7 @@ class SRV4PowerBoardHardwareBackend(
     def get_battery_sensor_voltage(self, identifier: int) -> float:
         """
         Get the voltage of a battery sensor.
-        
+
         :param identifier: Identifier of battery sensor.
         :returns: voltage measured by the sensor.
         :raises ValueError: invalid battery sensor identifier.
@@ -241,7 +241,7 @@ class SRV4PowerBoardHardwareBackend(
     def get_battery_sensor_current(self, identifier: int) -> float:
         """
         Get the current of a battery sensor.
-        
+
         :param identifier: Identifier of battery sensor.
         :returns: current measured by the sensor.
         :raises ValueError: invalid battery sensor identifier.
@@ -255,7 +255,7 @@ class SRV4PowerBoardHardwareBackend(
     def get_led_state(self, identifier: int) -> bool:
         """
         Get the state of an LED.
-        
+
         :param identifier: identifier of the LED.
         :returns: current state of the LED.
         """
@@ -264,7 +264,7 @@ class SRV4PowerBoardHardwareBackend(
     def set_led_state(self, identifier: int, state: bool) -> None:
         """
         Set the state of an LED.
-        
+
         :param identifier: identifier of the LED.
         :param state: desired state of the LED.
         :raises ValueError: invalid LED identifer.

@@ -39,7 +39,7 @@ class DerivedComponent(Component):
     def identifier(self) -> int:
         """
         An integer to identify the component on a board.
-        
+
         :raises NotSupportedByComponentError: derived components have no id.
         """
         raise NotSupportedByComponentError(
@@ -52,7 +52,7 @@ class DerivedComponent(Component):
     def interface_class() -> Type[Interface]:
         """
         Get the interface class that is required to use this component.
-        
+
         :returns: interface class.
         """
         raise NotImplementedError  # pragma: no cover

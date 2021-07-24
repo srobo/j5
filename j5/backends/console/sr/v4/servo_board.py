@@ -21,7 +21,7 @@ class SRV4ServoBoardConsoleBackend(
     def discover(cls) -> Set[Board]:
         """
         Discover boards that this backend can control.
-        
+
         :returns: set of boards that this backend can control.
         """
         return {cast(Board, ServoBoard("SERIAL", cls("SERIAL")))}
@@ -39,7 +39,7 @@ class SRV4ServoBoardConsoleBackend(
     def serial(self) -> str:
         """
         The serial number reported by the board.
-        
+
         :returns: serial number reported by the board.
         """
         return self._serial
@@ -48,7 +48,7 @@ class SRV4ServoBoardConsoleBackend(
     def firmware_version(self) -> Optional[str]:
         """
         The firmware version reported by the board.
-        
+
         :returns: firmware version reported by the board, if any.
         """
         return None  # Console, so no firmware
@@ -56,7 +56,7 @@ class SRV4ServoBoardConsoleBackend(
     def get_servo_position(self, identifier: int) -> ServoPosition:
         """
         Get the servo position.
-        
+
         :param identifier: Port of servo to check.
         :returns: Position of servo.
         """
@@ -67,7 +67,7 @@ class SRV4ServoBoardConsoleBackend(
     def set_servo_position(self, identifier: int, position: ServoPosition) -> None:
         """
         Set the servo position.
-        
+
         :param identifier: Port of servo to set position.
         :param position: Position to set the servo to.
         :raises ValueError: Unknown servo identifier.

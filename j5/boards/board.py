@@ -36,7 +36,7 @@ class Board(metaclass=ABCMeta):
     def __str__(self) -> str:
         """
         A string representation of this board.
-        
+
         :returns: string representation of the board.
         """
         return f"{self.name} - {self.serial_number}"
@@ -44,7 +44,7 @@ class Board(metaclass=ABCMeta):
     def __new__(cls, *args, **kwargs):  # type: ignore
         """
         Ensure any instantiated board is added to the boards list.
-        
+
         :returns: Instance of the board we are creating.
 
         # noqa: DAR101
@@ -56,7 +56,7 @@ class Board(metaclass=ABCMeta):
     def __repr__(self) -> str:
         """
         A representation of this board.
-        
+
         :returns: string representation of the board.
         """
         return f"<{self.__class__.__name__} serial_number={self.serial_number}>"

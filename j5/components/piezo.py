@@ -43,7 +43,7 @@ class PiezoInterface(Interface):
              duration: timedelta, frequency: float) -> None:
         """
         Queue a pitch to be played.
-        
+
         :param identifier: piezo identifier to play pitch on.
         :param duration: duration of the tone.
         :param frequency: Pitch of the tone in Hz.
@@ -62,7 +62,7 @@ class Piezo(Component):
     def interface_class() -> Type[PiezoInterface]:
         """
         Get the interface class that is required to use this component.
-        
+
         :returns: interface class.
         """
         return PiezoInterface
@@ -71,7 +71,7 @@ class Piezo(Component):
     def identifier(self) -> int:
         """
         An integer to identify the component on a board.
-        
+
         :returns: component identifier.
         """
         return self._identifier
@@ -98,7 +98,7 @@ class Piezo(Component):
     def verify_pitch(pitch: Pitch) -> None:
         """
         Verify that a pitch is valid.
-        
+
         :param pitch: pitch to validate.
         :raises TypeError: Pitch must be float or Note
         :raises ValueError: Frequency must be greater than zero
@@ -116,7 +116,7 @@ class Piezo(Component):
     def verify_duration(duration: timedelta) -> None:
         """
         Verify that a duration is valid.
-        
+
         :param duration: duration to validate.
         :raises TypeError: duration must be a timedelta.
         :raises ValueError: duration cannot be negative.

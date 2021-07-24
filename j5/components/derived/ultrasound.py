@@ -40,7 +40,7 @@ class UltrasoundInterface(Interface):
     ) -> Optional[float]:
         """
         Get a distance in metres.
-        
+
         :param trigger_pin_identifier: pin number of the trigger pin.
         :param echo_pin_identifier: pin number of the echo pin.
         :returns: Distance measured in metres, or None if it timed out.
@@ -81,7 +81,7 @@ class UltrasoundSensor(DerivedComponent):
     def interface_class() -> Type[Interface]:
         """
         Get the interface class that is required to use this component.
-        
+
         :returns: interface class.
         """
         return UltrasoundInterface

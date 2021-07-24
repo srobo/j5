@@ -17,7 +17,7 @@ class BaseRobot:
     def __new__(cls, *args, **kwargs) -> 'BaseRobot':  # type: ignore
         """
         Create a new instance of the class.
-        
+
         :returns: Instance of a robot object.
 
         # noqa: DAR101

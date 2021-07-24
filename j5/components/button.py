@@ -13,7 +13,7 @@ class ButtonInterface(Interface):
     def get_button_state(self, identifier: int) -> bool:
         """
         Get the state of a button.
-        
+
         :param identifier: Button identifier to fetch state of.
         :returns: state of the button.
         """
@@ -23,7 +23,7 @@ class ButtonInterface(Interface):
     def wait_until_button_pressed(self, identifier: int) -> None:
         """
         Halt the program until this button is pushed.
-        
+
         :param identifier: Button identifier to wait for.
         """
         raise NotImplementedError  # pragma: no cover
@@ -40,7 +40,7 @@ class Button(Component):
     def interface_class() -> Type[ButtonInterface]:
         """
         Get the interface class that is required to use this component.
-        
+
         :returns: interface class.
         """
         return ButtonInterface
@@ -49,7 +49,7 @@ class Button(Component):
     def identifier(self) -> int:
         """
         An integer to identify the component on a board.
-        
+
         :returns: component identifier.
         """
         return self._identifier
@@ -58,7 +58,7 @@ class Button(Component):
     def is_pressed(self) -> bool:
         """
         Get the current pushed state of the button.
-        
+
         :returns: current pushed state of the button.
         """
         return self._backend.get_button_state(self._identifier)

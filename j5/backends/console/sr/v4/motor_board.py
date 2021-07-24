@@ -21,7 +21,7 @@ class SRV4MotorBoardConsoleBackend(
     def discover(cls) -> Set[Board]:
         """
         Discover boards that this backend can control.
-        
+
         :returns: set of boards that this backend can control.
         """
         return {cast(Board, MotorBoard("SERIAL", cls("SERIAL")))}
@@ -42,7 +42,7 @@ class SRV4MotorBoardConsoleBackend(
     def serial(self) -> str:
         """
         The serial number reported by the board.
-        
+
         :returns: serial number reported by the board.
         """
         return self._serial
@@ -51,7 +51,7 @@ class SRV4MotorBoardConsoleBackend(
     def firmware_version(self) -> Optional[str]:
         """
         The firmware version reported by the board.
-        
+
         :returns: firmware version reported by the board, if any.
         """
         return None  # Console, so no firmware
@@ -59,7 +59,7 @@ class SRV4MotorBoardConsoleBackend(
     def get_motor_state(self, identifier: int) -> MotorState:
         """
         Get the current motor state.
-        
+
         :param identifier: identifier of the motor
         :returns: state of the motor.
         """
@@ -70,7 +70,7 @@ class SRV4MotorBoardConsoleBackend(
     def set_motor_state(self, identifier: int, power: MotorState) -> None:
         """
         Set the state of a motor.
-        
+
         :param identifier: identifier of the motor
         :param power: state of the motor.
         :raises ValueError: invalid motor identifier.
