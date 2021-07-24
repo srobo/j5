@@ -15,6 +15,9 @@ class StringCommandComponentInterface(Interface):
         Execute the string command and return the result.
 
         This function can be synchronous and blocking.
+
+        :param command: command to execute.
+        :returns: result
         """
         raise NotImplementedError  # pragma: no cover
 
@@ -39,12 +42,20 @@ class StringCommandComponent(Component):
 
     @staticmethod
     def interface_class() -> Type[Interface]:
-        """Get the interface class that is required to use this component."""
+        """
+        Get the interface class that is required to use this component.
+        
+        :returns: interface class.
+        """
         return StringCommandComponentInterface
 
     @property
     def identifier(self) -> int:
-        """An integer to identify the component on a board."""
+        """
+        An integer to identify the component on a board.
+        
+        :returns: component identifier.
+        """
         return self._identifier
 
     def execute(self, command: str) -> str:
@@ -52,6 +63,10 @@ class StringCommandComponent(Component):
         Execute the string command and return the result.
 
         This function can be synchronous and blocking.
+
+        :param command: command to execute.
+        :returns: result of command.
+        :raises ValueError: command is not valid.
         """
         if not isinstance(command, str):
             raise ValueError("A command must be a string.")
@@ -67,5 +82,8 @@ class StringCommandComponent(Component):
 
         Reduces code complexity in API implementation, as this component
         is unlikely to be wanted to be visible by the majority of API authors.
+
+        :param command: command to execute.
+        :returns: result of command.
         """
         return self.execute(command)
