@@ -55,11 +55,22 @@ class SBArduinoHardwareBackend(
 
     @property
     def firmware_version(self) -> str:
-        """The firmware version of the board."""
+        """
+        The firmware version reported by the board.
+        
+        :returns: firmware version reported by the board.
+        """
         return self._version_line.split("v")[1]
 
     def _command(self, command: str, *params: str) -> List[str]:
-        """Send a command to the board."""
+        """
+        Send a command to the board.
+        
+        :param command: Command to send to the board:
+        :param params: Additional parameters to the command.
+        :returns: List of responses from the board.
+        :raises CommunicationError: An error occurred during the command execution.
+        """
         try:
             with self._lock:
                 message = " ".join([command] + list(params)) + "\n"
@@ -87,7 +98,14 @@ class SBArduinoHardwareBackend(
             raise CommunicationError(f"Serial Error: {e}") from e
 
     def _update_digital_pin(self, identifier: int) -> None:
-        """Write the stored value of a digital pin to the Arduino."""
+        """
+        Write the stored value of a digital pin to the Arduino.
+
+        Reads the state out of self._digital_pins.
+        
+        :param identifier: Pin number to update.
+        :raises RuntimeError: Pin is an analogue pin.
+        """
         if identifier >= SBArduinoBoard.FIRST_ANALOGUE_PIN:
             raise RuntimeError("Reached an unreachable statement.")
         pin = self._digital_pins[identifier]
@@ -106,7 +124,13 @@ class SBArduinoHardwareBackend(
         self._command("W", str(identifier), char)
 
     def _read_digital_pin(self, identifier: int) -> bool:
-        """Read the value of a digital pin from the Arduino."""
+        """
+        Read the value of a digital pin from the Arduino.
+        
+        :param identifier: pin number to read value of.
+        :returns: state of the pin.
+        :raises CommunicationError: something went wrong during arduino comms.
+        """
         results = self._command("R", str(identifier))
         if len(results) != 1:
             raise CommunicationError(f"Invalid response from Arduino: {results!r}")
@@ -119,7 +143,14 @@ class SBArduinoHardwareBackend(
             raise CommunicationError(f"Invalid response from Arduino: {result!r}")
 
     def _read_analogue_pin(self, identifier: int) -> float:
-        """Read the value of an analogue pin from the Arduino."""
+        """
+        Read the value of an analogue pin from the Arduino.
+        
+        :param identifier: pin number to read value of.
+        :returns: analogue value of the pin.
+        :raises NotSupportedByHardwareError: pin does not have ADC functionality.
+        :raises CommunicationError: something went wrong during arduino comms.
+        """
         if identifier >= SBArduinoBoard.FIRST_ANALOGUE_PIN + 4:
             raise NotSupportedByHardwareError(
                 "Arduino Uno firmware only supports analogue pins 0-3 (IDs 14-17)",
@@ -141,7 +172,10 @@ class SBArduinoHardwareBackend(
         """
         Get a timedelta for the ultrasound time.
 
-        Returns None if the sensor times out.
+        :param trigger_pin_identifier: pin number of the trigger pin.
+        :param echo_pin_identifier: pin number of the echo pin.
+        :returns: Time taken for the pulse, or None if it timed out.
+        :raises CommunicationError: Invalid response from Arduino
         """
         self._check_ultrasound_pins(trigger_pin_identifier, echo_pin_identifier)
         results = self._command("T", str(trigger_pin_identifier),
@@ -162,7 +196,14 @@ class SBArduinoHardwareBackend(
         trigger_pin_identifier: int,
         echo_pin_identifier: int,
     ) -> Optional[float]:
-        """Get a distance in metres."""
+        """
+        Get a distance in metres.
+        
+        :param trigger_pin_identifier: pin number of the trigger pin.
+        :param echo_pin_identifier: pin number of the echo pin.
+        :returns: Distance measured in metres, or None if it timed out.
+        :raises CommunicationError: Invalid response from Arduino
+        """
         self._check_ultrasound_pins(trigger_pin_identifier, echo_pin_identifier)
         results = self._command("U", str(trigger_pin_identifier),
                                 str(echo_pin_identifier))
@@ -182,7 +223,13 @@ class SBArduinoHardwareBackend(
             trigger_pin_identifier: int,
             echo_pin_identifier: int,
     ) -> None:
-        """Verify the validity of a pair of ultrasound pins."""
+        """
+        Verify the validity of a pair of ultrasound pins.
+
+        :param trigger_pin_identifier: pin number of the trigger pin.
+        :param echo_pin_identifier: pin number of the echo pin.
+        :raises NotSupportedByHardwareError: Ultrasound functions not supported on analogue pins
+        """
         if trigger_pin_identifier >= SBArduinoBoard.FIRST_ANALOGUE_PIN:
             raise NotSupportedByHardwareError(
                 "Ultrasound functions not supported on analogue pins",
@@ -197,7 +244,12 @@ class SBArduinoHardwareBackend(
         trigger_pin_identifier: int,
         echo_pin_identifier: int,
     ) -> None:
-        """Force the pins into the modes required for ultrasound."""
+        """
+        Ultrasound functions force the pins into particular modes.
+
+        :param trigger_pin_identifier: pin number of the trigger pin.
+        :param echo_pin_identifier: pin number of the echo pin.
+        """
         self._digital_pins[trigger_pin_identifier].mode = GPIOPinMode.DIGITAL_OUTPUT
         self._digital_pins[trigger_pin_identifier].state = False
         self._digital_pins[echo_pin_identifier].mode = GPIOPinMode.DIGITAL_INPUT
