@@ -82,7 +82,7 @@ class ArduinoConsoleBackend(
 
     def get_gpio_pin_digital_state(self, identifier: int) -> bool:
         """
-        Get the last written state of the GPIO pin.
+        Get the last written state of a given GPIO pin.
 
         :param identifier: pin number
         :returns: Last known digital state of the pin.
@@ -95,7 +95,7 @@ class ArduinoConsoleBackend(
 
     def read_gpio_pin_digital_state(self, identifier: int) -> bool:
         """
-        Read the digital state of the GPIO pin.
+        Read the digital state of a given GPIO pin.
 
         :param identifier: pin number
         :returns: digital state of the pin.
@@ -112,7 +112,7 @@ class ArduinoConsoleBackend(
 
     def read_gpio_pin_analogue_value(self, identifier: int) -> float:
         """
-        Read the scaled analogue value of the GPIO pin.
+        Read the scaled analogue value of a given GPIO pin.
 
         :param identifier: pin number
         :returns: scaled analogue value of the pin.
@@ -125,7 +125,7 @@ class ArduinoConsoleBackend(
 
     def write_gpio_pin_dac_value(self, identifier: int, scaled_value: float) -> None:
         """
-        Write a scaled analogue value to the DAC on the GPIO pin.
+        Write a scaled analogue value to the DAC on a given GPIO pin.
 
         :param identifier: pin number
         :param scaled_value: scaled analogue value to write
@@ -136,10 +136,10 @@ class ArduinoConsoleBackend(
 
     def write_gpio_pin_pwm_value(self, identifier: int, duty_cycle: float) -> None:
         """
-        Write a scaled analogue value to the PWM on the GPIO pin.
+        Write a scaled analogue value to the PWM on a given GPIO pin.
 
         :param identifier: pin number
-        :param duty_cycle: duty cycle to writee
+        :param duty_cycle: duty cycle to write
         :raises NotImplementedError: Not implemented in any supported firmware yet.
         """
         # Not implemented on derivitive boards yet.

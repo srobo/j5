@@ -74,7 +74,7 @@ class PowerBoard(Board):
     @property
     def serial_number(self) -> str:
         """
-        Get the serial number.
+        Get the serial number of the board.
 
         :returns: Serial number of the board.
         """

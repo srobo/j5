@@ -60,7 +60,7 @@ class BatterySensor(Component):
     @property
     def voltage(self) -> float:
         """
-        Get the voltage of the battery sensor.
+        Get the voltage reported by the battery sensor.
 
         :returns: voltage measured by the sensor.
         """

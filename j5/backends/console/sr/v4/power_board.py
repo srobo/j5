@@ -106,7 +106,7 @@ class SRV4PowerBoardConsoleBackend(
         Get the current being drawn on a power output, in amperes.
 
         :param identifier: power output to fetch current of.
-        :returns: current of the output.
+        :returns: measured current of the output.
         :raises ValueError: Invalid power output identifier.
         """
         if identifier in self._output_states:

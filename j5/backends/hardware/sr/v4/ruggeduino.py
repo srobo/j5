@@ -155,7 +155,7 @@ class SRV4RuggeduinoHardwareBackend(
 
         :param command: command to execute.
         :returns: result from ruggeduino
-        :raises NotSupportedByHardwareError: custom needed firmware for command support
+        :raises NotSupportedByHardwareError: custom firmware needed for command support
         """
         if self.is_official_firmware:
             raise NotSupportedByHardwareError(
