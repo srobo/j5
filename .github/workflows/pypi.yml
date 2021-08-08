@@ -1,0 +1,31 @@
+name: Upload PyPI Package
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.6
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.6
+      - name: Install Poetry
+        run: pip install poetry
+      - name: Use in-project virtualenv
+        run: poetry config virtualenvs.in-project true
+      - uses: actions/cache@v2
+        with:
+          path: .venv/
+          key: ${{ runner.os }}-3.7-pip-${{ hashFiles('poetry.lock') }}-${{ hashFiles('pyproject.toml') }}
+      - name: Install dependencies
+        run: poetry install
+      - name: Verify tag and version match
+        run: python tools/verify_git_version.py
+      - name: Upload built artifacts to PyPI
+        env:
+          POETRY_PYPI_TOKEN_PYPI: ${{secrets.PYPI_TOKEN}}
+        run: poetry publish --build

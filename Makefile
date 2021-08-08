@@ -4,7 +4,7 @@ CMD:=poetry run
 PYMODULE:=j5
 TESTS:=tests
 SNIPPETS:=build/doc-snippets
-EXTRACODE:=docs/_code tests_hw tools/extract_snippets.py
+EXTRACODE:=docs/_code tests_hw tools/*.py 
 GENERATEDCODE:=$(SNIPPETS)/**/*.py
 
 all: type test lint
