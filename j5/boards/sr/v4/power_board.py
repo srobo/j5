@@ -73,32 +73,56 @@ class PowerBoard(Board):
 
     @property
     def serial_number(self) -> str:
-        """Get the serial number."""
+        """
+        Get the serial number of the board.
+
+        :returns: Serial number of the board.
+        """
         return self._serial
 
     @property
     def firmware_version(self) -> Optional[str]:
-        """Get the firmware version of the board."""
+        """
+        Get the firmware version of the board.
+
+        :returns: Firmware version of the board.
+        """
         return self._backend.firmware_version
 
     @property
     def outputs(self) -> PowerOutputGroup:
-        """Get the power outputs."""
+        """
+        Get the power outputs.
+
+        :returns: Group of power outputs attached to the board.
+        """
         return self._output_group
 
     @property
     def piezo(self) -> Piezo:
-        """Get the piezo sounder."""
+        """
+        Get the piezo sounder.
+
+        :returns: Piezo object attached to the board.
+        """
         return self._piezo
 
     @property
     def start_button(self) -> Button:
-        """Get the start button."""
+        """
+        Get the start button.
+
+        :returns: Start button attached to the board.
+        """
         return self._start_button
 
     @property
     def battery_sensor(self) -> BatterySensor:
-        """Get the battery sensor."""
+        """
+        Get the battery sensor.
+
+        :returns: Battery sensor attached to the board.
+        """
         return self._battery_sensor
 
     def make_safe(self) -> None:
@@ -125,5 +149,9 @@ class PowerBoard(Board):
 
     @staticmethod
     def supported_components() -> Set["Type[Component]"]:
-        """List the types of components supported by this board."""
+        """
+        List the types of components supported by this board.
+
+        :returns: Set of components supported by the board.
+        """
         return {PowerOutput, Piezo, Button, BatterySensor, LED}

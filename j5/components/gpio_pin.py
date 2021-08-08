@@ -45,12 +45,22 @@ class GPIOPinInterface(Interface):
                           identifier: int,
                           pin_mode: GPIOPinMode,
                           ) -> None:
-        """Set the hardware mode of a GPIO pin."""
+        """
+        Set the hardware mode of a GPIO pin.
+
+        :param identifier: pin number to set.
+        :param pin_mode: mode to set the pin to.
+        """
         raise NotImplementedError  # pragma: nocover
 
     @abstractmethod
     def get_gpio_pin_mode(self, identifier: int) -> GPIOPinMode:
-        """Get the hardware mode of a GPIO pin."""
+        """
+        Get the hardware mode of a GPIO pin.
+
+        :param identifier: pin number.
+        :returns: mode of the pin.
+        """
         raise NotImplementedError  # pragma: nocover
 
     @abstractmethod
@@ -58,22 +68,42 @@ class GPIOPinInterface(Interface):
                                      identifier: int,
                                      state: bool,
                                      ) -> None:
-        """Write to the digital state of a GPIO pin."""
+        """
+        Write to the digital state of a GPIO pin.
+
+        :param identifier: pin number
+        :param state: desired digital state.
+        """
         raise NotImplementedError  # pragma: nocover
 
     @abstractmethod
     def get_gpio_pin_digital_state(self, identifier: int) -> bool:
-        """Get the last written state of the GPIO pin."""
+        """
+        Get the last written state of the GPIO pin.
+
+        :param identifier: pin number
+        :returns: Last known digital state of the pin.
+        """
         raise NotImplementedError  # pragma: nocover
 
     @abstractmethod
     def read_gpio_pin_digital_state(self, identifier: int) -> bool:
-        """Read the digital state of the GPIO pin."""
+        """
+        Read the digital state of the GPIO pin.
+
+        :param identifier: pin number
+        :returns: digital state of the pin.
+        """
         raise NotImplementedError  # pragma: nocover
 
     @abstractmethod
     def read_gpio_pin_analogue_value(self, identifier: int) -> float:
-        """Read the scaled analogue value of the GPIO pin."""
+        """
+        Read the scaled analogue value of the GPIO pin.
+
+        :param identifier: pin number
+        :returns: scaled analogue value of the pin.
+        """
         raise NotImplementedError  # pragma: nocover
 
     @abstractmethod
@@ -82,7 +112,12 @@ class GPIOPinInterface(Interface):
             identifier: int,
             scaled_value: float,
     ) -> None:
-        """Write a scaled analogue value to the DAC on the GPIO pin."""
+        """
+        Write a scaled analogue value to the DAC on the GPIO pin.
+
+        :param identifier: pin number
+        :param scaled_value: scaled analogue value to write
+        """
         raise NotImplementedError  # pragma: nocover
 
     @abstractmethod
@@ -91,7 +126,12 @@ class GPIOPinInterface(Interface):
             identifier: int,
             duty_cycle: float,
     ) -> None:
-        """Write a scaled analogue value to the PWM on the GPIO pin."""
+        """
+        Write a scaled analogue value to the PWM on the GPIO pin.
+
+        :param identifier: pin number
+        :param duty_cycle: duty cycle to writee
+        """
         raise NotImplementedError  # pragma: nocover
 
 
@@ -120,13 +160,22 @@ class GPIOPin(Component):
 
         self.mode = initial_mode
 
-    @classmethod
-    def interface_class(cls) -> Type[GPIOPinInterface]:
-        """Get the interface class that is required to use this component."""
+    @staticmethod
+    def interface_class() -> Type[GPIOPinInterface]:
+        """
+        Get the interface class that is required to use this component.
+
+        :returns: interface class.
+        """
         return GPIOPinInterface
 
     def _require_pin_modes(self, pin_modes: Set[PinMode]) -> None:
-        """Ensure that this pin is in the specified hardware mode."""
+        """
+        Ensure that this pin is in the specified hardware mode.
+
+        :param pin_modes: set of valid pin modes.
+        :raises BadGPIOPinModeError: pin not in a valid mode.
+        """
         if self.mode not in pin_modes and not len(pin_modes) == 0:
             raise BadGPIOPinModeError(
                 f"Pin {self._identifier} needs to be in one of {pin_modes}",
@@ -134,17 +183,30 @@ class GPIOPin(Component):
 
     @property
     def identifier(self) -> int:
-        """An integer to identify the component on a board."""
+        """
+        An integer to identify the component on a board.
+
+        :returns: component identifier.
+        """
         return self._identifier
 
     @property
     def mode(self) -> PinMode:
-        """Get the mode of this pin."""
+        """
+        Get the mode of this pin.
+
+        :returns: current mode of the pin.
+        """
         return self._backend.get_gpio_pin_mode(self._identifier)
 
     @mode.setter
     def mode(self, pin_mode: PinMode) -> None:
-        """Set the mode of this pin."""
+        """
+        Set the mode of this pin.
+
+        :param pin_mode: mode to switch to.
+        :raises NotSupportedByComponentError: pin doesn't support mode.
+        """
         if pin_mode not in self._supported_modes | self._firmware_modes:
             raise NotSupportedByComponentError(
                 f"Pin {self._identifier} does not support {str(pin_mode)}.",
@@ -153,7 +215,11 @@ class GPIOPin(Component):
             self._backend.set_gpio_pin_mode(self._identifier, pin_mode)
 
     def digital_write(self, state: bool) -> None:
-        """Set the digital state of the pin."""
+        """
+        Set the digital state of the pin.
+
+        :param state: digital state.
+        """
         self._require_pin_modes({GPIOPinMode.DIGITAL_OUTPUT})
         self._backend.write_gpio_pin_digital_state(self._identifier, state)
 
@@ -164,12 +230,18 @@ class GPIOPin(Component):
 
         This does not perform a read operation, it only gets the last set
         value, which is usually cached in memory.
+
+        :returns: last set digital state of the pin
         """
         self._require_pin_modes({GPIOPinMode.DIGITAL_OUTPUT})
         return self._backend.get_gpio_pin_digital_state(self._identifier)
 
     def digital_read(self) -> bool:
-        """Get the digital state of the pin."""
+        """
+        Get the digital state of the pin.
+
+        :returns: digital read state of the pin.
+        """
         self._require_pin_modes({
             GPIOPinMode.DIGITAL_INPUT,
             GPIOPinMode.DIGITAL_INPUT_PULLUP,
@@ -179,12 +251,21 @@ class GPIOPin(Component):
         return self._backend.read_gpio_pin_digital_state(self._identifier)
 
     def analogue_read(self) -> float:
-        """Get the scaled analogue reading of the pin."""
+        """
+        Get the scaled analogue reading of the pin.
+
+        :returns: scaled analogue reading
+        """
         self._require_pin_modes({GPIOPinMode.ANALOGUE_INPUT})
         return self._backend.read_gpio_pin_analogue_value(self._identifier)
 
     def analogue_write(self, new_value: float) -> None:
-        """Set the analogue value of the pin."""
+        """
+        Set the analogue value of the pin.
+
+        :param new_value: analogue value
+        :raises ValueError: pin value must be between 0 and 1
+        """
         self._require_pin_modes({
             GPIOPinMode.ANALOGUE_OUTPUT,
         })
@@ -197,7 +278,12 @@ class GPIOPin(Component):
         )
 
     def pwm_write(self, new_value: float) -> None:
-        """Set the PWM value of the pin."""
+        """
+        Set the PWM value of the pin.
+
+        :param new_value: new duty cycle
+        :raises ValueError: pin value must be between 0 and 1
+        """
         self._require_pin_modes({
             GPIOPinMode.PWM_OUTPUT,
         })
@@ -211,10 +297,18 @@ class GPIOPin(Component):
 
     @property
     def firmware_modes(self) -> Set[FirmwareMode]:
-        """Get the supported firmware modes."""
+        """
+        Get the supported firmware modes.
+
+        :returns: supported firmware modes.
+        """
         return self._firmware_modes
 
     @firmware_modes.setter
     def firmware_modes(self, modes: Set[FirmwareMode]) -> None:
-        """Set the supported firmware modes."""
+        """
+        Set the supported firmware modes.
+
+        :param modes: firmware modes to support.
+        """
         self._firmware_modes = modes

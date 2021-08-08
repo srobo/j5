@@ -59,7 +59,13 @@ class SRV4PowerBoardHardwareBackend(
 
     @classmethod
     def discover(cls, find: Callable = usb.core.find) -> Set[Board]:
-        """Discover boards that this backend can control."""
+        """
+        Discover boards that this backend can control.
+
+        :param find: libusb find function.
+        :returns: set of boards that this backend can control.
+        :raises USBCommunicationError: Unable to query USB.
+        """
         boards: Set[Board] = set()
         try:
             device_list = find(idVendor=0x1bda, idProduct=0x0010, find_all=True)
@@ -88,7 +94,11 @@ class SRV4PowerBoardHardwareBackend(
         self.check_firmware_version_supported()
 
     def check_firmware_version_supported(self) -> None:
-        """Raises an exception if the firmware version is not supported."""
+        """
+        Raises an exception if the firmware version is not supported.
+
+        :raises NotImplementedError: servo board is running unsupported firmware
+        """
         v = self.firmware_version
         if v != "3":
             raise NotImplementedError(f"This power board is running firmware "
@@ -96,12 +106,22 @@ class SRV4PowerBoardHardwareBackend(
 
     @property
     def firmware_version(self) -> str:
-        """The firmware version reported by the board."""
+        """
+        The firmware version reported by the board.
+
+        :returns: firmware version reported by the board, if any.
+        """
         version, = struct.unpack("<I", self._read(CMD_READ_FWVER))
         return str(cast(int, version))
 
     def get_power_output_enabled(self, identifier: int) -> bool:
-        """Get whether a power output is enabled."""
+        """
+        Get whether a power output is enabled.
+
+        :param identifier: power output to fetch status of.
+        :returns: status of the power output.
+        :raises ValueError: Invalid power output identifier.
+        """
         try:
             return self._output_states[identifier]
         except KeyError:
@@ -113,7 +133,13 @@ class SRV4PowerBoardHardwareBackend(
     def set_power_output_enabled(
         self, identifier: int, enabled: bool,
     ) -> None:
-        """Set whether a power output is enabled."""
+        """
+        Set whether a power output is enabled.
+
+        :param identifier: power output to enable / disable
+        :param enabled: status of the power output.
+        :raises ValueError: Invalid power output identifier.
+        """
         try:
             cmd = CMD_WRITE_OUTPUT[identifier]
         except KeyError:
@@ -125,7 +151,13 @@ class SRV4PowerBoardHardwareBackend(
         self._output_states[identifier] = enabled
 
     def get_power_output_current(self, identifier: int) -> float:
-        """Get the current being drawn on a power output, in amperes."""
+        """
+        Get the current being drawn on a power output, in amperes.
+
+        :param identifier: power output to fetch current of.
+        :returns: current of the output.
+        :raises ValueError: Invalid power output identifier.
+        """
         try:
             cmd = CMD_READ_OUTPUT[identifier]
         except KeyError:
@@ -136,7 +168,16 @@ class SRV4PowerBoardHardwareBackend(
 
     def buzz(self, identifier: int,
              duration: timedelta, frequency: float) -> None:
-        """Queue a pitch to be played."""
+        """
+        Queue a pitch to be played.
+
+        :param identifier: piezo identifier to play pitch on.
+        :param duration: duration of the tone.
+        :param frequency: Pitch of the tone in Hz.
+        :raises ValueError: invalid value for parameter.
+        :raises CommunicationError: buzz commands sent too quickly
+        :raises NotSupportedByHardwareError: unsupported pitch freq or length.
+        """
         if identifier != 0:
             raise ValueError(f"Invalid piezo identifier {identifier!r}; "
                              f"the only valid identifier is 0.")
@@ -161,7 +202,13 @@ class SRV4PowerBoardHardwareBackend(
             raise
 
     def get_button_state(self, identifier: int) -> bool:
-        """Get the state of a button."""
+        """
+        Get the state of a button.
+
+        :param identifier: Button identifier to fetch state of.
+        :returns: state of the button.
+        :raises ValueError: invalid button identifier.
+        """
         if identifier != 0:
             raise ValueError(f"Invalid button identifier {identifier!r}; "
                              f"the only valid identifier is 0.")
@@ -169,12 +216,22 @@ class SRV4PowerBoardHardwareBackend(
         return cast(int, state) != 0
 
     def wait_until_button_pressed(self, identifier: int) -> None:
-        """Halt the program until this button is pushed."""
+        """
+        Halt the program until this button is pushed.
+
+        :param identifier: Button identifier to wait for.
+        """
         while not self.get_button_state(identifier):
             sleep(0.05)
 
     def get_battery_sensor_voltage(self, identifier: int) -> float:
-        """Get the voltage of a battery sensor."""
+        """
+        Get the voltage of a battery sensor.
+
+        :param identifier: Identifier of battery sensor.
+        :returns: voltage measured by the sensor.
+        :raises ValueError: invalid battery sensor identifier.
+        """
         if identifier != 0:
             raise ValueError(f"Invalid battery sensor identifier {identifier!r}; "
                              f"the only valid identifier is 0.")
@@ -182,7 +239,13 @@ class SRV4PowerBoardHardwareBackend(
         return cast(int, voltage) / 1000  # convert millivolts to volts
 
     def get_battery_sensor_current(self, identifier: int) -> float:
-        """Get the current of a battery sensor."""
+        """
+        Get the current of a battery sensor.
+
+        :param identifier: Identifier of battery sensor.
+        :returns: current measured by the sensor.
+        :raises ValueError: invalid battery sensor identifier.
+        """
         if identifier != 0:
             raise ValueError(f"Invalid battery sensor identifier {identifier!r}; "
                              f"the only valid identifier is 0.")
@@ -190,11 +253,22 @@ class SRV4PowerBoardHardwareBackend(
         return cast(int, current) / 1000  # convert milliamps to amps
 
     def get_led_state(self, identifier: int) -> bool:
-        """Get the state of an LED."""
+        """
+        Get the state of an LED.
+
+        :param identifier: identifier of the LED.
+        :returns: current state of the LED.
+        """
         return self._led_states[identifier]
 
     def set_led_state(self, identifier: int, state: bool) -> None:
-        """Set the state of an LED."""
+        """
+        Set the state of an LED.
+
+        :param identifier: identifier of the LED.
+        :param state: desired state of the LED.
+        :raises ValueError: invalid LED identifer.
+        """
         cmds = {0: CMD_WRITE_RUNLED, 1: CMD_WRITE_ERRORLED}
         try:
             cmd = cmds[identifier]

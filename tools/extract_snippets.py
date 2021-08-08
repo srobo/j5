@@ -22,7 +22,11 @@ class SnippetWriter:
         self.next_num = 0
 
     def write(self, contents: str) -> None:
-        """Write the next file using the given contents."""
+        """
+        Write the next file using the given contents.
+
+        :param contents: contents of file.
+        """
         contents = f"# noqa: {','.join(ignored_flake8_rules)}\n{contents}"
         path = self.output_path / f"snippet{self.next_num:04d}.py"
         with open(path, "w") as file:
@@ -31,7 +35,12 @@ class SnippetWriter:
 
 
 def extract(input_path: Path, snippet_writer: SnippetWriter) -> None:
-    """Look for code snippets in input_path and send them to the snippet_writer."""
+    """
+    Look for code snippets in input_path and send them to the snippet_writer.
+
+    :param input_path: path to search in.
+    :param snippet_writer: snippet writer instance.
+    """
     current_code_block = None
     unchecked = None
     with open(input_path, "r") as input_file:

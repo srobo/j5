@@ -45,11 +45,19 @@ class Seriallike(Protocol):
         ...  # pragma: nocover
 
     def read(self, size: int = 1) -> bytes:
-        """Read size bytes from the serial port."""
+        """
+        Read bytes from the serial port.
+
+        :param size: number of bytes to read.
+        """
         ...  # pragma: nocover
 
     def write(self, data: bytes) -> int:
-        """Write data to the serial port."""
+        """
+        Write data to the serial port.
+
+        :param data: data to write.
+        """
         ...  # pragma: nocover
 
 
@@ -87,11 +95,21 @@ class SerialHardwareBackend(Backend, metaclass=BackendMeta):
     @property
     @abstractmethod
     def firmware_version(self) -> Optional[str]:
-        """The firmware version of the board."""
+        """
+        The firmware version reported by the board.
+
+        :returns: firmware version reported by the board, if any.
+        """
         raise NotImplementedError  # pragma: no cover
 
     def read_serial_line(self, empty: bool = False) -> str:
-        """Read a line from the serial interface."""
+        """
+        Read a line from the serial interface.
+
+        :param empty: Allow empty line.
+        :returns: line read from serial port.
+        :raises CommunicationError: serial error whilst reading line.
+        """
         try:
             bdata = self._serial.readline()
         except SerialTimeoutException as e:
@@ -111,7 +129,14 @@ class SerialHardwareBackend(Backend, metaclass=BackendMeta):
         return ldata.rstrip()
 
     def read_serial_chars(self, size: int = 1) -> str:
-        """Read size bytes from the serial interface."""
+        """
+        Read chars from the serial interface.
+
+        :param size: number of bytes to read.
+        :returns: decoded characters
+        :raises ValueError: insufficient data in serial buffer.
+        :raises CommunicationError: an error occurred during serial comms.
+        """
         if size > self._serial.in_waiting:
             raise ValueError(f"Tried to read {size} bytes from the serial buffer, "
                              f"only {self._serial.in_waiting} were available.")

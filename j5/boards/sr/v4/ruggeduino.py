@@ -35,7 +35,11 @@ class Ruggeduino(ArduinoUno):
 
     @staticmethod
     def supported_components() -> Set[Type[Component]]:
-        """List the types of components supported by this board."""
+        """
+        List the types of components supported by this board.
+
+        :returns: Set of components supported by the board.
+        """
         return {
             GPIOPin,
             LED,

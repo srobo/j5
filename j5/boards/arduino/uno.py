@@ -85,7 +85,15 @@ class ArduinoUno(Board):
             hardware_modes: Set[GPIOPinMode] = GPIOPin.DEFAULT_HW_MODE,
             firmware_modes: Set[FirmwareMode] = GPIOPin.DEFAULT_FW_MODE,
     ) -> Mapping[PinNumber, GPIOPin]:
-        """Generate a dict of GPIOPins with the same properties."""
+        """
+        Generate a dict of GPIOPins with the same properties.
+
+        :param numbering: The pin numbers to use for the generated pins.
+        :param initial_mode: Initial mode of the generated pins.
+        :param hardware_modes: Set of hardware modes supported by the pins.
+        :param firmware_modes: Set of firmware modes supported by the pins.
+        :returns: Dictionary of generated pins.
+        """
         return {
             i: GPIOPin(
                 i,
@@ -99,17 +107,29 @@ class ArduinoUno(Board):
 
     @property
     def serial_number(self) -> str:
-        """Get the serial number."""
+        """
+        Get the serial number.
+
+        :returns: Serial number of the board.
+        """
         return self._serial
 
     @property
     def firmware_version(self) -> Optional[str]:
-        """Get the firmware version of the board."""
+        """
+        Get the firmware version of the board.
+
+        :returns: Firmware version of the board.
+        """
         return self._backend.firmware_version
 
     @property
     def pins(self) -> ImmutableDict[PinNumber, GPIOPin]:
-        """Get the GPIO pins."""
+        """
+        Get the GPIO pins.
+
+        :returns: Dictionary of pins on the Arduino.
+        """
         pins = ImmutableDict[ArduinoUno.PinNumber, GPIOPin]({
             **cast(Mapping[ArduinoUno.PinNumber, GPIOPin], self._analogue_pins),
             **cast(Mapping[ArduinoUno.PinNumber, GPIOPin], self._digital_pins),
@@ -122,7 +142,11 @@ class ArduinoUno(Board):
 
     @staticmethod
     def supported_components() -> Set[Type[Component]]:
-        """List the types of components supported by this board."""
+        """
+        List the types of components supported by this board.
+
+        :returns: Set of components supported by the board.
+        """
         return {
             GPIOPin,
             LED,

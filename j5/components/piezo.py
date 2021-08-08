@@ -41,7 +41,13 @@ class PiezoInterface(Interface):
     @abstractmethod
     def buzz(self, identifier: int,
              duration: timedelta, frequency: float) -> None:
-        """Queue a pitch to be played."""
+        """
+        Queue a pitch to be played.
+
+        :param identifier: piezo identifier to play pitch on.
+        :param duration: duration of the tone.
+        :param frequency: Pitch of the tone in Hz.
+        """
         raise NotImplementedError  # pragma: no cover
 
 
@@ -52,14 +58,22 @@ class Piezo(Component):
         self._backend = backend
         self._identifier = identifier
 
-    @classmethod
-    def interface_class(cls) -> Type[PiezoInterface]:
-        """Get the interface class that is required to use this component."""
+    @staticmethod
+    def interface_class() -> Type[PiezoInterface]:
+        """
+        Get the interface class that is required to use this component.
+
+        :returns: interface class.
+        """
         return PiezoInterface
 
     @property
     def identifier(self) -> int:
-        """An integer to identify the component on a board."""
+        """
+        An integer to identify the component on a board.
+
+        :returns: component identifier.
+        """
         return self._identifier
 
     def buzz(self, duration: Union[int, float, timedelta], pitch: Pitch) -> None:
@@ -67,6 +81,9 @@ class Piezo(Component):
         Queue a note to be played.
 
         Float and integer durations are measured in seconds.
+
+        :param duration: length to play for:
+        :param pitch: pitch of buzz.
         """
         if isinstance(duration, float) or isinstance(duration, int):
             duration = timedelta(seconds=duration)
@@ -79,7 +96,13 @@ class Piezo(Component):
 
     @staticmethod
     def verify_pitch(pitch: Pitch) -> None:
-        """Verify that a pitch is valid."""
+        """
+        Verify that a pitch is valid.
+
+        :param pitch: pitch to validate.
+        :raises TypeError: Pitch must be float or Note
+        :raises ValueError: Frequency must be greater than zero
+        """
         # Verify that the type is correct.
         pitch_is_float = type(pitch) is float
         pitch_is_note = type(pitch) is Note
@@ -91,7 +114,13 @@ class Piezo(Component):
 
     @staticmethod
     def verify_duration(duration: timedelta) -> None:
-        """Verify that a duration is valid."""
+        """
+        Verify that a duration is valid.
+
+        :param duration: duration to validate.
+        :raises TypeError: duration must be a timedelta.
+        :raises ValueError: duration cannot be negative.
+        """
         if not isinstance(duration, timedelta):
             raise TypeError("Duration must be of type datetime.timedelta")
         if duration <= timedelta(seconds=0):

@@ -66,18 +66,31 @@ class RawUSBHardwareBackend(Backend, metaclass=BackendMeta):
     @classmethod
     @abstractmethod
     def discover(cls) -> Set[Board]:
-        """Discover boards that this backend can control."""
+        """
+        Discover boards that this backend can control.
+
+        :returns: set of boards that this backend can control.
+        """
         raise NotImplementedError  # pragma: no cover
 
     @property
     @abstractmethod
     def firmware_version(self) -> Optional[str]:
-        """The firmware version of the board."""
+        """
+        The firmware version reported by the board.
+
+        :returns: firmware version reported by the board, if any.
+        """
         raise NotImplementedError  # pragma: no cover
 
     @property
     def serial(self) -> str:
-        """The serial number reported by the board."""
+        """
+        The serial number reported by the board.
+
+        :returns: serial number reported by the board.
+        :raises USBCommunicationError: Unable to query USB.
+        """
         with self._lock:
             try:
                 return self._usb_device.serial_number
@@ -85,7 +98,11 @@ class RawUSBHardwareBackend(Backend, metaclass=BackendMeta):
                 raise USBCommunicationError(e) from e
 
     def __del__(self) -> None:
-        """Clean up device on destruction of object."""
+        """
+        Clean up device on destruction of object.
+
+        :raises USBCommunicationError: USB Error occurred.
+        """
         # Note: we do not obtain the lock here.
         # This is because we want to close the device ASAP in an emergency.
         try:
@@ -94,7 +111,13 @@ class RawUSBHardwareBackend(Backend, metaclass=BackendMeta):
             raise USBCommunicationError(e) from e
 
     def _read(self, command: ReadCommand) -> bytes:
-        """Read bytes from the USB control endpoint."""
+        """
+        Read bytes from the USB control endpoint.
+
+        :param command: Read command instance.
+        :returns: bytes result from command.
+        :raises USBCommunicationError: USB Error occurred.
+        """
         with self._lock:
             try:
                 return self._usb_device.ctrl_transfer(
@@ -108,7 +131,13 @@ class RawUSBHardwareBackend(Backend, metaclass=BackendMeta):
                 raise USBCommunicationError(e) from e
 
     def _write(self, command: WriteCommand, param: Union[int, bytes]) -> None:
-        """Write bytes to the USB control endpoint."""
+        """
+        Write bytes to the USB control endpoint.
+
+        :param command: WriteCommand instance.
+        :param param: USB parameter for write command.
+        :raises USBCommunicationError: USB Error occurred.
+        """
         req_val: int = 0
         req_data: bytes = b""
         if isinstance(param, int):

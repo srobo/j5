@@ -22,7 +22,12 @@ SPEED_BRAKE = 2
 
 
 def is_motor_board(port: ListPortInfo) -> bool:
-    """Check if a ListPortInfo represents a MCV4B."""
+    """
+    Check if a ListPortInfo represents a MCV4B.
+
+    :param port: ListPortInfo object.
+    :returns: True if object represents motor board.
+    """
     return port.manufacturer == "Student Robotics" and port.product == "MCV4B" \
         and port.vid == 0x0403 and port.pid == 0x6001
 
@@ -41,7 +46,13 @@ class SRV4MotorBoardHardwareBackend(
             find: Callable = comports,
             serial_class: Type[Seriallike] = cast(Type[Seriallike], Serial),  # noqa: B008
     ) -> Set[Board]:
-        """Discover all connected motor boards."""
+        """
+        Discover boards that this backend can control.
+
+        :param find: serial lib find function.
+        :param serial_class: class to use for serial comms.
+        :returns: set of boards that this backend can control.
+        """
         # Find all serial ports.
         ports: List[ListPortInfo] = find()
 
@@ -91,7 +102,11 @@ class SRV4MotorBoardHardwareBackend(
             self.set_motor_state(i, val)
 
     def __del__(self) -> None:
-        """Clean up device on destruction of object."""
+        """
+        Clean up device on destruction of object.
+
+        :raises CommunicationError: Error occurred during motor board comms.
+        """
         # Brake both of the motors for safety
         if hasattr(self, "_state"):
             for i, _ in enumerate(self._state):
@@ -109,12 +124,23 @@ class SRV4MotorBoardHardwareBackend(
             raise CommunicationError(f"Serial Error: {e}") from e
 
     def send_command(self, command: int, data: Optional[int] = None) -> None:
-        """Send a serial command to the board."""
+        """
+        Send a serial command to the board.
+
+        :param command: Command ID to send.
+        :param data: Data for command, if any.
+        """
         with self._lock:
-            return self._send_command_no_lock(command, data)
+            self._send_command_no_lock(command, data)
 
     def _send_command_no_lock(self, command: int, data: Optional[int] = None) -> None:
-        """Send a serial command to the board without acquiring the lock."""
+        """
+        Send a serial command to the board without acquiring the lock.
+
+        :param command: Command ID to send.
+        :param data: Data for command, if any.
+        :raises CommunicationError: Error occurred during motor board comms.
+        """
         try:
             message: List[int] = [command]
             if data is not None:
@@ -131,7 +157,12 @@ class SRV4MotorBoardHardwareBackend(
 
     @property
     def firmware_version(self) -> Optional[str]:
-        """The firmware version of the board."""
+        """
+        The firmware version reported by the board.
+
+        :returns: firmware version reported by the board, if any.
+        :raises CommunicationError: Not a motor board!
+        """
         with self._lock:
             self._send_command_no_lock(CMD_VERSION)
             firmware_data = self.read_serial_line()
@@ -143,7 +174,12 @@ class SRV4MotorBoardHardwareBackend(
         return firmware_data[6:]  # Strip model and return version
 
     def get_motor_state(self, identifier: int) -> MotorState:
-        """Get the state of a motor."""
+        """
+        Get the current motor state.
+
+        :param identifier: identifier of the motor
+        :returns: state of the motor.
+        """
         # We are unable to read the state from the motor board,
         # so we'll get the last set value.
         return self._state[identifier]
@@ -154,7 +190,14 @@ class SRV4MotorBoardHardwareBackend(
             power: MotorState,
             acquire_lock: bool = True,
     ) -> None:
-        """Set the state of a motor."""
+        """
+        Set the state of a motor.
+
+        :param identifier: identifier of the motor
+        :param power: state of the motor.
+        :param acquire_lock: whether to acquire lock. dangerous if false.
+        :raises ValueError: invalid motor identifier.
+        """
         if identifier not in range(0, 2):
             raise ValueError(
                 f"Invalid motor identifier: {identifier}, valid values are: 0, 1",

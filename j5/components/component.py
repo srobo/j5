@@ -37,7 +37,11 @@ class DerivedComponent(Component):
 
     @property
     def identifier(self) -> int:
-        """An integer to identify the component on a board."""
+        """
+        An integer to identify the component on a board.
+
+        :raises NotSupportedByComponentError: derived components have no id.
+        """
         raise NotSupportedByComponentError(
             "The identifier of a derived component is a ",
             "function of the components that it consists of",
@@ -46,7 +50,11 @@ class DerivedComponent(Component):
     @staticmethod
     @abstractmethod
     def interface_class() -> Type[Interface]:
-        """Get the interface class that is required to use this component."""
+        """
+        Get the interface class that is required to use this component.
+
+        :returns: interface class.
+        """
         raise NotImplementedError  # pragma: no cover
 
 

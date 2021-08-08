@@ -19,7 +19,11 @@ class SRV4MotorBoardConsoleBackend(
 
     @classmethod
     def discover(cls) -> Set[Board]:
-        """Discover boards that this backend can control."""
+        """
+        Discover boards that this backend can control.
+
+        :returns: set of boards that this backend can control.
+        """
         return {cast(Board, MotorBoard("SERIAL", cls("SERIAL")))}
 
     def __init__(self, serial: str, console_class: Type[Console] = Console) -> None:
@@ -36,22 +40,41 @@ class SRV4MotorBoardConsoleBackend(
 
     @property
     def serial(self) -> str:
-        """The serial number reported by the board."""
+        """
+        The serial number reported by the board.
+
+        :returns: serial number reported by the board.
+        """
         return self._serial
 
     @property
     def firmware_version(self) -> Optional[str]:
-        """The firmware version reported by the board."""
+        """
+        The firmware version reported by the board.
+
+        :returns: firmware version reported by the board, if any.
+        """
         return None  # Console, so no firmware
 
     def get_motor_state(self, identifier: int) -> MotorState:
-        """Get the current motor state."""
+        """
+        Get the current motor state.
+
+        :param identifier: identifier of the motor
+        :returns: state of the motor.
+        """
         # We are unable to read the state from the motor board, in hardware
         # so instead of asking, we'll get the last set value.
         return self._state[identifier]
 
     def set_motor_state(self, identifier: int, power: MotorState) -> None:
-        """Set the state of a motor."""
+        """
+        Set the state of a motor.
+
+        :param identifier: identifier of the motor
+        :param power: state of the motor.
+        :raises ValueError: invalid motor identifier.
+        """
         if identifier not in range(0, 2):
             raise ValueError(
                 f"Invalid motor identifier: {identifier}, valid values are: 0, 1",

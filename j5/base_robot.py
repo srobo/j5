@@ -15,7 +15,13 @@ class BaseRobot:
     """A base robot."""
 
     def __new__(cls, *args, **kwargs) -> 'BaseRobot':  # type: ignore
-        """Create a new instance of the class."""
+        """
+        Create a new instance of the class.
+
+        :returns: Instance of a robot object.
+
+        # noqa: DAR101
+        """
         obj: BaseRobot = super().__new__(cls)
         obj._obtain_lock()
         return obj
@@ -30,6 +36,10 @@ class BaseRobot:
 
         This ensures that there can only be one instance of
         Robot at any time, which is a safety feature.
+
+        :param lock_port: TCP port number to use for system-wide lock.
+        :raises OSError: An error occured when the socket was created.
+        :raises UnableToObtainLock: Could not obtain the lock on the port.
         """
         if not hasattr(self, '_lock'):
 

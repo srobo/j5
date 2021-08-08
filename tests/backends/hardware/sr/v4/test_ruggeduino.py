@@ -133,9 +133,9 @@ def test_backend_handles_bad_commands() -> None:
     """Test that an exception is raised when commands are longer than 1 character."""
     backend = make_backend()
 
-    with pytest.raises(RuntimeError):
+    with pytest.raises(ValueError):
         backend._command("ghd")
-    with pytest.raises(RuntimeError):
+    with pytest.raises(ValueError):
         backend._command("")
 
 

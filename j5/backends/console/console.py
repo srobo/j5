@@ -22,7 +22,11 @@ class Console:
         self._input = input_function
 
     def info(self, message: str) -> None:
-        """Print information to the user."""
+        """
+        Print information to the user.
+
+        :param message: Message to print to the user.
+        """
         self._print(f"{self._descriptor}: {message}")
 
     def read(  # type: ignore
@@ -31,7 +35,14 @@ class Console:
             return_type: Optional[Type[T]] = str,  # type: ignore
             check_stdin: bool = True,
     ) -> T:
-        """Get a value of type 'return_type' from the user."""
+        """
+        Prompt the user for a value of type 'return_type'.
+
+        :param prompt: Prompt to display to the user.
+        :param return_type: type to cast the input as, defaults to str.
+        :param check_stdin: Check if stdin is available is a tty.
+        :returns: value of type 'return_type'.
+        """
         if check_stdin and return_type is bool and not sys.stdin.isatty():
             return False  # type: ignore
         elif return_type is not None:
@@ -52,7 +63,13 @@ class Console:
 
     @staticmethod
     def _get_bool(case: str) -> bool:
-        """Check if a string is a bool, if so return it."""
+        """
+        Check if a string is a bool, if so return it.
+
+        :param case: string to check.
+        :return: boolean representation of case
+        :raises ValueError: case is not a bool.
+        """
         response_map: Dict[str, bool] = {
             "true": True,
             "yes": True,

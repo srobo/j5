@@ -34,17 +34,31 @@ class Board(metaclass=ABCMeta):
     BOARDS: Set['Board'] = set()
 
     def __str__(self) -> str:
-        """A string representation of this board."""
+        """
+        A string representation of this board.
+
+        :returns: string representation of the board.
+        """
         return f"{self.name} - {self.serial_number}"
 
     def __new__(cls, *args, **kwargs):  # type: ignore
-        """Ensure any instantiated board is added to the boards list."""
+        """
+        Ensure any instantiated board is added to the boards list.
+
+        :returns: Instance of the board we are creating.
+
+        # noqa: DAR101
+        """
         instance = super().__new__(cls)
         Board.BOARDS.add(instance)
         return instance
 
     def __repr__(self) -> str:
-        """A representation of this board."""
+        """
+        A representation of this board.
+
+        :returns: string representation of the board.
+        """
         return f"<{self.__class__.__name__} serial_number={self.serial_number}>"
 
     @property
