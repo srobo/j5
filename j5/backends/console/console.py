@@ -36,7 +36,7 @@ class Console:
             check_stdin: bool = True,
     ) -> T:
         """
-        Get a value of type 'return_type' from the user.
+        Prompt the user for a value of type 'return_type'.
 
         :param prompt: Prompt to display to the user.
         :param return_type: type to cast the input as, defaults to str.

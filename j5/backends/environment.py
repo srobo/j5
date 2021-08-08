@@ -48,7 +48,7 @@ class Environment:
         """
         Get a string representation of this environment.
 
-        :returns: string representation of the environment.
+        :returns: name of the environment.
         """
         return self.name
 

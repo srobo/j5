@@ -63,7 +63,7 @@ class ArduinoHardwareBackend(
         Discover boards that this backend can control.
 
         :param comports: serial lib find function.
-        :param serial_class: class to use for serial comms.
+        :param serial_class: class to use for serial communications.
         :returns: set of boards that this backend can control.
         """
         # Find all serial ports.
@@ -205,7 +205,7 @@ class ArduinoHardwareBackend(
 
     def get_gpio_pin_digital_state(self, identifier: int) -> bool:
         """
-        Get the last written state of the GPIO pin.
+        Get the last written state of a given GPIO pin.
 
         :param identifier: pin number
         :returns: Last known digital state of the pin.
