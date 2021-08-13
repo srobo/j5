@@ -24,7 +24,7 @@ pyserial = "^3.4"
 [tool.poetry.dev-dependencies]
 flake8 = "^3.8"
 flake8-commas = "^2.0"
-flake8-comprehensions = "^3.2"
+flake8-comprehensions = "^3.6"
 flake8-debugger = "^4.0"
 flake8-docstrings = "^1.5"
 flake8-isort = "^4.0"
