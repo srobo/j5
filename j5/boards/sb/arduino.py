@@ -3,7 +3,14 @@ from typing import Set, Tuple, Type, cast
 
 from j5.backends import Backend
 from j5.boards.arduino.uno import ArduinoUno
-from j5.components import LED, Component, DerivedComponent, GPIOPin
+from j5.components import (
+    LED,
+    Component,
+    DerivedComponent,
+    GPIOPin,
+    Servo,
+    ServoInterface,
+)
 from j5.components.derived import UltrasoundInterface, UltrasoundSensor
 
 
@@ -23,6 +30,7 @@ class SBArduinoBoard(ArduinoUno):
             pin.firmware_modes = SBArduinoBoard.FIRMWARE_MODES
 
         self.ultrasound_sensors = UltrasoundSensors(self)
+        self.servos = [Servo(i, cast(ServoInterface, self._backend)) for i in range(16)]
 
     @staticmethod
     def supported_components() -> Set[Type[Component]]:
@@ -34,6 +42,7 @@ class SBArduinoBoard(ArduinoUno):
         return {
             GPIOPin,
             LED,
+            Servo,
             UltrasoundSensor,
         }
 

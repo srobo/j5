@@ -1,21 +1,28 @@
 """Console Backend for the SourceBots Arduino."""
 from datetime import timedelta
-from typing import Optional, Set, cast
+from typing import List, Optional, Set, Type, cast
 
+from j5.backends.console import Console
 from j5.backends.console.j5.arduino import ArduinoConsoleBackend
 from j5.boards import Board
 from j5.boards.sb import SBArduinoBoard
-from j5.components import GPIOPinMode
+from j5.components import GPIOPinMode, ServoInterface, ServoPosition
 from j5.components.derived import UltrasoundInterface
 
 
 class SBArduinoConsoleBackend(
+    ServoInterface,
     UltrasoundInterface,
     ArduinoConsoleBackend,
 ):
     """Console Backend for the SourceBots Arduino."""
 
     board = SBArduinoBoard
+
+    def __init__(self, serial: str, console_class: Type[Console] = Console) -> None:
+        super().__init__(serial, console_class)
+
+        self._servo_states: List[ServoPosition] = [None] * 16
 
     @classmethod
     def discover(cls) -> Set[Board]:
@@ -25,6 +32,29 @@ class SBArduinoConsoleBackend(
         :returns: set of boards that this backend can control.
         """
         return {cast(Board, SBArduinoBoard("SERIAL", cls("SERIAL")))}
+
+    def get_servo_position(self, identifier: int) -> ServoPosition:
+        """
+        Get the position of a servo.
+
+        :param identifier: Port of servo to check.
+        :returns: Position of servo.
+        """
+        return self._servo_states[identifier]
+
+    def set_servo_position(
+            self,
+            identifier: int,
+            position: ServoPosition,
+    ) -> None:
+        """
+        Set the position of a servo.
+
+        :param identifier: Port of servo to set position.
+        :param position: Position to set the servo to.
+        """
+        self._servo_states[identifier] = position
+        self._console.info(f"Set servo {identifier} to {position}")
 
     def get_ultrasound_pulse(
             self,

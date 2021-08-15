@@ -245,6 +245,45 @@ def test_one_led() -> None:
         backend.get_led_state(1)
 
 
+def test_get_servo_position() -> None:
+    """Test that we can get position of a servo."""
+    backend = SBArduinoConsoleBackend(
+        "TestBoard",
+        console_class=MockConsole,
+    )
+    assert backend.get_servo_position(0) is None
+
+    # Override value in backend
+    backend._servo_states[1] = 0.8
+    assert backend.get_servo_position(1) == 0.8
+
+
+def test_set_servo_position() -> None:
+    """Test that we can set position of a servo."""
+    backend = SBArduinoConsoleBackend(
+        "TestBoard",
+        console_class=MockConsole,
+    )
+    backend._console.expects = "Set servo 0 to None"  # type: ignore
+    backend.set_servo_position(0, None)
+
+    backend._console.expects = "Set servo 4 to 0.8"  # type: ignore
+    backend.set_servo_position(4, 0.8)
+
+
+def test_get_ultrasound_position() -> None:
+    """Test that we can get the mode of a GPIO Pin."""
+    backend = SBArduinoConsoleBackend(
+        "TestBoard",
+        console_class=MockConsole,
+    )
+    assert backend.get_servo_position(0) is None
+
+    # Override value in backend
+    backend._servo_states[1] = 0.8
+    assert backend.get_servo_position(1) == 0.8
+
+
 def test_ultrasound_pulse() -> None:
     """Test that we can read an ultrasound pulse time."""
     backend = SBArduinoConsoleBackend(

@@ -9,11 +9,12 @@ from j5.backends import CommunicationError
 from j5.backends.hardware.env import NotSupportedByHardwareError
 from j5.backends.hardware.j5.arduino import ArduinoHardwareBackend
 from j5.boards.sb.arduino import SBArduinoBoard
-from j5.components import GPIOPinMode
+from j5.components import GPIOPinMode, ServoInterface, ServoPosition
 from j5.components.derived import UltrasoundInterface
 
 
 class SBArduinoHardwareBackend(
+    ServoInterface,
     UltrasoundInterface,
     ArduinoHardwareBackend,
 ):
@@ -30,6 +31,9 @@ class SBArduinoHardwareBackend(
             serial_port=serial_port,
             serial_class=serial_class,
         )
+
+        # Initialise stored servo states
+        self._servo_states: List[ServoPosition] = [None] * 16
 
         # Verify that the Arduino has booted
         count = 0
@@ -163,6 +167,39 @@ class SBArduinoHardwareBackend(
                 voltage = (int(reading) / 1024.0) * 5.0
                 return voltage
         raise CommunicationError(f"Invalid response from Arduino: {results!r}")
+
+    def get_servo_position(self, identifier: int) -> ServoPosition:
+        """
+        Get the position of a servo.
+
+        :param identifier: Port of servo to check.
+        :returns: Position of servo.
+        """
+        return self._servo_states[identifier]
+
+    def set_servo_position(
+            self,
+            identifier: int,
+            position: ServoPosition,
+    ) -> None:
+        """
+        Set the position of a servo.
+
+        :param identifier: Port of servo to set position.
+        :param position: Position to set the servo to.
+        :raises ValueError: Position was not valid.
+        """
+        if position is None:
+            level = 0
+        elif -1 <= position <= 1:
+            # Adjust to be in the range 0-1
+            status_unit = (position + 1) / 2
+            level = 150 + int((550 - 150) * status_unit)
+        else:
+            raise ValueError("Position of servo should be between 1 and -1.")
+
+        self._command('S', str(identifier), str(level))
+        self._servo_states[identifier] = position
 
     def get_ultrasound_pulse(
         self,
