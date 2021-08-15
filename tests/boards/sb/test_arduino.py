@@ -14,6 +14,8 @@ from j5.components import (
     GPIOPinInterface,
     GPIOPinMode,
     LEDInterface,
+    ServoInterface,
+    ServoPosition,
 )
 from j5.components.derived import UltrasoundInterface, UltrasoundSensor
 
@@ -24,6 +26,7 @@ if TYPE_CHECKING:
 class MockSBArduinoBackend(
     GPIOPinInterface,
     LEDInterface,
+    ServoInterface,
     UltrasoundInterface,
     Backend,
 ):
@@ -67,6 +70,18 @@ class MockSBArduinoBackend(
     def set_led_state(self, identifier: int, state: bool) -> None:
         """Set the state of the LED."""
         self.write_gpio_pin_digital_state(13, state)
+
+    def get_servo_position(self, identifier: int) -> ServoPosition:
+        """Get the position of the servo."""
+        return 1.0
+
+    def set_servo_position(
+            self,
+            identifier: int,
+            position: ServoPosition,
+    ) -> None:
+        """Set the position of the servo."""
+        pass
 
     def get_ultrasound_pulse(
         self,

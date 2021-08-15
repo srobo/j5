@@ -13,7 +13,7 @@ from .led import LED, LEDInterface
 from .motor import Motor, MotorInterface, MotorSpecialState
 from .piezo import Piezo, PiezoInterface
 from .power_output import PowerOutput, PowerOutputGroup, PowerOutputInterface
-from .servo import Servo, ServoInterface
+from .servo import Servo, ServoInterface, ServoPosition
 from .string_command import (
     StringCommandComponent,
     StringCommandComponentInterface,
@@ -45,6 +45,7 @@ __all__ = [
     "PowerOutputGroup",
     "Servo",
     "ServoInterface",
+    "ServoPosition",
     "StringCommandComponent",
     "StringCommandComponentInterface",
 ]

@@ -390,6 +390,51 @@ def test_backend_read_analogue() -> None:
     serial.check_all_received_data_consumed()
 
 
+def test_servo_read() -> None:
+    """Test that we can read the position of the servo."""
+    backend = make_backend()
+    assert backend.get_servo_position(0) is None
+
+    # Override the state
+    backend._servo_states[4] = 0.8
+    assert backend.get_servo_position(4) == 0.8
+
+
+def test_servo_write() -> None:
+    """Test that we can set the position of the servo."""
+    backend = make_backend()
+    serial = cast(SBArduinoSerial, backend._serial)
+    serial.check_data_sent_by_constructor()
+
+    backend.set_servo_position(3, 0)
+    serial.check_sent_data(b"S 3 350\n")
+
+    backend.set_servo_position(4, 0)
+    serial.check_sent_data(b"S 4 350\n")
+
+    backend.set_servo_position(4, -1)
+    serial.check_sent_data(b"S 4 150\n")
+
+    backend.set_servo_position(4, 1)
+    serial.check_sent_data(b"S 4 550\n")
+
+    backend.set_servo_position(3, None)
+    serial.check_sent_data(b"S 3 0\n")
+
+    serial.check_all_received_data_consumed()
+
+
+def test_servo_set_out_of_range() -> None:
+    """Test that we raise an error out of servo range."""
+    backend = make_backend()
+
+    with pytest.raises(ValueError):
+        backend.set_servo_position(1, 2)
+
+    with pytest.raises(ValueError):
+        backend.set_servo_position(1, -2)
+
+
 def test_ultrasound_pulse() -> None:
     """Test that we can read an ultrasound pulse time."""
     backend = make_backend()
