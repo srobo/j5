@@ -37,7 +37,7 @@ sphinx = "^4.1"
 sphinx-rtd-theme = "^1.0.0"
 rope = "^0.19.0"
 isort = {version = "^5.6",extras = ["pyproject"]}
-flake8-bugbear = "^21.4.3"
+flake8-bugbear = "^21.9.1"
 flake8-builtins = "^1.5.3"
 flake8-print = "^4.0.0"
 numpy = "^1.19.5"  # This is the last version that supports Python 3.6
