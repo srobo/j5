@@ -35,7 +35,7 @@ pytest = "^6.1"
 pytest-cov = "^2.12"
 sphinx = "^4.1"
 sphinx-rtd-theme = "^1.0.0"
-rope = "^0.19.0"
+rope = "^0.20.1"
 isort = {version = "^5.6",extras = ["pyproject"]}
 flake8-bugbear = "^21.4.3"
 flake8-builtins = "^1.5.3"
