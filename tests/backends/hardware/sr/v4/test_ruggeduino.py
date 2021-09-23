@@ -1,9 +1,9 @@
 """Tests for the Student Robotics Ruggeduino hardware implementation."""
 from math import isclose
-from typing import Optional, cast
+from typing import Optional, Type, cast
 
 import pytest
-from serial import SerialException, SerialTimeoutException
+from serial import Serial, SerialException, SerialTimeoutException
 
 from j5.backends import CommunicationError
 from j5.backends.hardware import NotSupportedByHardwareError
@@ -82,9 +82,17 @@ class RuggeduinoSerialException(RuggeduinoSerial):
         raise SerialException()
 
 
-def make_backend() -> SRV4RuggeduinoHardwareBackend:
+def make_backend(
+    serial_class: Type[MockSerial] = RuggeduinoSerial,
+) -> SRV4RuggeduinoHardwareBackend:
     """Instantiate an SBArduinoHardwareBackend  with some default arguments."""
-    return SRV4RuggeduinoHardwareBackend("COM0", RuggeduinoSerial)  # type: ignore
+
+    class EphemeralBackend(SRV4RuggeduinoHardwareBackend):
+
+        def get_serial_class(self) -> Type[Serial]:
+            return serial_class  # type: ignore
+
+    return EphemeralBackend("COM0")
 
 
 def test_backend_initialisation() -> None:
@@ -106,13 +114,13 @@ def test_backend_initialisation_serial() -> None:
     serial.check_all_received_data_consumed()
 
     with pytest.raises(CommunicationError):
-        SRV4RuggeduinoHardwareBackend("COM0", RuggeduinoSerialNoBoot)  # type: ignore
+        make_backend(RuggeduinoSerialNoBoot)
 
 
 def test_backend_version_check() -> None:
     """Test that an exception is raised if the arduino reports an unsupported version."""
     with pytest.raises(CommunicationError):
-        SRV4RuggeduinoHardwareBackend("COM0", RuggeduinoSerialBadVersion)  # type: ignore
+        make_backend(RuggeduinoSerialBadVersion)
 
 
 def test_backend_firmware_version() -> None:
@@ -142,15 +150,9 @@ def test_backend_handles_bad_commands() -> None:
 def test_backend_handles_serial_exeption() -> None:
     """Test that an exception is raised when a SerialException happens."""
     with pytest.raises(CommunicationError):
-        SRV4RuggeduinoHardwareBackend(
-            "COM0",
-            RuggeduinoSerialTimeout,  # type: ignore
-        )
+        make_backend(RuggeduinoSerialTimeout)
     with pytest.raises(CommunicationError):
-        SRV4RuggeduinoHardwareBackend(
-            "COM0",
-            RuggeduinoSerialException,  # type: ignore
-        )
+        make_backend(RuggeduinoSerialException)
 
 
 def test_backend_encode_pin() -> None:
@@ -306,10 +308,7 @@ def test_backend_execute_string_command() -> None:
             elif data == b"foo":
                 self.append_received_data(data[::-1], newline=True)
 
-    backend = SRV4RuggeduinoHardwareBackend(
-        "COM0",
-        RuggeduinoSerialCustom,  # type: ignore
-    )
+    backend = make_backend(RuggeduinoSerialCustom)
 
     assert backend.execute_string_command("foo") == "oof"
 
