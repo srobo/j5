@@ -1,7 +1,7 @@
 """Test the SR v4 Servo Board backend and associated classes."""
 
 import struct
-from typing import Generator, List, Optional, Union
+from typing import Iterable, List, Optional, Union
 
 import pytest
 import usb
@@ -161,23 +161,35 @@ class MockUSBServoBoardDeviceUSBTimerExpired(MockUSBServoBoardDevice):
         raise usb.core.USBError("Timer Expired", 62, 62)
 
 
-def mock_find(
-    find_all: bool = True, *, idVendor: int, idProduct: int,
-) -> List[MockUSBServoBoardDevice]:
-    """This function mocks the behaviour of usb.core.find."""
-    assert idVendor == 0x1BDA
-    assert idProduct == 0x0011
-    assert find_all
-    return [MockUSBServoBoardDevice(f"SERIAL{n}") for n in range(0, 4)]
+class MockSRV4ServoBoardHardwareBackend(SRV4ServoBoardHardwareBackend):
+    """Mock SRV4ServoBoardHardwareBackend."""
 
-
-def usb_error_find(
+    @classmethod
+    def find(
+        cls,
         find_all: bool = False,
         idVendor: Optional[int] = None,
         idProduct: Optional[int] = None,
-) -> Generator[usb.core.Device, None, None]:
-    """A function that behaves like find, but throws an error."""
-    raise usb.core.USBError("An error.")
+    ) -> List[MockUSBServoBoardDevice]:
+        """This function mocks the behaviour of usb.core.find."""
+        assert idVendor == 0x1BDA
+        assert idProduct == 0x0011
+        assert find_all
+        return [MockUSBServoBoardDevice(f"SERIAL{n}") for n in range(0, 4)]
+
+
+class MockErrorSRV4ServoBoardHardwareBackend(SRV4ServoBoardHardwareBackend):
+    """Mock SRV4ServoBoardHardwareBackend with an error."""
+
+    @classmethod
+    def find(
+        cls,
+        find_all: bool = False,
+        idVendor: Optional[int] = None,
+        idProduct: Optional[int] = None,
+    ) -> Iterable[usb.core.Device]:
+        """A function that behaves like find, but throws an error."""
+        raise usb.core.USBError("An error.")
 
 
 def test_backend_initialisation() -> None:
@@ -194,7 +206,7 @@ def test_backend_initialisation() -> None:
 
 def test_backend_discover() -> None:
     """Test that the backend can discover boards."""
-    found_boards = SRV4ServoBoardHardwareBackend.discover(find=mock_find)
+    found_boards = MockSRV4ServoBoardHardwareBackend.discover()
 
     assert len(found_boards) == 4
     assert all(type(board) is ServoBoard for board in found_boards)
@@ -207,7 +219,7 @@ def test_backend_discover_usb_error() -> None:
     Any USBError should be handled and wrapped.
     """
     with pytest.raises(USBCommunicationError):
-        SRV4ServoBoardHardwareBackend.discover(find=usb_error_find)
+        MockErrorSRV4ServoBoardHardwareBackend.discover()
 
 
 def test_backend_cleanup() -> None:
