@@ -1,10 +1,11 @@
 """Abstract hardware backend implementation provided by j5 for serial comms."""
 from abc import abstractmethod
 from datetime import timedelta
-from typing import Optional, Set, Type, cast
+from typing import Optional, Set, Type, List
 
 from serial import Serial, SerialException, SerialTimeoutException
-from typing_extensions import Protocol
+from serial.tools.list_ports_common import ListPortInfo
+from serial.tools.list_ports import comports
 
 from j5.backends import Backend, BackendMeta, CommunicationError
 from j5.boards import Board
@@ -19,11 +20,11 @@ class SerialHardwareBackend(Backend, metaclass=BackendMeta):
             self,
             serial_port: str,
             *,
-            serial_class: Type[Seriallike] = cast(Type[Seriallike], Serial),  # noqa: B008
             baud: int = 115200,
             timeout: timedelta = DEFAULT_TIMEOUT,
     ) -> None:
         timeout_secs = timeout / timedelta(seconds=1)
+        serial_class = self.get_serial_class()
         try:
             self._serial = serial_class(
                 port=serial_port,
@@ -41,6 +42,11 @@ class SerialHardwareBackend(Backend, metaclass=BackendMeta):
         """Discover boards that this backend can control."""
         raise NotImplementedError  # pragma: no cover
 
+    @classmethod
+    def get_comports(cls) -> List[ListPortInfo]:
+        """Get comports."""
+        return comports()
+
     @property
     @abstractmethod
     def firmware_version(self) -> Optional[str]:
@@ -50,6 +56,10 @@ class SerialHardwareBackend(Backend, metaclass=BackendMeta):
         :returns: firmware version reported by the board, if any.
         """
         raise NotImplementedError  # pragma: no cover
+
+    def get_serial_class(self) -> Type[Serial]:
+        """Get the serial class."""
+        return Serial
 
     def read_serial_line(self, empty: bool = False) -> str:
         """
