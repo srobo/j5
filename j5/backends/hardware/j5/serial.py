@@ -10,57 +10,6 @@ from j5.backends import Backend, BackendMeta, CommunicationError
 from j5.boards import Board
 
 
-class Seriallike(Protocol):
-    """
-    Something that walks like a Serial and quacks like a Serial.
-
-    This is used instead of hardcoding the Serial class to allow it to be mocked out.
-    """
-
-    def __init__(self,
-                 port: Optional[str] = None,
-                 baudrate: int = 9600,
-                 bytesize: int = 8,
-                 parity: str = 'N',
-                 stopbits: float = 1,
-                 timeout: Optional[float] = None):
-        ...  # pragma: nocover
-
-    def close(self) -> None:
-        """Close the connection."""
-        ...  # pragma: nocover
-
-    def flush(self) -> None:
-        """Flush all pending write operations."""
-        ...  # pragma: nocover
-
-    def readline(self) -> bytes:
-        """Read a line from the serial port."""
-        ...  # pragma: nocover
-
-    @property
-    @abstractmethod
-    def in_waiting(self) -> int:
-        """Return the number of characters currently in the input buffer."""
-        ...  # pragma: nocover
-
-    def read(self, size: int = 1) -> bytes:
-        """
-        Read bytes from the serial port.
-
-        :param size: number of bytes to read.
-        """
-        ...  # pragma: nocover
-
-    def write(self, data: bytes) -> int:
-        """
-        Write data to the serial port.
-
-        :param data: data to write.
-        """
-        ...  # pragma: nocover
-
-
 class SerialHardwareBackend(Backend, metaclass=BackendMeta):
     """An abstract class for creating backends that use USB serial communication."""
 
