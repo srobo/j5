@@ -3,9 +3,8 @@
 from abc import abstractmethod
 from datetime import timedelta
 from threading import Lock
-from typing import List, Mapping, Optional, Set, Tuple, Type
+from typing import Mapping, Optional, Set, Tuple, Type
 
-from serial.tools.list_ports import comports
 from serial.tools.list_ports_common import ListPortInfo
 
 from j5.backends.hardware.env import NotSupportedByHardwareError

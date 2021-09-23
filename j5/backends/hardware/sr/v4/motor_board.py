@@ -3,7 +3,6 @@ from threading import Lock
 from typing import List, Optional, Set, cast
 
 from serial import SerialException, SerialTimeoutException
-from serial.tools.list_ports import comports
 from serial.tools.list_ports_common import ListPortInfo
 
 from j5.backends import Backend, CommunicationError

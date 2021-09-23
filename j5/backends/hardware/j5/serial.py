@@ -1,11 +1,11 @@
 """Abstract hardware backend implementation provided by j5 for serial comms."""
 from abc import abstractmethod
 from datetime import timedelta
-from typing import Optional, Set, Type, List
+from typing import List, Optional, Set, Type
 
 from serial import Serial, SerialException, SerialTimeoutException
-from serial.tools.list_ports_common import ListPortInfo
 from serial.tools.list_ports import comports
+from serial.tools.list_ports_common import ListPortInfo
 
 from j5.backends import Backend, BackendMeta, CommunicationError
 from j5.boards import Board

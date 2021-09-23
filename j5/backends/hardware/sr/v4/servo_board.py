@@ -1,7 +1,7 @@
 """Hardware Backend for the SR V4 Servo Board."""
 
 import struct
-from typing import Callable, List, Set, cast
+from typing import List, Set, cast
 
 import usb
 
@@ -35,17 +35,16 @@ class SRV4ServoBoardHardwareBackend(
     board = ServoBoard
 
     @classmethod
-    def discover(cls, find: Callable = usb.core.find) -> Set[Board]:
+    def discover(cls) -> Set[Board]:
         """
         Discover boards that this backend can control.
 
-        :param find: libusb find function.
         :returns: set of boards that this backend can control.
         :raises USBCommunicationError: Unable to query USB.
         """
         boards: Set[Board] = set()
         try:
-            device_list = find(idVendor=0x1bda, idProduct=0x0011, find_all=True)
+            device_list = cls.find(idVendor=0x1bda, idProduct=0x0011, find_all=True)
         except usb.core.USBError as e:
             raise USBCommunicationError(e) from e
 
