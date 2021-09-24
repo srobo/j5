@@ -44,7 +44,11 @@ class SerialHardwareBackend(Backend, metaclass=BackendMeta):
 
     @classmethod
     def get_comports(cls) -> List[ListPortInfo]:
-        """Get comports."""
+        """
+        Get comports.
+
+        :returns: List of available serial ports.
+        """
         return comports()
 
     @property
@@ -58,7 +62,11 @@ class SerialHardwareBackend(Backend, metaclass=BackendMeta):
         raise NotImplementedError  # pragma: no cover
 
     def get_serial_class(self) -> Type[Serial]:
-        """Get the serial class."""
+        """
+        Get the serial class.
+
+        :returns: PySerial class to use for serial comms.
+        """
         return Serial
 
     def read_serial_line(self, empty: bool = False) -> str:

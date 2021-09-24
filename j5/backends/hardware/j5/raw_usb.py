@@ -70,7 +70,14 @@ class RawUSBHardwareBackend(Backend, metaclass=BackendMeta):
         idVendor: Optional[int] = None,
         idProduct: Optional[int] = None,
     ) -> Iterable[usb.core.Device]:
-        """Discover USB devices."""
+        """
+        Discover USB devices.
+
+        :param find_all: Return all USB devices.
+        :param idVendor: USB vendor ID to filter by.
+        :param idProduct: USB produce ID to filter by.
+        :returns: Iterable of usb.core.Device objects.
+        """
         return usb.core.find(
             find_all=find_all,
             idVendor=idVendor,
