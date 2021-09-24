@@ -34,7 +34,15 @@ def find_version(*file_paths: str) -> str:
 
 def run() -> None:
     """Check the git version matches the j5 version."""
-    tag = os.getenv("GITHUB_REF")
+    tag_ref = os.getenv("GITHUB_REF") or "ENV NOT SET"
+
+    tag_match = re.match(r"ref/tags/(.+)", tag_ref)
+
+    if tag_match:
+        tag, = tag_match.groups()
+    else:
+        print(f"Git Ref {tag_ref} did not match expected format!")
+        tag = "UNKNOWN"
 
     VERSION = find_version("j5", "__init__.py")
 
