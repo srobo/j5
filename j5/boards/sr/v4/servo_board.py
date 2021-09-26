@@ -1,13 +1,10 @@
 """Classes for the SR v4 Servo Board."""
-from typing import TYPE_CHECKING, Optional, Set, Type, cast
+from typing import Optional, Set, Type, cast
 
 from j5.backends import Backend
 from j5.boards import Board
-from j5.components.servo import Servo, ServoInterface
+from j5.components import Component, Servo, ServoInterface
 from j5.types import ImmutableList
-
-if TYPE_CHECKING:  # pragma: no cover
-    from j5.components import Component  # noqa: F401
 
 
 class ServoBoard(Board):
@@ -51,7 +48,7 @@ class ServoBoard(Board):
         pass
 
     @staticmethod
-    def supported_components() -> Set[Type['Component']]:
+    def supported_components() -> Set[Type[Component]]:
         """
         List the types of components supported by this board.
 
