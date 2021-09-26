@@ -1,9 +1,9 @@
 """SourceBots Arduino Hardware Implementation."""
 
 from datetime import timedelta
-from typing import List, Optional, Type
+from typing import List, Optional
 
-from serial import Serial, SerialException, SerialTimeoutException
+from serial import SerialException, SerialTimeoutException
 
 from j5.backends import CommunicationError
 from j5.backends.hardware.env import NotSupportedByHardwareError
@@ -25,12 +25,8 @@ class SBArduinoHardwareBackend(
     def __init__(
             self,
             serial_port: str,
-            serial_class: Type[Serial] = Serial,
     ):
-        super(SBArduinoHardwareBackend, self).__init__(
-            serial_port=serial_port,
-            serial_class=serial_class,
-        )
+        super(SBArduinoHardwareBackend, self).__init__(serial_port)
 
         # Initialise stored servo states
         self._servo_states: List[ServoPosition] = [None] * 16

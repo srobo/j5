@@ -2,7 +2,7 @@
 
 import struct
 from datetime import timedelta
-from typing import List, Optional, Union
+from typing import Iterable, Optional, Union
 
 import pytest
 import usb
@@ -210,14 +210,23 @@ class MockUSBPowerBoardDevice(usb.core.Device):
         assert duration_ms >= 0
 
 
-def mock_find(
-    find_all: bool = True, *, idVendor: int, idProduct: int,
-) -> List[MockUSBPowerBoardDevice]:
-    """This function mocks the behaviour of usb.core.find."""
-    assert idVendor == 0x1BDA
-    assert idProduct == 0x0010
-    assert find_all
-    return [MockUSBPowerBoardDevice(f"SERIAL{n}") for n in range(0, 4)]
+class MockSRV4PowerBoardHardwareBackend(SRV4PowerBoardHardwareBackend):
+    """Mock class."""
+
+    @classmethod
+    def find(
+        cls,
+        find_all: bool = False,
+        idVendor: Optional[int] = None,
+        idProduct: Optional[int] = None,
+    ) -> Iterable[usb.core.Device]:
+        """This function mocks the behaviour of usb.core.find."""
+        assert idVendor == 0x1BDA
+        assert idProduct == 0x0010
+        assert find_all
+        return [
+            MockUSBPowerBoardDevice(f"SERIAL{n}") for n in range(0, 4)
+        ]
 
 
 def test_backend_initialisation() -> None:
@@ -236,7 +245,7 @@ def test_backend_initialisation() -> None:
 
 def test_backend_discover() -> None:
     """Test that the backend can discover boards."""
-    found_boards = SRV4PowerBoardHardwareBackend.discover(find=mock_find)
+    found_boards = MockSRV4PowerBoardHardwareBackend.discover()
 
     assert len(found_boards) == 4
     assert all(type(board) is PowerBoard for board in found_boards)

@@ -2,10 +2,10 @@
 
 from datetime import timedelta
 from math import isclose
-from typing import List, Optional, cast
+from typing import List, Optional, Type, cast
 
 import pytest
-from serial import SerialException, SerialTimeoutException
+from serial import Serial, SerialException, SerialTimeoutException
 
 from j5.backends import CommunicationError
 from j5.backends.hardware.env import NotSupportedByHardwareError
@@ -134,7 +134,6 @@ class SBArduinoSerialCommentResponse(SBArduinoSerial):
     def respond_to_write(self, data: bytes) -> None:
         """Hook that can be overriden by subclasses to respond to sent data."""
         self.append_received_data(b"# Comment", newline=True)
-        # super(SBArduinoSerialCommentResponse, self).respond_to_write(data)
         self.append_received_data(b"+ OK", newline=True)
 
 
@@ -162,9 +161,17 @@ class SBArduinoSerialException(SBArduinoSerial):
         raise SerialException()
 
 
-def make_backend() -> SBArduinoHardwareBackend:
-    """Instantiate an SBArduinoHardwareBackend  with some default arguments."""
-    return SBArduinoHardwareBackend("COM0", SBArduinoSerial)  # type: ignore
+def make_backend(
+    serial_class: Type[MockSerial] = SBArduinoSerial,
+) -> SBArduinoHardwareBackend:
+    """Instantiate an SBArduinoSerialBackend."""
+
+    class EphemeralBackend(SBArduinoHardwareBackend):
+
+        def get_serial_class(self) -> Type[Serial]:
+            return serial_class  # type: ignore
+
+    return EphemeralBackend("COM0")
 
 
 def test_backend_initialisation() -> None:
@@ -186,22 +193,22 @@ def test_backend_initialisation_serial() -> None:
     serial.check_all_received_data_consumed()
 
     with pytest.raises(CommunicationError):
-        SBArduinoHardwareBackend("COM0", SBArduinoSerialBootFail)  # type: ignore
+        make_backend(SBArduinoSerialBootFail)
     with pytest.raises(CommunicationError):
-        SBArduinoHardwareBackend("COM0", SBArduinoSerialNoBoot)  # type: ignore
+        make_backend(SBArduinoSerialNoBoot)
 
 
 def test_backend_version_check() -> None:
     """Test that an exception is raised if the arduino reports an unsupported version."""
     with pytest.raises(CommunicationError):
-        SBArduinoHardwareBackend("COM0", SBArduinoSerialBadVersion)  # type: ignore
+        make_backend(SBArduinoSerialBadVersion)
     with pytest.raises(CommunicationError):
-        SBArduinoHardwareBackend("COM0", SBArduinoSerialOldVersion1)  # type: ignore
+        make_backend(SBArduinoSerialOldVersion1)
     with pytest.raises(CommunicationError):
-        SBArduinoHardwareBackend("COM0", SBArduinoSerialOldVersion2)  # type: ignore
-    SBArduinoHardwareBackend("COM0", SBArduinoSerialNewVersion1)  # type: ignore
-    SBArduinoHardwareBackend("COM0", SBArduinoSerialNewVersion2)  # type: ignore
-    SBArduinoHardwareBackend("COM0", SBArduinoSerialNewVersion3)  # type: ignore
+        make_backend(SBArduinoSerialOldVersion2)
+    make_backend(SBArduinoSerialNewVersion1)
+    make_backend(SBArduinoSerialNewVersion2)
+    make_backend(SBArduinoSerialNewVersion3)
 
 
 def test_backend_firmware_version() -> None:
@@ -218,28 +225,19 @@ def check_for_communication_error(backend: SBArduinoHardwareBackend) -> None:
 
 def test_backend_handles_failure() -> None:
     """Test that an exception is raised when a failure response is received."""
-    check_for_communication_error(SBArduinoHardwareBackend(
-        "COM0",
-        SBArduinoSerialFailureResponse,  # type: ignore
-    ))
+    check_for_communication_error(make_backend(SBArduinoSerialFailureResponse))
 
 
 def test_backend_handles_unrecognised_response() -> None:
     """Test that an exception is raised when an unrecognised response is received."""
-    check_for_communication_error(SBArduinoHardwareBackend(
-        "COM0",
-        SBArduinoSerialErrorResponse,  # type: ignore
-    ))
+    check_for_communication_error(make_backend(SBArduinoSerialErrorResponse))
 
 
 def test_backend_handles_comment_response() -> None:
     """Test that comments in the Arduino's response are ignored."""
     backends: List[SBArduinoHardwareBackend] = [
         make_backend(),  # Normal
-        SBArduinoHardwareBackend(  # Comment
-            "COM0",
-            SBArduinoSerialCommentResponse,  # type: ignore
-        ),
+        make_backend(SBArduinoSerialCommentResponse),  # With comments
     ]
     results: List[bool] = []
     for backend in backends:
@@ -249,16 +247,10 @@ def test_backend_handles_comment_response() -> None:
     assert results[0] is results[1]
 
 
-def test_backend_handles_serial_exeption() -> None:
+def test_backend_handles_serial_exception() -> None:
     """Test that an exception is raised when a SerialException happens."""
-    check_for_communication_error(SBArduinoHardwareBackend(
-        "COM0",
-        SBArduinoSerialTimeout,  # type: ignore
-    ))
-    check_for_communication_error(SBArduinoHardwareBackend(
-        "COM0",
-        SBArduinoSerialException,  # type: ignore
-    ))
+    check_for_communication_error(make_backend(SBArduinoSerialTimeout))
+    check_for_communication_error(make_backend(SBArduinoSerialException))
 
 
 def test_backend_update_digital_pin_requires_digital_pin() -> None:

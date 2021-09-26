@@ -28,16 +28,18 @@ class MockArduinoBackend(ArduinoHardwareBackend):
     def __init__(
             self,
             serial_port: str,
-            serial_class: Type[Serial] = Serial,
             baud: int = 9600,
             timeout: timedelta = ArduinoHardwareBackend.DEFAULT_TIMEOUT,
     ) -> None:
         super(MockArduinoBackend, self).__init__(
             serial_port=serial_port,
-            serial_class=serial_class,
             baud=baud,
             timeout=timeout,
         )
+
+    def get_serial_class(self) -> Type[Serial]:
+        """Get the serial class."""
+        return MockSerial  # type: ignore
 
     @property
     def firmware_version(self) -> Optional[str]:
@@ -67,7 +69,7 @@ class MockArduinoBackend(ArduinoHardwareBackend):
 
 def make_backend() -> MockArduinoBackend:
     """Instantiate a MockArduinoBackend with some default arguments."""
-    return MockArduinoBackend("COM0", MockSerial)  # type: ignore
+    return MockArduinoBackend("COM0")
 
 
 def update_digital_pin_command(identifier: int, mode: GPIOPinMode, state: bool) -> bytes:
@@ -146,10 +148,14 @@ def test_backend_discover() -> None:
     ]
 
     def discover_arduinos(ports: List[ListPortInfo]) -> Set[Board]:
-        return MockArduinoBackend.discover(
-            comports=lambda: ports,
-            serial_class=MockSerial,  # type: ignore
-        )
+
+        class MockDiscoveryArduinoBackend(MockArduinoBackend):
+
+            @classmethod
+            def get_comports(cls) -> List[ListPortInfo]:
+                return ports
+
+        return MockDiscoveryArduinoBackend.discover()
 
     # Find nothing
     assert discover_arduinos([]) == set()

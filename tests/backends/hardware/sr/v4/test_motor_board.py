@@ -1,8 +1,9 @@
 """Test the SR v4 motor board hardware backend and associated classes."""
-
-from typing import List, cast
+from typing import List, Type, cast
 
 import pytest
+from serial import Serial
+from serial.tools.list_ports_common import ListPortInfo
 
 from j5.backends import CommunicationError
 from j5.backends.hardware.sr.v4.motor_board import (
@@ -90,12 +91,33 @@ class MotorSerial(MockSerial):
         )
 
 
+class MockMotorSerialBackend(SRV4MotorBoardHardwareBackend):
+    """Mock backend for testing."""
+
+    @classmethod
+    def get_comports(cls) -> List[ListPortInfo]:
+        """Get the comports."""
+        return mock_comports()  # type: ignore
+
+    def get_serial_class(self) -> Type[Serial]:
+        """Get the serial class."""
+        return MotorSerial  # type: ignore
+
+
 class MotorSerialBadWrite(MotorSerial):
     """MotorSerial, but never writes properly."""
 
     def write(self, data: bytes) -> int:
         """Don't write any data, always return 0."""
         return 0
+
+
+class MockMotorSerialBadWriteBackend(SRV4MotorBoardHardwareBackend):
+    """Backend with bad writes."""
+
+    def get_serial_class(self) -> Type[Serial]:
+        """Get the serial class."""
+        return MotorSerialBadWrite  # type: ignore
 
 
 class MotorSerialBadFirmware(MotorSerial):
@@ -108,11 +130,18 @@ class MotorSerialBadFirmware(MotorSerial):
         return len(data)
 
 
+class MockMotorSerialBadFirmwareBackend(SRV4MotorBoardHardwareBackend):
+    """Backend with the wrong firmware version."""
+
+    def get_serial_class(self) -> Type[Serial]:
+        """Get the serial class."""
+        return MotorSerialBadFirmware  # type: ignore
+
+
 def test_backend_initialisation() -> None:
     """Test that we can initialise a backend."""
-    backend = SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerial)
+    backend = MockMotorSerialBackend("COM0")
 
-    assert type(backend) is SRV4MotorBoardHardwareBackend
     assert type(backend._serial) is MotorSerial
 
     assert len(backend._state) == 2
@@ -122,12 +151,12 @@ def test_backend_initialisation() -> None:
 def test_backend_bad_firmware_version() -> None:
     """Test that we can detect a bad firmware version."""
     with pytest.raises(CommunicationError):
-        SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerialBadFirmware)
+        MockMotorSerialBadFirmwareBackend("COM0")
 
 
 def test_backend_discover() -> None:
     """Test that the backend can discover boards."""
-    found_boards = SRV4MotorBoardHardwareBackend.discover(mock_comports, MotorSerial)
+    found_boards = MockMotorSerialBackend.discover()
 
     assert len(found_boards) == 2
     assert all(type(board) is MotorBoard for board in found_boards)
@@ -137,7 +166,7 @@ def test_backend_discover() -> None:
 
 def test_backend_send_command() -> None:
     """Test that the backend can send commands."""
-    backend = SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerial)
+    backend = MockMotorSerialBackend("COM0")
     serial = cast(MotorSerial, backend._serial)
     serial.check_data_sent_by_constructor()
 
@@ -151,12 +180,12 @@ def test_backend_send_command() -> None:
 def test_backend_send_command_bad_write() -> None:
     """Test that an error is thrown if we can't write bytes."""
     # Use a good serial driver for the initialisation
-    backend = SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerial)
+    backend = MockMotorSerialBackend("COM0")
     good_serial_driver = backend._serial
 
     # Swap it for a bad one.
     bad_serial_driver = MotorSerialBadWrite("COM0", baudrate=1000000, timeout=0.25)
-    backend._serial = bad_serial_driver
+    backend._serial = bad_serial_driver  # type: ignore
 
     with pytest.raises(CommunicationError):
         backend.send_command(4)
@@ -167,7 +196,7 @@ def test_backend_send_command_bad_write() -> None:
 
 def test_read_serial_line() -> None:
     """Test that we can we lines from the serial interface."""
-    backend = SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerial)
+    backend = MockMotorSerialBackend("COM0")
     serial = cast(MotorSerial, backend._serial)
     serial.check_data_sent_by_constructor()
     serial.append_received_data(b"Green Beans", newline=True)
@@ -177,7 +206,7 @@ def test_read_serial_line() -> None:
 
 def test_read_serial_line_no_data() -> None:
     """Check that a communication error is thrown if we get no data."""
-    backend = SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerial)
+    backend = MockMotorSerialBackend("COM0")
     serial = cast(MotorSerial, backend._serial)
     serial.check_data_sent_by_constructor()
 
@@ -187,7 +216,7 @@ def test_read_serial_line_no_data() -> None:
 
 def test_get_firmware_version() -> None:
     """Test that we can get the firmware version from the serial interface."""
-    backend = SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerial)
+    backend = MockMotorSerialBackend("COM0")
     serial = cast(MotorSerial, backend._serial)
     serial.check_data_sent_by_constructor()
     assert backend.firmware_version == "3"
@@ -201,7 +230,7 @@ def test_get_firmware_version() -> None:
 
 def test_get_set_motor_state() -> None:
     """Test that we can get and set the motor state."""
-    backend = SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerial)
+    backend = MockMotorSerialBackend("COM0")
     serial = cast(MotorSerial, backend._serial)
     serial.check_data_sent_by_constructor()
 
@@ -239,7 +268,7 @@ def test_get_set_motor_state() -> None:
 
 def test_brake_motors_at_deletion() -> None:
     """Test that both motors are set to BRAKE when the backend is garbage collected."""
-    backend = SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerial)
+    backend = MockMotorSerialBackend("COM0")
     serial = cast(MotorSerial, backend._serial)
     serial.check_data_sent_by_constructor()
     del backend
@@ -251,7 +280,7 @@ def test_brake_motors_at_deletion() -> None:
 
 def test_safe_shutdown_serial_start_crash() -> None:
     """Test that the _shutdown on the board doesn't break during start."""
-    backend = SRV4MotorBoardHardwareBackend("COM0", serial_class=MotorSerial)
+    backend = MockMotorSerialBackend("COM0")
 
     # This line simulates the backend never initialising the state
     del backend._state

@@ -3,7 +3,7 @@
 import struct
 from datetime import timedelta
 from time import sleep
-from typing import Callable, Dict, Mapping, Set, cast
+from typing import Dict, Mapping, Set, cast
 
 import usb
 
@@ -58,17 +58,16 @@ class SRV4PowerBoardHardwareBackend(
     board = PowerBoard
 
     @classmethod
-    def discover(cls, find: Callable = usb.core.find) -> Set[Board]:
+    def discover(cls) -> Set[Board]:
         """
         Discover boards that this backend can control.
 
-        :param find: libusb find function.
         :returns: set of boards that this backend can control.
         :raises USBCommunicationError: Unable to query USB.
         """
         boards: Set[Board] = set()
         try:
-            device_list = find(idVendor=0x1bda, idProduct=0x0010, find_all=True)
+            device_list = cls.find(idVendor=0x1bda, idProduct=0x0010, find_all=True)
         except usb.core.USBError as e:
             raise USBCommunicationError(e) from e
 

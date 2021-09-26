@@ -3,14 +3,12 @@
 from abc import abstractmethod
 from datetime import timedelta
 from threading import Lock
-from typing import Callable, List, Mapping, Optional, Set, Tuple, Type, cast
+from typing import Mapping, Optional, Set, Tuple, Type
 
-from serial import Serial
-from serial.tools.list_ports import comports
 from serial.tools.list_ports_common import ListPortInfo
 
 from j5.backends.hardware.env import NotSupportedByHardwareError
-from j5.backends.hardware.j5.serial import SerialHardwareBackend, Seriallike
+from j5.backends.hardware.j5.serial import SerialHardwareBackend
 from j5.boards import Board
 from j5.boards.arduino import ArduinoUno
 from j5.components import GPIOPinInterface, GPIOPinMode, LEDInterface
@@ -54,20 +52,14 @@ class ArduinoHardwareBackend(
         return (port.vid, port.pid) in cls.USB_IDS
 
     @classmethod
-    def discover(
-            cls,
-            comports: Callable = comports,
-            serial_class: Type[Serial] = Serial,
-    ) -> Set[Board]:
+    def discover(cls) -> Set[Board]:
         """
         Discover boards that this backend can control.
 
-        :param comports: serial lib find function.
-        :param serial_class: class to use for serial communications.
         :returns: set of boards that this backend can control.
         """
         # Find all serial ports.
-        ports: List[ListPortInfo] = comports()
+        ports = cls.get_comports()
 
         # Get a list of boards from the ports.
         boards: Set[Board] = set()
@@ -75,7 +67,7 @@ class ArduinoHardwareBackend(
             boards.add(
                 cls.board(
                     port.serial_number,
-                    cls(port.device, serial_class),
+                    cls(port.device),
                 ),
             )
 
@@ -84,13 +76,11 @@ class ArduinoHardwareBackend(
     def __init__(
             self,
             serial_port: str,
-            serial_class: Type[Serial] = Serial,
             baud: int = 115200,
             timeout: timedelta = DEFAULT_TIMEOUT,
     ) -> None:
         super(ArduinoHardwareBackend, self).__init__(
             serial_port=serial_port,
-            serial_class=cast(Type[Seriallike], serial_class),  # noqa: B008
             baud=baud,
             timeout=timeout,
         )

@@ -8,7 +8,7 @@ distributed separately in the future, to remove the PyUSB dependency from the j5
 
 from abc import abstractmethod
 from threading import Lock
-from typing import NamedTuple, Optional, Set, Union
+from typing import Iterable, NamedTuple, Optional, Set, Union
 
 import usb
 
@@ -62,6 +62,27 @@ class RawUSBHardwareBackend(Backend, metaclass=BackendMeta):
 
     def __init__(self) -> None:
         self._lock = Lock()
+
+    @classmethod
+    def find(
+        cls,
+        find_all: bool = False,
+        idVendor: Optional[int] = None,
+        idProduct: Optional[int] = None,
+    ) -> Iterable[usb.core.Device]:
+        """
+        Discover USB devices.
+
+        :param find_all: Return all USB devices.
+        :param idVendor: USB vendor ID to filter by.
+        :param idProduct: USB produce ID to filter by.
+        :returns: Iterable of usb.core.Device objects.
+        """
+        return usb.core.find(
+            find_all=find_all,
+            idVendor=idVendor,
+            idProduct=idProduct,
+        )
 
     @classmethod
     @abstractmethod

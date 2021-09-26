@@ -1,8 +1,8 @@
 """Student Robotics Ruggeduino Hardware Implementation."""
 
-from typing import Optional, Type
+from typing import Optional
 
-from serial import Serial, SerialException, SerialTimeoutException
+from serial import SerialException, SerialTimeoutException
 
 from j5.backends import CommunicationError
 from j5.backends.hardware import NotSupportedByHardwareError
@@ -23,15 +23,8 @@ class SRV4RuggeduinoHardwareBackend(
 
     board = Ruggeduino
 
-    def __init__(
-            self,
-            serial_port: str,
-            serial_class: Type[Serial] = Serial,
-    ):
-        super(SRV4RuggeduinoHardwareBackend, self).__init__(
-            serial_port=serial_port,
-            serial_class=serial_class,
-        )
+    def __init__(self, serial_port: str):
+        super(SRV4RuggeduinoHardwareBackend, self).__init__(serial_port)
 
         # Verify that the Ruggeduino has booted
         count = 0

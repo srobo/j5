@@ -1,6 +1,6 @@
 """Console helper classes."""
 import sys
-from typing import Callable, Dict, Optional, Type, TypeVar
+from typing import Dict, Optional, Type, TypeVar
 
 T = TypeVar("T")
 
@@ -8,18 +8,25 @@ T = TypeVar("T")
 class Console:
     """A helper class for console backends."""
 
-    _DEFAULT_PRINT: Callable = print  # type: ignore  # noqa: T002
-    _DEFAULT_INPUT: Callable = input  # type: ignore
-
-    def __init__(
-            self,
-            descriptor: str,
-            print_function: Callable = _DEFAULT_PRINT,  # type: ignore
-            input_function: Callable = _DEFAULT_INPUT,  # type: ignore
-    ) -> None:
+    def __init__(self, descriptor: str) -> None:
         self._descriptor = descriptor
-        self._print = print_function
-        self._input = input_function
+
+    def _print(self, string: str) -> None:
+        """
+        Wrapper around print.
+
+        :param string: String to print.
+        """
+        print(string)  # noqa: T001
+
+    def _input(self, prompt: str) -> str:
+        """
+        Wrapper around input.
+
+        :param prompt: prompt for user.
+        :returns: response from user.
+        """
+        return input(prompt)
 
     def info(self, message: str) -> None:
         """

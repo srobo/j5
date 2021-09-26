@@ -1,13 +1,12 @@
 """Hardware Backend for the SR v4 motor board."""
 from threading import Lock
-from typing import Callable, List, Optional, Set, Type, cast
+from typing import List, Optional, Set, cast
 
-from serial import Serial, SerialException, SerialTimeoutException
-from serial.tools.list_ports import comports
+from serial import SerialException, SerialTimeoutException
 from serial.tools.list_ports_common import ListPortInfo
 
 from j5.backends import Backend, CommunicationError
-from j5.backends.hardware.j5.serial import SerialHardwareBackend, Seriallike
+from j5.backends.hardware.j5.serial import SerialHardwareBackend
 from j5.boards import Board
 from j5.boards.sr.v4.motor_board import MotorBoard
 from j5.components.motor import MotorInterface, MotorSpecialState, MotorState
@@ -41,20 +40,14 @@ class SRV4MotorBoardHardwareBackend(
     board = MotorBoard
 
     @classmethod
-    def discover(
-            cls,
-            find: Callable = comports,
-            serial_class: Type[Seriallike] = cast(Type[Seriallike], Serial),  # noqa: B008
-    ) -> Set[Board]:
+    def discover(cls) -> Set[Board]:
         """
         Discover boards that this backend can control.
 
-        :param find: serial lib find function.
-        :param serial_class: class to use for serial comms.
         :returns: set of boards that this backend can control.
         """
         # Find all serial ports.
-        ports: List[ListPortInfo] = find()
+        ports = cls.get_comports()
 
         # Get a list of boards from the ports.
         boards: Set[Board] = set()
@@ -64,7 +57,7 @@ class SRV4MotorBoardHardwareBackend(
                     port.serial_number,
                     cast(
                         Backend,
-                        SRV4MotorBoardHardwareBackend(port.device, serial_class),
+                        cls(port.device),
                     ),
                 ),
             )
@@ -74,11 +67,9 @@ class SRV4MotorBoardHardwareBackend(
     def __init__(
         self,
         serial_port: str,
-        serial_class: Type[Seriallike] = cast(Type[Seriallike], Serial),  # noqa: B008
     ) -> None:
         super(SRV4MotorBoardHardwareBackend, self).__init__(
             serial_port=serial_port,
-            serial_class=serial_class,
             baud=1000000,
         )
 

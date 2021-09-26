@@ -1,64 +1,14 @@
 """Abstract hardware backend implementation provided by j5 for serial comms."""
 from abc import abstractmethod
 from datetime import timedelta
-from typing import Optional, Set, Type, cast
+from typing import List, Optional, Set, Type
 
 from serial import Serial, SerialException, SerialTimeoutException
-from typing_extensions import Protocol
+from serial.tools.list_ports import comports
+from serial.tools.list_ports_common import ListPortInfo
 
 from j5.backends import Backend, BackendMeta, CommunicationError
 from j5.boards import Board
-
-
-class Seriallike(Protocol):
-    """
-    Something that walks like a Serial and quacks like a Serial.
-
-    This is used instead of hardcoding the Serial class to allow it to be mocked out.
-    """
-
-    def __init__(self,
-                 port: Optional[str] = None,
-                 baudrate: int = 9600,
-                 bytesize: int = 8,
-                 parity: str = 'N',
-                 stopbits: float = 1,
-                 timeout: Optional[float] = None):
-        ...  # pragma: nocover
-
-    def close(self) -> None:
-        """Close the connection."""
-        ...  # pragma: nocover
-
-    def flush(self) -> None:
-        """Flush all pending write operations."""
-        ...  # pragma: nocover
-
-    def readline(self) -> bytes:
-        """Read a line from the serial port."""
-        ...  # pragma: nocover
-
-    @property
-    @abstractmethod
-    def in_waiting(self) -> int:
-        """Return the number of characters currently in the input buffer."""
-        ...  # pragma: nocover
-
-    def read(self, size: int = 1) -> bytes:
-        """
-        Read bytes from the serial port.
-
-        :param size: number of bytes to read.
-        """
-        ...  # pragma: nocover
-
-    def write(self, data: bytes) -> int:
-        """
-        Write data to the serial port.
-
-        :param data: data to write.
-        """
-        ...  # pragma: nocover
 
 
 class SerialHardwareBackend(Backend, metaclass=BackendMeta):
@@ -70,11 +20,11 @@ class SerialHardwareBackend(Backend, metaclass=BackendMeta):
             self,
             serial_port: str,
             *,
-            serial_class: Type[Seriallike] = cast(Type[Seriallike], Serial),  # noqa: B008
             baud: int = 115200,
             timeout: timedelta = DEFAULT_TIMEOUT,
     ) -> None:
         timeout_secs = timeout / timedelta(seconds=1)
+        serial_class = self.get_serial_class()
         try:
             self._serial = serial_class(
                 port=serial_port,
@@ -92,6 +42,15 @@ class SerialHardwareBackend(Backend, metaclass=BackendMeta):
         """Discover boards that this backend can control."""
         raise NotImplementedError  # pragma: no cover
 
+    @classmethod
+    def get_comports(cls) -> List[ListPortInfo]:
+        """
+        Get comports.
+
+        :returns: List of available serial ports.
+        """
+        return comports()
+
     @property
     @abstractmethod
     def firmware_version(self) -> Optional[str]:
@@ -101,6 +60,14 @@ class SerialHardwareBackend(Backend, metaclass=BackendMeta):
         :returns: firmware version reported by the board, if any.
         """
         raise NotImplementedError  # pragma: no cover
+
+    def get_serial_class(self) -> Type[Serial]:
+        """
+        Get the serial class.
+
+        :returns: PySerial class to use for serial comms.
+        """
+        return Serial
 
     def read_serial_line(self, empty: bool = False) -> str:
         """
