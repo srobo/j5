@@ -12,5 +12,5 @@ __all__ = [
     "__version_short__",
 ]
 
-__version__ = "0.12.0"
-__version_short__ = "0.12.0"
+__version__ = "0.13.0"
+__version_short__ = "0.13.0"
