@@ -3,8 +3,8 @@
 import atexit
 import logging
 import os
-import platform
 import signal
+import sys
 from abc import ABCMeta, abstractmethod
 from types import FrameType
 from typing import TYPE_CHECKING, Dict, Optional, Set, Type, TypeVar
@@ -115,7 +115,7 @@ class Board(metaclass=ABCMeta):
         terminal_signals = [signal.SIGINT, signal.SIGTERM]
 
         # Add SIGHUP on systems that support it
-        if platform.system() != "Windows":
+        if sys.platform != "win32":
             terminal_signals.append(signal.SIGHUP)
 
         for signal_type in terminal_signals:
