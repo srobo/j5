@@ -4,6 +4,7 @@ import atexit
 import logging
 import os
 import signal
+import sys
 from abc import ABCMeta, abstractmethod
 from types import FrameType
 from typing import TYPE_CHECKING, Dict, Optional, Set, Type, TypeVar
@@ -111,7 +112,13 @@ class Board(metaclass=ABCMeta):
             signal.signal(signal_type, old_signal_handlers[signal_type])
             os.kill(0, signal_type)  # 0 = current process
 
-        for signal_type in (signal.SIGHUP, signal.SIGINT, signal.SIGTERM):
+        terminal_signals = [signal.SIGINT, signal.SIGTERM]
+
+        # Add SIGHUP on systems that support it
+        if sys.platform != "win32":
+            terminal_signals.append(signal.SIGHUP)
+
+        for signal_type in terminal_signals:
             old_signal_handler = signal.signal(signal_type, new_signal_handler)
             old_signal_handlers[signal_type] = old_signal_handler
 
