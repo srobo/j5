@@ -22,7 +22,7 @@ pyusb = "^1.0"
 pyserial = "^3.4"
 
 [tool.poetry.dev-dependencies]
-flake8 = "^3.8"
+flake8 = "^4.0"
 flake8-commas = "^2.1"
 flake8-comprehensions = "^3.6"
 flake8-debugger = "^4.0"
