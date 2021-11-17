@@ -38,6 +38,7 @@ class ArduinoHardwareBackend(
         (0x2a03, 0x0043),  # Fake Uno
         (0x1a86, 0x7523),  # Real Uno
         (0x10c4, 0xea60),  # Ruggeduino
+        (0x16d0, 0x0613),  # Ruggeduino
     }
     DEFAULT_TIMEOUT: timedelta = timedelta(milliseconds=1250)
 
