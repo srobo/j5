@@ -19,6 +19,9 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: ${{ matrix.python }}
+      - name: Set locale for actions
+        run: export LC_ALL=C.UTF-8
+        shell: bash
       - name: Install Poetry
         run: pip install poetry
         shell: bash
