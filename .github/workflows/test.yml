@@ -21,17 +21,23 @@ jobs:
           python-version: ${{ matrix.python }}
       - name: Install Poetry
         run: pip install poetry
+        shell: bash
       - name: Use in-project virtualenv
         run: poetry config virtualenvs.in-project true
+        shell: bash
       - uses: actions/cache@v2
         with:
           path: .venv/
           key: ${{ runner.os }}-${{ matrix.python }}-pip-${{ hashFiles('poetry.lock') }}-${{ hashFiles('pyproject.toml') }}
       - name: Install dependencies
         run: poetry install
+        shell: bash
       - name: Lint
         run: make lint
+        shell: bash
       - name: Static type checking
         run: make type
+        shell: bash
       - name: Unit tests
         run: make test-cov
+        shell: bash
