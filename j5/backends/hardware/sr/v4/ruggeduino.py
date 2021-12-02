@@ -92,10 +92,18 @@ class SRV4RuggeduinoHardwareBackend(
         return chr(ord('a') + pin) if pin is not None else ""
 
     def _update_digital_pin(self, identifier: int) -> None:
+        """
+        Write the stored value of a digital pin to the Arduino.
+
+        Reads the state out of self._digital_pins.
+
+        :param identifier: Pin number to update.
+        """
         if identifier >= Ruggeduino.FIRST_ANALOGUE_PIN:
             raise RuntimeError("Reached an unreachable statement.")
+
         pin = self._digital_pins[identifier]
-        command: str
+
         if pin.mode == GPIOPinMode.DIGITAL_INPUT:
             command = "i"
         elif pin.mode == GPIOPinMode.DIGITAL_INPUT_PULLUP:
