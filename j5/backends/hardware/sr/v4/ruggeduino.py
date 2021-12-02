@@ -1,6 +1,6 @@
 """Student Robotics Ruggeduino Hardware Implementation."""
 
-from typing import Optional
+from typing import List, Optional, Tuple
 
 from serial import SerialException, SerialTimeoutException
 
@@ -98,24 +98,31 @@ class SRV4RuggeduinoHardwareBackend(
         Reads the state out of self._digital_pins.
 
         :param identifier: Pin number to update.
+        :raises RuntimeError: The identifier of an analogue pin was provided.
         """
         if identifier >= Ruggeduino.FIRST_ANALOGUE_PIN:
             raise RuntimeError("Reached an unreachable statement.")
 
         pin = self._digital_pins[identifier]
 
+        # List of command and pin number
+        commands: List[Tuple[str, int]] = []
+
         if pin.mode == GPIOPinMode.DIGITAL_INPUT:
-            command = "i"
+            commands.append(("i", identifier))
         elif pin.mode == GPIOPinMode.DIGITAL_INPUT_PULLUP:
-            command = "p"
+            commands.append(("p", identifier))
         elif pin.mode == GPIOPinMode.DIGITAL_OUTPUT:
+            commands.append(("o", identifier))
             if pin.state:
-                command = "h"
+                commands.append(("h", identifier))
             else:
-                command = "l"
+                commands.append(("l", identifier))
         else:
             raise RuntimeError("Reached an unreachable statement.")
-        self._command(command, identifier)
+
+        for command in commands:
+            self._command(*command)
 
     def _read_digital_pin(self, identifier: int) -> bool:
         """
