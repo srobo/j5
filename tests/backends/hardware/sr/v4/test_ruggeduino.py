@@ -186,6 +186,17 @@ def check_sent_data(serial: RuggeduinoSerial, command: bytes, pin: Optional[int]
     )
 
 
+def check_sent_data_dual_command(
+    serial: RuggeduinoSerial,
+    command1: bytes,
+    command2: bytes,
+    pin: int,
+) -> None:
+    """Verify the data sent in two sequential Ruggeduino commands."""
+    pin_bytes = SRV4RuggeduinoHardwareBackend.encode_pin(pin).encode("utf-8")
+    serial.check_sent_data(command1 + pin_bytes + command2 + pin_bytes)
+
+
 def test_backend_write_digital_state() -> None:
     """Test that we can write the digital state of a pin."""
     pin = 2
@@ -195,11 +206,11 @@ def test_backend_write_digital_state() -> None:
 
     # This should put the pin into the most recent (or default) output state.
     backend.set_gpio_pin_mode(pin, GPIOPinMode.DIGITAL_OUTPUT)
-    check_sent_data(serial, b"l", pin)
+    check_sent_data_dual_command(serial, b"o", b"l", pin)
     backend.write_gpio_pin_digital_state(pin, True)
-    check_sent_data(serial, b"h", pin)
+    check_sent_data_dual_command(serial, b"o", b"h", pin)
     backend.write_gpio_pin_digital_state(pin, False)
-    check_sent_data(serial, b"l", pin)
+    check_sent_data_dual_command(serial, b"o", b"l", pin)
     serial.check_all_received_data_consumed()
 
 
@@ -211,19 +222,32 @@ def test_backend_digital_state_persists() -> None:
     serial.check_data_sent_by_constructor()
 
     backend.set_gpio_pin_mode(pin, GPIOPinMode.DIGITAL_OUTPUT)
-    check_sent_data(serial, b"l", pin)
-    backend.write_gpio_pin_digital_state(pin, True)
-    check_sent_data(serial, b"h", pin)
-    backend.set_gpio_pin_mode(pin, GPIOPinMode.DIGITAL_INPUT)
-    check_sent_data(serial, b"i", pin)
-    backend.set_gpio_pin_mode(pin, GPIOPinMode.DIGITAL_OUTPUT)
-    check_sent_data(serial, b"h", pin)
+    check_sent_data_dual_command(serial, b"o", b"l", pin)
+
     backend.write_gpio_pin_digital_state(pin, False)
-    check_sent_data(serial, b"l", pin)
+    check_sent_data_dual_command(serial, b"o", b"l", pin)
+
+    backend.write_gpio_pin_digital_state(pin, True)
+    check_sent_data_dual_command(serial, b"o", b"h", pin)
+
     backend.set_gpio_pin_mode(pin, GPIOPinMode.DIGITAL_INPUT)
     check_sent_data(serial, b"i", pin)
+
     backend.set_gpio_pin_mode(pin, GPIOPinMode.DIGITAL_OUTPUT)
-    check_sent_data(serial, b"l", pin)
+    check_sent_data_dual_command(serial, b"o", b"h", pin)
+
+    backend.write_gpio_pin_digital_state(pin, True)
+    check_sent_data_dual_command(serial, b"o", b"h", pin)
+
+    backend.write_gpio_pin_digital_state(pin, False)
+    check_sent_data_dual_command(serial, b"o", b"l", pin)
+
+    backend.set_gpio_pin_mode(pin, GPIOPinMode.DIGITAL_INPUT)
+    check_sent_data(serial, b"i", pin)
+
+    backend.set_gpio_pin_mode(pin, GPIOPinMode.DIGITAL_OUTPUT)
+    check_sent_data_dual_command(serial, b"o", b"l", pin)
+
     serial.check_all_received_data_consumed()
 
 
