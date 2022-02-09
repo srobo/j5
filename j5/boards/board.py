@@ -17,7 +17,7 @@ if TYPE_CHECKING:  # pragma: nocover
     from j5.components import Component  # noqa: F401
 
     SignalHandler = Union[
-        Callable[[signal.Signals, FrameType], None],
+        Callable[[int, Optional[FrameType]], None],
         int,
         signal.Handlers,
         None,
@@ -105,11 +105,11 @@ class Board(metaclass=ABCMeta):
         # Register make_all_safe to be called when a termination signal is received.
         old_signal_handlers: Dict[signal.Signals, SignalHandler] = {}
 
-        def new_signal_handler(signal_type: signal.Signals, frame: FrameType) -> None:
+        def new_signal_handler(signal_type: int, frame: Optional[FrameType]) -> None:
             logging.getLogger(__name__).error("program terminated prematurely")
             Board.make_all_safe()
             # Do what the signal originally would have done.
-            signal.signal(signal_type, old_signal_handlers[signal_type])
+            signal.signal(signal_type, old_signal_handlers[signal.Signals(signal_type)])
             os.kill(0, signal_type)  # 0 = current process
 
         terminal_signals = [signal.SIGINT, signal.SIGTERM]
