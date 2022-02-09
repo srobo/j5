@@ -14,6 +14,7 @@ from .motor import Motor, MotorInterface, MotorSpecialState
 from .piezo import Piezo, PiezoInterface
 from .power_output import PowerOutput, PowerOutputGroup, PowerOutputInterface
 from .pwm_led import PWMLED, PWMLEDInterface
+from .rgb_led import RGBLED, RGBColour, RGBLEDInterface
 from .servo import Servo, ServoInterface, ServoPosition
 from .string_command import (
     StringCommandComponent,
@@ -46,6 +47,9 @@ __all__ = [
     "PowerOutputGroup",
     "PWMLED",
     "PWMLEDInterface",
+    "RGBColour",
+    "RGBLED",
+    "RGBLEDInterface",
     "Servo",
     "ServoInterface",
     "ServoPosition",
