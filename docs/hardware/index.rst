@@ -31,3 +31,9 @@ The following integrations are available:
 +------------------+---------------------------------+---------------+
 | Zoloto           | Fiducial Marker Pose Estimation | Supported     |
 +------------------+---------------------------------+---------------+
+
+.. toctree::
+
+    sourcebots
+    srobo
+    zoloto
