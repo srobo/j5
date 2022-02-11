@@ -9,3 +9,4 @@ This section is about development of `j5`.
     communications
     releases
     submitting-changes
+    philosophy
