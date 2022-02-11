@@ -10,3 +10,4 @@ This section is about development of `j5`.
     releases
     submitting-changes
     philosophy
+    comparison
