@@ -1,0 +1,76 @@
+Components
+==========
+
+A component is the smallest logical part of some hardware.
+
+A component will have the same basic functionality no matter what hardware it is on.
+
+Battery Sensor
+--------------
+
+.. autoclass:: j5.components.BatterySensor
+   :members:
+   :exclude-members: identifier, interface_class
+
+Button
+------
+
+.. autoclass:: j5.components.Button
+   :members:
+   :exclude-members: identifier, interface_class
+
+GPIO Pin
+--------
+
+.. autoclass:: j5.components.GPIOPin
+   :members:
+   :exclude-members: identifier, interface_class
+
+LED
+---
+
+.. autoclass:: j5.components.LED
+   :members:
+   :exclude-members: identifier, interface_class
+
+Motor
+-----
+
+.. autoclass:: j5.components.Motor
+   :members:
+   :exclude-members: identifier, interface_class
+
+Piezo
+-----
+
+.. autoclass:: j5.components.Piezo
+   :members:
+   :exclude-members: identifier, interface_class
+
+Power Output
+------------
+
+.. autoclass:: j5.components.PowerOutput
+   :members:
+   :exclude-members: identifier, interface_class
+
+Servo
+-----
+
+.. autoclass:: j5.components.Servo
+   :members:
+   :exclude-members: identifier, interface_class
+
+String Command
+--------------
+
+.. autoclass:: j5.components.StringCommandComponent
+   :members:
+   :exclude-members: identifier, interface_class
+
+Ultrasound Sensor
+-----------------
+
+.. autoclass:: j5.components.derived.UltrasoundSensor
+   :members:
+   :exclude-members: identifier, interface_class
