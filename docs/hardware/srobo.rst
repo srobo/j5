@@ -67,6 +67,27 @@ The following components are available:
 
 - ``board.motors`` - A list of `motors <Motor>`_ corresponding to the motor outputs.
 
+Student Robotics Servo Board v4
+-------------------------------
+
++------------------+--------------------------------------------------------------+
+| Support Level    | Core                                                         |
++------------------+--------------------------------------------------------------+
+| Bus              | USB                                                          |
++------------------+--------------------------------------------------------------+
+| Board Class      | ``j5.boards.sr.v4.ServoBoard``                               |
++------------------+--------------------------------------------------------------+
+| Console Backend  | ``j5.backends.console.sr.v4.SRV4ServoBoardConsoleBackend``   |
++------------------+--------------------------------------------------------------+
+| Hardware Backend | ``j5.backends.hardware.sr.v4.SRV4ServoBoardHardwareBackend`` |
++------------------+--------------------------------------------------------------+
+
+The `Servo Board v4`_ is a board used for controlling up to twelve servo motors.
+
+The following components are available:
+
+- ``board.servos`` - A list of `servos <Servo>`_ corresponding to the servo outputs.
+
 .. _Student Robotics: https://studentrobotics.org
 .. _ODROID U3: https://en.wikipedia.org/wiki/ODROID
 .. _Power Board v4: https://studentrobotics.org/docs/kit/power_board
