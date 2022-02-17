@@ -5,6 +5,9 @@ j5 is primarily a framework around which hardware implementations can be built.
 
 However, there are a number of common devices which have implementations provided by j5.
 
+Support Levels
+--------------
+
 These implementation are split into a number of support levels:
 
 - *Core* -  This implementation is part of the core ``j5`` library.
@@ -33,7 +36,8 @@ The following integrations are available:
 +------------------+---------------------------------+---------------+
 
 .. toctree::
+    :maxdepth: 1
+    :caption: Vendors
 
     sourcebots
     srobo
-    zoloto

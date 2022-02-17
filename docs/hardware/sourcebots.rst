@@ -3,7 +3,7 @@ SourceBots
 
 SourceBots is a not-for-profit organisation aiming to promote Science, Technology, Engineering and Mathematics (STEM) subjects to teenagers. It does this by hosting robotics challenges which encourage participants to work together in an environment markedly different to the way they would at school or college.
 
-SourceBots' kit is largely similar to the :ref:`Student Robotics` kit.
+SourceBots' kit is largely similar to the `Student Robotics <Student Robotics>`_ kit.
 
 SourceBots Arduino Firmware
 ---------------------------
@@ -26,5 +26,5 @@ It can be used to control the GPIO pins of the Arduino and measure distances usi
 
 The following components are available:
 
-- ``board.pins`` - 18 x :ref:`GPIOPin`
-- ``board.led`` - 1 x :ref:`LED`
+- ``board.pins`` - 18 x `GPIOPin <GPIOPin>`_
+- ``board.led`` - 1 x `LED <LED>`_
