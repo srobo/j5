@@ -19,7 +19,7 @@ Button
    :members:
    :exclude-members: identifier, interface_class
 
-GPIO Pin
+GPIOPin
 --------
 
 .. autoclass:: j5.components.GPIOPin
@@ -47,7 +47,7 @@ Piezo
    :members:
    :exclude-members: identifier, interface_class
 
-Power Output
+PowerOutput
 ------------
 
 .. autoclass:: j5.components.PowerOutput
@@ -61,14 +61,14 @@ Servo
    :members:
    :exclude-members: identifier, interface_class
 
-String Command
+StringCommand
 --------------
 
 .. autoclass:: j5.components.StringCommandComponent
    :members:
    :exclude-members: identifier, interface_class
 
-Ultrasound Sensor
+UltrasoundSensor
 -----------------
 
 .. autoclass:: j5.components.derived.UltrasoundSensor
