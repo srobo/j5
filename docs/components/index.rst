@@ -54,6 +54,21 @@ PowerOutput
    :members:
    :exclude-members: identifier, interface_class
 
+PWMLED
+------
+
+.. autoclass:: j5.components.PWMLED
+   :members:
+   :exclude-members: identifier, interface_class
+
+RGBLED
+------
+
+.. autoclass:: j5.components.RGBLED
+   :members:
+   :exclude-members: identifier, interface_class
+
+
 Servo
 -----
 
