@@ -88,6 +88,30 @@ The following components are available:
 
 - ``board.servos`` - A list of `servos <Servo>`_ corresponding to the servo outputs.
 
+Student Robotics Ruggeduino Firmware
+------------------------------------
+
++------------------+---------------------------------------------------------------+
+| Support Level    | Core                                                          |
++------------------+---------------------------------------------------------------+
+| Bus              | USB                                                           |
++------------------+---------------------------------------------------------------+
+| Board Class      | ``j5.boards.sr.v4.Ruggeduino``                                |
++------------------+---------------------------------------------------------------+
+| Console Backend  | ``j5.backends.console.sr.v4.SRV4RuggeduinoConsoleBackend``    |
++------------------+---------------------------------------------------------------+
+| Hardware Backend | ``j5.backends.hardware.sr.v4.SRV4SRuggeduinoHardwareBackend`` |
++------------------+---------------------------------------------------------------+
+
+The `Ruggeduino`_ is a robust microcontroller for IO based on the `Arduino Uno <https://en.wikipedia.org/wiki/Arduino_Uno>`_.
+
+Student Robotics provides firmware that allows basic control of the Ruggeduino over serial.
+
+The following components are available:
+
+- ``board.pins`` - 18 x `GPIOPin <GPIOPin>`_
+- ``board.led`` - 1 x `LED <LED>`_
+
 .. _Student Robotics: https://studentrobotics.org
 .. _ODROID U3: https://en.wikipedia.org/wiki/ODROID
 .. _Power Board v4: https://studentrobotics.org/docs/kit/power_board
