@@ -1,16 +1,46 @@
 Supported Hardware
 ==================
 
-`j5` is designed to support hardware from many different competitions, some of which are officially supported by the
-project.
+j5 is primarily a framework around which hardware implementations can be built.
 
-.. Note:: Currently, these are integrated into the main ``j5`` module, but in the future they are due to be separated
-   separate python modules and uploaded to PyPI separately. This ensures that the core of `j5` stays small.
+However, there are a number of common devices which have implementations provided by j5.
+
+Support Levels
+--------------
+
+These implementation are split into a number of support levels:
+
+- *Core* -  This implementation is part of the core ``j5`` library.
+- *Supported* - This implementation is officially supported by j5.
+- *3rd Party* - This implementation is not supported by j5.
+
+Available Integrations
+----------------------
+
+The following integrations are available: 
+
++------------------+---------------------------------+---------------+
+| Vendor           | Name                            | Support Level |
++==================+=================================+===============+
+| SourceBots       | Arduino Uno Firmware            | Core          |
++------------------+---------------------------------+---------------+
+| Student Robotics | Motor Board v4                  | Core          |
++------------------+---------------------------------+---------------+
+| Student Robotics | Power Board v4                  | Core          |
++------------------+---------------------------------+---------------+
+| Student Robotics | Ruggeduino Firmware             | Core          |
++------------------+---------------------------------+---------------+
+| Student Robotics | Servo Board v4                  | Core          |
++------------------+---------------------------------+---------------+
+| Zoloto           | Fiducial Marker Pose Estimation | Supported     |
++------------------+---------------------------------+---------------+
+
+.. _Zoloto: https://j5api.github.io/j5-zoloto/
 
 .. toctree::
-   :maxdepth: 1
-   :caption: j5 Supported Vendors:
+    :maxdepth: 1
+    :caption: Vendors
 
-   sourcebots
-   srobo
-
+    sourcebots
+    srobo
+    Zoloto <https://j5api.github.io/j5-zoloto/>

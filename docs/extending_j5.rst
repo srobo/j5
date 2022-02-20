@@ -1,4 +1,4 @@
-Abstractions
+Extending j5
 ============
 
 `j5` utilises a number of abstractions to enable similar APIs across platforms and hardware. This page explains design decisions behind the major abstractions and how to use them correctly.
@@ -25,7 +25,7 @@ Every instance of a component should have a reference to a :class:`j5.backends.B
 
 The relevant :class:`j5.components.Interface` should also be defined.
 
-.. literalinclude:: ../../j5/components/led.py
+.. literalinclude:: ../j5/components/led.py
     :language: python
     :linenos:
     :lines: 23-48
@@ -43,7 +43,7 @@ An interface should sub-class :class:`j5.components.Interface`.
 
 The interface class should contain abstract methods required to control the component.
 
-.. literalinclude:: ../../j5/components/led.py
+.. literalinclude:: ../j5/components/led.py
     :language: python
     :linenos:
     :lines: 9-20
@@ -68,7 +68,7 @@ A backend should also be passed to the board in the constructor, usually done in
 
 A notable method that should be implemented is :meth:`j5.boards.Board.make_safe`, which should call the appropriate methods on the components to ensure that the board is safe in the event of something going wrong.
 
-.. literalinclude:: ../../j5/boards/sr/v4/motor_board.py
+.. literalinclude:: ../j5/boards/sr/v4/motor_board.py
     :language: python
     :linenos:
     :lines: 14-52
@@ -87,29 +87,7 @@ Backends can also validate is data is suitable for them, and throw an error if n
 Implementation
 ~~~~~~~~~~~~~~
 
-.. literalinclude:: ../../j5/backends/console/sr/v4/motor_board.py
+.. literalinclude:: ../j5/backends/console/sr/v4/motor_board.py
     :language: python
     :linenos:
     :lines: 12-64
-
-
-Class Diagram
--------------
-
-The below diagram shows a class having instances of another class as an attribute with a dotted line. Solid lines indicate that there is a sub-class relationship
-
-.. graphviz::
-
-   digraph {
-        Interface -> LEDInterface
-        {LEDInterface, Backend} -> HardwarePowerBoardBackend
-        Component -> LED
-        Board -> PowerBoard
-
-        HardwarePowerBoardBackend -> {PowerBoard} [style=dotted]
-        PowerBoard -> LED [style=dotted]
-        Board -> PowerBoard [style=dotted]
-        BoardGroup -> PowerBoard [style=dotted]
-        LED -> LEDInterface [style=dotted]
-        Robot -> {BoardGroup, PowerBoard}  [style=dotted]
-   }
