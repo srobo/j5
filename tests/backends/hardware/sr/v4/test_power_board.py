@@ -324,22 +324,22 @@ def test_backend_piezo_buzz() -> None:
     backend = SRV4PowerBoardHardwareBackend(device)
 
     # Buzz a Note
-    backend.buzz(0, timedelta(seconds=10), Note.D7)
+    backend.buzz(0, timedelta(seconds=10), Note.D7, False)
 
     # Buzz a frequency
-    backend.buzz(0, timedelta(seconds=10), 100)
+    backend.buzz(0, timedelta(seconds=10), 100, False)
 
     # Buzz for too long.
     with pytest.raises(NotSupportedByHardwareError):
-        backend.buzz(0, timedelta(seconds=100), 10)
+        backend.buzz(0, timedelta(seconds=100), 10, False)
 
     # Buzz at a too high pitch.
     with pytest.raises(NotSupportedByHardwareError):
-        backend.buzz(0, timedelta(seconds=10), 65536)
+        backend.buzz(0, timedelta(seconds=10), 65536, False)
 
     # Test non-existent buzzer
     with pytest.raises(ValueError):
-        backend.buzz(1, timedelta(seconds=10), 0)
+        backend.buzz(1, timedelta(seconds=10), 0, False)
 
 
 def test_backend_get_button_state() -> None:

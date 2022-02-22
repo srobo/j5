@@ -165,14 +165,20 @@ class SRV4PowerBoardHardwareBackend(
         current, = struct.unpack("<I", self._read(cmd))
         return cast(int, current) / 1000  # convert milliamps to amps
 
-    def buzz(self, identifier: int,
-             duration: timedelta, frequency: float) -> None:
+    def buzz(
+        self,
+        identifier: int,
+        duration: timedelta,
+        frequency: float,
+        blocking: bool,
+    ) -> None:
         """
         Queue a pitch to be played.
 
         :param identifier: piezo identifier to play pitch on.
         :param duration: duration of the tone.
         :param frequency: Pitch of the tone in Hz.
+        :param blocking: whether the code waits for the buzz
         :raises ValueError: invalid value for parameter.
         :raises CommunicationError: buzz commands sent too quickly
         :raises NotSupportedByHardwareError: unsupported pitch freq or length.
@@ -199,6 +205,10 @@ class SRV4PowerBoardHardwareBackend(
                     f"power board too quickly",
                 )
             raise
+
+        # If the buzz needs to block, wait for the correct time.
+        if blocking:
+            sleep(duration.total_seconds())
 
     def get_button_state(self, identifier: int) -> bool:
         """

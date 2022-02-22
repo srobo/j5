@@ -98,19 +98,19 @@ def test_backend_piezo_buzz() -> None:
 
     # Buzz a Note.
     backend._console.expects = "Buzzing at 2349.3Hz for 10000ms"  # type: ignore
-    backend.buzz(0, timedelta(seconds=10), Note.D7)
+    backend.buzz(0, timedelta(seconds=10), Note.D7, False)
 
     # Buzz a frequency
     backend._console.expects = "Buzzing at 100Hz for 10000ms"  # type: ignore
-    backend.buzz(0, timedelta(seconds=10), 100)
+    backend.buzz(0, timedelta(seconds=10), 100, False)
 
     # Buzz for too long.
     with pytest.raises(ValueError):
-        backend.buzz(0, timedelta(seconds=100), 10)
+        backend.buzz(0, timedelta(seconds=100), 10, False)
 
     # Test non-existent buzzer
     with pytest.raises(ValueError):
-        backend.buzz(1, timedelta(seconds=10), 0)
+        backend.buzz(1, timedelta(seconds=10), 0, False)
 
 
 def test_backend_get_button_state() -> None:

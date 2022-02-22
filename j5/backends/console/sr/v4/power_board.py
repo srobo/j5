@@ -1,6 +1,7 @@
 """Console Backend for the SR V4 power board."""
 
 from datetime import timedelta
+from time import sleep
 from typing import Dict, Optional, Set, Type, cast
 
 from j5.backends import Backend
@@ -120,14 +121,20 @@ class SRV4PowerBoardConsoleBackend(
                              f"valid identifiers are "
                              f"{self._output_states.keys()}") from None
 
-    def buzz(self, identifier: int,
-             duration: timedelta, pitch: float) -> None:
+    def buzz(
+        self,
+        identifier: int,
+        duration: timedelta,
+        pitch: float,
+        blocking: bool,
+    ) -> None:
         """
         Queue a pitch to be played.
 
         :param identifier: piezo identifier to play pitch on.
         :param duration: duration of the tone.
         :param pitch: Pitch of the tone in Hz.
+        :param blocking: whether the code waits for the buzz
         :raises ValueError: invalid value for parameter.
         """
         if identifier != 0:
@@ -137,6 +144,10 @@ class SRV4PowerBoardConsoleBackend(
         if duration_ms > 65535:
             raise ValueError("Maximum piezo duration is 65535ms.")
         self._console.info(f"Buzzing at {pitch}Hz for {duration_ms}ms")
+
+        # If the buzz needs to block, wait for the correct time.
+        if blocking:
+            sleep(duration.total_seconds())
 
     def get_button_state(self, identifier: int) -> bool:
         """
