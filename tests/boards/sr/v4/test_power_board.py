@@ -61,7 +61,7 @@ class MockPowerBoardBackend(
         return 1.0
 
     def buzz(
-        self, identifier: int, duration: timedelta, pitch: Pitch,
+        self, identifier: int, duration: timedelta, pitch: Pitch, blocking: bool,
     ) -> None:
         """Buzz the buzzer."""
         pass

@@ -3,7 +3,7 @@
 from abc import abstractmethod
 from datetime import timedelta
 from enum import Enum
-from typing import Type, Union
+from typing import Optional, Type, Union
 
 from j5.components.component import Component, Interface
 
@@ -39,14 +39,25 @@ class PiezoInterface(Interface):
     """An interface containing the methods required to control an piezo."""
 
     @abstractmethod
-    def buzz(self, identifier: int,
-             duration: timedelta, frequency: float) -> None:
+    def buzz(
+        self,
+        identifier: int,
+        duration: timedelta,
+        frequency: float,
+        blocking: bool,
+    ) -> None:
         """
         Queue a pitch to be played.
+
+        A buzz can either be blocking, or non-blocking.
+
+        If a backend does not support a non-blocking buzz, it will
+        raise a :class:`j5.components.NotSupportedByComponentError`.
 
         :param identifier: piezo identifier to play pitch on.
         :param duration: duration of the tone.
         :param frequency: Pitch of the tone in Hz.
+        :param blocking: whether the code waits for the buzz
         """
         raise NotImplementedError  # pragma: no cover
 
@@ -54,9 +65,16 @@ class PiezoInterface(Interface):
 class Piezo(Component):
     """A standard piezo."""
 
-    def __init__(self, identifier: int, backend: PiezoInterface) -> None:
+    def __init__(
+        self,
+        identifier: int,
+        backend: PiezoInterface,
+        *,
+        default_blocking: bool = False,
+    ) -> None:
         self._backend = backend
         self._identifier = identifier
+        self._default_blocking = default_blocking
 
     @staticmethod
     def interface_class() -> Type[PiezoInterface]:
@@ -76,14 +94,24 @@ class Piezo(Component):
         """
         return self._identifier
 
-    def buzz(self, duration: Union[int, float, timedelta], pitch: Pitch) -> None:
+    def buzz(
+        self,
+        duration: Union[int, float, timedelta],
+        pitch: Pitch,
+        *,
+        blocking: Optional[bool] = None,
+    ) -> None:
         """
         Queue a note to be played.
 
         Float and integer durations are measured in seconds.
 
-        :param duration: length to play for:
+        A buzz can either be blocking, or non-blocking and will fall back to
+        a default if it is not specified.
+
+        :param duration: length to play for
         :param pitch: pitch of buzz.
+        :param blocking: whether the code waits for the buzz
         """
         if isinstance(duration, float) or isinstance(duration, int):
             duration = timedelta(seconds=duration)
@@ -92,7 +120,12 @@ class Piezo(Component):
 
         self.verify_pitch(pitch)
         self.verify_duration(duration)
-        self._backend.buzz(self._identifier, duration, pitch)
+        self._backend.buzz(
+            self._identifier,
+            duration,
+            pitch,
+            blocking or self._default_blocking,  # Fallback to component default.
+        )
 
     @staticmethod
     def verify_pitch(pitch: Pitch) -> None:
