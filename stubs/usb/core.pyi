@@ -10,9 +10,11 @@ from typing import Generator, Optional, Tuple, Union
 class Device:
 
     _langids: Tuple[int, ...]
+    idVendor: Optional[str]
+    idProduct: Optional[str]
 
     @property
-    def serial_number(self) -> str: ...
+    def serial_number(self) -> Optional[str]: ...
 
     def ctrl_transfer(
             self,

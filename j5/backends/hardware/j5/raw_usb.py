@@ -110,11 +110,18 @@ class RawUSBHardwareBackend(Backend, metaclass=BackendMeta):
         The serial number reported by the board.
 
         :returns: serial number reported by the board.
+        :raises CommunicationError: Found a USB Device with no serial number.
         :raises USBCommunicationError: Unable to query USB.
         """
         with self._lock:
             try:
-                return self._usb_device.serial_number
+                if self._usb_device.serial_number is not None:
+                    return self._usb_device.serial_number
+                else:
+                    raise CommunicationError(
+                        f"Found a USB device ({self._usb_device.idVendor}, "
+                        f"{self._usb_device.idProduct}) with no serial number",
+                    )
             except usb.core.USBError as e:
                 raise USBCommunicationError(e) from e
 
