@@ -17,7 +17,7 @@ class Console:
 
         :param string: String to print.
         """
-        print(string)  # noqa: T001
+        print(string)  # noqa: T201
 
     def _input(self, prompt: str) -> str:
         """

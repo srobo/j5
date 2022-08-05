@@ -111,7 +111,7 @@ class Environment:
         intersection = self.supported_boards & other.supported_boards
 
         if len(intersection) > 0:
-            common_boards = ", ".join(map(lambda x: x.__name__, intersection))
+            common_boards = ", ".join(x.__name__ for x in intersection)
             raise RuntimeError(
                 f"Attempted to merge two Environments"
                 f" that both contain: {common_boards}")
