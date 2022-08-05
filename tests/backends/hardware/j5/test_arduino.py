@@ -31,7 +31,7 @@ class MockArduinoBackend(ArduinoHardwareBackend):
             baud: int = 9600,
             timeout: timedelta = ArduinoHardwareBackend.DEFAULT_TIMEOUT,
     ) -> None:
-        super(MockArduinoBackend, self).__init__(
+        super().__init__(
             serial_port=serial_port,
             baud=baud,
             timeout=timeout,

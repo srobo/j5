@@ -43,7 +43,7 @@ def extract(input_path: Path, snippet_writer: SnippetWriter) -> None:
     """
     current_code_block = None
     unchecked = None
-    with open(input_path, "r") as input_file:
+    with open(input_path) as input_file:
         for line in input_file:
             if current_code_block is not None:
                 if line.startswith("```"):

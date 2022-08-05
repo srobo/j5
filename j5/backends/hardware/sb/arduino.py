@@ -26,7 +26,7 @@ class SBArduinoHardwareBackend(
             self,
             serial_port: str,
     ):
-        super(SBArduinoHardwareBackend, self).__init__(serial_port)
+        super().__init__(serial_port)
 
         # Initialise stored servo states
         self._servo_states: List[ServoPosition] = [None] * 16

@@ -80,7 +80,7 @@ class ArduinoHardwareBackend(
             baud: int = 115200,
             timeout: timedelta = DEFAULT_TIMEOUT,
     ) -> None:
-        super(ArduinoHardwareBackend, self).__init__(
+        super().__init__(
             serial_port=serial_port,
             baud=baud,
             timeout=timeout,
