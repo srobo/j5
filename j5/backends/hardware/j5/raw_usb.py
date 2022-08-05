@@ -13,6 +13,7 @@ from typing import Iterable, NamedTuple, Optional, Set, Union
 import usb
 
 from j5.backends import Backend, BackendMeta, CommunicationError
+from j5.backends.hardware import DeviceMissingSerialNumberError
 from j5.boards import Board
 
 # Stop the library from closing the USB connections before make_safe is called.
@@ -110,7 +111,7 @@ class RawUSBHardwareBackend(Backend, metaclass=BackendMeta):
         The serial number reported by the board.
 
         :returns: serial number reported by the board.
-        :raises CommunicationError: Found a USB Device with no serial number.
+        :raises DeviceMissingSerialNumberError: Found a USB Device with no serial number.
         :raises USBCommunicationError: Unable to query USB.
         """
         with self._lock:
@@ -118,7 +119,7 @@ class RawUSBHardwareBackend(Backend, metaclass=BackendMeta):
                 if self._usb_device.serial_number is not None:
                     return self._usb_device.serial_number
                 else:
-                    raise CommunicationError(
+                    raise DeviceMissingSerialNumberError(
                         f"Found a USB device ({self._usb_device.idVendor}, "
                         f"{self._usb_device.idProduct}) with no serial number",
                     )

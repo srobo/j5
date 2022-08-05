@@ -6,6 +6,7 @@ from serial import Serial
 from serial.tools.list_ports_common import ListPortInfo
 
 from j5.backends import CommunicationError
+from j5.backends.hardware import DeviceMissingSerialNumberError
 from j5.backends.hardware.sr.v4.motor_board import (
     CMD_BOOTLOADER,
     CMD_MOTOR,
@@ -181,7 +182,7 @@ def test_backend_discover() -> None:
 
 def test_backend_discover_missing_serial_number() -> None:
     """Test we correctly handle motor boards without a serial number."""
-    with pytest.raises(CommunicationError) as e:
+    with pytest.raises(DeviceMissingSerialNumberError) as e:
         MockMotorSerialBadSerialNumberBackend.discover()
     assert e.match(  # type: ignore
         "Found motor board-like device without serial number. "
