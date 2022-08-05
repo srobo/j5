@@ -6,11 +6,13 @@ from abc import ABCMeta, abstractmethod
 from functools import wraps
 from typing import TYPE_CHECKING, Optional, Set, Type
 
+from j5.exceptions import j5Exception
+
 if TYPE_CHECKING:  # pragma: nocover
     from j5.boards import Board  # noqa
 
 
-class CommunicationError(Exception):
+class CommunicationError(j5Exception):
     """
     A communication error occurred.
 
