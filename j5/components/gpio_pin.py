@@ -10,9 +10,10 @@ from j5.components.component import (
     Interface,
     NotSupportedByComponentError,
 )
+from j5.exceptions import j5Exception
 
 
-class BadGPIOPinModeError(Exception):
+class BadGPIOPinModeError(j5Exception):
     """The pin is not in the correct mode."""
 
     pass

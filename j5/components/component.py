@@ -3,6 +3,8 @@
 from abc import ABCMeta, abstractmethod
 from typing import Type
 
+from j5.exceptions import j5Exception
+
 
 class Interface(metaclass=ABCMeta):
     """A base class for interfaces to inherit from."""
@@ -58,7 +60,7 @@ class DerivedComponent(Component):
         raise NotImplementedError  # pragma: no cover
 
 
-class NotSupportedByComponentError(Exception):
+class NotSupportedByComponentError(j5Exception):
     """This is thrown when hardware does not support the action that is attempted."""
 
     pass
