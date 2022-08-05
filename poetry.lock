@@ -371,8 +371,8 @@ python-versions = ">=3.6"
 importlib-metadata = {version = ">=0.12", markers = "python_version < \"3.8\""}
 
 [package.extras]
-dev = ["pre-commit", "tox"]
-testing = ["pytest", "pytest-benchmark"]
+testing = ["pytest-benchmark", "pytest"]
+dev = ["tox", "pre-commit"]
 
 [[package]]
 name = "py"
@@ -474,7 +474,7 @@ coverage = {version = ">=5.2.1", extras = ["toml"]}
 pytest = ">=4.6"
 
 [package.extras]
-testing = ["fields", "hunter", "process-tests", "six", "pytest-xdist", "virtualenv"]
+testing = ["virtualenv", "pytest-xdist", "six", "process-tests", "hunter", "fields"]
 
 [[package]]
 name = "pytz"
@@ -512,14 +512,14 @@ use_chardet_on_py3 = ["chardet (>=3.0.2,<5)"]
 
 [[package]]
 name = "rope"
-version = "1.0.0"
+version = "1.1.1"
 description = "a python refactoring library..."
 category = "dev"
 optional = false
 python-versions = ">=3"
 
 [package.extras]
-dev = ["build", "pytest", "pytest-timeout"]
+dev = ["pytest-timeout", "pytest", "build"]
 
 [[package]]
 name = "six"
@@ -581,7 +581,7 @@ docutils = "<0.18"
 sphinx = ">=1.6"
 
 [package.extras]
-dev = ["transifex-client", "sphinxcontrib-httpdomain", "bump2version"]
+dev = ["bump2version", "sphinxcontrib-httpdomain", "transifex-client"]
 
 [[package]]
 name = "sphinxcontrib-applehelp"
@@ -592,8 +592,8 @@ optional = false
 python-versions = ">=3.5"
 
 [package.extras]
-lint = ["flake8", "mypy", "docutils-stubs"]
 test = ["pytest"]
+lint = ["docutils-stubs", "mypy", "flake8"]
 
 [[package]]
 name = "sphinxcontrib-devhelp"
@@ -604,8 +604,8 @@ optional = false
 python-versions = ">=3.5"
 
 [package.extras]
-lint = ["flake8", "mypy", "docutils-stubs"]
 test = ["pytest"]
+lint = ["docutils-stubs", "mypy", "flake8"]
 
 [[package]]
 name = "sphinxcontrib-htmlhelp"
@@ -616,8 +616,8 @@ optional = false
 python-versions = ">=3.6"
 
 [package.extras]
-lint = ["flake8", "mypy", "docutils-stubs"]
-test = ["pytest", "html5lib"]
+test = ["html5lib", "pytest"]
+lint = ["docutils-stubs", "mypy", "flake8"]
 
 [[package]]
 name = "sphinxcontrib-jsmath"
@@ -628,7 +628,7 @@ optional = false
 python-versions = ">=3.5"
 
 [package.extras]
-test = ["pytest", "flake8", "mypy"]
+test = ["mypy", "flake8", "pytest"]
 
 [[package]]
 name = "sphinxcontrib-qthelp"
@@ -639,8 +639,8 @@ optional = false
 python-versions = ">=3.5"
 
 [package.extras]
-lint = ["flake8", "mypy", "docutils-stubs"]
 test = ["pytest"]
+lint = ["docutils-stubs", "mypy", "flake8"]
 
 [[package]]
 name = "sphinxcontrib-serializinghtml"
@@ -719,7 +719,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6"
-content-hash = "2c3f88c5a5cd5fd8173becbe58abc0dbf8393b94009cad53a490d60412fa49ea"
+content-hash = "0fc0950c44ea6f6f21c3a28998512e0becab9cc919d4da868cf522cf6ed89a5b"
 
 [metadata.files]
 alabaster = [
@@ -1035,8 +1035,8 @@ requests = [
     {file = "requests-2.26.0.tar.gz", hash = "sha256:b8aa58f8cf793ffd8782d3d8cb19e66ef36f7aba4353eec859e74678b01b07a7"},
 ]
 rope = [
-    {file = "rope-1.0.0-py3-none-any.whl", hash = "sha256:67749b582d57954f288b0441fae93e8f4c166d7e93fc29c430bd4db28ec904d0"},
-    {file = "rope-1.0.0.tar.gz", hash = "sha256:16f652d3002296778d463db329da6a05d914a4dbde30ea6da76362da06c0ebb7"},
+    {file = "rope-1.1.1-py3-none-any.whl", hash = "sha256:216390b6342bde8ef1f27a6663554de0ea0b1fdad7c421deb3d5a3f6c5fc01e7"},
+    {file = "rope-1.1.1.tar.gz", hash = "sha256:13048ff0245a0fa187f282697a55add46e4ccf083e7670f868bdf54ee9e47f2e"},
 ]
 six = [
     {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
