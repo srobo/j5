@@ -45,6 +45,7 @@ class SRV4MotorBoardHardwareBackend(
         Discover boards that this backend can control.
 
         :returns: set of boards that this backend can control.
+        :raises CommunicationError: a motor board without a serial number was found.
         """
         # Find all serial ports.
         ports = cls.get_comports()
@@ -52,15 +53,21 @@ class SRV4MotorBoardHardwareBackend(
         # Get a list of boards from the ports.
         boards: Set[Board] = set()
         for port in filter(is_motor_board, ports):
-            boards.add(
-                MotorBoard(
-                    port.serial_number,
-                    cast(
-                        Backend,
-                        cls(port.device),
+            if port.serial_number is None:
+                raise CommunicationError(
+                    "Found motor board-like device without serial number. "
+                    f"The motor board is likely to be damaged: {port.usb_info()}",
+                )
+            else:
+                boards.add(
+                    MotorBoard(
+                        port.serial_number,
+                        cast(
+                            Backend,
+                            cls(port.device),
+                        ),
                     ),
-                ),
-            )
+                )
 
         return boards
 

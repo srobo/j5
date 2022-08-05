@@ -1,5 +1,5 @@
 """Test the SR v4 motor board hardware backend and associated classes."""
-from typing import List, Type, cast
+from typing import List, Optional, Type, cast
 
 import pytest
 from serial import Serial
@@ -43,7 +43,7 @@ class MockListPortInfo:
     def __init__(
             self,
             device: str,
-            serial_number: str,
+            serial_number: Optional[str],
             vid: int = 0x403,
             pid: int = 0x6001,
             manufacturer: str = "Student Robotics",
@@ -55,6 +55,10 @@ class MockListPortInfo:
         self.pid = pid
         self.manufacturer = manufacturer
         self.product = product
+
+    def usb_info(self) -> str:
+        """Get a string containing information about the device."""
+        return "USB Information"
 
 
 def mock_comports(include_links: bool = False) -> List[MockListPortInfo]:
@@ -102,6 +106,17 @@ class MockMotorSerialBackend(SRV4MotorBoardHardwareBackend):
     def get_serial_class(self) -> Type[Serial]:
         """Get the serial class."""
         return MotorSerial  # type: ignore
+
+
+class MockMotorSerialBadSerialNumberBackend(SRV4MotorBoardHardwareBackend):
+    """Mock backend for testing."""
+
+    @classmethod
+    def get_comports(cls) -> List[ListPortInfo]:
+        """Get the comports."""
+        return [
+            MockListPortInfo("COM0", None),  # type: ignore
+        ]
 
 
 class MotorSerialBadWrite(MotorSerial):
@@ -162,6 +177,16 @@ def test_backend_discover() -> None:
     assert all(type(board) is MotorBoard for board in found_boards)
 
     assert all((int(board.serial_number[6:])) < 2 for board in found_boards)
+
+
+def test_backend_discover_missing_serial_number() -> None:
+    """Test we correctly handle motor boards without a serial number."""
+    with pytest.raises(CommunicationError) as e:
+        MockMotorSerialBadSerialNumberBackend.discover()
+    assert e.match(  # type: ignore
+        "Found motor board-like device without serial number. "
+        "The motor board is likely to be damaged: USB Information",
+    )
 
 
 def test_backend_send_command() -> None:
