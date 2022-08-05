@@ -39,7 +39,7 @@ rope = "^1.0.0"
 isort = {version = "^5.6",extras = ["pyproject"]}
 flake8-bugbear = "^22.7.1"
 flake8-builtins = "^1.5.3"
-flake8-print = "^4.0.0"
+flake8-print = "^4.0.1"
 darglint = "^1.8.0"
 
 [build-system]
