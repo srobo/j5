@@ -68,7 +68,7 @@ class SRV4MotorBoardHardwareBackend(
         self,
         serial_port: str,
     ) -> None:
-        super(SRV4MotorBoardHardwareBackend, self).__init__(
+        super().__init__(
             serial_port=serial_port,
             baud=1000000,
         )

@@ -47,7 +47,7 @@ def run() -> None:
     VERSION = find_version("j5", "__init__.py")
 
     if tag != VERSION:
-        info = "Git tag: {0} != j5 version: {1}".format(tag, VERSION)
+        info = f"Git tag: {tag} != j5 version: {VERSION}"
         sys.exit(info)
 
 

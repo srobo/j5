@@ -8,7 +8,7 @@ exclude =
 
 ignore =
     # Allow printing
-    T001,
+    T201,
     #Don't require docstrings on magic methods.
     D105,
     #Don't require docstrings for __init__ methods.
