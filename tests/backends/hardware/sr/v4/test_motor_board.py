@@ -184,7 +184,7 @@ def test_backend_discover_missing_serial_number() -> None:
     """Test we correctly handle motor boards without a serial number."""
     with pytest.raises(DeviceMissingSerialNumberError) as e:
         MockMotorSerialBadSerialNumberBackend.discover()
-    assert e.match(  # type: ignore
+    assert e.match(
         "Found motor board-like device without serial number. "
         "The motor board is likely to be damaged: USB Information",
     )
