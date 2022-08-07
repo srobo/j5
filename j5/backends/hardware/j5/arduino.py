@@ -1,5 +1,6 @@
 """Base backend for Arduino Uno and its derivatives."""
 
+import logging
 from abc import abstractmethod
 from datetime import timedelta
 from threading import Lock
@@ -12,6 +13,8 @@ from j5.backends.hardware.j5.serial import SerialHardwareBackend
 from j5.boards import Board
 from j5.boards.arduino import ArduinoUno
 from j5.components import GPIOPinInterface, GPIOPinMode, LEDInterface
+
+LOGGER = logging.getLogger(__name__)
 
 
 class DigitalPinData:
@@ -65,12 +68,18 @@ class ArduinoHardwareBackend(
         # Get a list of boards from the ports.
         boards: Set[Board] = set()
         for port in filter(cls.is_arduino, ports):
-            boards.add(
-                cls.board(
-                    port.serial_number,
-                    cls(port.device),
-                ),
-            )
+            if port.serial_number is None:
+                LOGGER.warning(
+                    "Found Arduino Uno-like device without a serial number. "
+                    f"Ignoring device as it is incompatible: {port.usb_info()}",
+                )
+            else:
+                boards.add(
+                    cls.board(
+                        port.serial_number,
+                        cls(port.device),
+                    ),
+                )
 
         return boards
 

@@ -1,5 +1,6 @@
 """Tests for the base Arduino hardware implementation."""
 
+import logging
 from datetime import timedelta
 from math import pi
 from typing import List, Optional, Set, Tuple, Type, cast
@@ -116,10 +117,17 @@ def test_backend_default_timeout() -> None:
     assert isinstance(ArduinoHardwareBackend.DEFAULT_TIMEOUT, timedelta)
 
 
-def make_port_info(vid: int, pid: int) -> ListPortInfo:
+def make_port_info(
+    vid: int,
+    pid: int,
+    *,
+    serial_number: Optional[str] = "SERIAL",
+) -> ListPortInfo:
     """Make a ListPortInfo object from a USB vendor ID and product ID."""
     list_port_info = ListPortInfo("/dev/null")
-    list_port_info.vid, list_port_info.pid = vid, pid
+    list_port_info.vid = vid
+    list_port_info.pid = pid
+    list_port_info.serial_number = serial_number
     return list_port_info
 
 
@@ -130,6 +138,17 @@ def test_backend_is_arduino() -> None:
         ArduinoHardwareBackend.is_arduino(make_port_info(vid, pid))
         for vid, pid in ArduinoHardwareBackend.USB_IDS
     )
+
+
+def discover_arduinos(ports: List[ListPortInfo]) -> Set[Board]:
+    """Mock function for arduino discovery."""
+    class MockDiscoveryArduinoBackend(MockArduinoBackend):
+
+        @classmethod
+        def get_comports(cls) -> List[ListPortInfo]:
+            return ports
+
+    return MockDiscoveryArduinoBackend.discover()
 
 
 def test_backend_discover() -> None:
@@ -146,16 +165,6 @@ def test_backend_discover() -> None:
             (0x0781, 0x5581),  # USB flash drive
         ]
     ]
-
-    def discover_arduinos(ports: List[ListPortInfo]) -> Set[Board]:
-
-        class MockDiscoveryArduinoBackend(MockArduinoBackend):
-
-            @classmethod
-            def get_comports(cls) -> List[ListPortInfo]:
-                return ports
-
-        return MockDiscoveryArduinoBackend.discover()
 
     # Find nothing
     assert discover_arduinos([]) == set()
@@ -174,6 +183,24 @@ def test_backend_discover() -> None:
         isinstance(board, MockArduinoBackend.board)
         for board in discover_arduinos(other_ports + arduino_ports)
     )
+
+
+def test_backend_discover_no_serial_number(  # type: ignore[no-untyped-def]
+    caplog,
+) -> None:
+    """Test that we warn when a board has no serial number."""
+    arduino_ports: List[ListPortInfo] = [
+        make_port_info(0x2341, 0x0043, serial_number=None),
+    ]
+    assert discover_arduinos(arduino_ports) == set()
+    assert caplog.record_tuples == [
+        (
+            "j5.backends.hardware.j5.arduino",
+            logging.WARNING,
+            "Found Arduino Uno-like device without a serial number. "
+            "Ignoring device as it is incompatible: USB VID:PID=2341:0043",
+        ),
+    ]
 
 
 def test_backend_initialisation() -> None:

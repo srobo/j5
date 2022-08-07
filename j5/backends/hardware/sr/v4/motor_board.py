@@ -6,6 +6,7 @@ from serial import SerialException, SerialTimeoutException
 from serial.tools.list_ports_common import ListPortInfo
 
 from j5.backends import Backend, CommunicationError
+from j5.backends.hardware import DeviceMissingSerialNumberError
 from j5.backends.hardware.j5.serial import SerialHardwareBackend
 from j5.boards import Board
 from j5.boards.sr.v4.motor_board import MotorBoard
@@ -45,6 +46,7 @@ class SRV4MotorBoardHardwareBackend(
         Discover boards that this backend can control.
 
         :returns: set of boards that this backend can control.
+        :raises DeviceMissingSerialNumberError: a board without a serial number was found.
         """
         # Find all serial ports.
         ports = cls.get_comports()
@@ -52,15 +54,21 @@ class SRV4MotorBoardHardwareBackend(
         # Get a list of boards from the ports.
         boards: Set[Board] = set()
         for port in filter(is_motor_board, ports):
-            boards.add(
-                MotorBoard(
-                    port.serial_number,
-                    cast(
-                        Backend,
-                        cls(port.device),
+            if port.serial_number is None:
+                raise DeviceMissingSerialNumberError(
+                    "Found motor board-like device without serial number. "
+                    f"The motor board is likely to be damaged: {port.usb_info()}",
+                )
+            else:
+                boards.add(
+                    MotorBoard(
+                        port.serial_number,
+                        cast(
+                            Backend,
+                            cls(port.device),
+                        ),
                     ),
-                ),
-            )
+                )
 
         return boards
 
