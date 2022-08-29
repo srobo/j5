@@ -1,15 +1,15 @@
 """Hardware Backend for the SR V4 power board."""
 
 from datetime import timedelta
-import re
 import threading
+from time import sleep
 from typing import Set, cast, Optional, NamedTuple
 
 from serial import SerialException, SerialTimeoutException
 from serial.tools.list_ports_common import ListPortInfo
 
 from j5.backends import Backend
-from j5.backends.hardware import DeviceMissingSerialNumberError
+from j5.backends.hardware import DeviceMissingSerialNumberError, NotSupportedByHardwareError
 from j5.backends.hardware.j5.serial import SerialHardwareBackend
 from j5.boards import Board
 from j5.boards.sr.v4.power_board import PowerBoard
@@ -100,9 +100,6 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         self._lock = threading.Lock()
         self.check_firmware_version_supported()
         self.reset_board()
-        # TODO: Check firmware version
-        # TODO: Turn off all power ports
-        # TODO: Turn off LEDs
 
     def check_firmware_version_supported(self) -> None:
         """
@@ -195,7 +192,16 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         :returns: status of the power output.
         :raises ValueError: Invalid power output identifier.
         """
-        raise NotImplementedError
+        if identifier in range(6):
+            response = self.request_with_response(f"OUT:{identifier}:GET?")
+            if response == "0":
+                return False
+            elif response == "1":
+                return True
+            else:
+                raise CommunicationError(f"Invalid response received: {response}")
+        else:
+            raise ValueError(f"Invalid identifier: {identifier!r}")
 
     def set_power_output_enabled(
         self, identifier: int, enabled: bool,
@@ -207,7 +213,11 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         :param enabled: status of the power output.
         :raises ValueError: Invalid power output identifier.
         """
-        # raise NotImplementedError  TODO: this
+        if identifier in range(6):
+            state = "1" if enabled else "0"
+            self.request(f"OUT:{identifier}:SET:{state}")
+        else:
+            raise ValueError(f"Invalid identifier: {identifier!r}")
 
     def get_power_output_current(self, identifier: int) -> float:
         """
@@ -257,7 +267,14 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         if identifier != 0:
             raise ValueError(f"Invalid button identifier {identifier!r}; "
                              f"the only valid identifier is 0.")
-        raise NotImplementedError
+        response = self.request_with_response("BTN:START:GET?")
+        internal_button, external_button = response.split(":", 1)
+        if internal_button == "1" or external_button == "1":
+            return True
+        elif internal_button == "0" or external_button == "0":
+            return False
+        else:
+            raise CommunicationError(f"Invalid response received: {response}")
 
     def wait_until_button_pressed(self, identifier: int) -> None:
         """
@@ -265,7 +282,8 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
 
         :param identifier: Button identifier to wait for.
         """
-        raise NotImplementedError
+        while not self.get_button_state(0):
+            sleep(0.05)
 
     def get_battery_sensor_voltage(self, identifier: int) -> float:
         """
