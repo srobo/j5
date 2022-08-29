@@ -3,7 +3,7 @@
 from datetime import timedelta
 import threading
 from time import sleep
-from typing import Set, cast, Optional, NamedTuple
+from typing import Set, cast, Optional, NamedTuple, Dict
 
 from serial import SerialException, SerialTimeoutException
 from serial.tools.list_ports_common import ListPortInfo
@@ -98,6 +98,10 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
             baud=115200,
         )
         self._lock = threading.Lock()
+        self._led_states: Dict[int, bool] = {
+            i: False
+            for i in range(2)
+        }
         self.check_firmware_version_supported()
         self.reset_board()
 
@@ -254,7 +258,19 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         if identifier != 0:
             raise ValueError(f"Invalid piezo identifier {identifier!r}; "
                              f"the only valid identifier is 0.")
-        raise NotImplementedError
+
+        duration_ms = round(duration / timedelta(milliseconds=1))
+        if duration_ms > 65535:
+            raise NotSupportedByHardwareError("Maximum piezo duration is 65535ms.")
+
+        frequency_int = int(round(frequency))
+        if frequency_int > 65535:
+            raise NotSupportedByHardwareError("Maximum piezo frequency is 65535Hz.")
+
+        self.request(f"NOTE:{frequency_int}:{duration_ms}")
+
+        if blocking:
+            sleep(duration.total_seconds())
 
     def get_button_state(self, identifier: int) -> bool:
         """
@@ -296,7 +312,8 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         if identifier != 0:
             raise ValueError(f"Invalid battery sensor identifier {identifier!r}; "
                              f"the only valid identifier is 0.")
-        raise NotImplementedError
+        response = self.request_with_response(f"BATT:V?")
+        return float(response)
 
     def get_battery_sensor_current(self, identifier: int) -> float:
         """
@@ -306,7 +323,11 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         :returns: current measured by the sensor.
         :raises ValueError: invalid battery sensor identifier.
         """
-        raise NotImplementedError
+        if identifier != 0:
+            raise ValueError(f"Invalid battery sensor identifier {identifier!r}; "
+                             f"the only valid identifier is 0.")
+        response = self.request_with_response(f"BATT:I?")
+        return float(response)
 
     def get_led_state(self, identifier: int) -> bool:
         """
@@ -315,7 +336,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         :param identifier: identifier of the LED.
         :returns: current state of the LED.
         """
-        raise NotImplementedError
+        return self._led_states[identifier]
 
     def set_led_state(self, identifier: int, state: bool) -> None:
         """
@@ -325,5 +346,9 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         :param state: desired state of the LED.
         :raises ValueError: invalid LED identifer.
         """
-        raise NotImplementedError
+        if identifier > 1:
+            raise ValueError(f"Invalid LED identifier {identifier!r}; "
+                             f"the only valid identifiers are 0 and 1.")
+        led_names = ["RUN", "ERR"]
 
+        self.request(f"LED:{led_names[identifier]}:SET:{int(state)}")
