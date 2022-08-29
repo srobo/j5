@@ -1,15 +1,18 @@
 """Hardware Backend for the SR V4 power board."""
 
-from datetime import timedelta
 import threading
+from datetime import timedelta
 from time import sleep
-from typing import Set, cast, Optional, NamedTuple, Dict
+from typing import Dict, NamedTuple, Optional, Set, cast
 
 from serial import SerialException, SerialTimeoutException
 from serial.tools.list_ports_common import ListPortInfo
 
-from j5.backends import Backend
-from j5.backends.hardware import DeviceMissingSerialNumberError, NotSupportedByHardwareError
+from j5.backends import Backend, CommunicationError
+from j5.backends.hardware import (
+    DeviceMissingSerialNumberError,
+    NotSupportedByHardwareError,
+)
 from j5.backends.hardware.j5.serial import SerialHardwareBackend
 from j5.boards import Board
 from j5.boards.sr.v4.power_board import PowerBoard
@@ -20,7 +23,6 @@ from j5.components import (
     PiezoInterface,
     PowerOutputInterface,
 )
-from j5.backends import CommunicationError
 
 
 class BoardIdentity(NamedTuple):
