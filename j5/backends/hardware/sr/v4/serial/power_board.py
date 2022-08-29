@@ -1,11 +1,9 @@
 """Hardware Backend for the SR V4 power board."""
-
 import threading
 from datetime import timedelta
 from time import sleep
-from typing import Dict, NamedTuple, Optional, Set, cast
+from typing import Dict, Set, cast
 
-from serial import SerialException, SerialTimeoutException
 from serial.tools.list_ports_common import ListPortInfo
 
 from j5.backends import Backend, CommunicationError
@@ -13,7 +11,9 @@ from j5.backends.hardware import (
     DeviceMissingSerialNumberError,
     NotSupportedByHardwareError,
 )
-from j5.backends.hardware.j5.serial import SerialHardwareBackend
+from j5.backends.hardware.sr.v4.serial.protocol import (
+    SRV4SerialProtocolBackend,
+)
 from j5.boards import Board
 from j5.boards.sr.v4.power_board import PowerBoard
 from j5.components import (
@@ -23,14 +23,6 @@ from j5.components import (
     PiezoInterface,
     PowerOutputInterface,
 )
-
-
-class BoardIdentity(NamedTuple):
-
-    vendor: str
-    board: str
-    asset_tag: str
-    software_version: str
 
 
 def is_power_board(port: ListPortInfo) -> bool:
@@ -48,7 +40,7 @@ def is_power_board(port: ListPortInfo) -> bool:
 
 
 class SRV4SerialProtocolPowerBoardHardwareBackend(
-    SerialHardwareBackend,
+    SRV4SerialProtocolBackend,
     PowerOutputInterface,
     PiezoInterface,
     ButtonInterface,
@@ -107,95 +99,13 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         self.check_firmware_version_supported()
         self.reset_board()
 
-    def check_firmware_version_supported(self) -> None:
-        """
-        Raises an exception if the firmware version is not supported.
-
-        :raises NotImplementedError: power board is running unsupported firmware
-        """
-        version = self.firmware_version
-        if not version.startswith("4."):
-            raise NotImplementedError(f"This power board is running firmware "
-                                      f"version {version}, but only version 4.x is supported.")
-
-    def request(self, command: str) -> Optional[str]:
-        """
-        Sends a request to the power board.
-
-        :returns: Response, if any.
-        """
-        request_data = command.encode("ascii") + b'\n'  # TODO: Handle emoji lol
-
-        with self._lock:
-            try:
-                bytes_written = self._serial.write(request_data)
-                if len(request_data) != bytes_written:
-                    raise CommunicationError(
-                        "Mismatch in command bytes written to serial interface.",
-                    )
-            except SerialTimeoutException as e:
-                raise CommunicationError(f"Serial Timeout Error: {e}") from e
-            except SerialException as e:
-                raise CommunicationError(f"Serial Error: {e}") from e
-
-            response = self.read_serial_line()  # TODO: Handle decoding errors (Is this a bug elsewhere in j5? (yes))
-
-        if response[:4] == "NACK":
-            _, error_string = response.split(":", 1)
-            raise CommunicationError(f"Power Board returned an error: {error_string}")
-
-        expects_response = command[-1:] == "?"
-        if expects_response:
-            return response
-        elif response == "ACK":
-            return None
-        else:
-            raise CommunicationError(f"Expected ACK from Power Board, but got: {response}")
-
-    def request_with_response(self, command: str) -> str:
-        if not command.endswith('?'):
-            raise ValueError(f"The provided command does not expect a response: {command}")
-
-        response = self.request(command)
-        if response is not None:
-            return response
-        else:
-            raise CommunicationError("Power board responded with ACK but expected data.")
-
-    # TODO: Can we cache this?
-    def get_identity(self) -> BoardIdentity:
-        """
-        Get the board identity information.
-
-        :raises CommunicationError: the identity response did not match the expected format.
-        :returns: A tuple of board identity information
-        """
-        response = self.request("*IDN?")  # TODO: Handle None here?
-        parts = response.split(":", 4)
-        if len(parts) != 4:
-            raise CommunicationError(f"Identify response did not match format: {response}")
-        else:
-            return BoardIdentity(*parts)
-
-    def reset_board(self) -> None:
-        self.request("*RESET")
-
-    @property
-    def firmware_version(self) -> str:
-        """
-        The firmware version reported by the board.
-
-        :returns: firmware version reported by the board, if any.
-        """
-        identity = self.get_identity()
-        return identity.software_version
-
     def get_power_output_enabled(self, identifier: int) -> bool:
         """
         Get whether a power output is enabled.
 
         :param identifier: power output to fetch status of.
         :returns: status of the power output.
+        :raises CommunicationError: Invalid response received.
         :raises ValueError: Invalid power output identifier.
         """
         if identifier in range(6):
@@ -254,7 +164,6 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         :param frequency: Pitch of the tone in Hz.
         :param blocking: whether the code waits for the buzz
         :raises ValueError: invalid value for parameter.
-        :raises CommunicationError: buzz commands sent too quickly
         :raises NotSupportedByHardwareError: unsupported pitch freq or length.
         """
         if identifier != 0:
@@ -280,6 +189,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
 
         :param identifier: Button identifier to fetch state of.
         :returns: state of the button.
+        :raises CommunicationError: Invalid response received.
         :raises ValueError: invalid button identifier.
         """
         if identifier != 0:
@@ -314,7 +224,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         if identifier != 0:
             raise ValueError(f"Invalid battery sensor identifier {identifier!r}; "
                              f"the only valid identifier is 0.")
-        response = self.request_with_response(f"BATT:V?")
+        response = self.request_with_response("BATT:V?")
         return float(response)
 
     def get_battery_sensor_current(self, identifier: int) -> float:
@@ -328,7 +238,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         if identifier != 0:
             raise ValueError(f"Invalid battery sensor identifier {identifier!r}; "
                              f"the only valid identifier is 0.")
-        response = self.request_with_response(f"BATT:I?")
+        response = self.request_with_response("BATT:I?")
         return float(response)
 
     def get_led_state(self, identifier: int) -> bool:
