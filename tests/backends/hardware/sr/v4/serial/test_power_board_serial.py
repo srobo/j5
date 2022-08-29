@@ -172,17 +172,22 @@ class TestSRV4SerialProtocolPowerBoardHardwareBackend:
         backend = MockPowerSerialBackend("COM0")
         serial = cast(PowerSerial, backend._serial)
         serial.check_data_sent_by_constructor()
-        assert backend.get_power_output_current(0) == 1.2
-        serial.check_sent_data(b"OUT:0:I?\n")
+        assert backend.get_power_output_current(1) == 1.2
+        serial.check_sent_data(b"OUT:1:I?\n")
 
-    def test_get_power_output_current_bad_identifier(self) -> None:
+    @pytest.mark.xfail
+    @pytest.mark.parametrize(
+        "identifier",
+        [-1, 7],
+    )
+    def test_get_power_output_current_bad_identifier(self, identifier: int) -> None:
         """Test that we correctly handle an out of range power output."""
         backend = MockPowerSerialBackend("COM0")
         serial = cast(PowerSerial, backend._serial)
         serial.check_data_sent_by_constructor()
         with pytest.raises(ValueError) as e:
-            backend.get_power_output_current(8)
+            backend.get_power_output_current(identifier)
         serial.check_sent_data(b"")
         assert e.match(
-            "Invalid identifier: 8"
+            f"{identifier} is not a valid power output identifier"
         )
