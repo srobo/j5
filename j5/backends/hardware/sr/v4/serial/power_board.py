@@ -344,7 +344,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
 
         :param identifier: identifier of the LED.
         :param state: desired state of the LED.
-        :raises ValueError: invalid LED identifer.
+        :raises ValueError: invalid LED identifier.
         """
         if identifier > 1:
             raise ValueError(f"Invalid LED identifier {identifier!r}; "
