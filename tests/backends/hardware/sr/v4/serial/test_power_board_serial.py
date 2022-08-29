@@ -1,5 +1,6 @@
 """Test the backend for the SR v4 Power Board serial protocol."""
-from typing import List, Optional, Type, cast
+import re
+from typing import Callable, List, Optional, Type, cast, Match
 
 import pytest
 from serial import Serial
@@ -74,15 +75,33 @@ class PowerSerial(MockSerial):
 
     expected_baudrate = 115200
 
+    def _command(self, data: bytes, regex: str, func: Callable[[Match[bytes]], bytes]) -> None:
+        match = re.match(regex, data.decode("ascii"))
+        if match:
+            response = func(*match.groups())
+            self.append_received_data(response, newline=True)
+
     def respond_to_write(self, data: bytes) -> None:
         """Hook that can be overriden by subclasses to respond to sent data."""
-        if data == b'*IDN?\n':  # Identify Command
-            self.append_received_data(b'Student Robotics:PBv4B:srABC:4.4', newline=True)
-        elif data == b'*RESET\n':
-            self.append_received_data(b'ACK', newline=True)
-        elif data == b'OUT:0:I?\n':
-            self.append_received_data(b'1.2', newline=True)
-        else:
+        self._command(data, r'\*IDN\?\n', lambda: b'Student Robotics:PBv4B:srABC:4.4')
+        self._command(data, r'\*STATUS\?\n', lambda: b'0,0,0,0,0,0,0:20:1')
+        self._command(data, r'\*RESET\n', lambda: b'ACK')
+
+        self._command(data, r'BTN:START:GET\?\n', lambda: b'0:0')
+
+        self._command(data, r'OUT:(\d):SET:(0|1)\n', lambda port, state: b'ACK')
+        self._command(data, r'OUT:(\d):GET\?\n', lambda port: b'1' if port == "0" else b'0')
+        self._command(data, r'OUT:(\d):I\?\n', lambda port: str(int(port) * 1.2).encode("ascii"))
+
+        self._command(data, r'BATT:V\?', lambda: b'12.4')
+        self._command(data, r'BATT:I\?', lambda: b'6.9')
+
+        self._command(data, r'LED:RUN:SET:(0|1|F)', lambda v: b'ACK')
+        self._command(data, r'LED:ERR:SET:(0|1|F)', lambda v: b'ACK')
+
+        self._command(data, r'NOTE:(\d+):(\d+)', lambda pitch, duration: b'ACK')
+
+        if not self._receive_buffer:
             self.append_received_data(b'NACK:Unrecognised command: ' + data, newline=True)
 
     def check_data_sent_by_constructor(self) -> None:
