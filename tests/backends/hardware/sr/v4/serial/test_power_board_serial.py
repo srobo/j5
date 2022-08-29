@@ -140,6 +140,33 @@ class TestSRV4SerialProtocolPowerBoardHardwareBackend:
 
         # TODO: Check Make Safe too
 
+    def test_get_power_output_enabled(self) -> None:
+        """Test that we can fetch whether a power output is enabled."""
+        backend = MockPowerSerialBackend("COM0")
+        serial = cast(PowerSerial, backend._serial)
+        serial.check_data_sent_by_constructor()
+        assert backend.get_power_output_enabled(0)
+        serial.check_sent_data(b"OUT:0:GET?\n")
+        assert not backend.get_power_output_enabled(1)
+        serial.check_sent_data(b"OUT:1:GET?\n")
+
+    @pytest.mark.xfail
+    @pytest.mark.parametrize(
+        "identifier",
+        [-1, 7],
+    )
+    def test_get_power_output_enabled_bad_identifier(self, identifier: int) -> None:
+        """Test that we correctly handle an out of range power output."""
+        backend = MockPowerSerialBackend("COM0")
+        serial = cast(PowerSerial, backend._serial)
+        serial.check_data_sent_by_constructor()
+        with pytest.raises(ValueError) as e:
+            backend.get_power_output_enabled(identifier)
+        serial.check_sent_data(b"")
+        assert e.match(
+            f"{identifier} is not a valid power output identifier"
+        )
+
     def test_get_power_output_current(self) -> None:
         """Test that we can fetch the current of a given power output."""
         backend = MockPowerSerialBackend("COM0")
