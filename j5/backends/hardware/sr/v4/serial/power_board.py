@@ -225,7 +225,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
             raise ValueError(f"Invalid battery sensor identifier {identifier!r}; "
                              f"the only valid identifier is 0.")
         response = self.request_with_response("BATT:V?")
-        return float(response)
+        return float(response) / 1000
 
     def get_battery_sensor_current(self, identifier: int) -> float:
         """
@@ -239,7 +239,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
             raise ValueError(f"Invalid battery sensor identifier {identifier!r}; "
                              f"the only valid identifier is 0.")
         response = self.request_with_response("BATT:I?")
-        return float(response)
+        return float(response) / 1000
 
     def get_led_state(self, identifier: int) -> bool:
         """
