@@ -115,7 +115,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
             elif response == "1":
                 return True
             else:
-                raise CommunicationError(f"Invalid response received: {response}")
+                raise CommunicationError(f"Power Board returned an invalid response: {response}")
         else:
             raise ValueError(f"Invalid identifier: {identifier!r}")
 
@@ -133,7 +133,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
             state = "1" if enabled else "0"
             self.request(f"OUT:{identifier}:SET:{state}")
         else:
-            raise ValueError(f"Invalid identifier: {identifier!r}")
+            raise ValueError(f"{identifier!r} is not a valid power output identifier")
 
     def get_power_output_current(self, identifier: int) -> float:
         """
@@ -145,9 +145,9 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         """
         if identifier in range(6):
             response = self.request_with_response(f"OUT:{identifier}:I?")
-            return float(response)
+            return float(response) / 1000
         else:
-            raise ValueError(f"Invalid identifier: {identifier!r}")
+            raise ValueError(f"{identifier!r} is not a valid power output identifier")
 
     def buzz(
         self,
