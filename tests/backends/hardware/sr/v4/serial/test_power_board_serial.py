@@ -187,7 +187,6 @@ class TestSRV4SerialProtocolPowerBoardHardwareBackend:
         assert not backend.get_power_output_enabled(1)
         serial.check_sent_data(b"OUT:1:GET?\n")
 
-    @pytest.mark.xfail
     def test_get_power_output_enabled_bad_data(self) -> None:
         """Test that we get a CommunicationError on a bad response."""
         backend = MockPowerSerialBackendBadData("COM0")
@@ -219,7 +218,6 @@ class TestSRV4SerialProtocolPowerBoardHardwareBackend:
             backend.set_power_output_enabled(0, True)
         e.match('Power Board returned an error: Unrecognised command')
 
-    @pytest.mark.xfail
     @pytest.mark.parametrize(
         "identifier",
         [-1, 7],
@@ -236,7 +234,6 @@ class TestSRV4SerialProtocolPowerBoardHardwareBackend:
             f"{identifier} is not a valid power output identifier",
         )
 
-    @pytest.mark.xfail
     def test_get_power_output_current(self) -> None:
         """Test that we can fetch the current of a given power output."""
         backend = MockPowerSerialBackend("COM0")
@@ -251,7 +248,6 @@ class TestSRV4SerialProtocolPowerBoardHardwareBackend:
         with pytest.raises(CommunicationError):
             backend.get_power_output_current(0)
 
-    @pytest.mark.xfail
     @pytest.mark.parametrize(
         "identifier",
         [-1, 7],
