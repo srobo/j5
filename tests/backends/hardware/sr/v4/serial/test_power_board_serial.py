@@ -88,10 +88,10 @@ class PowerSerial(MockSerial):
 
         r'OUT:(\d):SET:(0|1)\n': lambda port, state: b'ACK',
         r'OUT:(\d):GET\?\n': lambda port: b'1' if port == "0" else b'0',
-        r'OUT:(\d):I\?\n': lambda port: str(int(port) * 1.2).encode("ascii"),
+        r'OUT:(\d):I\?\n': lambda port: str(int(port) * 1200).encode("ascii"),
 
-        r'BATT:V\?': lambda: b'12.4',
-        r'BATT:I\?': lambda: b'6.9',
+        r'BATT:V\?': lambda: b'1240',
+        r'BATT:I\?': lambda: b'6900',
 
         r'LED:RUN:SET:(0|1|F)': lambda v: b'ACK',
         r'LED:ERR:SET:(0|1|F)': lambda v: b'ACK',
@@ -236,6 +236,7 @@ class TestSRV4SerialProtocolPowerBoardHardwareBackend:
             f"{identifier} is not a valid power output identifier",
         )
 
+    @pytest.mark.xfail
     def test_get_power_output_current(self) -> None:
         """Test that we can fetch the current of a given power output."""
         backend = MockPowerSerialBackend("COM0")
@@ -266,3 +267,20 @@ class TestSRV4SerialProtocolPowerBoardHardwareBackend:
         assert e.match(
             f"{identifier} is not a valid power output identifier",
         )
+
+    # TODO: Buzzer tests, awaiting info on bounds
+
+    def test_get_button_state(self) -> None:
+        """Test that we can get the button state."""
+        backend = MockPowerSerialBackend("COM0")
+        serial = cast(PowerSerial, backend._serial)
+        serial.check_data_sent_by_constructor()
+        assert not backend.get_button_state(0)
+        serial.check_sent_data(b"BTN:START:GET?\n")
+
+    def test_get_button_state_bad_identifier(self) -> None:
+        """Test that we check the button identifier."""
+        backend = MockPowerSerialBackend("COM0")
+        with pytest.raises(ValueError) as e:
+            backend.get_button_state(1)
+        assert e.match("Invalid button identifier 1; the only valid identifier is 0.")
