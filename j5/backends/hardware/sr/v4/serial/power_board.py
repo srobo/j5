@@ -172,12 +172,18 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
                              f"the only valid identifier is 0.")
 
         duration_ms = round(duration / timedelta(milliseconds=1))
-        if duration_ms > 65535:
-            raise NotSupportedByHardwareError("Maximum piezo duration is 65535ms.")
+        max_duration = (2 ** 32) - 1  # int32 max
+        if duration_ms > max_duration:
+            raise NotSupportedByHardwareError(
+                f"Maximum piezo duration is {max_duration}ms.")
+        if duration_ms < 0:
+            raise ValueError("Duration must be positive.")
 
         frequency_int = int(round(frequency))
-        if frequency_int > 65535:
-            raise NotSupportedByHardwareError("Maximum piezo frequency is 65535Hz.")
+        if frequency_int > 10000:
+            raise NotSupportedByHardwareError("Maximum piezo frequency is 10kHz.")
+        if frequency_int < 0:
+            raise ValueError("Frequency must be positive.")
 
         self.request(f"NOTE:{frequency_int}:{duration_ms}")
 
