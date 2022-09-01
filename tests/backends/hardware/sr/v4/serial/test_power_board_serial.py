@@ -1,5 +1,6 @@
 """Test the backend for the SR v4 Power Board serial protocol."""
 import re
+from datetime import timedelta
 from typing import List, Optional, Type, cast
 
 import pytest
@@ -7,7 +8,10 @@ from serial import Serial
 from serial.tools.list_ports_common import ListPortInfo
 
 from j5.backends.backend import CommunicationError
-from j5.backends.hardware import DeviceMissingSerialNumberError
+from j5.backends.hardware import (
+    DeviceMissingSerialNumberError,
+    NotSupportedByHardwareError,
+)
 from j5.backends.hardware.sr.v4.serial import (
     SRV4SerialProtocolPowerBoardHardwareBackend,
 )
@@ -264,7 +268,57 @@ class TestSRV4SerialProtocolPowerBoardHardwareBackend:
             f"{identifier} is not a valid power output identifier",
         )
 
-    # TODO: Buzzer tests, awaiting info on bounds
+    def test_buzz(self) -> None:
+        """Test that we correctly handle buzzing the piezo."""
+        backend = MockPowerSerialBackend("COM0")
+        serial = cast(PowerSerial, backend._serial)
+        serial.check_data_sent_by_constructor()
+        backend.buzz(0, timedelta(milliseconds=500), 440, False)
+        serial.check_sent_data(b"NOTE:440:500\n")
+
+    def test_buzz_bad_duration(self) -> None:
+        """Test that we correctly handle upper duration limit."""
+        backend = MockPowerSerialBackend("COM0")
+        serial = cast(PowerSerial, backend._serial)
+        serial.check_data_sent_by_constructor()
+        with pytest.raises(NotSupportedByHardwareError) as e:
+            backend.buzz(0, timedelta(milliseconds=2 ** 32), 440, False)
+        assert e.match(
+            f"Maximum piezo duration is {(2 ** 32) - 1}ms.",
+        )
+
+    def test_buzz_invalid_duration(self) -> None:
+        """Test that we correctly handle lower duration limit."""
+        backend = MockPowerSerialBackend("COM0")
+        serial = cast(PowerSerial, backend._serial)
+        serial.check_data_sent_by_constructor()
+        with pytest.raises(ValueError) as e:
+            backend.buzz(0, timedelta(milliseconds=-1), 440, False)
+        assert e.match(
+            "Duration must be positive.",
+        )
+
+    def test_buzz_bad_frequency(self) -> None:
+        """Test that we correctly handle upper frequency limit."""
+        backend = MockPowerSerialBackend("COM0")
+        serial = cast(PowerSerial, backend._serial)
+        serial.check_data_sent_by_constructor()
+        with pytest.raises(NotSupportedByHardwareError) as e:
+            backend.buzz(0, timedelta(milliseconds=500), 10001, False)
+        assert e.match(
+            "Maximum piezo frequency is 10kHz.",
+        )
+
+    def test_buzz_invalid_frequency(self) -> None:
+        """Test that we correctly handle lower frequency limit."""
+        backend = MockPowerSerialBackend("COM0")
+        serial = cast(PowerSerial, backend._serial)
+        serial.check_data_sent_by_constructor()
+        with pytest.raises(ValueError) as e:
+            backend.buzz(0, timedelta(milliseconds=500), -1, False)
+        assert e.match(
+            "Frequency must be positive.",
+        )
 
     def test_get_button_state(self) -> None:
         """Test that we can get the button state."""
