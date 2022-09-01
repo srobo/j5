@@ -115,9 +115,10 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
             elif response == "1":
                 return True
             else:
-                raise CommunicationError(f"Power Board returned an invalid response: {response}")
+                raise CommunicationError(
+                    f"Power Board returned an invalid response: {response}")
         else:
-            raise ValueError(f"Invalid identifier: {identifier!r}")
+            raise ValueError(f"{identifier!r} is not a valid power output identifier")
 
     def set_power_output_enabled(
         self, identifier: int, enabled: bool,
