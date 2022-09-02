@@ -30,7 +30,7 @@ class SRV4SerialProtocolBackend(SerialHardwareBackend, ABC):
         :raises CommunicationError: Response did not match the expected format.
         :returns: A tuple of board identity information
         """
-        response = self.request("*IDN?")
+        response = self.query("*IDN?")
         if response is None:
             raise CommunicationError("Power board responded with ACK but expected data.")
         parts = response.split(":", 4)
@@ -107,22 +107,19 @@ class SRV4SerialProtocolBackend(SerialHardwareBackend, ABC):
             raise CommunicationError("Expected ACK from Power Board,"
                                      f"but got: {response}")
 
-    def request_with_response(self, command: str) -> str:
+    def query(self, command: str) -> str:
         """
-        Sends a request to the board and returns its response as a string.
+        Sends a query to the board and returns its response as a string.
 
         This method expects a response with additional data
         and will raise an exception if only an ACK is received.
 
-        :param command: The command to be sent as part of the request.
+        Query commands end with '?'.
+
+        :param command: The command to be sent as part of the query.
         :returns: Response.
-        :raises ValueError: The command doesn't return a response.
         :raises CommunicationError: Failed to send request or only ACK is returned.
         """
-        if not command.endswith('?'):
-            raise ValueError(
-                f"The provided command does not expect a response: {command}")
-
         response = self.request(command)
         if response is not None:
             return response

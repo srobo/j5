@@ -35,7 +35,7 @@ def is_power_board(port: ListPortInfo) -> bool:
     :param port: ListPortInfo object.
     :returns: True if object represents a power board.
     """
-    return port.manufacturer == "Student Robotics" and port.product == "PBV4B" \
+    return port.manufacturer == "Student Robotics" and port.product == "Power Board v4" \
         and port.vid == 0x1bda and port.pid == 0x0010
 
 
@@ -109,7 +109,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         :raises ValueError: Invalid power output identifier.
         """
         if identifier in range(6):
-            response = self.request_with_response(f"OUT:{identifier}:GET?")
+            response = self.query(f"OUT:{identifier}:GET?")
             if response == "0":
                 return False
             elif response == "1":
@@ -145,7 +145,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         :raises ValueError: Invalid power output identifier.
         """
         if identifier in range(6):
-            response = self.request_with_response(f"OUT:{identifier}:I?")
+            response = self.query(f"OUT:{identifier}:I?")
             return float(response) / 1000
         else:
             raise ValueError(f"{identifier!r} is not a valid power output identifier")
@@ -171,8 +171,8 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
             raise ValueError(f"Invalid piezo identifier {identifier!r}; "
                              f"the only valid identifier is 0.")
 
-        duration_ms = round(duration / timedelta(milliseconds=1))
-        max_duration = (2 ** 32) - 1  # int32 max
+        duration_ms = round(duration.total_seconds() * 1000)
+        max_duration = (2 ** 31) - 1  # int32 max
         if duration_ms > max_duration:
             raise NotSupportedByHardwareError(
                 f"Maximum piezo duration is {max_duration}ms.")
@@ -202,7 +202,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         if identifier != 0:
             raise ValueError(f"Invalid button identifier {identifier!r}; "
                              f"the only valid identifier is 0.")
-        response = self.request_with_response("BTN:START:GET?")
+        response = self.query("BTN:START:GET?")
         internal_button, external_button = response.split(":", 1)
         if internal_button == "1" or external_button == "1":
             return True
@@ -217,6 +217,9 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
 
         :param identifier: Button identifier to wait for.
         """
+        # The start button's state is latched.
+        # Meaning that we need to fetch it once beforehand to discard the last response.
+        self.get_button_state(0)
         while not self.get_button_state(0):
             sleep(0.05)
 
@@ -231,7 +234,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         if identifier != 0:
             raise ValueError(f"Invalid battery sensor identifier {identifier!r}; "
                              f"the only valid identifier is 0.")
-        response = self.request_with_response("BATT:V?")
+        response = self.query("BATT:V?")
         return float(response) / 1000
 
     def get_battery_sensor_current(self, identifier: int) -> float:
@@ -245,7 +248,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         if identifier != 0:
             raise ValueError(f"Invalid battery sensor identifier {identifier!r}; "
                              f"the only valid identifier is 0.")
-        response = self.request_with_response("BATT:I?")
+        response = self.query("BATT:I?")
         return float(response) / 1000
 
     def get_led_state(self, identifier: int) -> bool:
