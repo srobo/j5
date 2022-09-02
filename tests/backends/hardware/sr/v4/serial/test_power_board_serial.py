@@ -29,7 +29,7 @@ class MockListPortInfo:
             vid: int = 0x1bda,
             pid: int = 0x0010,
             manufacturer: str = "Student Robotics",
-            product: str = "PBV4B",
+            product: str = "Power Board v4",
     ) -> None:
         self.device = device
         self.serial_number = serial_number
@@ -131,7 +131,7 @@ class MockPowerSerialBackendAlwaysNACK(SRV4SerialProtocolPowerBoardHardwareBacke
             """A serial port that always returns NACK."""
 
             commands = {
-                r'\*IDN\?\n': lambda: b'Student Robotics:PBv4B:srABC:4.4',
+                r'\*IDN\?\n': lambda: b'Student Robotics:Power Board v4:srABC:4.4',
                 r'\*STATUS\?\n': lambda: b'0,0,0,0,0,0,0:20:1',
                 r'\*RESET\n': lambda: b'ACK',
             }
@@ -282,9 +282,9 @@ class TestSRV4SerialProtocolPowerBoardHardwareBackend:
         serial = cast(PowerSerial, backend._serial)
         serial.check_data_sent_by_constructor()
         with pytest.raises(NotSupportedByHardwareError) as e:
-            backend.buzz(0, timedelta(milliseconds=2 ** 32), 440, False)
+            backend.buzz(0, timedelta(milliseconds=2 ** 31), 440, False)
         assert e.match(
-            f"Maximum piezo duration is {(2 ** 32) - 1}ms.",
+            f"Maximum piezo duration is {(2 ** 31) - 1}ms.",
         )
 
     def test_buzz_invalid_duration(self) -> None:
