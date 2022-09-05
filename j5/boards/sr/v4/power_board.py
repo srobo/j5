@@ -39,12 +39,19 @@ class PowerOutputPosition(Enum):
     L1 = 3
     L2 = 4
     L3 = 5
+    FIVE_VOLT = 6
 
 
 class PowerBoard(Board):
     """Student Robotics v4 Power Board."""
 
     name: str = "Student Robotics v4 Power Board"
+
+    class AvailableFeatures(Board.AvailableFeatures):
+        """Features available on the board."""
+
+        BRAIN_OUTPUT = "brain_output"  # Brain is powered from L2
+        REG_5V_CONTROL = "5v_control"  # 5V output is controllable
 
     def __init__(self, serial: str, backend: Backend):
         self._serial = serial
@@ -55,7 +62,7 @@ class PowerBoard(Board):
                 output.value, cast("PowerOutputInterface", self._backend),
             )
             for output in PowerOutputPosition
-            # Note that in Python 3, Enums are ordered.
+            if self._output_is_controllable(self.features, output)
         }
 
         self._output_group = PowerOutputGroup(self._outputs)
@@ -68,6 +75,28 @@ class PowerBoard(Board):
 
         self._run_led = LED(0, cast("LEDInterface", self._backend))
         self._error_led = LED(1, cast("LEDInterface", self._backend))
+
+    @staticmethod
+    def _output_is_controllable(
+        features: Set['Board.AvailableFeatures'],
+        output: PowerOutputPosition,
+    ) -> bool:
+        """
+        Determine whether we should be controlling an output.
+
+        :param features: The features available on the backend.
+        :param output: The output to check
+        :returns: True if we can control the output.
+        """
+        if PowerBoard.AvailableFeatures.BRAIN_OUTPUT in features and \
+           output is PowerOutputPosition.L2:
+            return False
+
+        if PowerBoard.AvailableFeatures.REG_5V_CONTROL not in features and \
+           output is PowerOutputPosition.FIVE_VOLT:
+            return False
+
+        return True
 
     @property
     def serial_number(self) -> str:

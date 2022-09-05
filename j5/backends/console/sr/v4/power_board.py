@@ -43,6 +43,7 @@ class SRV4PowerBoardConsoleBackend(
         self._output_states: Dict[int, bool] = {
             output.value: False
             for output in PowerOutputPosition
+            if output is not PowerOutputPosition.FIVE_VOLT
         }
         self._led_states: Dict[int, bool] = {
             i: False
