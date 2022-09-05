@@ -284,7 +284,7 @@ class TestSRV4SerialProtocolPowerBoardHardwareBackend:
         with pytest.raises(NotSupportedByHardwareError) as e:
             backend.buzz(0, timedelta(milliseconds=2 ** 31), 440, False)
         assert e.match(
-            f"Maximum piezo duration is {(2 ** 31) - 1}ms.",
+            "Piezo duration must be in range of 0 - 2147483647ms",
         )
 
     def test_buzz_invalid_duration(self) -> None:
@@ -292,10 +292,10 @@ class TestSRV4SerialProtocolPowerBoardHardwareBackend:
         backend = MockPowerSerialBackend("COM0")
         serial = cast(PowerSerial, backend._serial)
         serial.check_data_sent_by_constructor()
-        with pytest.raises(ValueError) as e:
+        with pytest.raises(NotSupportedByHardwareError) as e:
             backend.buzz(0, timedelta(milliseconds=-1), 440, False)
         assert e.match(
-            "Duration must be positive.",
+            "Piezo duration must be in range of 0 - 2147483647ms.",
         )
 
     def test_buzz_bad_frequency(self) -> None:
@@ -306,7 +306,7 @@ class TestSRV4SerialProtocolPowerBoardHardwareBackend:
         with pytest.raises(NotSupportedByHardwareError) as e:
             backend.buzz(0, timedelta(milliseconds=500), 10001, False)
         assert e.match(
-            "Maximum piezo frequency is 10kHz.",
+            "Piezo frequency must be in range of 0 - 10kHz.",
         )
 
     def test_buzz_invalid_frequency(self) -> None:
@@ -314,10 +314,10 @@ class TestSRV4SerialProtocolPowerBoardHardwareBackend:
         backend = MockPowerSerialBackend("COM0")
         serial = cast(PowerSerial, backend._serial)
         serial.check_data_sent_by_constructor()
-        with pytest.raises(ValueError) as e:
+        with pytest.raises(NotSupportedByHardwareError) as e:
             backend.buzz(0, timedelta(milliseconds=500), -1, False)
         assert e.match(
-            "Frequency must be positive.",
+            "Piezo frequency must be in range of 0 - 10kHz.",
         )
 
     def test_get_button_state(self) -> None:
