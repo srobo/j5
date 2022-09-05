@@ -19,6 +19,14 @@ class BoardIdentity(NamedTuple):
     software_version: str
 
 
+class BoardVersion(NamedTuple):
+    """The version returned from a board."""
+
+    hw_ver: int
+    fw_major: int
+    fw_minor: int = 0
+
+
 class SRV4SerialProtocolBackend(SerialHardwareBackend, ABC):
     """Backend for a Student Robotics v4 board using the serial protocol."""
 
@@ -59,32 +67,50 @@ class SRV4SerialProtocolBackend(SerialHardwareBackend, ABC):
         identity = self.get_identity()
         return identity.software_version
 
+    @staticmethod
+    def _parse_version_string(version: str) -> BoardVersion:
+        """
+        Parse the version string.
+
+        If the minor version is not present, it is assumed to be 0.
+
+        :param version: The version string.
+        :returns: A parsed version string.
+        :raises ValueError: The version string was not valid.
+        """
+        match = re.match(r"^(\d+)\.(\d+)(?:\.(\d+))?$", version)
+        if not match:
+            raise ValueError(f"Version does not match format: {version}")
+
+        version_parts = (int(x) for x in match.groups(0))
+        return BoardVersion(*version_parts)
+
     def _check_firmware_version_supported(
         self,
-        version: str,
+        version_string: str,
         minimum_fw_version: int = 4,
     ) -> None:
         """
         Raises an exception if the firmware version is not supported.
 
-        :param version: the firmware version string to check.
+        :param version_string: the firmware version string to check.
         :param minimum_fw_version: the lowest supported major firmware version
         :raises CommunicationError: the board is running unsupported firmware
         """
-        match = re.match(r"^(\d+)\.(\d+)$", version)
-        if not match:
-            raise CommunicationError(f"Unable to parse version number: {version}")
+        try:
+            version = self._parse_version_string(version_string)
+        except ValueError as e:
+            raise CommunicationError(f"Unable to parse version number: {version}") from e
 
-        hw_ver, fw_major_ver = match.groups()
-        if hw_ver != "4":
+        if version.hw_ver != 4:
             raise CommunicationError(
-                f"Expected hardware version number to be 4, got {hw_ver}",
+                f"Expected hardware version number to be 4, got {version.hw_ver}",
             )
 
-        if int(fw_major_ver) < minimum_fw_version:
+        if version.fw_major < minimum_fw_version:
             raise CommunicationError(
                 f"Expected major version number of at least {minimum_fw_version},"
-                f" got {fw_major_ver}",
+                f" got {version.fw_major}",
             )
 
     def request(self, command: str) -> Optional[str]:
