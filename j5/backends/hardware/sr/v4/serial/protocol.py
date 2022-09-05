@@ -62,29 +62,29 @@ class SRV4SerialProtocolBackend(SerialHardwareBackend, ABC):
     def _check_firmware_version_supported(
         self,
         version: str,
-        minimum_minor_version: int = 4,
+        minimum_fw_version: int = 4,
     ) -> None:
         """
         Raises an exception if the firmware version is not supported.
 
         :param version: the firmware version string to check.
-        :param minimum_minor_version: the lowest supported minor firmware version
+        :param minimum_fw_version: the lowest supported major firmware version
         :raises CommunicationError: the board is running unsupported firmware
         """
         match = re.match(r"^(\d+)\.(\d+)$", version)
         if not match:
             raise CommunicationError(f"Unable to parse version number: {version}")
 
-        major, minor = match.groups()
-        if major != "4":
+        hw_ver, fw_major_ver = match.groups()
+        if hw_ver != "4":
             raise CommunicationError(
-                f"Expected major version number to be 4, got {major}",
+                f"Expected hardware version number to be 4, got {hw_ver}",
             )
 
-        if int(minor) < minimum_minor_version:
+        if int(fw_major_ver) < minimum_fw_version:
             raise CommunicationError(
-                f"Expected minor version number of at least {minimum_minor_version},"
-                f" got {minor}",
+                f"Expected major version number of at least {minimum_fw_version},"
+                f" got {fw_major_ver}",
             )
 
     def request(self, command: str) -> Optional[str]:
