@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Optional, Set
 import pytest
 
 from j5.backends import Backend
+from j5.boards import Board
 from j5.boards.sr.v4 import PowerBoard, PowerOutputGroup, PowerOutputPosition
 from j5.components import (
     LED,
@@ -91,6 +92,14 @@ class MockPowerBoardBackend(
         pass
 
 
+class MockPowerBoardBackendWith5V(MockPowerBoardBackend):
+    """A mock power board backend with toggleable 5V output."""
+
+    def get_features(self) -> Set['Board.AvailableFeatures']:
+        """The set of features available on this backend."""
+        return {PowerBoard.AvailableFeatures.REG_5V_CONTROL}
+
+
 def test_power_board_instantiation() -> None:
     """Test that we can instantiate a PowerBoard."""
     PowerBoard("SERIAL0", MockPowerBoardBackend())
@@ -99,6 +108,18 @@ def test_power_board_instantiation() -> None:
 def test_power_board_discover() -> None:
     """Test that we can discover PowerBoards."""
     assert MockPowerBoardBackend.discover() == set()
+
+
+def test_power_board_features() -> None:
+    """Test that we can get the features on the power board."""
+    pb = PowerBoard("SERIAL0", MockPowerBoardBackend())
+    assert len(pb.features) == 0
+
+
+def test_power_board_features_one() -> None:
+    """Test that we can get the features on the power board."""
+    pb = PowerBoard("SERIAL0", MockPowerBoardBackendWith5V())
+    assert pb.features == {PowerBoard.AvailableFeatures.REG_5V_CONTROL}
 
 
 def test_power_board_name() -> None:
@@ -195,3 +216,45 @@ def test_output_mutability() -> None:
 
     with pytest.raises(TypeError):
         pb.outputs[PowerOutputPosition.L0] = True  # type: ignore
+
+
+class TestOutputIsControllable:
+    """Test the _output_is_controllable function."""
+
+    @pytest.mark.parametrize(
+        "features,expected_outputs",
+        [
+            pytest.param(
+                set(), {0, 1, 2, 3, 4, 5}, id="no-features",
+            ),
+            pytest.param(
+                {PowerBoard.AvailableFeatures.REG_5V_CONTROL},
+                {0, 1, 2, 3, 4, 5, 6},
+                id="5v",
+            ),
+            pytest.param(
+                {PowerBoard.AvailableFeatures.BRAIN_OUTPUT},
+                {0, 1, 2, 3, 5},
+                id="brain",
+            ),
+            pytest.param(
+                {
+                    PowerBoard.AvailableFeatures.BRAIN_OUTPUT,
+                    PowerBoard.AvailableFeatures.REG_5V_CONTROL,
+                },
+                {0, 1, 2, 3, 5, 6},
+                id="brain-and-5v",
+            ),
+        ],
+    )
+    def test_output_controllable(
+        self,
+        features: Set[Board.AvailableFeatures],
+        expected_outputs: Set[int],
+    ) -> None:
+        """Test the available outputs when the board has no features."""
+        outputs = {
+            output.value for output in PowerOutputPosition
+            if PowerBoard._output_is_controllable(features, output)
+        }
+        assert outputs == expected_outputs
