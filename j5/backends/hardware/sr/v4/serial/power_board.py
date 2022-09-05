@@ -179,13 +179,13 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
 
         duration_ms = round(duration.total_seconds() * 1000)
 
-        if duration_ms not in range(MAX_BUZZ_DURATION_MS + 1):
+        if not 0 < duration_ms < MAX_BUZZ_DURATION_MS:
             raise NotSupportedByHardwareError(
                 f"Piezo duration must be in range of 0 - {MAX_BUZZ_DURATION_MS}ms.",
             )
 
         frequency_int = int(round(frequency))
-        if frequency_int not in range(10_001):
+        if not 0 < frequency_int < 10_000:
             raise NotSupportedByHardwareError(
                 "Piezo frequency must be in range of 0 - 10kHz.",
             )
