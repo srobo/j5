@@ -134,3 +134,11 @@ class Backend(metaclass=BackendMeta):
     def firmware_version(self) -> Optional[str]:
         """The firmware version of the board."""
         raise NotImplementedError  # pragma: no cover
+
+    def get_features(self) -> Set['Board.AvailableFeatures']:
+        """
+        The set of features available on this backend.
+
+        :returns: The set of features available on this backend.
+        """
+        return set()
