@@ -15,7 +15,7 @@ def test_backend_initialisation() -> None:
     backend = SRV4PowerBoardConsoleBackend("Test")
     assert type(backend) is SRV4PowerBoardConsoleBackend
 
-    assert len(backend._output_states) == 6
+    assert len(backend._output_states) == 7  # 6 outputs + 5V
     assert not any(backend._output_states.values())  # Check initially all false.
 
     assert len(backend._led_states) == 2
@@ -51,11 +51,11 @@ def test_backend_get_power_output_enabled() -> None:
     """Test that we can read the enable status of a PowerOutput."""
     backend = SRV4PowerBoardConsoleBackend("TestBoard")
 
-    for i in range(0, 6):
+    for i in range(0, 7):
         assert not backend.get_power_output_enabled(i)
 
     with pytest.raises(ValueError):
-        backend.get_power_output_enabled(6)
+        backend.get_power_output_enabled(7)
 
 
 def test_backend_set_power_output_enabled() -> None:
@@ -65,13 +65,13 @@ def test_backend_set_power_output_enabled() -> None:
         console_class=MockConsole,
     )
 
-    for i in range(0, 6):
+    for i in range(0, 7):
         backend._console.expects = f"Setting output {i} to True"  # type: ignore
         backend.set_power_output_enabled(i, True)
 
     with pytest.raises(ValueError):
-        backend._console.expects = "Setting output 6 to True"  # type: ignore
-        backend.set_power_output_enabled(6, True)
+        backend._console.expects = "Setting output 7 to True"  # type: ignore
+        backend.set_power_output_enabled(7, True)
 
 
 def test_backend_get_power_output_current() -> None:
@@ -81,12 +81,12 @@ def test_backend_get_power_output_current() -> None:
         console_class=MockConsole,
     )
 
-    for i in range(0, 6):
+    for i in range(0, 7):
         backend._console.next_input = "1.2"  # type: ignore
         assert 1.2 == backend.get_power_output_current(i)
 
     with pytest.raises(ValueError):
-        backend.get_power_output_current(6)
+        backend.get_power_output_current(7)
 
 
 def test_backend_piezo_buzz() -> None:

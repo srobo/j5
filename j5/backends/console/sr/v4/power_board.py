@@ -43,7 +43,6 @@ class SRV4PowerBoardConsoleBackend(
         self._output_states: Dict[int, bool] = {
             output.value: False
             for output in PowerOutputPosition
-            if output is not PowerOutputPosition.FIVE_VOLT
         }
         self._led_states: Dict[int, bool] = {
             i: False
@@ -52,6 +51,14 @@ class SRV4PowerBoardConsoleBackend(
 
         # Setup console helper
         self._console = console_class(f"{self.board.__name__}({self._serial})")
+
+    def get_features(self) -> Set['Board.AvailableFeatures']:
+        """
+        The set of features available on this backend.
+
+        :returns: The set of features available on this backend.
+        """
+        return {PowerBoard.AvailableFeatures.REG_5V_CONTROL}
 
     @property
     def firmware_version(self) -> Optional[str]:
