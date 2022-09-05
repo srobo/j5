@@ -94,7 +94,7 @@ class PowerSerial(MockSerial):
         r'OUT:(\d):GET\?\n': lambda port: b'1' if port == "0" else b'0',
         r'OUT:(\d):I\?\n': lambda port: str(int(port) * 1200).encode("ascii"),
 
-        r'BATT:V\?': lambda: b'1240',
+        r'BATT:V\?': lambda: b'12400',
         r'BATT:I\?': lambda: b'6900',
 
         r'LED:RUN:SET:(0|1|F)': lambda v: b'ACK',
@@ -151,6 +151,7 @@ class MockPowerSerialBackendBadData(SRV4SerialProtocolPowerBoardHardwareBackend)
                 r'\*STATUS\?\n': lambda: b'0,0,0,0,0,0,0:20:1',
                 r'\*RESET\n': lambda: b'ACK',
                 r'OUT:(\d):GET\?\n': lambda port: b'67',
+                r'BTN:START:GET\?\n': lambda: b'54',
             }
         return PowerSerialBadData  # type: ignore
 
@@ -198,6 +199,14 @@ class TestSRV4SerialProtocolPowerBoardHardwareBackend:
             backend.get_power_output_enabled(0)
         e.match('Power Board returned an invalid response: 67')
 
+    @pytest.mark.parametrize("identifier", [-1, 6, 7])
+    def test_get_power_output_enabled_bad_identifier(self, identifier: int) -> None:
+        """Test that we get a CommunicationError on a bad response."""
+        backend = MockPowerSerialBackendBadData("COM0")
+        with pytest.raises(ValueError) as e:
+            backend.get_power_output_enabled(identifier)
+        e.match(f"{identifier} is not a valid power output identifier")
+
     def test_get_power_output_enabled_nack(self) -> None:
         """Test that we get a CommunicationError on NACK."""
         backend = MockPowerSerialBackendAlwaysNACK("COM0")
@@ -224,7 +233,7 @@ class TestSRV4SerialProtocolPowerBoardHardwareBackend:
 
     @pytest.mark.parametrize(
         "identifier",
-        [-1, 7],
+        [-1, 6, 7],
     )
     def test_set_power_output_enabled_bad_identifier(self, identifier: int) -> None:
         """Test that we correctly handle an out of range power output."""
@@ -254,7 +263,7 @@ class TestSRV4SerialProtocolPowerBoardHardwareBackend:
 
     @pytest.mark.parametrize(
         "identifier",
-        [-1, 7],
+        [-1, 6, 7],
     )
     def test_get_power_output_current_bad_identifier(self, identifier: int) -> None:
         """Test that we correctly handle an out of range power output."""
@@ -320,6 +329,22 @@ class TestSRV4SerialProtocolPowerBoardHardwareBackend:
             "Piezo frequency must be in range of 0 - 10kHz.",
         )
 
+    def test_buzz_bad_identifier(self) -> None:
+        """Test that we get a ValueError if the buzzer ID is not 0."""
+        backend = MockPowerSerialBackend("COM0")
+        with pytest.raises(ValueError) as e:
+            backend.buzz(1, timedelta(milliseconds=500), 1, False)
+        assert e.match(
+            "Invalid piezo identifier 1; the only valid identifier is 0.",
+        )
+
+    def test_buzz_nack(self) -> None:
+        """Test that we get a communicationerror on NACK."""
+        backend = MockPowerSerialBackendAlwaysNACK("COM0")
+        with pytest.raises(CommunicationError) as e:
+            backend.buzz(0, timedelta(milliseconds=500), 1, False)
+        e.match('Power Board returned an error: Unrecognised command')
+
     def test_get_button_state(self) -> None:
         """Test that we can get the button state."""
         backend = MockPowerSerialBackend("COM0")
@@ -334,3 +359,113 @@ class TestSRV4SerialProtocolPowerBoardHardwareBackend:
         with pytest.raises(ValueError) as e:
             backend.get_button_state(1)
         assert e.match("Invalid button identifier 1; the only valid identifier is 0.")
+
+    def test_get_button_state_nack(self) -> None:
+        """Test that we get a communication error on NACK."""
+        backend = MockPowerSerialBackendAlwaysNACK("COM0")
+        with pytest.raises(CommunicationError) as e:
+            backend.get_button_state(0)
+        e.match('Power Board returned an error: Unrecognised command')
+
+    def test_get_button_state_bad_data(self) -> None:
+        """Test that we get a CommunicationError on a bad response."""
+        backend = MockPowerSerialBackendBadData("COM0")
+        with pytest.raises(CommunicationError) as e:
+            backend.get_button_state(0)
+        e.match('Power Board returned an invalid response: 54')
+
+    def test_get_battery_sensor_voltage(self) -> None:
+        """Test that we can fetch the battery sensor voltage."""
+        backend = MockPowerSerialBackend("COM0")
+        serial = cast(PowerSerial, backend._serial)
+        serial.check_data_sent_by_constructor()
+        assert backend.get_battery_sensor_voltage(0) == 12.4
+        serial.check_sent_data(b"BATT:V?\n")
+
+    def test_get_battery_sensor_voltage_bad_nack(self) -> None:
+        """Test that we get a communication error on NACK."""
+        backend = MockPowerSerialBackendAlwaysNACK("COM0")
+        with pytest.raises(CommunicationError) as e:
+            backend.get_battery_sensor_voltage(0)
+        e.match('Power Board returned an error: Unrecognised command')
+
+    def test_get_battery_sensor_voltage_bad_identifier(self) -> None:
+        """Test that we handle a bad battery sensor identifier."""
+        backend = MockPowerSerialBackend("COM0")
+        with pytest.raises(ValueError) as e:
+            backend.get_battery_sensor_voltage(1)
+        assert e.match(
+            "Invalid battery sensor identifier 1; the only valid identifier is 0.",
+        )
+
+    def test_get_battery_sensor_current(self) -> None:
+        """Test that we can fetch the battery sensor current."""
+        backend = MockPowerSerialBackend("COM0")
+        serial = cast(PowerSerial, backend._serial)
+        serial.check_data_sent_by_constructor()
+        assert backend.get_battery_sensor_current(0) == 6.9
+        serial.check_sent_data(b"BATT:I?\n")
+
+    def test_get_battery_sensor_current_bad_nack(self) -> None:
+        """Test that we get a communication error on NACK."""
+        backend = MockPowerSerialBackendAlwaysNACK("COM0")
+        with pytest.raises(CommunicationError) as e:
+            backend.get_battery_sensor_current(0)
+        e.match('Power Board returned an error: Unrecognised command')
+
+    def test_get_battery_sensor_current_bad_identifier(self) -> None:
+        """Test that we handle a bad battery sensor identifier."""
+        backend = MockPowerSerialBackend("COM0")
+        with pytest.raises(ValueError) as e:
+            backend.get_battery_sensor_current(1)
+        assert e.match(
+            "Invalid battery sensor identifier 1; the only valid identifier is 0.",
+        )
+
+    @pytest.mark.parametrize("identifier", [0, 1])
+    def test_get_led_state_initial(self, identifier: int) -> None:
+        """Test that all LEDs are off initially."""
+        backend = MockPowerSerialBackend("COM0")
+        assert not backend.get_led_state(identifier)
+
+    def test_get_led_state(self) -> None:
+        """Test that we can fetch the LED state."""
+        backend = MockPowerSerialBackend("COM0")
+        assert not backend.get_led_state(0)
+
+        backend._led_states[0] = True
+        assert backend.get_led_state(0)
+
+    def test_get_led_state_bad_identifier(self) -> None:
+        """Test that we can fetch the LED state."""
+        backend = MockPowerSerialBackend("COM0")
+        with pytest.raises(ValueError) as e:
+            backend.get_led_state(12)
+        assert e.match(
+            "Invalid LED identifier 12; the only valid identifiers are 0 and 1.",
+        )
+
+    def test_set_led_state_run(self) -> None:
+        """Test that we can set the RUN LED state."""
+        backend = MockPowerSerialBackend("COM0")
+        serial = cast(PowerSerial, backend._serial)
+        serial.check_data_sent_by_constructor()
+        backend.set_led_state(0, True)
+        serial.check_sent_data(b"LED:RUN:SET:1\n")
+
+    def test_set_led_state_err(self) -> None:
+        """Test that we can set the RUN LED state."""
+        backend = MockPowerSerialBackend("COM0")
+        serial = cast(PowerSerial, backend._serial)
+        serial.check_data_sent_by_constructor()
+        backend.set_led_state(1, True)
+        serial.check_sent_data(b"LED:ERR:SET:1\n")
+
+    def test_set_led_state_bad_identifier(self) -> None:
+        """Test that we can fetch the LED state."""
+        backend = MockPowerSerialBackend("COM0")
+        with pytest.raises(ValueError) as e:
+            backend.set_led_state(12, False)
+        assert e.match(
+            "Invalid LED identifier 12; the only valid identifiers are 0 and 1.",
+        )

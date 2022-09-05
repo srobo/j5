@@ -208,13 +208,20 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
             raise ValueError(f"Invalid button identifier {identifier!r}; "
                              f"the only valid identifier is 0.")
         response = self.query("BTN:START:GET?")
+        if ":" not in response:
+            raise CommunicationError(
+                f"Power Board returned an invalid response: {response}",
+            )
+
         internal_button, external_button = response.split(":", 1)
         if internal_button == "1" or external_button == "1":
             return True
         elif internal_button == "0" or external_button == "0":
             return False
         else:
-            raise CommunicationError(f"Invalid response received: {response}")
+            raise CommunicationError(
+                f"Power Board returned an invalid response: {response}",
+            )
 
     def wait_until_button_pressed(self, identifier: int) -> None:
         """
@@ -261,8 +268,14 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         Get the state of an LED.
 
         :param identifier: identifier of the LED.
+        :raises ValueError: invalid LED identifier.
         :returns: current state of the LED.
         """
+        if identifier not in (0, 1):
+            raise ValueError(
+                f"Invalid LED identifier {identifier!r}; the only valid identifiers"
+                " are 0 and 1.",
+            )
         return self._led_states[identifier]
 
     def set_led_state(self, identifier: int, state: bool) -> None:
@@ -273,7 +286,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         :param state: desired state of the LED.
         :raises ValueError: invalid LED identifier.
         """
-        if identifier not in range(1):
+        if identifier not in (0, 1):
             raise ValueError(
                 f"Invalid LED identifier {identifier!r}; the only valid identifiers"
                 " are 0 and 1.",
