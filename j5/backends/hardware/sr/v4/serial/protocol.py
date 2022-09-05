@@ -1,4 +1,5 @@
 """Common functionality between SR V4 boards."""
+import re
 import threading
 from abc import ABC
 from typing import NamedTuple, Optional
@@ -58,17 +59,33 @@ class SRV4SerialProtocolBackend(SerialHardwareBackend, ABC):
         identity = self.get_identity()
         return identity.software_version
 
-    def check_firmware_version_supported(self) -> None:
+    def _check_firmware_version_supported(
+        self,
+        version: str,
+        minimum_minor_version: int = 4,
+    ) -> None:
         """
         Raises an exception if the firmware version is not supported.
 
-        :raises NotImplementedError: power board is running unsupported firmware
+        :param version: the firmware version string to check.
+        :param minimum_minor_version: the lowest supported minor firmware version
+        :raises CommunicationError: the board is running unsupported firmware
         """
-        version = self.firmware_version
-        if not version.startswith("4."):
-            raise NotImplementedError(f"This power board is running firmware "
-                                      f"version {version},"
-                                      "but only version 4.x is supported.")
+        match = re.match(r"^(\d+)\.(\d+)$", version)
+        if not match:
+            raise CommunicationError(f"Unable to parse version number: {version}")
+
+        major, minor = match.groups()
+        if major != "4":
+            raise CommunicationError(
+                f"Expected major version number to be 4, got {major}",
+            )
+
+        if int(minor) < minimum_minor_version:
+            raise CommunicationError(
+                f"Expected minor version number of at least {minimum_minor_version},"
+                f" got {minor}",
+            )
 
     def request(self, command: str) -> Optional[str]:
         """

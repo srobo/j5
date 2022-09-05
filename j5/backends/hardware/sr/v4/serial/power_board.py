@@ -24,6 +24,10 @@ from j5.components import (
     PowerOutputInterface,
 )
 
+LED_NAMES = ("RUN", "ERR")
+MAX_BUZZ_DURATION_MS = (2 ** 31) - 1  # int32 max
+MINIMUM_MINOR_VERSION = 4
+
 
 def is_power_board(port: ListPortInfo) -> bool:
     """
@@ -96,7 +100,9 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
             i: False
             for i in range(2)
         }
-        self.check_firmware_version_supported()
+        self._check_firmware_version_supported(
+            self.firmware_version, MINIMUM_MINOR_VERSION,
+        )
         self.reset_board()
 
     def get_power_output_enabled(self, identifier: int) -> bool:
@@ -172,18 +178,17 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
                              f"the only valid identifier is 0.")
 
         duration_ms = round(duration.total_seconds() * 1000)
-        max_duration = (2 ** 31) - 1  # int32 max
-        if duration_ms > max_duration:
+
+        if duration_ms not in range(MAX_BUZZ_DURATION_MS + 1):
             raise NotSupportedByHardwareError(
-                f"Maximum piezo duration is {max_duration}ms.")
-        if duration_ms < 0:
-            raise ValueError("Duration must be positive.")
+                f"Piezo duration must be in range of 0 - {MAX_BUZZ_DURATION_MS}ms.",
+            )
 
         frequency_int = int(round(frequency))
-        if frequency_int > 10000:
-            raise NotSupportedByHardwareError("Maximum piezo frequency is 10kHz.")
-        if frequency_int < 0:
-            raise ValueError("Frequency must be positive.")
+        if frequency_int not in range(10_001):
+            raise NotSupportedByHardwareError(
+                "Piezo frequency must be in range of 0 - 10kHz.",
+            )
 
         self.request(f"NOTE:{frequency_int}:{duration_ms}")
 
@@ -219,8 +224,8 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         """
         # The start button's state is latched.
         # Meaning that we need to fetch it once beforehand to discard the last response.
-        self.get_button_state(0)
-        while not self.get_button_state(0):
+        _ = self.get_button_state(identifier)
+        while not self.get_button_state(identifier):
             sleep(0.05)
 
     def get_battery_sensor_voltage(self, identifier: int) -> float:
@@ -268,9 +273,13 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         :param state: desired state of the LED.
         :raises ValueError: invalid LED identifier.
         """
-        if identifier > 1:
-            raise ValueError(f"Invalid LED identifier {identifier!r}; "
-                             f"the only valid identifiers are 0 and 1.")
-        led_names = ["RUN", "ERR"]
+        if identifier not in range(1):
+            raise ValueError(
+                f"Invalid LED identifier {identifier!r}; the only valid identifiers"
+                " are 0 and 1.",
+            )
+        led_name = LED_NAMES[identifier]
+        state_int = int(state)
 
-        self.request(f"LED:{led_names[identifier]}:SET:{int(state)}")
+        self.request(f"LED:{led_name}:SET:{state_int}")
+        self._led_states[identifier] = state
