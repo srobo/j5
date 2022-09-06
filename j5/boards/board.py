@@ -1,6 +1,7 @@
 """The base classes for boards and group of boards."""
 
 import atexit
+import enum
 import logging
 import os
 import signal
@@ -34,6 +35,11 @@ class Board(metaclass=ABCMeta):
     # This is useful to know so that we can make them safe in a crash.
     BOARDS: Set['Board'] = set()
 
+    _backend: 'Backend'
+
+    class AvailableFeatures(str, enum.Enum):
+        """Features available on the board."""
+
     def __str__(self) -> str:
         """
         A string representation of this board.
@@ -61,6 +67,15 @@ class Board(metaclass=ABCMeta):
         :returns: string representation of the board.
         """
         return f"<{self.__class__.__name__} serial_number={self.serial_number}>"
+
+    @property
+    def features(self) -> Set['Board.AvailableFeatures']:
+        """
+        The set of features that are enabled on this board instance.
+
+        :returns: the features that are enabled on this board instance.
+        """
+        return self._backend.get_features()
 
     @property
     @abstractmethod

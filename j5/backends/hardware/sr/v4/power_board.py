@@ -30,6 +30,7 @@ from j5.components import (
 CMD_READ_OUTPUT: Mapping[int, ReadCommand] = {
     output.value: ReadCommand(output.value, 4)
     for output in PowerOutputPosition
+    if output != PowerOutputPosition.FIVE_VOLT
 }
 CMD_READ_5VRAIL = ReadCommand(6, 4)
 CMD_READ_BATTERY = ReadCommand(7, 8)
@@ -39,6 +40,7 @@ CMD_READ_FWVER = ReadCommand(9, 4)
 CMD_WRITE_OUTPUT: Mapping[int, WriteCommand] = {
     output.value: WriteCommand(output.value)
     for output in PowerOutputPosition
+    if output != PowerOutputPosition.FIVE_VOLT
 }
 CMD_WRITE_RUNLED = WriteCommand(6)
 CMD_WRITE_ERRORLED = WriteCommand(7)
@@ -85,6 +87,7 @@ class SRV4PowerBoardHardwareBackend(
         self._output_states: Dict[int, bool] = {
             output.value: False
             for output in PowerOutputPosition
+            if output is not PowerOutputPosition.FIVE_VOLT
         }
         self._led_states: Dict[int, bool] = {
             i: False

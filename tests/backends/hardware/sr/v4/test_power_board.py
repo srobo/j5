@@ -30,6 +30,8 @@ def test_cmd_read_output() -> None:
     assert len(CMD_READ_OUTPUT) == 6
 
     for pos in PowerOutputPosition:
+        if pos is PowerOutputPosition.FIVE_VOLT:
+            continue
         assert pos.value in CMD_READ_OUTPUT
         command = CMD_READ_OUTPUT[pos.value]
         assert pos.value == command.code
@@ -69,6 +71,8 @@ def test_cmd_write_output() -> None:
     assert len(CMD_WRITE_OUTPUT) == 6
 
     for pos in PowerOutputPosition:
+        if pos is PowerOutputPosition.FIVE_VOLT:
+            continue
         assert pos.value in CMD_WRITE_OUTPUT
         command = CMD_WRITE_OUTPUT[pos.value]
         assert pos.value == command.code
