@@ -2,7 +2,7 @@
 import re
 import threading
 from abc import ABC
-from typing import NamedTuple, Optional
+from typing import NamedTuple
 
 from serial import SerialException, SerialTimeoutException
 
@@ -28,7 +28,11 @@ class BoardVersion(NamedTuple):
 
 
 class SRV4SerialProtocolBackend(SerialHardwareBackend, ABC):
-    """Backend for a Student Robotics v4 board using the serial protocol."""
+    """
+    Backend for a Student Robotics v4 board using the serial protocol.
+
+    The protocol is loosely based on SCPI.
+    """
 
     _lock: threading.Lock
 
@@ -40,8 +44,6 @@ class SRV4SerialProtocolBackend(SerialHardwareBackend, ABC):
         :returns: A tuple of board identity information
         """
         response = self.query("*IDN?")
-        if response is None:
-            raise CommunicationError("Power board responded with ACK but expected data.")
         parts = response.split(":", 4)
         if len(parts) != 4:
             raise CommunicationError(
@@ -113,13 +115,51 @@ class SRV4SerialProtocolBackend(SerialHardwareBackend, ABC):
                 f" got {version.fw_major}",
             )
 
-    def request(self, command: str) -> Optional[str]:
+    def request(self, command: str) -> None:
         """
         Sends a request to the board.
 
+        A request command does not return any data and will respond
+        ACK if the request was executed successfully.
+
         :param command: The command to be sent as part of the request.
-        :returns: Response, if any.
         :raises CommunicationError: Failed to send request.
+        """
+        response = self._raw_request(command)
+
+        if response != "ACK":
+            raise CommunicationError(
+                "Expected ACK from Power Board, but got: {response}",
+            )
+
+    def query(self, command: str) -> str:
+        """
+        Sends a query to the board and returns its response as a string.
+
+        This method expects a response with additional data
+        and will raise an exception if only an ACK is received.
+
+        Query commands end with '?'.
+
+        :param command: The command to be sent as part of the query.
+        :returns: Response.
+        :raises CommunicationError: Failed to send request or only ACK is returned.
+        """
+        response = self._raw_request(command)
+        if response and response != "ACK":
+            return response
+        else:
+            raise CommunicationError("Power board responded with ACK but expected data.")
+
+    def _raw_request(self, command: str) -> str:
+        """
+        Make a raw protocol request to the board.
+
+        If a NACK is received, an exception will be raised.
+
+        :param command: The command to send to the board.
+        :returns: The response from the board.
+        :raises CommunicationError: The request was not successful.
         """
         request_data = command.encode("ascii") + b'\n'
 
@@ -141,30 +181,4 @@ class SRV4SerialProtocolBackend(SerialHardwareBackend, ABC):
             _, error_string = response.split(":", 1)
             raise CommunicationError(f"Power Board returned an error: {error_string}")
 
-        expects_response = command[-1:] == "?"
-        if expects_response:
-            return response
-        elif response == "ACK":
-            return None
-        else:
-            raise CommunicationError("Expected ACK from Power Board,"
-                                     f"but got: {response}")
-
-    def query(self, command: str) -> str:
-        """
-        Sends a query to the board and returns its response as a string.
-
-        This method expects a response with additional data
-        and will raise an exception if only an ACK is received.
-
-        Query commands end with '?'.
-
-        :param command: The command to be sent as part of the query.
-        :returns: Response.
-        :raises CommunicationError: Failed to send request or only ACK is returned.
-        """
-        response = self.request(command)
-        if response is not None:
-            return response
-        else:
-            raise CommunicationError("Power board responded with ACK but expected data.")
+        return response
