@@ -105,6 +105,17 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         )
         self.reset_board()
 
+    def get_features(self) -> Set['Board.AvailableFeatures']:
+        """
+        The set of features available on this backend.
+
+        :returns: The set of features available on this backend.
+        """
+        return {
+            PowerBoard.AvailableFeatures.REG_5V_CONTROL,
+            PowerBoard.AvailableFeatures.BRAIN_OUTPUT,
+        }
+
     def get_power_output_enabled(self, identifier: int) -> bool:
         """
         Get whether a power output is enabled.
@@ -114,7 +125,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         :raises CommunicationError: Invalid response received.
         :raises ValueError: Invalid power output identifier.
         """
-        if identifier in range(6):
+        if identifier in range(7):
             response = self.query(f"OUT:{identifier}:GET?")
             if response == "0":
                 return False
@@ -136,7 +147,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         :param enabled: status of the power output.
         :raises ValueError: Invalid power output identifier.
         """
-        if identifier in range(6):
+        if identifier in range(7):
             state = "1" if enabled else "0"
             self.request(f"OUT:{identifier}:SET:{state}")
         else:
@@ -150,7 +161,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         :returns: current of the output.
         :raises ValueError: Invalid power output identifier.
         """
-        if identifier in range(6):
+        if identifier in range(7):
             response = self.query(f"OUT:{identifier}:I?")
             return float(response) / 1000
         else:
