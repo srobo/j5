@@ -97,8 +97,8 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         )
         self._lock = threading.Lock()
         self._led_states: Dict[int, bool] = {
-            i: False
-            for i in range(2)
+            0: False,
+            1: False,
         }
         self._check_firmware_version_supported(
             self.firmware_version, SUPPORTED_MAJOR_VERSIONS,

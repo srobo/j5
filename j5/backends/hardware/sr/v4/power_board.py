@@ -90,8 +90,8 @@ class SRV4PowerBoardHardwareBackend(
             if output is not PowerOutputPosition.FIVE_VOLT
         }
         self._led_states: Dict[int, bool] = {
-            i: False
-            for i in range(2)
+            0: False,
+            1: False,
         }
         self.check_firmware_version_supported()
 
