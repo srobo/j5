@@ -26,7 +26,7 @@ from j5.components import (
 
 LED_NAMES = ("RUN", "ERR")
 MAX_BUZZ_DURATION_MS = (2 ** 31) - 1  # int32 max
-MINIMUM_MAJOR_VERSION = 4
+SUPPORTED_MAJOR_VERSIONS = {4}
 
 
 def is_power_board(port: ListPortInfo) -> bool:
@@ -101,7 +101,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
             for i in range(2)
         }
         self._check_firmware_version_supported(
-            self.firmware_version, MINIMUM_MAJOR_VERSION,
+            self.firmware_version, SUPPORTED_MAJOR_VERSIONS,
         )
         self.reset_board()
 
