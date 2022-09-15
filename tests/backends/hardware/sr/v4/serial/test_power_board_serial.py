@@ -199,7 +199,7 @@ class TestSRV4SerialProtocolPowerBoardHardwareBackend:
             backend.get_power_output_enabled(0)
         e.match('Power Board returned an invalid response: 67')
 
-    @pytest.mark.parametrize("identifier", [-1, 6, 7])
+    @pytest.mark.parametrize("identifier", [-1, 7])
     def test_get_power_output_enabled_bad_identifier(self, identifier: int) -> None:
         """Test that we get a CommunicationError on a bad response."""
         backend = MockPowerSerialBackendBadData("COM0")
@@ -233,7 +233,7 @@ class TestSRV4SerialProtocolPowerBoardHardwareBackend:
 
     @pytest.mark.parametrize(
         "identifier",
-        [-1, 6, 7],
+        [-1, 7],
     )
     def test_set_power_output_enabled_bad_identifier(self, identifier: int) -> None:
         """Test that we correctly handle an out of range power output."""
@@ -263,7 +263,7 @@ class TestSRV4SerialProtocolPowerBoardHardwareBackend:
 
     @pytest.mark.parametrize(
         "identifier",
-        [-1, 6, 7],
+        [-1, 7],
     )
     def test_get_power_output_current_bad_identifier(self, identifier: int) -> None:
         """Test that we correctly handle an out of range power output."""
