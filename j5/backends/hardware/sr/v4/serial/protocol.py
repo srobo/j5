@@ -2,7 +2,7 @@
 import re
 import threading
 from abc import ABC
-from typing import NamedTuple
+from typing import Collection, NamedTuple
 
 from serial import SerialException, SerialTimeoutException
 
@@ -158,13 +158,13 @@ class SRV4SerialProtocolBackend(SerialHardwareBackend, ABC):
     def _check_firmware_version_supported(
         self,
         version_string: str,
-        minimum_fw_version: int = 4,
+        supported_fw_versions: Collection[int],
     ) -> None:
         """
         Raises an exception if the firmware version is not supported.
 
         :param version_string: the firmware version string to check.
-        :param minimum_fw_version: the lowest supported major firmware version
+        :param supported_fw_versions: collection of supported major fw versions
         :raises CommunicationError: the board is running unsupported firmware
         """
         try:
@@ -177,8 +177,8 @@ class SRV4SerialProtocolBackend(SerialHardwareBackend, ABC):
                 f"Expected hardware version number to be 4, got {version.hw_ver}",
             )
 
-        if version.fw_major < minimum_fw_version:
+        if version.fw_major not in supported_fw_versions:
             raise CommunicationError(
-                f"Expected major version number of at least {minimum_fw_version},"
+                f"Expected major version number to be one of {supported_fw_versions},"
                 f" got {version.fw_major}",
             )
