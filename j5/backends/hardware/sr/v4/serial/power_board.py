@@ -163,7 +163,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         """
         if identifier in range(7):
             response = self.query(f"OUT:{identifier}:I?")
-            return float(response) / 1000
+            return self._parse_float(response) / 1000
         else:
             raise ValueError(f"{identifier!r} is not a valid power output identifier")
 
@@ -258,7 +258,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
             raise ValueError(f"Invalid battery sensor identifier {identifier!r}; "
                              f"the only valid identifier is 0.")
         response = self.query("BATT:V?")
-        return float(response) / 1000
+        return self._parse_float(response) / 1000
 
     def get_battery_sensor_current(self, identifier: int) -> float:
         """
@@ -272,7 +272,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
             raise ValueError(f"Invalid battery sensor identifier {identifier!r}; "
                              f"the only valid identifier is 0.")
         response = self.query("BATT:I?")
-        return float(response) / 1000
+        return self._parse_float(response) / 1000
 
     def get_led_state(self, identifier: int) -> bool:
         """

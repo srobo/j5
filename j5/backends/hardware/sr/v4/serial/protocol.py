@@ -138,6 +138,24 @@ class SRV4SerialProtocolBackend(SerialHardwareBackend, ABC):
         return response
 
     @staticmethod
+    def _parse_float(data: str) -> float:
+        """
+        Parse a string as a floating point number.
+
+        If the string is not a floating point number, raise an error.
+
+        :param data: The string to parse.
+        :returns: The parsed floating point number.
+        :raises CommunicationError: The data was not a float.
+        """
+        try:
+            return float(data)
+        except TypeError as e:
+            raise CommunicationError(
+                f"Power board returned {data}, but expected a float",
+            ) from e
+
+    @staticmethod
     def _parse_version_string(version: str) -> BoardVersion:
         """
         Parse the version string.
