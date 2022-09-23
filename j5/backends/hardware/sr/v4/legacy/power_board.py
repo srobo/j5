@@ -47,7 +47,7 @@ CMD_WRITE_ERRORLED = WriteCommand(7)
 CMD_WRITE_PIEZO = WriteCommand(8)
 
 
-class SRV4PowerBoardHardwareBackend(
+class SRV4LegacyPowerBoardHardwareBackend(
     RawUSBHardwareBackend,
     PowerOutputInterface,
     PiezoInterface,

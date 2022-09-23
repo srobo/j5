@@ -13,7 +13,7 @@ from j5.backends.hardware.j5.raw_usb import (
 )
 from j5.boards import Board
 from j5.components import Component
-from tests.backends.hardware.sr.v4.test_power_board import MockUSBContext
+from tests.backends.hardware.sr.v4.legacy.test_power_board import MockUSBContext
 
 
 def test_read_command() -> None:
