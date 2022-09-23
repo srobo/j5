@@ -82,6 +82,10 @@ class BackendMeta(ABCMeta):
         if getattr(cls, "__abstractmethods__", None):
             return cls
 
+        # Check if this is a discovery only Backend.
+        if len(cls.__bases__) <= 1 and cls.discover_only:  # type: ignore
+            return cls
+
         mcs._check_component_interfaces(cls)  # type: ignore
         _wrap_methods_with_logging(cls)  # type: ignore
 
@@ -117,6 +121,8 @@ class Backend(metaclass=BackendMeta):
     a physical component to be controlled by the abstract Component representation.
     """
 
+    discover_only = False
+
     @classmethod
     @abstractmethod
     def discover(cls) -> Set['Board']:
@@ -130,10 +136,13 @@ class Backend(metaclass=BackendMeta):
         raise NotImplementedError  # pragma: no cover
 
     @property
-    @abstractmethod
     def firmware_version(self) -> Optional[str]:
-        """The firmware version of the board."""
-        raise NotImplementedError  # pragma: no cover
+        """
+        The firmware version of the board.
+
+        :returns: None
+        """
+        return None
 
     def get_features(self) -> Set['Board.AvailableFeatures']:
         """
