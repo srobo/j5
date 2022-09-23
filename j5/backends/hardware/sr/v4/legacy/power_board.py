@@ -74,9 +74,12 @@ class SRV4LegacyPowerBoardHardwareBackend(
             raise USBCommunicationError(e) from e
 
         for device in device_list:
-            backend = cls(device)
-            board = PowerBoard(backend.serial, backend)
-            boards.add(cast(Board, board))
+            # Boards running legacy firmware only have 1 interface
+            # for the DFU updater.
+            if len(device.configurations()[0].interfaces()) == 1:  # type: ignore
+                backend = cls(device)
+                board = PowerBoard(backend.serial, backend)
+                boards.add(cast(Board, board))
         return boards
 
     def __init__(self, usb_device: usb.core.Device) -> None:

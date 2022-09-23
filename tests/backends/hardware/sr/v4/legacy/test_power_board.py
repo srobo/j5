@@ -1,10 +1,8 @@
 """Test the SR v4 PowerBoard backend and associated classes."""
 
-import re
 import struct
 from datetime import timedelta
-from typing import Iterable, Optional, Tuple, Union
-from unittest.mock import MagicMock
+from typing import Iterable, List, Optional, Tuple, Union
 
 import pytest
 import usb
@@ -106,15 +104,27 @@ class MockUSBContext:
         pass
 
 
+class MockUSBConfiguration:
+    """This class mocks the behavior of usb.core.Configuration."""
+
+    def interfaces(self) -> List[str]:
+        """Mock list of interfaces."""
+        return ["test"]
+
+
 class MockUSBPowerBoardDevice(usb.core.Device):
     """This class mocks the behaviour of a USB device for a Power Board."""
-
-    bNumConfigurations = 1
 
     def __init__(self, serial_number: str, fw_version: int = 3):
         self.serial = serial_number
         self.firmware_version = fw_version
         self._ctx = MockUSBContext()  # Used by PyUSB when cleaning up the device.
+
+    def configurations(self) -> Tuple[MockUSBConfiguration]:
+        """Get the configurations on the device."""
+        return (
+            MockUSBConfiguration(),
+        )
 
     @property
     def serial_number(self) -> str:
