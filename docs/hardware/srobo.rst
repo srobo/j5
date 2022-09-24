@@ -10,6 +10,24 @@ Student Robotics is currently on it's fourth generation of robotics kit, which i
 and some custom designed hardware that's based on STM32 microcontrollers. The kit communicates with the ODROID using
 USB, which has proven to be a more reliable communication method than their previous kits.
 
+Student Robotics KCH v1
+-----------------------
+
++------------------+--------------------------------------------------------------+
+| Support Level    | Core                                                         |
++------------------+--------------------------------------------------------------+
+| Bus              | Raspberry Pi GPIO and I2C via Kernel                         |
++------------------+--------------------------------------------------------------+
+| Board Class      | ``j5.boards.sr.KCHBoard``                                    |
++------------------+--------------------------------------------------------------+
+
+The KCH v1 is a Raspberry Pi HAT designed for the Student Robotics Kit.
+
+The following components are available:
+
+- ``board.leds`` - A dictionary of `RGB LEDs <RGBLED>`_ corresponding to the three user controllable LEDs.
+
+
 Student Robotics Power Board v4
 -------------------------------
 
@@ -109,7 +127,7 @@ Student Robotics Ruggeduino Firmware
 +------------------+---------------------------------------------------------------+
 | Console Backend  | ``j5.backends.console.sr.v4.SRV4RuggeduinoConsoleBackend``    |
 +------------------+---------------------------------------------------------------+
-| Hardware Backend | ``j5.backends.hardware.sr.v4.SRV4RuggeduinoHardwareBackend`` |
+| Hardware Backend | ``j5.backends.hardware.sr.v4.SRV4RuggeduinoHardwareBackend``  |
 +------------------+---------------------------------------------------------------+
 
 The `Ruggeduino`_ is a robust microcontroller for IO based on the `Arduino Uno <https://en.wikipedia.org/wiki/Arduino_Uno>`_.
