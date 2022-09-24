@@ -109,7 +109,7 @@ Student Robotics Ruggeduino Firmware
 +------------------+---------------------------------------------------------------+
 | Console Backend  | ``j5.backends.console.sr.v4.SRV4RuggeduinoConsoleBackend``    |
 +------------------+---------------------------------------------------------------+
-| Hardware Backend | ``j5.backends.hardware.sr.v4.SRV4SRuggeduinoHardwareBackend`` |
+| Hardware Backend | ``j5.backends.hardware.sr.v4.SRV4RuggeduinoHardwareBackend`` |
 +------------------+---------------------------------------------------------------+
 
 The `Ruggeduino`_ is a robust microcontroller for IO based on the `Arduino Uno <https://en.wikipedia.org/wiki/Arduino_Uno>`_.
