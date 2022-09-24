@@ -7,7 +7,7 @@ from j5 import BaseRobot, BoardGroup
 from j5.backends.hardware.sr.v4.power_board import (
     SRV4PowerBoardHardwareBackend,
 )
-from j5.boards.sr.v4.power_board import PowerBoard, PowerOutputPosition
+from j5.boards.sr.v4.power_board import PowerBoard
 from j5.components.piezo import Note
 
 
@@ -37,27 +37,27 @@ if __name__ == '__main__':
     print(f"Battery voltage: {r.power_board.battery_sensor.voltage} V")
     print(f"Battery current: {r.power_board.battery_sensor.current} A")
 
-    for output in PowerOutputPosition:
-        print(f"Output {output} on.")
-        r.power_board.outputs[output].is_enabled = True
+    for output in r.power_board.outputs:
+        print(f"Output {output.identifier} on.")
+        output.is_enabled = True
         sleep(0.5)
 
-    for output in PowerOutputPosition:
-        print(f"Output {str(output)} current: {r.power_board.outputs[output].current} A")
+    for output in r.power_board.outputs:
+        print(f"Output {output.identifier} current: {output.current} A")
 
-    for output in PowerOutputPosition:
-        print(f"Output {output} off.")
-        r.power_board.outputs[output].is_enabled = False
+    for output in r.power_board.outputs:
+        print(f"Output {output.identifier} off.")
+        output.is_enabled = False
         sleep(0.5)
 
     for pitch in Note:
         print(f"Buzzing at pitch: {pitch}")
-        r.power_board.piezo.buzz(timedelta(seconds=0.1), pitch)
+        r.power_board.piezo.buzz(timedelta(seconds=0.1), pitch, blocking=True)
 
     for led in [r.power_board._run_led, r.power_board._error_led]:
-        print(f"LED {led} is on.")
+        print(f"LED {led.identifier} is on.")
         led.state = True
         sleep(0.5)
-        print(f"LED {led} is off.")
+        print(f"LED {led.identifier} is off.")
         led.state = False
         sleep(0.5)
