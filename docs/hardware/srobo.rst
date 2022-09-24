@@ -10,6 +10,24 @@ Student Robotics is currently on it's fourth generation of robotics kit, which i
 and some custom designed hardware that's based on STM32 microcontrollers. The kit communicates with the ODROID using
 USB, which has proven to be a more reliable communication method than their previous kits.
 
+Student Robotics KCH v1
+-----------------------
+
++------------------+--------------------------------------------------------------+
+| Support Level    | Core                                                         |
++------------------+--------------------------------------------------------------+
+| Bus              | Raspberry Pi GPIO and I2C via Kernel                         |
++------------------+--------------------------------------------------------------+
+| Board Class      | ``j5.boards.sr.KCHBoard``                                    |
++------------------+--------------------------------------------------------------+
+
+The KCH v1 is a Raspberry Pi HAT designed for the Student Robotics Kit.
+
+The following components are available:
+
+- ``board.leds`` - A dictionary of `RGB LEDs <RGBLED>`_ corresponding to the three user controllable LEDs.
+
+
 Student Robotics Power Board v4
 -------------------------------
 
@@ -25,7 +43,7 @@ Student Robotics Power Board v4
 | Hardware Backend | ``j5.backends.hardware.sr.v4.SRV4PowerBoardHardwareBackend`` |
 +------------------+--------------------------------------------------------------+
 
-The `Power Board v4`_ is a board used for managing power in a Student Robotics Kit, and is power by a LiPo battery.
+The `Power Board v4`_ is a board used for managing power in a Student Robotics Kit, and is powered by a LiPo battery.
 
 The following components are available:
 
@@ -39,8 +57,17 @@ The following components also exist, but are not intended for use by competitors
 - ``board._error_led`` - The red "error" `LED <LED>`_
 - ``board._run_led`` - The green "run" `LED <LED>`_
 
-Power Outputs
-~~~~~~~~~~~~~
+Two firmware generations are available for this board, known as the ``legacy`` (version 3) and ``serial`` (version 4+) firmwares.
+Both generations are supported by the backend implementation, which will automatically determine the correct underlying backend to
+use during the board discovery phase.
+
+Power Board Power Outputs
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+There are eight total power outputs on the Power Board, 2 high current, 4 low current and 2 5V outputs.
+The 5V outputs are wired in parallel from the same regulator.
+
+.. note:: The 5V Regulator is only controllable from board running version 4 "serial" firmware. Additionally, the L2 port is not controllable in version 4 firmware.
 
 .. autoclass:: j5.boards.sr.v4.PowerOutputPosition
     :members:
@@ -100,7 +127,7 @@ Student Robotics Ruggeduino Firmware
 +------------------+---------------------------------------------------------------+
 | Console Backend  | ``j5.backends.console.sr.v4.SRV4RuggeduinoConsoleBackend``    |
 +------------------+---------------------------------------------------------------+
-| Hardware Backend | ``j5.backends.hardware.sr.v4.SRV4SRuggeduinoHardwareBackend`` |
+| Hardware Backend | ``j5.backends.hardware.sr.v4.SRV4RuggeduinoHardwareBackend``  |
 +------------------+---------------------------------------------------------------+
 
 The `Ruggeduino`_ is a robust microcontroller for IO based on the `Arduino Uno <https://en.wikipedia.org/wiki/Arduino_Uno>`_.

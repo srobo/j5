@@ -24,6 +24,8 @@ The following integrations are available:
 +==================+=================================+===============+
 | SourceBots       | Arduino Uno Firmware            | Core          |
 +------------------+---------------------------------+---------------+
+| Student Robotics | KCH v1                          | Core          |
++------------------+---------------------------------+---------------+
 | Student Robotics | Motor Board v4                  | Core          |
 +------------------+---------------------------------+---------------+
 | Student Robotics | Power Board v4                  | Core          |
