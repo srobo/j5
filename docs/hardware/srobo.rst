@@ -39,8 +39,17 @@ The following components also exist, but are not intended for use by competitors
 - ``board._error_led`` - The red "error" `LED <LED>`_
 - ``board._run_led`` - The green "run" `LED <LED>`_
 
-Power Outputs
-~~~~~~~~~~~~~
+Two firmware generations are available for this board, known as the ``legacy`` (version 3) and ``serial`` (version 4+) firmwares.
+Both generations are supported by the backend implementation, which will automatically determine the correct underlying backend to
+use during the board discovery phase.
+
+Power Board Power Outputs
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+There are eight total power outputs on the Power Board, 2 high current, 4 low current and 2 5V outputs.
+The 5V outputs are wired in parallel from the same regulator.
+
+.. note:: The 5V Regulator is only controllable from board running version 4 "serial" firmware. Additionally, the L2 port is not controllable in version 4 firmware.
 
 .. autoclass:: j5.boards.sr.v4.PowerOutputPosition
     :members:
