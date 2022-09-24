@@ -25,7 +25,7 @@ Student Robotics Power Board v4
 | Hardware Backend | ``j5.backends.hardware.sr.v4.SRV4PowerBoardHardwareBackend`` |
 +------------------+--------------------------------------------------------------+
 
-The `Power Board v4`_ is a board used for managing power in a Student Robotics Kit, and is power by a LiPo battery.
+The `Power Board v4`_ is a board used for managing power in a Student Robotics Kit, and is powered by a LiPo battery.
 
 The following components are available:
 
