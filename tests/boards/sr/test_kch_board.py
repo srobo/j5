@@ -90,7 +90,8 @@ class TestKCHBoard:
 
     def test_leds(self, mock_kch: KCHBoard) -> None:
         """Test the LED attributes of the KCH."""
-        assert len(mock_kch.leds) == 3
+        assert len(mock_kch.leds) == 4
         assert mock_kch.a is mock_kch.leds[KCHLED.A]
         assert mock_kch.b is mock_kch.leds[KCHLED.B]
         assert mock_kch.c is mock_kch.leds[KCHLED.C]
+        assert isinstance(mock_kch.leds[KCHLED.START], RGBLED)
