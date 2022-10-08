@@ -25,7 +25,7 @@ The KCH v1 is a Raspberry Pi HAT designed for the Student Robotics Kit.
 
 The following components are available:
 
-- ``board.leds`` - A dictionary of `RGB LEDs <RGBLED>`_ corresponding to the three user controllable LEDs.
+- ``board.leds`` - A dictionary of `RGB LEDs <RGBLED>`_ corresponding to the three user controllable LEDs and the start LED.
 
 
 Student Robotics Power Board v4
