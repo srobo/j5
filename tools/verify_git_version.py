@@ -36,7 +36,7 @@ def run() -> None:
     """Check the git version matches the j5 version."""
     tag_ref = os.getenv("GITHUB_REF") or "ENV NOT SET"
 
-    tag_match = re.match(r"ref/tags/(.+)", tag_ref)
+    tag_match = re.match(r"refs/tags/(.+)", tag_ref)
 
     if tag_match:
         tag, = tag_match.groups()
