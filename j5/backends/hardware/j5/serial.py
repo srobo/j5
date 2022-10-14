@@ -1,4 +1,5 @@
 """Abstract hardware backend implementation provided by j5 for serial comms."""
+import logging
 from abc import abstractmethod
 from datetime import timedelta
 from typing import List, Optional, Set, Type
@@ -76,6 +77,7 @@ class SerialHardwareBackend(Backend, metaclass=BackendMeta):
         :param empty: Allow empty line.
         :returns: line read from serial port.
         :raises CommunicationError: serial error whilst reading line.
+        :raises UnicodeDecodeError: serial returned invalid unicode.
         """
         try:
             bdata = self._serial.readline()
@@ -92,7 +94,13 @@ class SerialHardwareBackend(Backend, metaclass=BackendMeta):
                 "Is it correctly powered?",
             )
 
-        ldata = bdata.decode('utf-8')
+        try:
+            ldata = bdata.decode('utf-8')
+        except UnicodeDecodeError as e:
+            if empty:
+                logging.getLogger(__file__).error(f"{e} in {bdata!r}")
+                return ''
+            raise
         return ldata.rstrip()
 
     def read_serial_chars(self, size: int = 1) -> str:
