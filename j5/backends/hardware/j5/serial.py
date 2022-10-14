@@ -96,7 +96,7 @@ class SerialHardwareBackend(Backend, metaclass=BackendMeta):
         try:
             ldata = bdata.decode('utf-8')
         except UnicodeDecodeError as e:
-            logging.getLogger(__file__).error(f"{e} in {bdata}")
+            logging.getLogger(__file__).error(f"{e} in {bdata!r}")
             ldata = ''
         return ldata.rstrip()
 
