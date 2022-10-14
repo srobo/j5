@@ -1,4 +1,5 @@
 """Abstract hardware backend implementation provided by j5 for serial comms."""
+import logging
 from abc import abstractmethod
 from datetime import timedelta
 from typing import List, Optional, Set, Type
@@ -92,7 +93,11 @@ class SerialHardwareBackend(Backend, metaclass=BackendMeta):
                 "Is it correctly powered?",
             )
 
-        ldata = bdata.decode('utf-8')
+        try:
+            ldata = bdata.decode('utf-8')
+        except UnicodeDecodeError as e:
+            logging.getLogger(__file__).error(f"{e} in {bdata}")
+            ldata = ''
         return ldata.rstrip()
 
     def read_serial_chars(self, size: int = 1) -> str:
