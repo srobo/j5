@@ -77,6 +77,7 @@ class SerialHardwareBackend(Backend, metaclass=BackendMeta):
         :param empty: Allow empty line.
         :returns: line read from serial port.
         :raises CommunicationError: serial error whilst reading line.
+        :raises UnicodeDecodeError: serial returned invalid unicode.
         """
         try:
             bdata = self._serial.readline()
