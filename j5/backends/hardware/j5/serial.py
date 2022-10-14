@@ -99,9 +99,8 @@ class SerialHardwareBackend(Backend, metaclass=BackendMeta):
         except UnicodeDecodeError as e:
             if empty:
                 logging.getLogger(__file__).error(f"{e} in {bdata!r}")
-                ldata = ''
-            else:
-                raise
+                return ''
+            raise
         return ldata.rstrip()
 
     def read_serial_chars(self, size: int = 1) -> str:
