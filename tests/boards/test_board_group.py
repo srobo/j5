@@ -253,3 +253,30 @@ class TestBoardGroup:
         """
         with pytest.raises(TypeError):
             multi_board_group["TESTSERIAL1"] = 12  # type: ignore
+
+    def test_get_by_serial(
+        self,
+        multi_board_group: BoardGroup[MockBoard, TwoBoardsMockBackend],
+    ) -> None:
+        """Test that we can get a board by serial."""
+        board = multi_board_group["TESTSERIAL1"]
+        assert isinstance(board, MockBoard)
+
+    def test_get_by_serial_unavailable_serial(
+        self,
+        multi_board_group: BoardGroup[MockBoard, TwoBoardsMockBackend],
+    ) -> None:
+        """Test that we get a KeyError if the serial isn't available."""
+        with pytest.raises(KeyError) as e:
+            multi_board_group["BEES"]
+        assert str(e.value) == "'Could not find a board with the serial number BEES;" \
+            " Available board serials: TESTSERIAL1, TESTSERIAL2'"
+
+    def test_get_by_serial_empty(
+        self,
+        empty_board_group: BoardGroup[MockBoard, NoBoardMockBackend],
+    ) -> None:
+        """Test that we get a KeyError."""
+        with pytest.raises(KeyError) as e:
+            empty_board_group["TESTSERIAL1"]
+        assert str(e.value) == "'There are no MockBoard boards available.'"
