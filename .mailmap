@@ -15,7 +15,8 @@
 # More detailed documentation on the format and use of this file can be found at:
 # https://github.com/git/git/blob/master/Documentation/mailmap.txt
 
-Dan Trickey <dan@trickey.io> <trickeydan@users.noreply.github.com>
+Dan Trickey <git@trickey.io> <dan@trickey.io>
+Dan Trickey <git@trickey.io> <trickeydan@users.noreply.github.com>
 Daniel Goje <gojedan98@yahoo.com>
 Henry Oliver Edwards <henry.oliver.edwards@googlemail.com>
 Hugo McNally <hugo.mcnally@gmail.com>
@@ -23,7 +24,10 @@ Hugo McNally <hugo.mcnally@gmail.com> <45573837+HU90m@users.noreply.github.com>
 Jake Howard <git@theorangeone.net> <RealOrangeOne@users.noreply.github.com>
 James Seden Smith <sedders123@gmail.com> <james@river.red>
 James Seden Smith <sedders123@gmail.com> <sedders123@users.noreply.github.com>
+Karina Kwiatek <kjk@kjk.dog> <6197148+raccube@users.noreply.github.com>
+Karina Kwiatek <kjk@kjk.dog> <mh@moltenheim.net> 
 Kier Davis <me@kierdavis.com> <kierdavis@gmail.com>
 Mohit Gupta <github@skybound.link>
 Shivam Chawla <shivamchawla60@gmail.com>
+Tommy Poll <tommy@poolle.co.uk> <tommy@tommy.moe>
 Tommy Poll <tommy@poolle.co.uk> <Tommy@poolle.co.uk>

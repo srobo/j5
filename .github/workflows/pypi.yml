@@ -10,14 +10,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.7
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v4
         with:
           python-version: 3.7
       - name: Install Poetry
         run: pip install poetry
       - name: Use in-project virtualenv
         run: poetry config virtualenvs.in-project true
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: .venv/
           key: ${{ runner.os }}-3.7-pip-${{ hashFiles('poetry.lock') }}-${{ hashFiles('pyproject.toml') }}
