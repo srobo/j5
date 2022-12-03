@@ -6,7 +6,7 @@ from typing import Type
 from j5.exceptions import j5Exception
 
 
-class Interface(metaclass=ABCMeta):
+class Interface(metaclass=ABCMeta):  # noqa: B024
     """A base class for interfaces to inherit from."""
 
 
