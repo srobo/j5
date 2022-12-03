@@ -12,11 +12,11 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        python: [3.7, 3.8, 3.9, "3.10"]
+        python: [3.7, 3.8, 3.9, "3.10", "3.11"]
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python }}
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python }}
       - name: Install Poetry
@@ -25,7 +25,7 @@ jobs:
       - name: Use in-project virtualenv
         run: poetry config virtualenvs.in-project true
         shell: bash
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: .venv/
           key: ${{ runner.os }}-${{ matrix.python }}-pip-${{ hashFiles('poetry.lock') }}-${{ hashFiles('pyproject.toml') }}
