@@ -6,7 +6,6 @@ import pytest
 
 from j5.backends.console.sr.v4.power_board import SRV4PowerBoardConsoleBackend
 from j5.boards.sr.v4.power_board import PowerBoard
-from j5.components.piezo import Note
 from tests.backends.console.helpers import MockConsole
 
 
@@ -95,10 +94,6 @@ def test_backend_piezo_buzz() -> None:
         "TestBoard",
         console_class=MockConsole,
     )
-
-    # Buzz a Note.
-    backend._console.expects = "Buzzing at 2349.3Hz for 10000ms"  # type: ignore
-    backend.buzz(0, timedelta(seconds=10), Note.D7, False)
 
     # Buzz a frequency
     backend._console.expects = "Buzzing at 100Hz for 10000ms"  # type: ignore
