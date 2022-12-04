@@ -130,9 +130,17 @@ class BoardGroup(Generic[T, U]):
         except KeyError:
             if not isinstance(serial_number, str):
                 raise TypeError("Serial number must be a string")
-            raise KeyError(
-                f"Could not find a board with the serial number {serial_number}",
-            )
+
+            if len(self._boards):
+                available_serials = ", ".join(self._boards)
+                raise KeyError(
+                    f"Could not find a board with the serial number {serial_number}; "
+                    f"Available board serials: {available_serials}",
+                )
+            else:
+                raise KeyError(
+                    f"There are no {self.backend_class.board.__name__} boards available.",
+                )
 
     @property
     def backend_class(self) -> Type[U]:
