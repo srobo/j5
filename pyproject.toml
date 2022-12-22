@@ -33,7 +33,7 @@ flake8-docstrings = "^1.6"
 flake8-mutable = "^1.2"
 flake8-print = "^5.0"
 flake8-todo = "^0.7.0"
-isort = {version = "^5.10",extras = ["pyproject"]}
+isort = {version = "^5.11",extras = ["pyproject"]}
 mypy = "^0.991"
 pytest = "^7.2"
 pytest-cov = "^4"
