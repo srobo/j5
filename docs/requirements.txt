@@ -4,7 +4,7 @@ babel==2.10.3; python_version >= "3.6" and python_full_version < "3.0.0" or pyth
 certifi==2022.6.15; python_version >= "3.7" and python_version < "4"
 charset-normalizer==2.1.0; python_version >= "3.7" and python_version < "4" and python_full_version >= "3.6.0"
 colorama==0.4.5; python_version >= "3.7" and python_full_version < "3.0.0" and sys_platform == "win32" and (python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.4.0" and python_version >= "3.6") or sys_platform == "win32" and python_version >= "3.7" and python_full_version >= "3.5.0" and (python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.4.0" and python_version >= "3.6")
-coverage==6.4.4; python_version >= "3.7"
+coverage==7.0.1; python_version >= "3.7"
 darglint==1.8.1; python_version >= "3.6" and python_version < "4.0"
 docutils==0.17.1; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.5.0" and python_version >= "3.6"
 flake8-bugbear==22.7.1; python_version >= "3.6"
