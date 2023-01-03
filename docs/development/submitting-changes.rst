@@ -11,7 +11,7 @@ The main repository for `j5` is available on GitHub_, and Pull Requests should b
 There is an additional repository available on GitLab_, although this is a mirror of the GitHub repo, and changes
 should not be submitted there.
 
-.. _GitHub: https://github.com/j5api/j5
+.. _GitHub: https://github.com/srobo/j5
 .. _GitLab: https://gitlab.com/j5api/j5
 
 Discussing Changes

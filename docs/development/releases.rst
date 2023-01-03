@@ -27,7 +27,7 @@ should also be uploaded to GitHub at this point. It should be ensured that these
 to PyPI.
 
 .. _PyPI: https://pypi.org/project/j5/
-.. _GitHub: https://github.com/j5api/j5
+.. _GitHub: https://github.com/srobo/j5
 
 Version Strategy
 ----------------
@@ -57,8 +57,8 @@ Release Process
 ---------------
 
 * Make a commit that bumps the version numbers in `j5/__init__.py` and `pyproject.toml` to the new version, and merge it
-  to master.
-* Go to https://github.com/j5api/j5/releases/new.
+  to main.
+* Go to https://github.com/srobo/j5/releases/new.
 * Tag version should be of the form "v0.7.3".
 * Title should be of the form "Release 0.7.3".
 * Enter a release description outlining the changes made since the previous release. `git log v0.7.2..master` might be

@@ -37,7 +37,7 @@ The following integrations are available:
 | Zoloto           | Fiducial Marker Pose Estimation | Supported     |
 +------------------+---------------------------------+---------------+
 
-.. _Zoloto: https://j5api.github.io/j5-zoloto/
+.. _Zoloto: https://srobo.github.io/j5-zoloto/
 
 .. toctree::
     :maxdepth: 1
@@ -45,4 +45,4 @@ The following integrations are available:
 
     sourcebots
     srobo
-    Zoloto <https://j5api.github.io/j5-zoloto/>
+    Zoloto <https://srobo.github.io/j5-zoloto/>

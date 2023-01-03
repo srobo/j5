@@ -78,7 +78,7 @@ All documentation can be found in the ``docs/`` folder.
 Generate HTML Documentation: ``make html``
 
 .. _Quick Start: usage/quickstart
-.. _GitHub: https://github.com/j5api/j5
+.. _GitHub: https://github.com/srobo/j5
 
 .. _Python: https://www.python.org/
 .. _poetry: https://poetry.eustace.io/
