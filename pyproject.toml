@@ -5,9 +5,9 @@ description = "j5 Robotics Framework"
 authors = ["j5 contributors <j5api@googlegroups.com>"]
 license = "MIT"
 readme = "README.md"
-repository = "https://github.com/j5api/j5"
-homepage = "https://j5.org.uk"
-documentation = "https://j5.org.uk"
+repository = "https://github.com/srobo/j5"
+homepage = "https://studentrobotics.org/"
+documentation = "https://j5.readthedocs.io/"
 classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Operating System :: OS Independent",
