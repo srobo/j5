@@ -22,24 +22,25 @@ pyusb = "^1.0"
 pyserial = "^3.4"
 
 [tool.poetry.dev-dependencies]
-darglint = "^1.8"
-flake8 = "^5"  # Flake8 6.x requires Python 3.8
-flake8-bugbear = "^22"
-flake8-builtins = "^2"
-flake8-commas = "^2.1"
-flake8-comprehensions = "^3.10"
-flake8-debugger = "^4.1"
-flake8-docstrings = "^1.6"
-flake8-mutable = "^1.2"
-flake8-print = "^5.0"
-flake8-todo = "^0.7.0"
-isort = {version = "^5.10",extras = ["pyproject"]}
-mypy = "^0.991"
-pytest = "^7.2"
-pytest-cov = "^4"
-rope = "^1.5.1"
-sphinx = "^4.3"  # Sphinx 5.x required Python 3.8
-sphinx-rtd-theme = "^1.1.1"
+darglint = "*"
+flake8 = "*"
+flake8-bugbear = "*"
+flake8-builtins = "*"
+flake8-commas = "*"
+flake8-comprehensions = "*"
+flake8-debugger = "*"
+flake8-docstrings = "*"
+flake8-mutable = "*"
+flake8-print = "*"
+flake8-todo = "*"
+isort = "*"
+mypy = "*"
+pytest = "*"
+pytest-cov = "*"
+rope = "*"
+setuptools = "*"
+sphinx = "*"
+sphinx-rtd-theme = "*"
 
 [build-system]
 requires = ["poetry>=1.0"]
