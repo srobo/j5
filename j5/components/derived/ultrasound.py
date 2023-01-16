@@ -102,10 +102,10 @@ class UltrasoundSensor(DerivedComponent):
         Send a pulse and return the distance to the object.
 
         :returns: Distance measured in metres, or None if it timed out.
-        :raises Exception: distance mode is disabled.
+        :raises RuntimeError: distance mode is disabled.
         """
         if not self._distance_mode:
-            raise Exception("Distance mode is disabled. Use pulse() to get the time.")
+            raise RuntimeError("Distance mode is disabled. Use pulse() to get the time.")
 
         return self._backend.get_ultrasound_distance(
             self._gpio_trigger.identifier,
