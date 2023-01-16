@@ -64,7 +64,7 @@ class Console:
                     return return_type(response)  # type: ignore
                 except ValueError:
                     self.info(f"Unable to construct a {return_type.__name__}"
-                              f" from '{response}'")
+                              f" from {response!r}")
         else:
             self._input(f"{self._descriptor}: {prompt}: ")
 

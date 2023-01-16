@@ -35,5 +35,5 @@ class SRV4RuggeduinoConsoleBackend(
         :returns: result from the command.
         """
         return self._console.read(
-            f"Response to string command \"{command}\" [str]: ",
+            f"Response to string command {command!r} [str]: ",
         )

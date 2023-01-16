@@ -34,6 +34,6 @@ class MockConsole(Console):
                 return return_type(self.next_input)  # type: ignore
             except ValueError:
                 self.info(f"Unable to construct a {return_type.__name__}"
-                          f" from '{self.next_input}'")
+                          f" from {self.next_input!r}")
         else:
             return None
