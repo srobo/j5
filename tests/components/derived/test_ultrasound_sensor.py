@@ -108,7 +108,7 @@ def test_ultrasound_no_distance() -> None:
         distance_mode=False,
     )
 
-    with pytest.raises(Exception):
+    with pytest.raises(RuntimeError):
         u.distance()
 
 

@@ -105,7 +105,7 @@ def test_console_handle_boolean_correctly() -> None:
             """Mock printing function."""
             if self._pos in [8, 9, 10, 11]:
                 assert text == f"TestConsole: Unable to construct a bool " \
-                    f"from '{self.cases[self._pos - 1]}'"
+                    f"from {self.cases[self._pos - 1]!r}"
             else:
                 raise AssertionError()
 
