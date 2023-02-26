@@ -10,12 +10,13 @@ GENERATEDCODE:=$(SNIPPETS)/**/*.py
 all: type test lint
 
 lint: extract_snippets
-	$(CMD) flake8 $(PYMODULE) $(GENERATEDCODE)
-	$(CMD) flake8 --config=tests.flake8 --extend-ignore=DAR $(TESTS)
-	$(CMD) flake8 --config=extracode.flake8 $(EXTRACODE)
+	$(CMD) ruff $(PYMODULE) $(GENERATEDCODE) $(TESTS) $(EXTRACODE)
+
+lint-fix: extract_snippets
+	$(CMD) ruff --fix $(PYMODULE) $(GENERATEDCODE) $(TESTS) $(EXTRACODE)
 
 type: extract_snippets
-	$(CMD) mypy $(PYMODULE) $(TESTS) $(EXTRACODE) $(GENERATEDCODE)
+	$(CMD) mypy $(PYMODULE) $(GENERATEDCODE) $(TESTS) $(EXTRACODE)
 
 test:
 	$(CMD) pytest --cov=$(PYMODULE) $(TESTS)
