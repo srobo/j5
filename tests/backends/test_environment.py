@@ -1,6 +1,5 @@
 """Test environment and related."""
 
-from typing import Optional, Set
 
 import pytest
 
@@ -95,11 +94,11 @@ def test_environment_check_multiple_backends_same_env() -> None:
         board = MockBoard
 
         @classmethod
-        def discover(cls) -> Set[Board]:
+        def discover(cls) -> set[Board]:
             return set()
 
         @property
-        def firmware_version(self) -> Optional[str]:
+        def firmware_version(self) -> str | None:
             return None
 
     class BackendTwo(Backend):
@@ -107,11 +106,11 @@ def test_environment_check_multiple_backends_same_env() -> None:
         board = MockBoard
 
         @classmethod
-        def discover(cls) -> Set[Board]:
+        def discover(cls) -> set[Board]:
             return set()
 
         @property
-        def firmware_version(self) -> Optional[str]:
+        def firmware_version(self) -> str | None:
             return None
 
     test_environment.register_backend(BackendOne)

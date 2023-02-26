@@ -1,7 +1,7 @@
 """Board definition for the Student Robotics KCH."""
 
 from enum import Enum
-from typing import Dict, Set, Type, cast
+from typing import cast
 
 from j5.backends import Backend
 from j5.boards import Board
@@ -22,7 +22,7 @@ class KCHBoard(Board):
 
     name: str = "Student Robotics KCH v1"
 
-    def __init__(self, serial: str, backend: Backend):
+    def __init__(self, serial: str, backend: Backend) -> None:
         self._serial = serial
         self._backend = backend
 
@@ -56,7 +56,7 @@ class KCHBoard(Board):
         pass
 
     @property
-    def leds(self) -> Dict[KCHLED, RGBLED]:
+    def leds(self) -> dict[KCHLED, RGBLED]:
         """
         The RGB LEDs on the KCH.
 
@@ -92,7 +92,7 @@ class KCHBoard(Board):
         return self.leds[KCHLED.C]
 
     @staticmethod
-    def supported_components() -> Set[Type[Component]]:
+    def supported_components() -> set[type[Component]]:
         """
         List the types of components supported by this board.
 

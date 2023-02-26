@@ -1,5 +1,4 @@
 """Tests for the SR v4 Motor Board."""
-from typing import List, Optional, Set, Tuple
 
 import pytest
 
@@ -15,18 +14,18 @@ class MockKCHBoardBackend(RGBLEDInterface, Backend):
     board = KCHBoard
 
     @classmethod
-    def discover(cls) -> Set[Board]:
+    def discover(cls) -> set[Board]:
         """Discover the Motor Boards on this backend."""
         return set()
 
     def __init__(self) -> None:
-        self._states: List[Tuple[float, float, float]] = [
+        self._states: list[tuple[float, float, float]] = [
             (0, 0, 0)
             for _ in range(0, 3)
         ]
 
     @property
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str | None:
         """The firmware version of the board."""
         return None
 

@@ -1,5 +1,4 @@
 """Discovery-only backend for legacy and serial drivers for Power Board."""
-from typing import Set
 
 from j5.backends import Backend
 from j5.boards import Board
@@ -16,7 +15,7 @@ class SRV4PowerBoardHardwareBackend(Backend):
     discover_only = True
 
     @classmethod
-    def discover(cls) -> Set[Board]:
+    def discover(cls) -> set[Board]:
         """
         Discover boards that this backend can control.
 

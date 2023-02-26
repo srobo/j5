@@ -2,7 +2,7 @@
 
 from datetime import timedelta
 from time import sleep
-from typing import Dict, Optional, Set, Type, cast
+from typing import cast
 
 from j5.backends import Backend
 from j5.backends.console.console import Console
@@ -30,7 +30,7 @@ class SRV4PowerBoardConsoleBackend(
     board = PowerBoard
 
     @classmethod
-    def discover(cls) -> Set[Board]:
+    def discover(cls) -> set[Board]:
         """
         Discover boards that this backend can control.
 
@@ -38,13 +38,13 @@ class SRV4PowerBoardConsoleBackend(
         """
         return {cast(Board, PowerBoard("SERIAL", cls("SERIAL")))}
 
-    def __init__(self, serial: str, console_class: Type[Console] = Console) -> None:
+    def __init__(self, serial: str, console_class: type[Console] = Console) -> None:
         self._serial = serial
-        self._output_states: Dict[int, bool] = {
+        self._output_states: dict[int, bool] = {
             output.value: False
             for output in PowerOutputPosition
         }
-        self._led_states: Dict[int, bool] = {
+        self._led_states: dict[int, bool] = {
             i: False
             for i in range(2)
         }
@@ -52,7 +52,7 @@ class SRV4PowerBoardConsoleBackend(
         # Setup console helper
         self._console = console_class(f"{self.board.__name__}({self._serial})")
 
-    def get_features(self) -> Set['Board.AvailableFeatures']:
+    def get_features(self) -> set['Board.AvailableFeatures']:
         """
         The set of features available on this backend.
 
@@ -61,7 +61,7 @@ class SRV4PowerBoardConsoleBackend(
         return {PowerBoard.AvailableFeatures.REG_5V_CONTROL}
 
     @property
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str | None:
         """
         The firmware version reported by the board.
 

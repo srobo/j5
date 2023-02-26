@@ -2,7 +2,8 @@
 import re
 import threading
 from abc import ABC
-from typing import Collection, NamedTuple
+from collections.abc import Collection
+from typing import NamedTuple
 
 from serial import SerialException, SerialTimeoutException
 

@@ -5,7 +5,7 @@ import socket
 import pytest
 
 from j5 import BaseRobot
-from j5.base_robot import UnableToObtainLock
+from j5.base_robot import UnableToObtainLockError
 
 
 class Robot(BaseRobot):
@@ -24,7 +24,7 @@ def test_robot_lock() -> None:
     assert isinstance(r1._lock, socket.socket)
     assert r1._lock.getsockname()[1] == 10653
 
-    with pytest.raises(UnableToObtainLock):
+    with pytest.raises(UnableToObtainLockError):
         Robot()
 
 

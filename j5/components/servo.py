@@ -1,12 +1,11 @@
 """Classes for supporting Servomotors."""
 
 from abc import abstractmethod
-from typing import Type, Union
 
 from j5.components.component import Component, Interface
 
 # A servo can be powered down by setting its position to None.
-ServoPosition = Union[float, None]
+ServoPosition = float | None
 
 
 class ServoInterface(Interface):
@@ -45,7 +44,7 @@ class Servo(Component):
         self._identifier = identifier
 
     @staticmethod
-    def interface_class() -> Type[ServoInterface]:
+    def interface_class() -> type[ServoInterface]:
         """
         Get the interface class that is required to use this component.
 

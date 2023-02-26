@@ -1,5 +1,4 @@
 """Utility classes for testing."""
-from typing import Optional, Set, Type
 
 from j5.backends import Backend
 from j5.boards import Board
@@ -9,7 +8,7 @@ from j5.components import Component
 class MockBoard(Board):
     """A testing board with little to no functionality."""
 
-    def __init__(self, serial: str):
+    def __init__(self, serial: str) -> None:
         self._serial = serial
         self._safe = False
 
@@ -24,7 +23,7 @@ class MockBoard(Board):
         return self._serial
 
     @property
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str | None:
         """Get the firmware version of this board."""
         return None
 
@@ -33,7 +32,7 @@ class MockBoard(Board):
         self._safe = True
 
     @staticmethod
-    def supported_components() -> Set[Type[Component]]:
+    def supported_components() -> set[type[Component]]:
         """List the types of component supported by this Board."""
         return set()
 
@@ -54,12 +53,12 @@ class NoBoardMockBackend(Backend):
     board = MockBoard
 
     @property
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str | None:
         """The firmware version of the board."""
         return None
 
     @classmethod
-    def discover(cls) -> Set[Board]:
+    def discover(cls) -> set[Board]:
         """Discover boards available on this backend."""
         return set()
 
@@ -70,12 +69,12 @@ class OneBoardMockBackend(Backend):
     board = MockBoard
 
     @property
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str | None:
         """The firmware version of the board."""
         return None
 
     @classmethod
-    def discover(cls) -> Set[Board]:
+    def discover(cls) -> set[Board]:
         """Discover boards available on this backend."""
         return {MockBoard("TESTSERIAL1")}
 
@@ -86,11 +85,11 @@ class TwoBoardsMockBackend(Backend):
     board = MockBoard
 
     @property
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str | None:
         """The firmware version of the board."""
         return None
 
     @classmethod
-    def discover(cls) -> Set[Board]:
+    def discover(cls) -> set[Board]:
         """Discover boards available on this backend."""
         return {MockBoard("TESTSERIAL1"), MockBoard("TESTSERIAL2")}

@@ -1,6 +1,6 @@
 """Console Backend for the SR v4 Motor Board."""
 
-from typing import List, Optional, Set, Type, cast
+from typing import cast
 
 from j5.backends import Backend
 from j5.backends.console import Console
@@ -18,7 +18,7 @@ class SRV4MotorBoardConsoleBackend(
     board = MotorBoard
 
     @classmethod
-    def discover(cls) -> Set[Board]:
+    def discover(cls) -> set[Board]:
         """
         Discover boards that this backend can control.
 
@@ -26,11 +26,11 @@ class SRV4MotorBoardConsoleBackend(
         """
         return {cast(Board, MotorBoard("SERIAL", cls("SERIAL")))}
 
-    def __init__(self, serial: str, console_class: Type[Console] = Console) -> None:
+    def __init__(self, serial: str, console_class: type[Console] = Console) -> None:
         self._serial = serial
 
         # Initialise our stored values for the state.
-        self._state: List[MotorState] = [
+        self._state: list[MotorState] = [
             MotorSpecialState.BRAKE
             for _ in range(0, 2)
         ]
@@ -48,7 +48,7 @@ class SRV4MotorBoardConsoleBackend(
         return self._serial
 
     @property
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str | None:
         """
         The firmware version reported by the board.
 

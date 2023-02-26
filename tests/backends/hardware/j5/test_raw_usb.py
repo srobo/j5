@@ -1,6 +1,5 @@
 """Test the abstract Raw USB backend."""
 from threading import Lock
-from typing import Optional, Set, Type, Union
 
 import usb
 from pytest import raises
@@ -59,7 +58,7 @@ class MockBoard(Board):
         return "N/A"
 
     @property
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str | None:
         """The firmware version of the board."""
         return "0.0.0"
 
@@ -68,7 +67,7 @@ class MockBoard(Board):
         """Make all components on this board safe."""
 
     @staticmethod
-    def supported_components() -> Set[Type[Component]]:
+    def supported_components() -> set[type[Component]]:
         """The components supported by this board."""
         return set()
 
@@ -95,8 +94,8 @@ class MockRawUSBDevice(usb.core.Device):
         bRequest: int,
         wValue: int = 0,
         wIndex: int = 0,
-        data_or_wLength: Optional[Union[int, bytes]] = None,
-        timeout: Optional[int] = None,
+        data_or_wLength: int | bytes | None = None,
+        timeout: int | None = None,
     ) -> bytes:
         """Mock a control transfer."""
         raise usb.core.USBError("Oh no.")
@@ -106,7 +105,7 @@ class MockRawUSBDevice(usb.core.Device):
         wValue: int = 0,
         wIndex: int = 0,
         wLength: int = 0,
-        timeout: Optional[int] = None,
+        timeout: int | None = None,
     ) -> bytes:
         """Mock reading data from a device."""
         raise usb.core.USBError("Oh no.")
@@ -116,7 +115,7 @@ class MockRawUSBDevice(usb.core.Device):
         wValue: int = 0,
         wIndex: int = 0,
         data: bytes = b"",
-        timeout: Optional[int] = None,
+        timeout: int | None = None,
     ) -> None:
         """Mock writing data to a device."""
         raise usb.core.USBError("Oh no.")
@@ -132,12 +131,12 @@ class MockRawUSBHardwareBackend(RawUSBHardwareBackend):
         self._usb_device = MockRawUSBDevice()
 
     @classmethod
-    def discover(cls) -> Set[Board]:
+    def discover(cls) -> set[Board]:
         """Discover no boards."""
         return set()
 
     @property
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str | None:
         """Get the firmware version."""
         return "v0.0.0"
 

@@ -1,7 +1,7 @@
 """Hardware Backend for the SR V4 Servo Board."""
 
 import struct
-from typing import List, Set, cast
+from typing import cast
 
 import usb
 
@@ -35,14 +35,14 @@ class SRV4ServoBoardHardwareBackend(
     board = ServoBoard
 
     @classmethod
-    def discover(cls) -> Set[Board]:
+    def discover(cls) -> set[Board]:
         """
         Discover boards that this backend can control.
 
         :returns: set of boards that this backend can control.
         :raises USBCommunicationError: Unable to query USB.
         """
-        boards: Set[Board] = set()
+        boards: set[Board] = set()
         try:
             device_list = cls.find(idVendor=0x1bda, idProduct=0x0011, find_all=True)
         except usb.core.USBError as e:
@@ -61,7 +61,7 @@ class SRV4ServoBoardHardwareBackend(
 
         self.check_firmware_version_supported()
 
-        self._positions: List[float] = [0.0] * 12
+        self._positions: list[float] = [0.0] * 12
 
         # Initialise servos.
         self._write(CMD_WRITE_INIT, b"")
@@ -85,7 +85,7 @@ class SRV4ServoBoardHardwareBackend(
                 raise CommunicationError(
                     f"{e}; are you sure the servo board"
                     f" is being correctly powered?",
-                )
+                ) from e
             raise
 
     def check_firmware_version_supported(self) -> None:

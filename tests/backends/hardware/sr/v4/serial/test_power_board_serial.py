@@ -1,7 +1,7 @@
 """Test the backend for the SR v4 Power Board serial protocol."""
 import re
 from datetime import timedelta
-from typing import List, Optional, Type, cast
+from typing import cast
 
 import pytest
 from serial import Serial
@@ -25,7 +25,7 @@ class MockListPortInfo:
     def __init__(
             self,
             device: str,
-            serial_number: Optional[str],
+            serial_number: str | None,
             vid: int = 0x1bda,
             pid: int = 0x0010,
             manufacturer: str = "Student Robotics",
@@ -47,7 +47,7 @@ class MockPowerSerialBackend(SRV4SerialProtocolPowerBoardHardwareBackend):
     """Mock backend for testing."""
 
     @classmethod
-    def get_comports(cls) -> List[MockListPortInfo]:  # type: ignore[override]
+    def get_comports(cls) -> list[MockListPortInfo]:  # type: ignore[override]
         """Get the comports."""
         return [
             MockListPortInfo("COM0", "SERIAL0"),  # Valid Power Board
@@ -62,7 +62,7 @@ class MockPowerSerialBackend(SRV4SerialProtocolPowerBoardHardwareBackend):
             ),  # Bad Product
         ]
 
-    def get_serial_class(self) -> Type[Serial]:
+    def get_serial_class(self) -> type[Serial]:
         """Get the serial class."""
         return PowerSerial  # type: ignore
 
@@ -71,7 +71,7 @@ class MockPowerSerialBadSerialNumberBackend(SRV4SerialProtocolPowerBoardHardware
     """Mock backend for testing."""
 
     @classmethod
-    def get_comports(cls) -> List[ListPortInfo]:
+    def get_comports(cls) -> list[ListPortInfo]:
         """Get the comports."""
         return [
             MockListPortInfo("COM0", None),  # type: ignore
@@ -125,7 +125,7 @@ class PowerSerial(MockSerial):
 class MockPowerSerialBackendAlwaysNACK(SRV4SerialProtocolPowerBoardHardwareBackend):
     """Mock backend for testing."""
 
-    def get_serial_class(self) -> Type[Serial]:
+    def get_serial_class(self) -> type[Serial]:
         """Get the serial class."""
         class PowerSerialAlwaysNACK(PowerSerial):
             """A serial port that always returns NACK."""
@@ -141,7 +141,7 @@ class MockPowerSerialBackendAlwaysNACK(SRV4SerialProtocolPowerBoardHardwareBacke
 class MockPowerSerialBackendBadData(SRV4SerialProtocolPowerBoardHardwareBackend):
     """Mock backend for testing."""
 
-    def get_serial_class(self) -> Type[Serial]:
+    def get_serial_class(self) -> type[Serial]:
         """Get the serial class."""
         class PowerSerialBadData(PowerSerial):
             """A serial port that always returns bad data."""

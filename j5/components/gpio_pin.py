@@ -2,7 +2,6 @@
 
 from abc import abstractmethod
 from enum import IntEnum
-from typing import Set, Type, Union
 
 from j5.components.component import (
     Component,
@@ -33,9 +32,9 @@ class GPIOPinMode(IntEnum):
     PWM_OUTPUT = 6  #: A PWM output signal can be created on the pin.
 
 
-FirmwareMode = Type[DerivedComponent]
+FirmwareMode = type[DerivedComponent]
 
-PinMode = Union[FirmwareMode, GPIOPinMode]
+PinMode = FirmwareMode | GPIOPinMode
 
 
 class GPIOPinInterface(Interface):
@@ -139,8 +138,8 @@ class GPIOPinInterface(Interface):
 class GPIOPin(Component):
     """A GPIO Pin."""
 
-    DEFAULT_HW_MODE: Set[GPIOPinMode] = {GPIOPinMode.DIGITAL_OUTPUT}
-    DEFAULT_FW_MODE: Set[FirmwareMode] = set()
+    DEFAULT_HW_MODE: set[GPIOPinMode] = {GPIOPinMode.DIGITAL_OUTPUT}
+    DEFAULT_FW_MODE: set[FirmwareMode] = set()
 
     def __init__(
             self,
@@ -148,8 +147,8 @@ class GPIOPin(Component):
             backend: GPIOPinInterface,
             *,
             initial_mode: PinMode,
-            hardware_modes: Set[GPIOPinMode] = DEFAULT_HW_MODE,
-            firmware_modes: Set[FirmwareMode] = DEFAULT_FW_MODE,
+            hardware_modes: set[GPIOPinMode] = DEFAULT_HW_MODE,
+            firmware_modes: set[FirmwareMode] = DEFAULT_FW_MODE,
     ) -> None:
         self._backend = backend
         self._identifier = identifier
@@ -162,7 +161,7 @@ class GPIOPin(Component):
         self.mode = initial_mode
 
     @staticmethod
-    def interface_class() -> Type[GPIOPinInterface]:
+    def interface_class() -> type[GPIOPinInterface]:
         """
         Get the interface class that is required to use this component.
 
@@ -170,7 +169,7 @@ class GPIOPin(Component):
         """
         return GPIOPinInterface
 
-    def _require_pin_modes(self, pin_modes: Set[PinMode]) -> None:
+    def _require_pin_modes(self, pin_modes: set[PinMode]) -> None:
         """
         Ensure that this pin is in the specified hardware mode.
 
@@ -297,7 +296,7 @@ class GPIOPin(Component):
         )
 
     @property
-    def firmware_modes(self) -> Set[FirmwareMode]:
+    def firmware_modes(self) -> set[FirmwareMode]:
         """
         Get the supported firmware modes.
 
@@ -306,7 +305,7 @@ class GPIOPin(Component):
         return self._firmware_modes
 
     @firmware_modes.setter
-    def firmware_modes(self, modes: Set[FirmwareMode]) -> None:
+    def firmware_modes(self, modes: set[FirmwareMode]) -> None:
         """
         Set the supported firmware modes.
 

@@ -1,9 +1,10 @@
 """Hardware Backend for the SR V4 power board."""
 
 import struct
+from collections.abc import Mapping
 from datetime import timedelta
 from time import sleep
-from typing import Dict, Mapping, Set, cast
+from typing import cast
 
 import usb
 
@@ -60,14 +61,14 @@ class SRV4LegacyPowerBoardHardwareBackend(
     board = PowerBoard
 
     @classmethod
-    def discover(cls) -> Set[Board]:
+    def discover(cls) -> set[Board]:
         """
         Discover boards that this backend can control.
 
         :returns: set of boards that this backend can control.
         :raises USBCommunicationError: Unable to query USB.
         """
-        boards: Set[Board] = set()
+        boards: set[Board] = set()
         try:
             device_list = cls.find(idVendor=0x1bda, idProduct=0x0010, find_all=True)
         except usb.core.USBError as e:
@@ -87,12 +88,12 @@ class SRV4LegacyPowerBoardHardwareBackend(
 
         self._usb_device = usb_device
 
-        self._output_states: Dict[int, bool] = {
+        self._output_states: dict[int, bool] = {
             output.value: False
             for output in PowerOutputPosition
             if output is not PowerOutputPosition.FIVE_VOLT
         }
-        self._led_states: Dict[int, bool] = {
+        self._led_states: dict[int, bool] = {
             0: False,
             1: False,
         }
@@ -209,7 +210,7 @@ class SRV4LegacyPowerBoardHardwareBackend(
                 raise CommunicationError(
                     f"{e}; are you sending buzz commands to the "
                     f"power board too quickly",
-                )
+                ) from e
             raise
 
         # If the buzz needs to block, wait for the correct time.

@@ -2,9 +2,9 @@
 
 import logging
 from abc import abstractmethod
+from collections.abc import Mapping
 from datetime import timedelta
 from threading import Lock
-from typing import Mapping, Optional, Set, Tuple, Type
 
 from serial.tools.list_ports_common import ListPortInfo
 
@@ -23,7 +23,7 @@ class DigitalPinData:
     mode: GPIOPinMode
     state: bool
 
-    def __init__(self, *, mode: GPIOPinMode, state: bool):
+    def __init__(self, *, mode: GPIOPinMode, state: bool) -> None:
         self.mode = mode
         self.state = state
 
@@ -35,8 +35,8 @@ class ArduinoHardwareBackend(
 ):
     """An abstract class to create backends for different Arduinos."""
 
-    board: Type[ArduinoUno]
-    USB_IDS: Set[Tuple[int, int]] = {
+    board: type[ArduinoUno]
+    USB_IDS: set[tuple[int, int]] = {
         (0x2341, 0x0043),  # Fake Uno
         (0x2a03, 0x0043),  # Fake Uno
         (0x1a86, 0x7523),  # Real Uno
@@ -56,7 +56,7 @@ class ArduinoHardwareBackend(
         return (port.vid, port.pid) in cls.USB_IDS
 
     @classmethod
-    def discover(cls) -> Set[Board]:
+    def discover(cls) -> set[Board]:
         """
         Discover boards that this backend can control.
 
@@ -66,7 +66,7 @@ class ArduinoHardwareBackend(
         ports = cls.get_comports()
 
         # Get a list of boards from the ports.
-        boards: Set[Board] = set()
+        boards: set[Board] = set()
         for port in filter(cls.is_arduino, ports):
             if port.serial_number is None:
                 LOGGER.warning(
@@ -106,7 +106,7 @@ class ArduinoHardwareBackend(
 
     @property
     @abstractmethod
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str | None:
         """
         The firmware version reported by the board.
 

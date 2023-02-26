@@ -1,6 +1,5 @@
 """Test the ultrasound sensor component."""
 from datetime import timedelta
-from typing import Optional
 
 import pytest
 
@@ -20,7 +19,7 @@ class MockUltrasoundSensorDriver(UltrasoundInterface):
             self,
             pin_trigger: int,
             pin_echo: int,
-    ) -> Optional[timedelta]:
+    ) -> timedelta | None:
         """
         Send a pulse and return the time taken.
 
@@ -32,7 +31,7 @@ class MockUltrasoundSensorDriver(UltrasoundInterface):
             self,
             pin_trigger: int,
             pin_echo: int,
-    ) -> Optional[float]:
+    ) -> float | None:
         """
         Send a pulse and return the distance to the object.
 

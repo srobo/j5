@@ -8,21 +8,16 @@ import signal
 import sys
 from abc import ABCMeta, abstractmethod
 from types import FrameType
-from typing import TYPE_CHECKING, Dict, Optional, Set, Type, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from j5.backends import Backend
 
 if TYPE_CHECKING:  # pragma: nocover
-    from typing import Callable, Union
+    from collections.abc import Callable
 
     from j5.components import Component  # noqa: F401
 
-    SignalHandler = Union[
-        Callable[[int, Optional[FrameType]], None],
-        int,
-        signal.Handlers,
-        None,
-    ]
+    SignalHandler = Callable[[int, FrameType | None], None] | int | signal.Handlers | None
 
 T = TypeVar('T', bound='Board')
 U = TypeVar('U', bound=Backend)
@@ -33,7 +28,7 @@ class Board(metaclass=ABCMeta):
 
     # BOARDS is a set of currently instantiated boards.
     # This is useful to know so that we can make them safe in a crash.
-    BOARDS: Set['Board'] = set()
+    BOARDS: set['Board'] = set()
 
     _backend: 'Backend'
 
@@ -48,7 +43,7 @@ class Board(metaclass=ABCMeta):
         """
         return f"{self.name} - {self.serial_number}"
 
-    def __new__(cls, *args, **kwargs):  # type: ignore
+    def __new__(cls, *args: Any, **kwargs: Any) -> Any:
         """
         Ensure any instantiated board is added to the boards list.
 
@@ -67,7 +62,7 @@ class Board(metaclass=ABCMeta):
         return f"<{self.__class__.__name__} serial_number={self.serial_number}>"
 
     @property
-    def features(self) -> Set['Board.AvailableFeatures']:
+    def features(self) -> set['Board.AvailableFeatures']:
         """
         The set of features that are enabled on this board instance.
 
@@ -89,7 +84,7 @@ class Board(metaclass=ABCMeta):
 
     @property
     @abstractmethod
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str | None:
         """The firmware version of the board."""
         raise NotImplementedError  # pragma: no cover
 
@@ -100,7 +95,7 @@ class Board(metaclass=ABCMeta):
 
     @staticmethod
     @abstractmethod
-    def supported_components() -> Set[Type['Component']]:
+    def supported_components() -> set[type['Component']]:
         """The types of component supported by this board."""
         raise NotImplementedError  # pragma: no cover
 
@@ -116,9 +111,9 @@ class Board(metaclass=ABCMeta):
         atexit.register(Board.make_all_safe)
 
         # Register make_all_safe to be called when a termination signal is received.
-        old_signal_handlers: Dict[signal.Signals, SignalHandler] = {}
+        old_signal_handlers: dict[signal.Signals, SignalHandler] = {}
 
-        def new_signal_handler(signal_type: int, frame: Optional[FrameType]) -> None:
+        def new_signal_handler(signal_type: int, frame: FrameType | None) -> None:
             logging.getLogger(__name__).error("program terminated prematurely")
             Board.make_all_safe()
             # Do what the signal originally would have done.

@@ -1,7 +1,6 @@
 """SourceBots Arduino Hardware Implementation."""
 
 from datetime import timedelta
-from typing import List, Optional
 
 from serial import SerialException, SerialTimeoutException
 
@@ -25,11 +24,11 @@ class SBArduinoHardwareBackend(
     def __init__(
             self,
             serial_port: str,
-    ):
+    ) -> None:
         super().__init__(serial_port)
 
         # Initialise stored servo states
-        self._servo_states: List[ServoPosition] = [None] * 16
+        self._servo_states: list[ServoPosition] = [None] * 16
 
         # Verify that the Arduino has booted
         count = 0
@@ -62,7 +61,7 @@ class SBArduinoHardwareBackend(
         """
         return self._version_line.split("v")[1]
 
-    def _command(self, command: str, *params: str) -> List[str]:
+    def _command(self, command: str, *params: str) -> list[str]:
         """
         Send a command to the board.
 
@@ -76,7 +75,7 @@ class SBArduinoHardwareBackend(
                 message = " ".join([command] + list(params)) + "\n"
                 self._serial.write(message.encode("utf-8"))
 
-                results: List[str] = []
+                results: list[str] = []
                 while True:
                     line = self.read_serial_line(empty=False)
                     code, param = line.split(None, 1)
@@ -201,7 +200,7 @@ class SBArduinoHardwareBackend(
         self,
         trigger_pin_identifier: int,
         echo_pin_identifier: int,
-    ) -> Optional[timedelta]:
+    ) -> timedelta | None:
         """
         Get a timedelta for the ultrasound time.
 
@@ -228,7 +227,7 @@ class SBArduinoHardwareBackend(
         self,
         trigger_pin_identifier: int,
         echo_pin_identifier: int,
-    ) -> Optional[float]:
+    ) -> float | None:
         """
         Get a distance in metres.
 

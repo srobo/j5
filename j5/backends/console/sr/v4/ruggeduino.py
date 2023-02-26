@@ -1,6 +1,6 @@
 """Console Backend for the SR v4 Ruggeduino."""
 
-from typing import Set, cast
+from typing import cast
 
 from j5.backends.console.j5.arduino import ArduinoConsoleBackend
 from j5.boards import Board
@@ -17,7 +17,7 @@ class SRV4RuggeduinoConsoleBackend(
     board = Ruggeduino
 
     @classmethod
-    def discover(cls) -> Set[Board]:
+    def discover(cls) -> set[Board]:
         """
         Discover boards that this backend can control.
 

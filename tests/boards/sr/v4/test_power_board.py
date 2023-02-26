@@ -1,6 +1,6 @@
 """Tests for the SR v4 Power Board and related classes."""
 from datetime import timedelta
-from typing import TYPE_CHECKING, Optional, Set
+from typing import TYPE_CHECKING
 
 import pytest
 
@@ -38,12 +38,12 @@ class MockPowerBoardBackend(
     board = PowerBoard
 
     @classmethod
-    def discover(cls) -> Set["Board"]:
+    def discover(cls) -> set["Board"]:
         """Discover the PowerBoards on this backend."""
         return set()
 
     @property
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str | None:
         """The firmware version of the board."""
         return None
 
@@ -95,7 +95,7 @@ class MockPowerBoardBackend(
 class MockPowerBoardBackendWith5V(MockPowerBoardBackend):
     """A mock power board backend with toggleable 5V output."""
 
-    def get_features(self) -> Set['Board.AvailableFeatures']:
+    def get_features(self) -> set['Board.AvailableFeatures']:
         """The set of features available on this backend."""
         return {PowerBoard.AvailableFeatures.REG_5V_CONTROL}
 
@@ -249,8 +249,8 @@ class TestOutputIsControllable:
     )
     def test_output_controllable(
         self,
-        features: Set[Board.AvailableFeatures],
-        expected_outputs: Set[int],
+        features: set[Board.AvailableFeatures],
+        expected_outputs: set[int],
     ) -> None:
         """Test the available outputs when the board has no features."""
         outputs = {

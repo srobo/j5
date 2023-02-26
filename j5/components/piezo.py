@@ -3,7 +3,6 @@
 from abc import abstractmethod
 from datetime import timedelta
 from enum import Enum
-from typing import Optional, Type, Union
 
 from j5.components.component import Component, Interface
 
@@ -32,7 +31,7 @@ class Note(float, Enum):
     C8 = 4186.0
 
 
-Pitch = Union[int, float, Note]
+Pitch = int | float | Note
 
 
 class PiezoInterface(Interface):
@@ -77,7 +76,7 @@ class Piezo(Component):
         self._default_blocking = default_blocking
 
     @staticmethod
-    def interface_class() -> Type[PiezoInterface]:
+    def interface_class() -> type[PiezoInterface]:
         """
         Get the interface class that is required to use this component.
 
@@ -96,10 +95,10 @@ class Piezo(Component):
 
     def buzz(
         self,
-        duration: Union[int, float, timedelta],
+        duration: int | float | timedelta,
         pitch: Pitch,
         *,
-        blocking: Optional[bool] = None,
+        blocking: bool | None = None,
     ) -> None:
         """
         Queue a note to be played.

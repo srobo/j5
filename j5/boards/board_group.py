@@ -1,12 +1,9 @@
 """Board Group class."""
 from collections import OrderedDict
+from collections.abc import Iterator
 from typing import (
     TYPE_CHECKING,
-    Dict,
     Generic,
-    Iterator,
-    List,
-    Type,
     TypeVar,
     cast,
 )
@@ -23,14 +20,14 @@ U = TypeVar('U', bound=Backend)
 class BoardGroup(Generic[T, U]):
     """A group of boards that can be accessed."""
 
-    def __init__(self, backend_class: Type[U]) -> None:
+    def __init__(self, backend_class: type[U]) -> None:
         self._backend_class = backend_class
-        self._boards: Dict[str, T] = OrderedDict()
+        self._boards: dict[str, T] = OrderedDict()
 
         self.update_boards()
 
     @classmethod
-    def get_board_group(cls, _: Type[T], backend: Type[U]) -> 'BoardGroup[T, U]':
+    def get_board_group(cls, _: type[T], backend: type[U]) -> 'BoardGroup[T, U]':
         """
         Get the board group with the given types.
 
@@ -129,21 +126,21 @@ class BoardGroup(Generic[T, U]):
             return self._boards[serial_number]
         except KeyError:
             if not isinstance(serial_number, str):
-                raise TypeError("Serial number must be a string")
+                raise TypeError("Serial number must be a string") from None
 
             if len(self._boards):
                 available_serials = ", ".join(self._boards)
                 raise KeyError(
                     f"Could not find a board with the serial number {serial_number}; "
                     f"Available board serials: {available_serials}",
-                )
+                ) from None
             else:
                 raise KeyError(
                     f"There are no {self.backend_class.board.__name__} boards available.",
-                )
+                ) from None
 
     @property
-    def backend_class(self) -> Type[U]:
+    def backend_class(self) -> type[U]:
         """
         The Backend that this group uses for Boards.
 
@@ -152,7 +149,7 @@ class BoardGroup(Generic[T, U]):
         return self._backend_class
 
     @property
-    def boards(self) -> List[T]:
+    def boards(self) -> list[T]:
         """
         Get an unordered list of boards in this group.
 

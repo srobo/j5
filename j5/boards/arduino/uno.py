@@ -3,8 +3,9 @@ Base classes for Arduino Unos.
 
 This is to avoid duplicating code that is common between different Arduino boards.
 """
+from collections.abc import Iterable, Mapping
 from enum import IntEnum
-from typing import Iterable, Mapping, Optional, Set, Type, Union, cast
+from typing import cast
 
 from j5.backends import Backend
 from j5.boards import Board
@@ -33,7 +34,7 @@ class ArduinoUno(Board):
         A4 = 18
         A5 = 19
 
-    PinNumber = Union[int, AnaloguePin]
+    PinNumber = int | AnaloguePin
     FIRST_ANALOGUE_PIN: PinNumber = AnaloguePin.A0
 
     _digital_pins: Mapping[int, GPIOPin]
@@ -45,7 +46,7 @@ class ArduinoUno(Board):
             self,
             serial: str,
             backend: Backend,
-    ):
+    ) -> None:
         self._serial = serial
         self._backend = backend
 
@@ -82,8 +83,8 @@ class ArduinoUno(Board):
             numbering: Iterable[PinNumber],
             initial_mode: PinMode,
             *,
-            hardware_modes: Set[GPIOPinMode] = GPIOPin.DEFAULT_HW_MODE,
-            firmware_modes: Set[FirmwareMode] = GPIOPin.DEFAULT_FW_MODE,
+            hardware_modes: set[GPIOPinMode] = GPIOPin.DEFAULT_HW_MODE,
+            firmware_modes: set[FirmwareMode] = GPIOPin.DEFAULT_FW_MODE,
     ) -> Mapping[PinNumber, GPIOPin]:
         """
         Generate a dict of GPIOPins with the same properties.
@@ -115,7 +116,7 @@ class ArduinoUno(Board):
         return self._serial
 
     @property
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str | None:
         """
         Get the firmware version of the board.
 
@@ -141,7 +142,7 @@ class ArduinoUno(Board):
         """Make this board safe."""
 
     @staticmethod
-    def supported_components() -> Set[Type[Component]]:
+    def supported_components() -> set[type[Component]]:
         """
         List the types of components supported by this board.
 

@@ -1,7 +1,7 @@
 """Test the SR v4 Servo Board backend and associated classes."""
 
 import struct
-from typing import Iterable, List, Optional, Union
+from collections.abc import Iterable
 
 import pytest
 import usb
@@ -52,7 +52,7 @@ class MockUSBContext:
 class MockUSBServoBoardDevice(usb.core.Device):
     """This class mocks the behaviour of a USB device for a Servo Board."""
 
-    def __init__(self, serial_number: str, fw_version: int = 2):
+    def __init__(self, serial_number: str, fw_version: int = 2) -> None:
         self.serial = serial_number
         self.firmware_version = fw_version
         self._ctx = MockUSBContext()  # Used by PyUSB when cleaning up the device.
@@ -69,8 +69,8 @@ class MockUSBServoBoardDevice(usb.core.Device):
         bRequest: int,
         wValue: int = 0,
         wIndex: int = 0,
-        data_or_wLength: Optional[Union[int, bytes]] = None,
-        timeout: Optional[int] = None,
+        data_or_wLength: int | bytes | None = None,
+        timeout: int | None = None,
     ) -> bytes:
         """Mock a control transfer."""
         assert bRequest == 64  # This is the same for read and write.
@@ -90,7 +90,7 @@ class MockUSBServoBoardDevice(usb.core.Device):
         wValue: int = 0,
         wIndex: int = 0,
         wLength: int = 0,
-        timeout: Optional[int] = None,
+        timeout: int | None = None,
     ) -> bytes:
         """Mock reading data from a device."""
         assert wValue == 0  # Always 0 on read.
@@ -110,7 +110,7 @@ class MockUSBServoBoardDevice(usb.core.Device):
         wValue: int = 0,
         wIndex: int = 0,
         data: bytes = b"",
-        timeout: Optional[int] = None,
+        timeout: int | None = None,
     ) -> None:
         """Mock writing data to a device."""
         if 0 <= wIndex < 12:
@@ -168,9 +168,9 @@ class MockSRV4ServoBoardHardwareBackend(SRV4ServoBoardHardwareBackend):
     def find(
         cls,
         find_all: bool = False,
-        idVendor: Optional[int] = None,
-        idProduct: Optional[int] = None,
-    ) -> List[MockUSBServoBoardDevice]:
+        idVendor: int | None = None,
+        idProduct: int | None = None,
+    ) -> list[MockUSBServoBoardDevice]:
         """This function mocks the behaviour of usb.core.find."""
         assert idVendor == 0x1BDA
         assert idProduct == 0x0011
@@ -185,8 +185,8 @@ class MockErrorSRV4ServoBoardHardwareBackend(SRV4ServoBoardHardwareBackend):
     def find(
         cls,
         find_all: bool = False,
-        idVendor: Optional[int] = None,
-        idProduct: Optional[int] = None,
+        idVendor: int | None = None,
+        idProduct: int | None = None,
     ) -> Iterable[usb.core.Device]:
         """A function that behaves like find, but throws an error."""
         raise usb.core.USBError("An error.")

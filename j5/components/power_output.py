@@ -1,7 +1,8 @@
 """Classes for supporting toggleable power output channels."""
 
 from abc import abstractmethod
-from typing import Iterator, Mapping, Type, TypeVar
+from collections.abc import Iterator, Mapping
+from typing import TypeVar
 
 from j5.components.component import Component, Interface
 
@@ -57,7 +58,7 @@ class PowerOutput(Component):
         self._backend = backend
 
     @staticmethod
-    def interface_class() -> Type[PowerOutputInterface]:
+    def interface_class() -> type[PowerOutputInterface]:
         """
         Get the interface class that is required to use this component.
 
@@ -108,7 +109,7 @@ T = TypeVar('T')
 class PowerOutputGroup:
     """A group of PowerOutputs."""
 
-    def __init__(self, outputs: Mapping[T, PowerOutput]):
+    def __init__(self, outputs: Mapping[T, PowerOutput]) -> None:
         self._outputs = outputs
 
     def power_on(self) -> None:

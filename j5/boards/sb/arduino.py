@@ -1,5 +1,5 @@
 """Classes for the SourceBots Arduino."""
-from typing import Set, Tuple, Type, cast
+from typing import cast
 
 from j5.backends import Backend
 from j5.boards.arduino.uno import ArduinoUno
@@ -17,13 +17,13 @@ from j5.components.derived import UltrasoundInterface, UltrasoundSensor
 class SBArduinoBoard(ArduinoUno):
     """SourceBots Arduino Board."""
 
-    FIRMWARE_MODES: Set[Type[DerivedComponent]] = {UltrasoundSensor}
+    FIRMWARE_MODES: set[type[DerivedComponent]] = {UltrasoundSensor}
 
     def __init__(
             self,
             serial: str,
             backend: Backend,
-    ):
+    ) -> None:
         super().__init__(serial, backend)
 
         for pin in self._digital_pins.values():
@@ -33,7 +33,7 @@ class SBArduinoBoard(ArduinoUno):
         self.servos = [Servo(i, cast(ServoInterface, self._backend)) for i in range(16)]
 
     @staticmethod
-    def supported_components() -> Set[Type[Component]]:
+    def supported_components() -> set[type[Component]]:
         """
         List the types of components supported by this board.
 
@@ -56,12 +56,12 @@ class UltrasoundSensors:
     accessed.
     """
 
-    def __init__(self, arduino: SBArduinoBoard):
+    def __init__(self, arduino: SBArduinoBoard) -> None:
         self._arduino = arduino
 
     def __getitem__(
         self,
-        key: Tuple[ArduinoUno.PinNumber, ArduinoUno.PinNumber],
+        key: tuple[ArduinoUno.PinNumber, ArduinoUno.PinNumber],
     ) -> UltrasoundSensor:
         """
         Get an ultrasound sensor with the given pin configuration.

@@ -7,7 +7,6 @@ to a nearby object.
 
 from abc import abstractmethod
 from datetime import timedelta
-from typing import Optional, Type
 
 from j5.components import NotSupportedByComponentError
 from j5.components.component import DerivedComponent, Interface
@@ -22,7 +21,7 @@ class UltrasoundInterface(Interface):
             self,
             trigger_pin_identifier: int,
             echo_pin_identifier: int,
-    ) -> Optional[timedelta]:
+    ) -> timedelta | None:
         """
         Get a timedelta for the ultrasound time.
 
@@ -37,7 +36,7 @@ class UltrasoundInterface(Interface):
             self,
             trigger_pin_identifier: int,
             echo_pin_identifier: int,
-    ) -> Optional[float]:
+    ) -> float | None:
         """
         Get a distance in metres.
 
@@ -78,7 +77,7 @@ class UltrasoundSensor(DerivedComponent):
         self._distance_mode = distance_mode
 
     @staticmethod
-    def interface_class() -> Type[Interface]:
+    def interface_class() -> type[Interface]:
         """
         Get the interface class that is required to use this component.
 
@@ -86,7 +85,7 @@ class UltrasoundSensor(DerivedComponent):
         """
         return UltrasoundInterface
 
-    def pulse(self) -> Optional[timedelta]:
+    def pulse(self) -> timedelta | None:
         """
         Send a pulse and return the time taken.
 
@@ -97,7 +96,7 @@ class UltrasoundSensor(DerivedComponent):
             self._gpio_echo.identifier,
         )
 
-    def distance(self) -> Optional[float]:
+    def distance(self) -> float | None:
         """
         Send a pulse and return the distance to the object.
 

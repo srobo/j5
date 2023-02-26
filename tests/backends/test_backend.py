@@ -1,6 +1,6 @@
 """Tests for the base backend classes."""
 
-from typing import TYPE_CHECKING, Optional, Set, Type
+from typing import TYPE_CHECKING
 
 import pytest
 
@@ -39,12 +39,12 @@ def test_backend_has_required_interface() -> None:
             pass
 
         @property
-        def firmware_version(self) -> Optional[str]:
+        def firmware_version(self) -> str | None:
             """Get the firmware version of this board."""
             return None
 
         @staticmethod
-        def supported_components() -> Set[Type["Component"]]:
+        def supported_components() -> set[type["Component"]]:
             """List the types of component supported by this Board."""
             return {LED}
 
@@ -53,9 +53,9 @@ def test_backend_has_required_interface() -> None:
             board = LEDMockBoard
 
             @classmethod
-            def discover(cls) -> Set['Board']:
+            def discover(cls) -> set['Board']:
                 return set()
 
             @property
-            def firmware_version(self) -> Optional[str]:
+            def firmware_version(self) -> str | None:
                 return None

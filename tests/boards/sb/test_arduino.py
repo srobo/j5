@@ -1,7 +1,7 @@
 """Tests for the SourceBots Arduino and related classes."""
 
 from datetime import timedelta
-from typing import TYPE_CHECKING, Optional, Set
+from typing import TYPE_CHECKING
 
 import pytest
 
@@ -87,7 +87,7 @@ class MockSBArduinoBackend(
         self,
         trigger_pin_identifier: int,
         echo_pin_identifier: int,
-    ) -> Optional[timedelta]:
+    ) -> timedelta | None:
         """Get a timedelta for the ultrasound time."""
         return timedelta(milliseconds=3)
 
@@ -95,17 +95,17 @@ class MockSBArduinoBackend(
         self,
         trigger_pin_identifier: int,
         echo_pin_identifier: int,
-    ) -> Optional[float]:
+    ) -> float | None:
         """Get a distance in metres."""
         return 1.0
 
     @classmethod
-    def discover(cls) -> Set['Board']:
+    def discover(cls) -> set['Board']:
         """Discover boards."""
         return set()
 
     @property
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str | None:
         """Get the firmware version."""
         return None
 

@@ -2,7 +2,6 @@
 
 from abc import abstractmethod
 from enum import Enum
-from typing import Tuple, Type, Union
 
 from j5.components.component import Component, Interface
 
@@ -62,7 +61,7 @@ class RGBLED(Component):
         self._identifier = identifier
 
     @staticmethod
-    def interface_class() -> Type[RGBLEDInterface]:
+    def interface_class() -> type[RGBLEDInterface]:
         """
         Get the interface class that is required to use this component.
 
@@ -79,7 +78,7 @@ class RGBLED(Component):
         """
         return self._identifier
 
-    def get_channel(self, channel: Union[str, RGBColour]) -> float:
+    def get_channel(self, channel: str | RGBColour) -> float:
         """
         Get the current value of a channel.
 
@@ -94,13 +93,13 @@ class RGBLED(Component):
                 raise ValueError(
                     f"{channel} is not a RGB colour, choose from: "
                     "red, green, blue",
-                )
+                ) from None
         else:
             colour = channel
 
         return self._backend.get_rgb_led_channel_duty_cycle(self._identifier, colour)
 
-    def set_channel(self, channel: Union[str, RGBColour], duty_cycle: float) -> None:
+    def set_channel(self, channel: str | RGBColour, duty_cycle: float) -> None:
         """
         Set the current value of a channel.
 
@@ -116,7 +115,7 @@ class RGBLED(Component):
                 raise ValueError(
                     f"{channel} is not a RGB colour, choose from: "
                     "red, green, blue",
-                )
+                ) from None
         else:
             colour = channel
 
@@ -130,7 +129,7 @@ class RGBLED(Component):
         )
 
     @property
-    def rgb(self) -> Tuple[float, float, float]:
+    def rgb(self) -> tuple[float, float, float]:
         """
         Get a tuple of the channel duty cycles.
 
@@ -143,7 +142,7 @@ class RGBLED(Component):
         )
 
     @rgb.setter
-    def rgb(self, values: Tuple[float, float, float]) -> None:
+    def rgb(self, values: tuple[float, float, float]) -> None:
         """
         Set the channels using an RGB tuple.
 

@@ -1,6 +1,6 @@
 """Environment class and related functions."""
 
-from typing import Dict, Set, Type, TypeVar, cast
+from typing import TypeVar, cast
 
 from j5.backends import Backend
 from j5.boards import Board, BoardGroup
@@ -31,12 +31,12 @@ class Environment:
     different situations.
     """
 
-    def __init__(self, name: str):
+    def __init__(self, name: str) -> None:
         self.name = name
-        self.board_backend_mapping: Dict[Type['Board'], Type[Backend]] = {}
+        self.board_backend_mapping: dict[type['Board'], type[Backend]] = {}
 
     @property
-    def supported_boards(self) -> Set[Type['Board']]:
+    def supported_boards(self) -> set[type['Board']]:
         """
         The boards that are supported by this environment.
 
@@ -52,20 +52,20 @@ class Environment:
         """
         return self.name
 
-    def register_backend(self, backend: Type[Backend]) -> None:
+    def register_backend(self, backend: type[Backend]) -> None:
         """
         Register a new backend with this environment.
 
         :param backend: The backend to register in the environment.
         :raises RuntimeError: The backend has already been registered.
         """
-        board_type: Type['Board'] = cast(Type['Board'], backend.board)
+        board_type: type['Board'] = cast(type['Board'], backend.board)
         if board_type in self.board_backend_mapping.keys():
             raise RuntimeError(f"Attempted to register multiple backends for"
                                f" {board_type.__name__} in the same environment.")
         self.board_backend_mapping[board_type] = backend
 
-    def get_backend(self, board: Type['Board']) -> Type[Backend]:
+    def get_backend(self, board: type['Board']) -> type[Backend]:
         """
         Get the backend for a board.
 
@@ -78,7 +78,7 @@ class Environment:
 
         return self.board_backend_mapping[board]
 
-    def get_board_group(self, board: Type[BoardT]) -> 'BoardGroup[BoardT, Backend]':
+    def get_board_group(self, board: type[BoardT]) -> 'BoardGroup[BoardT, Backend]':
         """
         Get a board group for the given board type.
 

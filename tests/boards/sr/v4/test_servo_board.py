@@ -1,5 +1,4 @@
 """Tests for the SR v4 Servo Board."""
-from typing import List, Optional, Set
 
 import pytest
 
@@ -15,18 +14,18 @@ class MockServoBoardBackend(ServoInterface, Backend):
     board = ServoBoard
 
     @classmethod
-    def discover(cls) -> Set[Board]:
+    def discover(cls) -> set[Board]:
         """Discover the Servo Boards on this backend."""
         return set()
 
     def __init__(self) -> None:
-        self._positions: List[ServoPosition] = [
+        self._positions: list[ServoPosition] = [
             None
             for _ in range(0, 12)
         ]
 
     @property
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str | None:
         """The firmware version of the board."""
         return None
 

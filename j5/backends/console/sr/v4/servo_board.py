@@ -1,6 +1,6 @@
 """Console Backend for the SR v4 Servo Board."""
 
-from typing import List, Optional, Set, Type, cast
+from typing import cast
 
 from j5.backends import Backend
 from j5.backends.console import Console
@@ -18,7 +18,7 @@ class SRV4ServoBoardConsoleBackend(
     board = ServoBoard
 
     @classmethod
-    def discover(cls) -> Set[Board]:
+    def discover(cls) -> set[Board]:
         """
         Discover boards that this backend can control.
 
@@ -26,11 +26,11 @@ class SRV4ServoBoardConsoleBackend(
         """
         return {cast(Board, ServoBoard("SERIAL", cls("SERIAL")))}
 
-    def __init__(self, serial: str, console_class: Type[Console] = Console) -> None:
+    def __init__(self, serial: str, console_class: type[Console] = Console) -> None:
         self._serial = serial
 
         # Initialise our stored values for the positions.
-        self._positions: List[ServoPosition] = [None for _ in range(0, 12)]
+        self._positions: list[ServoPosition] = [None for _ in range(0, 12)]
 
         # Setup console helper
         self._console = console_class(f"{self.board.__name__}({self._serial})")
@@ -45,7 +45,7 @@ class SRV4ServoBoardConsoleBackend(
         return self._serial
 
     @property
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str | None:
         """
         The firmware version reported by the board.
 

@@ -4,7 +4,7 @@ import inspect
 import logging
 from abc import ABCMeta, abstractmethod
 from functools import wraps
-from typing import TYPE_CHECKING, Optional, Set, Type
+from typing import TYPE_CHECKING, Any
 
 from j5.exceptions import j5Exception
 
@@ -23,7 +23,7 @@ class CommunicationError(j5Exception):
 
 
 def _wrap_method_with_logging(
-    backend_class: Type['Backend'],
+    backend_class: type['Backend'],
     method_name: str,
     logger: logging.Logger,
 ) -> None:
@@ -31,7 +31,7 @@ def _wrap_method_with_logging(
     signature = inspect.signature(old_method)
 
     @wraps(old_method)
-    def new_method(*args, **kwargs):  # type: ignore
+    def new_method(*args: Any, **kwargs: Any) -> Any:
         retval = old_method(*args, **kwargs)
         arg_map = signature.bind(*args, **kwargs).arguments
         args_str = ", ".join(
@@ -46,7 +46,7 @@ def _wrap_method_with_logging(
     setattr(backend_class, method_name, new_method)
 
 
-def _wrap_methods_with_logging(backend_class: Type['Backend']) -> None:
+def _wrap_methods_with_logging(backend_class: type['Backend']) -> None:
     component_classes = backend_class.board.supported_components()  # type: ignore
     for component_class in component_classes:
         logger = logging.getLogger(component_class.__module__)
@@ -65,31 +65,31 @@ class BackendMeta(ABCMeta):
     in backend.board.supported_components.
     """
 
-    def __new__(mcs, name, bases, namespace, **kwargs):  # type:ignore
+    def __new__(cls, name: Any, bases: Any, namespace: Any, **kwargs: Any) -> Any:
         """
         Create a new class object.
 
         :returns: a new backend object.
         """
-        cls = super().__new__(mcs, name, bases, namespace, **kwargs)
+        new_cls = super().__new__(cls, name, bases, namespace, **kwargs)
 
-        if cls.__name__ == "Backend":
-            return cls
+        if new_cls.__name__ == "Backend":
+            return new_cls
 
         # Check if this is an abstract Backend.
-        if getattr(cls, "__abstractmethods__", None):
-            return cls
+        if getattr(new_cls, "__abstractmethods__", None):
+            return new_cls
 
         # Check if this is a discovery only Backend.
-        if len(cls.__bases__) <= 1 and cls.discover_only:  # type: ignore
-            return cls
+        if len(new_cls.__bases__) <= 1 and new_cls.discover_only:  # type: ignore
+            return new_cls
 
-        mcs._check_component_interfaces(cls)  # type: ignore
-        _wrap_methods_with_logging(cls)  # type: ignore
+        cls._check_component_interfaces(new_cls)
+        _wrap_methods_with_logging(new_cls)  # type: ignore
 
-        return cls
+        return new_cls
 
-    def _check_component_interfaces(cls):  # type: ignore
+    def _check_component_interfaces(cls) -> None:
         """
         Check that the backend has the right interfaces.
 
@@ -123,18 +123,18 @@ class Backend(metaclass=BackendMeta):
 
     @classmethod
     @abstractmethod
-    def discover(cls) -> Set['Board']:
+    def discover(cls) -> set['Board']:
         """Discover boards that this backend can control."""
         raise NotImplementedError  # pragma: no cover
 
     @property
     @abstractmethod
-    def board(self) -> Type['Board']:
+    def board(self) -> type['Board']:
         """Type of board this backend implements."""
         raise NotImplementedError  # pragma: no cover
 
     @property
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str | None:
         """
         The firmware version of the board.
 
@@ -142,7 +142,7 @@ class Backend(metaclass=BackendMeta):
         """
         return None
 
-    def get_features(self) -> Set['Board.AvailableFeatures']:
+    def get_features(self) -> set['Board.AvailableFeatures']:
         """
         The set of features available on this backend.
 

@@ -1,7 +1,6 @@
 """Base classes for components."""
 
 from abc import ABCMeta, abstractmethod
-from typing import Type
 
 from j5.exceptions import j5Exception
 
@@ -21,7 +20,7 @@ class Component(metaclass=ABCMeta):
 
     @classmethod
     @abstractmethod
-    def interface_class(cls) -> Type[Interface]:
+    def interface_class(cls) -> type[Interface]:
         """Get the interface class that is required to use this component."""
         raise NotImplementedError  # pragma: no cover
 
@@ -51,7 +50,7 @@ class DerivedComponent(Component):
 
     @staticmethod
     @abstractmethod
-    def interface_class() -> Type[Interface]:
+    def interface_class() -> type[Interface]:
         """
         Get the interface class that is required to use this component.
 

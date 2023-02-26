@@ -1,6 +1,6 @@
 """Helper classes for console backend tests."""
 
-from typing import Optional, Type, TypeVar
+from typing import TypeVar
 
 from j5.backends.console import Console
 
@@ -10,7 +10,7 @@ T = TypeVar("T")
 class MockConsole(Console):
     """Test Console for testing boards."""
 
-    def __init__(self, descriptor: str):
+    def __init__(self, descriptor: str) -> None:
         super(Console, self).__init__()
         self._descriptor = descriptor
         self.next_input: str = ""
@@ -23,8 +23,8 @@ class MockConsole(Console):
     def read(  # type: ignore
             self,
             prompt: str,
-            return_type: Optional[Type[T]] = str,  # type: ignore
-    ) -> Optional[T]:
+            return_type: type[T] | None = str,  # type: ignore
+    ) -> T | None:
         """Get a value of type 'return_type' from the user."""
         if return_type is not None:
             try:

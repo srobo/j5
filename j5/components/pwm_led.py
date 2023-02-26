@@ -1,7 +1,6 @@
 """Classes for PWM LED components."""
 
 from abc import abstractmethod
-from typing import Type
 
 from j5.components.component import Component, Interface
 
@@ -42,7 +41,7 @@ class PWMLED(Component):
         self._identifier = identifier
 
     @staticmethod
-    def interface_class() -> Type[PWMLEDInterface]:
+    def interface_class() -> type[PWMLEDInterface]:
         """
         Get the interface class that is required to use this component.
 

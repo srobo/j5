@@ -1,11 +1,12 @@
 """A base class for robots."""
 
 import socket
+from typing import Any
 
 from j5.boards import Board
 
 
-class UnableToObtainLock(OSError):
+class UnableToObtainLockError(OSError):
     """Unable to obtain lock."""
 
     pass
@@ -14,7 +15,7 @@ class UnableToObtainLock(OSError):
 class BaseRobot:
     """A base robot."""
 
-    def __new__(cls, *args, **kwargs) -> 'BaseRobot':  # type: ignore
+    def __new__(cls, *args: Any, **kwargs: Any) -> 'BaseRobot':
         """
         Create a new instance of the class.
 
@@ -46,7 +47,7 @@ class BaseRobot:
             try:
                 self._lock.bind(('localhost', lock_port))
             except OSError:
-                raise UnableToObtainLock(
+                raise UnableToObtainLockError(
                     "Unable to obtain lock. \
                     Are you trying to create more than one Robot object?",
                 ) from None

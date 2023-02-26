@@ -1,5 +1,5 @@
 """Classes for the SR v4 Motor Board."""
-from typing import Optional, Set, Type, cast
+from typing import cast
 
 from j5.backends import Backend
 from j5.boards import Board
@@ -24,7 +24,7 @@ class MotorBoard(Board):
             backend: Backend,
             *,
             safe_state: MotorState = MotorSpecialState.BRAKE,
-    ):
+    ) -> None:
         self._serial = serial
         self._backend = backend
         self._safe_state = safe_state
@@ -44,7 +44,7 @@ class MotorBoard(Board):
         return self._serial
 
     @property
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str | None:
         """
         Get the firmware version of the board.
 
@@ -68,7 +68,7 @@ class MotorBoard(Board):
             output.power = self._safe_state
 
     @staticmethod
-    def supported_components() -> Set[Type[Component]]:
+    def supported_components() -> set[type[Component]]:
         """
         List the types of components supported by this board.
 

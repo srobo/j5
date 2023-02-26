@@ -2,7 +2,7 @@
 import threading
 from datetime import timedelta
 from time import sleep
-from typing import Dict, Set, cast
+from typing import cast
 
 from serial.tools.list_ports_common import ListPortInfo
 
@@ -56,7 +56,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
     board = PowerBoard
 
     @classmethod
-    def discover(cls) -> Set[Board]:
+    def discover(cls) -> set[Board]:
         """
         Discover boards that this backend can control.
 
@@ -67,7 +67,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         ports = cls.get_comports()
 
         # Get a list of boards from the ports.
-        boards: Set[Board] = set()
+        boards: set[Board] = set()
         for port in filter(is_power_board, ports):
             if port.serial_number is None:
                 raise DeviceMissingSerialNumberError(
@@ -96,7 +96,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
             baud=115200,
         )
         self._lock = threading.Lock()
-        self._led_states: Dict[int, bool] = {
+        self._led_states: dict[int, bool] = {
             0: False,
             1: False,
         }
@@ -105,7 +105,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         )
         self.reset_board()
 
-    def get_features(self) -> Set['Board.AvailableFeatures']:
+    def get_features(self) -> set['Board.AvailableFeatures']:
         """
         The set of features available on this backend.
 

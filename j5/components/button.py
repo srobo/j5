@@ -1,7 +1,6 @@
 """Classes for Button."""
 
 from abc import abstractmethod
-from typing import Type
 
 from j5.components.component import Component, Interface
 
@@ -37,7 +36,7 @@ class Button(Component):
         self._identifier = identifier
 
     @staticmethod
-    def interface_class() -> Type[ButtonInterface]:
+    def interface_class() -> type[ButtonInterface]:
         """
         Get the interface class that is required to use this component.
 

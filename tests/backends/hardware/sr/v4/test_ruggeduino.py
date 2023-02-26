@@ -1,6 +1,6 @@
 """Tests for the Student Robotics Ruggeduino hardware implementation."""
 from math import isclose
-from typing import Optional, Type, cast
+from typing import cast
 
 import pytest
 from serial import Serial, SerialException, SerialTimeoutException
@@ -24,13 +24,13 @@ class RuggeduinoSerial(MockSerial):
     firmware_version = "1"
 
     def __init__(self,
-                 port: Optional[str] = None,
+                 port: str | None = None,
                  baudrate: int = 9600,
                  bytesize: int = 8,
                  parity: str = 'N',
                  stopbits: float = 1,
-                 timeout: Optional[float] = None,
-                 ):
+                 timeout: float | None = None,
+                 ) -> None:
         super().__init__(
             port=port,
             baudrate=baudrate,
@@ -83,13 +83,13 @@ class RuggeduinoSerialException(RuggeduinoSerial):
 
 
 def make_backend(
-    serial_class: Type[MockSerial] = RuggeduinoSerial,
+    serial_class: type[MockSerial] = RuggeduinoSerial,
 ) -> SRV4RuggeduinoHardwareBackend:
     """Instantiate an SBArduinoHardwareBackend  with some default arguments."""
 
     class EphemeralBackend(SRV4RuggeduinoHardwareBackend):
 
-        def get_serial_class(self) -> Type[Serial]:
+        def get_serial_class(self) -> type[Serial]:
             return serial_class  # type: ignore
 
     return EphemeralBackend("COM0")
@@ -179,7 +179,7 @@ def test_backend_update_digital_pin_requires_pin_mode() -> None:
         backend._update_digital_pin(pin)
 
 
-def check_sent_data(serial: RuggeduinoSerial, command: bytes, pin: Optional[int]) -> None:
+def check_sent_data(serial: RuggeduinoSerial, command: bytes, pin: int | None) -> None:
     """Verify the data sent in a Ruggeduino command."""
     serial.check_sent_data(
         command + SRV4RuggeduinoHardwareBackend.encode_pin(pin).encode("utf-8"),

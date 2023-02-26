@@ -1,8 +1,9 @@
 """Classes for the SR v4 Power Board."""
 
+from collections.abc import Mapping
 from enum import Enum
 from time import sleep
-from typing import TYPE_CHECKING, Mapping, Optional, Set, Type, cast
+from typing import TYPE_CHECKING, cast
 
 from j5.backends import Backend
 from j5.boards import Board
@@ -53,7 +54,7 @@ class PowerBoard(Board):
         BRAIN_OUTPUT = "brain_output"  # Brain is powered from L2
         REG_5V_CONTROL = "5v_control"  # 5V output is controllable
 
-    def __init__(self, serial: str, backend: Backend):
+    def __init__(self, serial: str, backend: Backend) -> None:
         self._serial = serial
         self._backend = backend
 
@@ -78,7 +79,7 @@ class PowerBoard(Board):
 
     @staticmethod
     def _output_is_controllable(
-        features: Set['Board.AvailableFeatures'],
+        features: set['Board.AvailableFeatures'],
         output: PowerOutputPosition,
     ) -> bool:
         """
@@ -108,7 +109,7 @@ class PowerBoard(Board):
         return self._serial
 
     @property
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str | None:
         """
         Get the firmware version of the board.
 
@@ -175,7 +176,7 @@ class PowerBoard(Board):
         self._run_led.state = True
 
     @staticmethod
-    def supported_components() -> Set[Type[Component]]:
+    def supported_components() -> set[type[Component]]:
         """
         List the types of components supported by this board.
 

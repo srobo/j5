@@ -1,6 +1,5 @@
 """Test the base component classes."""
 
-from typing import Type
 
 import pytest
 
@@ -19,7 +18,7 @@ class MyDerivedComponent(DerivedComponent):
     """A derived component."""
 
     @staticmethod
-    def interface_class() -> Type[Interface]:
+    def interface_class() -> type[Interface]:
         """Get the interface class that is required to use this component."""
         return MyInterface
 

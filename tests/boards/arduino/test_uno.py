@@ -1,5 +1,4 @@
 """Tests for the Arduino Uno base class and related classes."""
-from typing import Optional, Set
 
 import pytest
 
@@ -62,12 +61,12 @@ class MockArduinoUnoBackend(
         self.write_gpio_pin_digital_state(13, state)
 
     @classmethod
-    def discover(cls) -> Set['Board']:
+    def discover(cls) -> set['Board']:
         """Discover boards."""
         return set()
 
     @property
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str | None:
         """Get the firmware version."""
         return None
 

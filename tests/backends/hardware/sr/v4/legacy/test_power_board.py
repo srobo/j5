@@ -1,8 +1,8 @@
 """Test the SR v4 PowerBoard backend and associated classes."""
 
 import struct
+from collections.abc import Iterable
 from datetime import timedelta
-from typing import Iterable, List, Optional, Tuple, Union
 
 import pytest
 import usb
@@ -107,7 +107,7 @@ class MockUSBContext:
 class MockUSBConfiguration:
     """This class mocks the behavior of usb.core.Configuration."""
 
-    def interfaces(self) -> List[str]:
+    def interfaces(self) -> list[str]:
         """Mock list of interfaces."""
         return ["test"]
 
@@ -115,12 +115,12 @@ class MockUSBConfiguration:
 class MockUSBPowerBoardDevice(usb.core.Device):
     """This class mocks the behaviour of a USB device for a Power Board."""
 
-    def __init__(self, serial_number: str, fw_version: int = 3):
+    def __init__(self, serial_number: str, fw_version: int = 3) -> None:
         self.serial = serial_number
         self.firmware_version = fw_version
         self._ctx = MockUSBContext()  # Used by PyUSB when cleaning up the device.
 
-    def configurations(self) -> Tuple[MockUSBConfiguration]:
+    def configurations(self) -> tuple[MockUSBConfiguration]:
         """Get the configurations on the device."""
         return (
             MockUSBConfiguration(),
@@ -137,8 +137,8 @@ class MockUSBPowerBoardDevice(usb.core.Device):
         bRequest: int,
         wValue: int = 0,
         wIndex: int = 0,
-        data_or_wLength: Optional[Union[int, bytes]] = None,
-        timeout: Optional[int] = None,
+        data_or_wLength: int | bytes | None = None,
+        timeout: int | None = None,
     ) -> bytes:
         """Mock a control transfer."""
         assert bRequest == 64  # This is the same for read and write.
@@ -158,7 +158,7 @@ class MockUSBPowerBoardDevice(usb.core.Device):
         wValue: int = 0,
         wIndex: int = 0,
         wLength: int = 0,
-        timeout: Optional[int] = None,
+        timeout: int | None = None,
     ) -> bytes:
         """Mock reading data from a device."""
         assert wValue == 0  # Always 0 on read.
@@ -199,7 +199,7 @@ class MockUSBPowerBoardDevice(usb.core.Device):
         wValue: int = 0,
         wIndex: int = 0,
         data: bytes = b"",
-        timeout: Optional[int] = None,
+        timeout: int | None = None,
     ) -> None:
         """Mock writing data to a device."""
         if 0 <= wIndex < 6:
@@ -235,8 +235,8 @@ class MockSRV4LegacyPowerBoardHardwareBackend(SRV4LegacyPowerBoardHardwareBacken
     def find(
         cls,
         find_all: bool = False,
-        idVendor: Optional[int] = None,
-        idProduct: Optional[int] = None,
+        idVendor: int | None = None,
+        idProduct: int | None = None,
     ) -> Iterable[usb.core.Device]:
         """This function mocks the behaviour of usb.core.find."""
         assert idVendor == 0x1BDA

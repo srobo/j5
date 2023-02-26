@@ -1,6 +1,6 @@
 """Base backend for Arduino Uno and its derivatives."""
 
-from typing import Mapping, Optional, Type
+from collections.abc import Mapping
 
 from j5.backends import Backend
 from j5.backends.console import Console
@@ -13,7 +13,7 @@ class PinData:
     mode: GPIOPinMode
     digital_state: bool
 
-    def __init__(self, *, mode: GPIOPinMode, digital_state: bool):
+    def __init__(self, *, mode: GPIOPinMode, digital_state: bool) -> None:
         self.mode = mode
         self.digital_state = digital_state
 
@@ -25,7 +25,7 @@ class ArduinoConsoleBackend(
 ):
     """An abstract class to create console backends for different Arduinos."""
 
-    def __init__(self, serial: str, console_class: Type[Console] = Console) -> None:
+    def __init__(self, serial: str, console_class: type[Console] = Console) -> None:
         self._serial = serial
 
         self._pins: Mapping[int, PinData] = {
@@ -39,7 +39,7 @@ class ArduinoConsoleBackend(
         self._console = console_class(f"{self.board.__name__}({self._serial})")
 
     @property
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str | None:
         """
         The firmware version reported by the board.
 

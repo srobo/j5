@@ -2,7 +2,7 @@
 
 from datetime import timedelta
 from math import isclose
-from typing import List, Optional, Type, cast
+from typing import cast
 
 import pytest
 from serial import Serial, SerialException, SerialTimeoutException
@@ -26,13 +26,13 @@ class SBArduinoSerial(MockSerial):
     firmware_version = "2019.6.0"
 
     def __init__(self,
-                 port: Optional[str] = None,
+                 port: str | None = None,
                  baudrate: int = 9600,
                  bytesize: int = 8,
                  parity: str = 'N',
                  stopbits: float = 1,
-                 timeout: Optional[float] = None,
-                 ):
+                 timeout: float | None = None,
+                 ) -> None:
         super().__init__(
             port=port,
             baudrate=baudrate,
@@ -60,13 +60,13 @@ class SBArduinoSerialBootFail(MockSerial):
     expected_baudrate = 115200
 
     def __init__(self,
-                 port: Optional[str] = None,
+                 port: str | None = None,
                  baudrate: int = 9600,
                  bytesize: int = 8,
                  parity: str = 'N',
                  stopbits: float = 1,
-                 timeout: Optional[float] = None,
-                 ):
+                 timeout: float | None = None,
+                 ) -> None:
         super().__init__(
             port=port,
             baudrate=baudrate,
@@ -162,13 +162,13 @@ class SBArduinoSerialException(SBArduinoSerial):
 
 
 def make_backend(
-    serial_class: Type[MockSerial] = SBArduinoSerial,
+    serial_class: type[MockSerial] = SBArduinoSerial,
 ) -> SBArduinoHardwareBackend:
     """Instantiate an SBArduinoSerialBackend."""
 
     class EphemeralBackend(SBArduinoHardwareBackend):
 
-        def get_serial_class(self) -> Type[Serial]:
+        def get_serial_class(self) -> type[Serial]:
             return serial_class  # type: ignore
 
     return EphemeralBackend("COM0")
@@ -235,11 +235,11 @@ def test_backend_handles_unrecognised_response() -> None:
 
 def test_backend_handles_comment_response() -> None:
     """Test that comments in the Arduino's response are ignored."""
-    backends: List[SBArduinoHardwareBackend] = [
+    backends: list[SBArduinoHardwareBackend] = [
         make_backend(),  # Normal
         make_backend(SBArduinoSerialCommentResponse),  # With comments
     ]
-    results: List[bool] = []
+    results: list[bool] = []
     for backend in backends:
         cast(SBArduinoSerial, backend._serial).append_received_data(b"> H", newline=True)
         results.append(backend.read_gpio_pin_digital_state(2))

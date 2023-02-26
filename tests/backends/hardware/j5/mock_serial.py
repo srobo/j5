@@ -1,6 +1,5 @@
 """A class that mocks serial.Serial."""
 
-from typing import Optional
 
 
 class MockSerial:
@@ -9,13 +8,13 @@ class MockSerial:
     expected_baudrate = 9600
 
     def __init__(self,
-                 port: Optional[str] = None,
+                 port: str | None = None,
                  baudrate: int = 9600,
                  bytesize: int = 8,
                  parity: str = 'N',
                  stopbits: float = 1,
-                 timeout: Optional[float] = None,
-                 ):
+                 timeout: float | None = None,
+                 ) -> None:
         self._is_open: bool = True
         self._receive_buffer: bytes = b""
         self._send_buffer: bytes = b""

@@ -3,7 +3,7 @@
 import logging
 from datetime import timedelta
 from math import pi
-from typing import List, Optional, Set, Tuple, Type, cast
+from typing import cast
 
 import pytest
 from serial import Serial
@@ -38,12 +38,12 @@ class MockArduinoBackend(ArduinoHardwareBackend):
             timeout=timeout,
         )
 
-    def get_serial_class(self) -> Type[Serial]:
+    def get_serial_class(self) -> type[Serial]:
         """Get the serial class."""
         return MockSerial  # type: ignore
 
     @property
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str | None:
         """The firmware version of the board."""
         return None
 
@@ -86,7 +86,7 @@ def update_digital_pin_command(identifier: int, mode: GPIOPinMode, state: bool) 
     ]).encode("utf-8")
 
 
-def read_digital_pin_command(identifier: int) -> Tuple[bytes, bool]:
+def read_digital_pin_command(identifier: int) -> tuple[bytes, bool]:
     """Generate a digital pin read command to send to the mock arduino board."""
     result: bool = identifier % 2 == 0
     return (
@@ -99,7 +99,7 @@ def read_digital_pin_command(identifier: int) -> Tuple[bytes, bool]:
     )
 
 
-def read_analogue_pin_command(identifier: int) -> Tuple[bytes, float]:
+def read_analogue_pin_command(identifier: int) -> tuple[bytes, float]:
     """Generate an analogue pin read command to send to the mock arduino board."""
     result: int = identifier
     return (
@@ -121,7 +121,7 @@ def make_port_info(
     vid: int,
     pid: int,
     *,
-    serial_number: Optional[str] = "SERIAL",
+    serial_number: str | None = "SERIAL",
 ) -> ListPortInfo:
     """Make a ListPortInfo object from a USB vendor ID and product ID."""
     list_port_info = ListPortInfo("/dev/null")
@@ -140,12 +140,12 @@ def test_backend_is_arduino() -> None:
     )
 
 
-def discover_arduinos(ports: List[ListPortInfo]) -> Set[Board]:
+def discover_arduinos(ports: list[ListPortInfo]) -> set[Board]:
     """Mock function for arduino discovery."""
     class MockDiscoveryArduinoBackend(MockArduinoBackend):
 
         @classmethod
-        def get_comports(cls) -> List[ListPortInfo]:
+        def get_comports(cls) -> list[ListPortInfo]:
             return ports
 
     return MockDiscoveryArduinoBackend.discover()
@@ -153,11 +153,11 @@ def discover_arduinos(ports: List[ListPortInfo]) -> Set[Board]:
 
 def test_backend_discover() -> None:
     """Test that we can discover Arduinos and only Arduinos."""
-    arduino_ports: List[ListPortInfo] = [
+    arduino_ports: list[ListPortInfo] = [
         make_port_info(vid, pid)
         for vid, pid in ArduinoHardwareBackend.USB_IDS
     ]
-    other_ports: List[ListPortInfo] = [
+    other_ports: list[ListPortInfo] = [
         make_port_info(vid, pid)
         for vid, pid in [
             (0x1e7d, 0x307a),  # Keyboard
@@ -185,11 +185,11 @@ def test_backend_discover() -> None:
     )
 
 
-def test_backend_discover_no_serial_number(  # type: ignore[no-untyped-def]
-    caplog,
+def test_backend_discover_no_serial_number(
+    caplog: pytest.LogCaptureFixture,
 ) -> None:
     """Test that we warn when a board has no serial number."""
-    arduino_ports: List[ListPortInfo] = [
+    arduino_ports: list[ListPortInfo] = [
         make_port_info(0x2341, 0x0043, serial_number=None),
     ]
     assert discover_arduinos(arduino_ports) == set()
@@ -230,7 +230,7 @@ def test_backend_get_set_pin_mode() -> None:
 
 def test_backend_digital_pin_modes() -> None:
     """Test that only certain modes are valid on digital pins."""
-    legal_modes: Set[GPIOPinMode] = {
+    legal_modes: set[GPIOPinMode] = {
         GPIOPinMode.DIGITAL_INPUT,
         GPIOPinMode.DIGITAL_INPUT_PULLUP,
         GPIOPinMode.DIGITAL_OUTPUT,
@@ -240,7 +240,7 @@ def test_backend_digital_pin_modes() -> None:
 
 def test_backend_analogue_pin_modes() -> None:
     """Test that only certain modes are valid on digital pins."""
-    legal_modes: Set[GPIOPinMode] = {
+    legal_modes: set[GPIOPinMode] = {
         GPIOPinMode.ANALOGUE_INPUT,
     }
     check_pin_modes(make_backend(), EDGE_ANALOGUE_PIN, legal_modes)
@@ -249,7 +249,7 @@ def test_backend_analogue_pin_modes() -> None:
 def check_pin_modes(
         backend: ArduinoHardwareBackend,
         pin: ArduinoUno.PinNumber,
-        legal_modes: Set[GPIOPinMode],
+        legal_modes: set[GPIOPinMode],
 ) -> None:
     """Check that a set of modes is supported on a backend for a pin."""
     for mode in GPIOPinMode:

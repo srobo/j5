@@ -1,5 +1,4 @@
 """Tests for the GPIO Pin Classes."""
-from typing import List, Type
 
 import pytest
 
@@ -22,15 +21,15 @@ class MockGPIOPinDriver(GPIOPinInterface):
     def __init__(self) -> None:
 
         self.pin_count: int = 10
-        self._mode: List[GPIOPinMode] = [
+        self._mode: list[GPIOPinMode] = [
             GPIOPinMode.DIGITAL_OUTPUT for _ in range(0, self.pin_count)
         ]
 
-        self._written_digital_state: List[bool] = [
+        self._written_digital_state: list[bool] = [
             False for _ in range(0, self.pin_count)
         ]
 
-        self._digital_state: List[bool] = [
+        self._digital_state: list[bool] = [
             False for _ in range(0, self.pin_count)
         ]
 
@@ -344,7 +343,7 @@ class Peripheral(DerivedComponent):
     """A mock derived component."""
 
     @staticmethod
-    def interface_class() -> Type[Interface]:
+    def interface_class() -> type[Interface]:
         """Return an interface."""
         return Interface
 

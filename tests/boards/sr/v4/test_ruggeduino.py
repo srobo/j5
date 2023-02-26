@@ -1,5 +1,4 @@
 """Tests for the Ruggeduino board."""
-from typing import Optional, Set
 
 import pytest
 
@@ -70,12 +69,12 @@ class MockRuggeduinoBackend(
         return command[::-1]
 
     @classmethod
-    def discover(cls) -> Set['Board']:
+    def discover(cls) -> set['Board']:
         """Discover boards."""
         return set()
 
     @property
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str | None:
         """Get the firmware version."""
         return None
 

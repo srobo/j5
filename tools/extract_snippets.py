@@ -9,15 +9,14 @@ starting with "```".
 
 import argparse
 from pathlib import Path
-from typing import Set
 
-ignored_flake8_rules: Set[str] = set()
+ignored_flake8_rules: set[str] = set()
 
 
 class SnippetWriter:
     """Writes files with sequentially increasing numbers into a directory."""
 
-    def __init__(self, output_path: Path):
+    def __init__(self, output_path: Path) -> None:
         self.output_path = output_path
         self.next_num = 0
 

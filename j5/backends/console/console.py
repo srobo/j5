@@ -1,6 +1,6 @@
 """Console helper classes."""
 import sys
-from typing import Dict, Optional, Type, TypeVar
+from typing import TypeVar
 
 T = TypeVar("T")
 
@@ -39,7 +39,7 @@ class Console:
     def read(  # type: ignore
             self,
             prompt: str,
-            return_type: Optional[Type[T]] = str,  # type: ignore
+            return_type: type[T] | None = str,  # type: ignore
             check_stdin: bool = True,
     ) -> T:
         """
@@ -77,7 +77,7 @@ class Console:
         :return: boolean representation of case
         :raises ValueError: case is not a bool.
         """
-        response_map: Dict[str, bool] = {
+        response_map: dict[str, bool] = {
             "true": True,
             "yes": True,
             "false": False,

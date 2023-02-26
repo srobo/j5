@@ -1,6 +1,6 @@
 """Hardware Backend for the SR v4 motor board."""
 from threading import Lock
-from typing import List, Optional, Set, cast
+from typing import cast
 
 from serial import SerialException, SerialTimeoutException
 from serial.tools.list_ports_common import ListPortInfo
@@ -41,7 +41,7 @@ class SRV4MotorBoardHardwareBackend(
     board = MotorBoard
 
     @classmethod
-    def discover(cls) -> Set[Board]:
+    def discover(cls) -> set[Board]:
         """
         Discover boards that this backend can control.
 
@@ -52,7 +52,7 @@ class SRV4MotorBoardHardwareBackend(
         ports = cls.get_comports()
 
         # Get a list of boards from the ports.
-        boards: Set[Board] = set()
+        boards: set[Board] = set()
         for port in filter(is_motor_board, ports):
             if port.serial_number is None:
                 raise DeviceMissingSerialNumberError(
@@ -82,7 +82,7 @@ class SRV4MotorBoardHardwareBackend(
         )
 
         # Initialise our stored values for the state.
-        self._state: List[MotorState] = [
+        self._state: list[MotorState] = [
             MotorSpecialState.BRAKE
             for _ in range(0, 2)
         ]
@@ -122,7 +122,7 @@ class SRV4MotorBoardHardwareBackend(
         except SerialException as e:
             raise CommunicationError(f"Serial Error: {e}") from e
 
-    def send_command(self, command: int, data: Optional[int] = None) -> None:
+    def send_command(self, command: int, data: int | None = None) -> None:
         """
         Send a serial command to the board.
 
@@ -132,7 +132,7 @@ class SRV4MotorBoardHardwareBackend(
         with self._lock:
             self._send_command_no_lock(command, data)
 
-    def _send_command_no_lock(self, command: int, data: Optional[int] = None) -> None:
+    def _send_command_no_lock(self, command: int, data: int | None = None) -> None:
         """
         Send a serial command to the board without acquiring the lock.
 
@@ -141,7 +141,7 @@ class SRV4MotorBoardHardwareBackend(
         :raises CommunicationError: Error occurred during motor board comms.
         """
         try:
-            message: List[int] = [command]
+            message: list[int] = [command]
             if data is not None:
                 message += [data]
             bytes_written = self._serial.write(bytes(message))
@@ -155,7 +155,7 @@ class SRV4MotorBoardHardwareBackend(
             raise CommunicationError(f"Serial Error: {e}") from e
 
     @property
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str | None:
         """
         The firmware version reported by the board.
 

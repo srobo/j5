@@ -7,8 +7,9 @@ distributed separately in the future, to remove the PyUSB dependency from the j5
 """
 
 from abc import abstractmethod
+from collections.abc import Iterable
 from threading import Lock
-from typing import Iterable, NamedTuple, Optional, Set, Union
+from typing import NamedTuple
 
 import usb
 
@@ -68,8 +69,8 @@ class RawUSBHardwareBackend(Backend, metaclass=BackendMeta):
     def find(
         cls,
         find_all: bool = False,
-        idVendor: Optional[int] = None,
-        idProduct: Optional[int] = None,
+        idVendor: int | None = None,
+        idProduct: int | None = None,
     ) -> Iterable[usb.core.Device]:
         """
         Discover USB devices.
@@ -87,7 +88,7 @@ class RawUSBHardwareBackend(Backend, metaclass=BackendMeta):
 
     @classmethod
     @abstractmethod
-    def discover(cls) -> Set[Board]:
+    def discover(cls) -> set[Board]:
         """
         Discover boards that this backend can control.
 
@@ -97,7 +98,7 @@ class RawUSBHardwareBackend(Backend, metaclass=BackendMeta):
 
     @property
     @abstractmethod
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str | None:
         """
         The firmware version reported by the board.
 
@@ -159,7 +160,7 @@ class RawUSBHardwareBackend(Backend, metaclass=BackendMeta):
             except usb.core.USBError as e:
                 raise USBCommunicationError(e) from e
 
-    def _write(self, command: WriteCommand, param: Union[int, bytes]) -> None:
+    def _write(self, command: WriteCommand, param: int | bytes) -> None:
         """
         Write bytes to the USB control endpoint.
 

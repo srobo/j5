@@ -1,6 +1,5 @@
 """Student Robotics Ruggeduino Hardware Implementation."""
 
-from typing import List, Optional, Tuple
 
 from serial import SerialException, SerialTimeoutException
 
@@ -23,7 +22,7 @@ class SRV4RuggeduinoHardwareBackend(
 
     board = Ruggeduino
 
-    def __init__(self, serial_port: str):
+    def __init__(self, serial_port: str) -> None:
         super().__init__(serial_port)
 
         # Verify that the Ruggeduino has booted
@@ -67,7 +66,7 @@ class SRV4RuggeduinoHardwareBackend(
         """
         return self._version_line.split(":")[0] == "SRduino"
 
-    def _command(self, command: str, pin: Optional[int] = None) -> str:
+    def _command(self, command: str, pin: int | None = None) -> str:
         """
         Send a command to the board.
 
@@ -82,7 +81,7 @@ class SRV4RuggeduinoHardwareBackend(
         return self._execute_raw_string_command(command + self.encode_pin(pin))
 
     @staticmethod
-    def encode_pin(pin: Optional[int]) -> str:
+    def encode_pin(pin: int | None) -> str:
         """
         Encode a pin number as a letter of the alphabet.
 
@@ -106,7 +105,7 @@ class SRV4RuggeduinoHardwareBackend(
         pin = self._digital_pins[identifier]
 
         # List of command and pin number
-        commands: List[Tuple[str, int]] = []
+        commands: list[tuple[str, int]] = []
 
         if pin.mode == GPIOPinMode.DIGITAL_INPUT:
             commands.append(("i", identifier))

@@ -1,5 +1,5 @@
 """Classes for the SR v4 Servo Board."""
-from typing import Optional, Set, Type, cast
+from typing import cast
 
 from j5.backends import Backend
 from j5.boards import Board
@@ -12,7 +12,7 @@ class ServoBoard(Board):
 
     name: str = "Student Robotics v4 Servo Board"
 
-    def __init__(self, serial: str, backend: Backend):
+    def __init__(self, serial: str, backend: Backend) -> None:
         self._serial = serial
         self._backend = backend
 
@@ -31,7 +31,7 @@ class ServoBoard(Board):
         return self._serial
 
     @property
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str | None:
         """
         Get the firmware version of the board.
 
@@ -48,7 +48,7 @@ class ServoBoard(Board):
         pass
 
     @staticmethod
-    def supported_components() -> Set[Type[Component]]:
+    def supported_components() -> set[type[Component]]:
         """
         List the types of components supported by this board.
 

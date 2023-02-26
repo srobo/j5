@@ -1,5 +1,5 @@
 """Tests for the motor classes."""
-from typing import Mapping
+from collections.abc import Mapping
 
 import pytest
 

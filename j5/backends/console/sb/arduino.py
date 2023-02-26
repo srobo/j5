@@ -1,6 +1,6 @@
 """Console Backend for the SourceBots Arduino."""
 from datetime import timedelta
-from typing import List, Optional, Set, Type, cast
+from typing import cast
 
 from j5.backends.console import Console
 from j5.backends.console.j5.arduino import ArduinoConsoleBackend
@@ -19,13 +19,13 @@ class SBArduinoConsoleBackend(
 
     board = SBArduinoBoard
 
-    def __init__(self, serial: str, console_class: Type[Console] = Console) -> None:
+    def __init__(self, serial: str, console_class: type[Console] = Console) -> None:
         super().__init__(serial, console_class)
 
-        self._servo_states: List[ServoPosition] = [None] * 16
+        self._servo_states: list[ServoPosition] = [None] * 16
 
     @classmethod
-    def discover(cls) -> Set[Board]:
+    def discover(cls) -> set[Board]:
         """
         Discover boards that this backend can control.
 
@@ -60,7 +60,7 @@ class SBArduinoConsoleBackend(
             self,
             trigger_pin_identifier: int,
             echo_pin_identifier: int,
-    ) -> Optional[timedelta]:
+    ) -> timedelta | None:
         """
         Get a timedelta for the ultrasound time.
 
@@ -80,7 +80,7 @@ class SBArduinoConsoleBackend(
             self,
             trigger_pin_identifier: int,
             echo_pin_identifier: int,
-    ) -> Optional[float]:
+    ) -> float | None:
         """
         Get a distance in metres.
 

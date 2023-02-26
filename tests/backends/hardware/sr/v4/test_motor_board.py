@@ -1,5 +1,5 @@
 """Test the SR v4 motor board hardware backend and associated classes."""
-from typing import List, Optional, Type, cast
+from typing import cast
 
 import pytest
 from serial import Serial
@@ -44,7 +44,7 @@ class MockListPortInfo:
     def __init__(
             self,
             device: str,
-            serial_number: Optional[str],
+            serial_number: str | None,
             vid: int = 0x403,
             pid: int = 0x6001,
             manufacturer: str = "Student Robotics",
@@ -62,7 +62,7 @@ class MockListPortInfo:
         return "USB Information"
 
 
-def mock_comports(include_links: bool = False) -> List[MockListPortInfo]:
+def mock_comports(include_links: bool = False) -> list[MockListPortInfo]:
     """This function mocks the behaviour of serial.tools.list_ports_common.comports."""
     assert not include_links  # This should always be false. See PySerial docs.
 
@@ -100,11 +100,11 @@ class MockMotorSerialBackend(SRV4MotorBoardHardwareBackend):
     """Mock backend for testing."""
 
     @classmethod
-    def get_comports(cls) -> List[ListPortInfo]:
+    def get_comports(cls) -> list[ListPortInfo]:
         """Get the comports."""
         return mock_comports()  # type: ignore
 
-    def get_serial_class(self) -> Type[Serial]:
+    def get_serial_class(self) -> type[Serial]:
         """Get the serial class."""
         return MotorSerial  # type: ignore
 
@@ -113,7 +113,7 @@ class MockMotorSerialBadSerialNumberBackend(SRV4MotorBoardHardwareBackend):
     """Mock backend for testing."""
 
     @classmethod
-    def get_comports(cls) -> List[ListPortInfo]:
+    def get_comports(cls) -> list[ListPortInfo]:
         """Get the comports."""
         return [
             MockListPortInfo("COM0", None),  # type: ignore
@@ -131,7 +131,7 @@ class MotorSerialBadWrite(MotorSerial):
 class MockMotorSerialBadWriteBackend(SRV4MotorBoardHardwareBackend):
     """Backend with bad writes."""
 
-    def get_serial_class(self) -> Type[Serial]:
+    def get_serial_class(self) -> type[Serial]:
         """Get the serial class."""
         return MotorSerialBadWrite  # type: ignore
 
@@ -149,7 +149,7 @@ class MotorSerialBadFirmware(MotorSerial):
 class MockMotorSerialBadFirmwareBackend(SRV4MotorBoardHardwareBackend):
     """Backend with the wrong firmware version."""
 
-    def get_serial_class(self) -> Type[Serial]:
+    def get_serial_class(self) -> type[Serial]:
         """Get the serial class."""
         return MotorSerialBadFirmware  # type: ignore
 

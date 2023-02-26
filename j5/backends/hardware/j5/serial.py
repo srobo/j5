@@ -2,7 +2,6 @@
 import logging
 from abc import abstractmethod
 from datetime import timedelta
-from typing import List, Optional, Set, Type
 
 from serial import Serial, SerialException, SerialTimeoutException
 from serial.tools.list_ports import comports
@@ -39,12 +38,12 @@ class SerialHardwareBackend(Backend, metaclass=BackendMeta):
 
     @classmethod
     @abstractmethod
-    def discover(cls) -> Set[Board]:
+    def discover(cls) -> set[Board]:
         """Discover boards that this backend can control."""
         raise NotImplementedError  # pragma: no cover
 
     @classmethod
-    def get_comports(cls) -> List[ListPortInfo]:
+    def get_comports(cls) -> list[ListPortInfo]:
         """
         Get comports.
 
@@ -54,7 +53,7 @@ class SerialHardwareBackend(Backend, metaclass=BackendMeta):
 
     @property
     @abstractmethod
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str | None:
         """
         The firmware version reported by the board.
 
@@ -62,7 +61,7 @@ class SerialHardwareBackend(Backend, metaclass=BackendMeta):
         """
         raise NotImplementedError  # pragma: no cover
 
-    def get_serial_class(self) -> Type[Serial]:
+    def get_serial_class(self) -> type[Serial]:
         """
         Get the serial class.
 

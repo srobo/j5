@@ -1,6 +1,5 @@
 """Utility classes for testing environments and backends."""
 
-from typing import Optional, Set, Type
 
 from j5.backends import Backend
 from j5.boards import Board
@@ -25,12 +24,12 @@ class MockBoard(Board):
         pass
 
     @property
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str | None:
         """Get the firmware version of this board."""
         return None
 
     @staticmethod
-    def supported_components() -> Set[Type[Component]]:
+    def supported_components() -> set[type[Component]]:
         """List the types of component supported by this Board."""
         return set()
 
@@ -53,12 +52,12 @@ class Mock2Board(Board):
         pass
 
     @property
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str | None:
         """Get the firmware version of this board."""
         return None
 
     @staticmethod
-    def supported_components() -> Set[Type[Component]]:
+    def supported_components() -> set[type[Component]]:
         """List the types of component supported by this Board."""
         return set()
 
@@ -69,11 +68,11 @@ class MockBackend(Backend):
     board = MockBoard
 
     @classmethod
-    def discover(cls) -> Set[Board]:
+    def discover(cls) -> set[Board]:
         """Discover boards available on this backend."""
         return set()
 
     @property
-    def firmware_version(self) -> Optional[str]:
+    def firmware_version(self) -> str | None:
         """The firmware version of the board."""
         return None

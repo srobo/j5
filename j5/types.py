@@ -1,5 +1,6 @@
 """Useful datatypes that aren't available in the standard lib."""
-from typing import Generator, Generic, Iterator, List, Mapping, TypeVar, Union
+from collections.abc import Generator, Iterator, Mapping
+from typing import Generic, TypeVar
 
 T = TypeVar("T")
 U = TypeVar("U")
@@ -8,7 +9,7 @@ U = TypeVar("U")
 class ImmutableDict(Generic[T, U]):
     """A dictionary whose elements cannot be set."""
 
-    def __init__(self, members: Mapping[T, U]):
+    def __init__(self, members: Mapping[T, U]) -> None:
         self._members = members
 
     def __repr__(self) -> str:
@@ -43,8 +44,8 @@ class ImmutableDict(Generic[T, U]):
 class ImmutableList(Generic[T]):
     """A list whose items cannot be set."""
 
-    def __init__(self, members: Union[List[T], Generator[T, None, None]]):
-        self._members: List[T] = list(members)
+    def __init__(self, members: list[T] | Generator[T, None, None]) -> None:
+        self._members: list[T] = list(members)
 
     def __repr__(self) -> str:
         return f"ImmutableList({self._members!r})"
