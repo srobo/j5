@@ -19,8 +19,6 @@ class BaseRobot:
         Create a new instance of the class.
 
         :returns: Instance of a robot object.
-
-        # noqa: DAR101
         """
         obj: BaseRobot = super().__new__(cls)
         obj._obtain_lock()

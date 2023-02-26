@@ -53,8 +53,6 @@ class Board(metaclass=ABCMeta):
         Ensure any instantiated board is added to the boards list.
 
         :returns: Instance of the board we are creating.
-
-        # noqa: DAR101
         """
         instance = super().__new__(cls)
         Board.BOARDS.add(instance)
