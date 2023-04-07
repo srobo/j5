@@ -12,9 +12,9 @@ class MockServoDriver(ServoInterface):
         return 0.5
 
     def set_servo_position(
-            self,
-            identifier: int,
-            position: ServoPosition,
+        self,
+        identifier: int,
+        position: ServoPosition,
     ) -> None:
         """Set the position of a Servo."""
         pass

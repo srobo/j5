@@ -23,13 +23,13 @@ class MockListPortInfo:
     """This class mocks the behaviour of serial.tools.ListPortInfo."""
 
     def __init__(
-            self,
-            device: str,
-            serial_number: Optional[str],
-            vid: int = 0x1bda,
-            pid: int = 0x0010,
-            manufacturer: str = "Student Robotics",
-            product: str = "Power Board v4",
+        self,
+        device: str,
+        serial_number: Optional[str],
+        vid: int = 0x1BDA,
+        pid: int = 0x0010,
+        manufacturer: str = "Student Robotics",
+        product: str = "Power Board v4",
     ) -> None:
         self.device = device
         self.serial_number = serial_number
@@ -55,10 +55,14 @@ class MockPowerSerialBackend(SRV4SerialProtocolPowerBoardHardwareBackend):
             MockListPortInfo("COM2", "SERIAL2", vid=0x302),  # Bad VID
             MockListPortInfo("COM3", "SERIAL3", pid=0x3002),  # Bad PID
             MockListPortInfo(
-                "COM4", "SERIAL4", manufacturer="Acme Inc",
+                "COM4",
+                "SERIAL4",
+                manufacturer="Acme Inc",
             ),  # Bad Manufacturer
             MockListPortInfo(
-                "COM5", "SERIAL5", product="Not a Power Board",
+                "COM5",
+                "SERIAL5",
+                product="Not a Power Board",
             ),  # Bad Product
         ]
 
@@ -84,23 +88,18 @@ class PowerSerial(MockSerial):
     expected_baudrate = 115200
 
     commands = {
-        r'\*IDN\?\n': lambda: b'Student Robotics:PBv4B:srABC:4.4',
-        r'\*STATUS\?\n': lambda: b'0,0,0,0,0,0,0:20:1',
-        r'\*RESET\n': lambda: b'ACK',
-
-        r'BTN:START:GET\?\n': lambda: b'0:0',
-
-        r'OUT:(\d):SET:(0|1)\n': lambda port, state: b'ACK',
-        r'OUT:(\d):GET\?\n': lambda port: b'1' if port == "0" else b'0',
-        r'OUT:(\d):I\?\n': lambda port: str(int(port) * 1200).encode("ascii"),
-
-        r'BATT:V\?': lambda: b'12400',
-        r'BATT:I\?': lambda: b'6900',
-
-        r'LED:RUN:SET:(0|1|F)': lambda v: b'ACK',
-        r'LED:ERR:SET:(0|1|F)': lambda v: b'ACK',
-
-        r'NOTE:(\d+):(\d+)': lambda pitch, duration: b'ACK',
+        r"\*IDN\?\n": lambda: b"Student Robotics:PBv4B:srABC:4.4",
+        r"\*STATUS\?\n": lambda: b"0,0,0,0,0,0,0:20:1",
+        r"\*RESET\n": lambda: b"ACK",
+        r"BTN:START:GET\?\n": lambda: b"0:0",
+        r"OUT:(\d):SET:(0|1)\n": lambda port, state: b"ACK",
+        r"OUT:(\d):GET\?\n": lambda port: b"1" if port == "0" else b"0",
+        r"OUT:(\d):I\?\n": lambda port: str(int(port) * 1200).encode("ascii"),
+        r"BATT:V\?": lambda: b"12400",
+        r"BATT:I\?": lambda: b"6900",
+        r"LED:RUN:SET:(0|1|F)": lambda v: b"ACK",
+        r"LED:ERR:SET:(0|1|F)": lambda v: b"ACK",
+        r"NOTE:(\d+):(\d+)": lambda pitch, duration: b"ACK",
     }
 
     def respond_to_write(self, data: bytes) -> None:
@@ -112,13 +111,12 @@ class PowerSerial(MockSerial):
                 self.append_received_data(response, newline=True)
                 return
 
-        self.append_received_data(b'NACK:Unrecognised command: ' + data, newline=True)
+        self.append_received_data(b"NACK:Unrecognised command: " + data, newline=True)
 
     def check_data_sent_by_constructor(self) -> None:
         """Check that the backend constructor sent expected data to the serial port."""
         self.check_sent_data(
-            b'*IDN?\n'  # Version Check
-            b'*RESET\n',  # Reset the board
+            b"*IDN?\n" b"*RESET\n",  # Version Check  # Reset the board
         )
 
 
@@ -127,14 +125,16 @@ class MockPowerSerialBackendAlwaysNACK(SRV4SerialProtocolPowerBoardHardwareBacke
 
     def get_serial_class(self) -> Type[Serial]:
         """Get the serial class."""
+
         class PowerSerialAlwaysNACK(PowerSerial):
             """A serial port that always returns NACK."""
 
             commands = {
-                r'\*IDN\?\n': lambda: b'Student Robotics:Power Board v4:srABC:4.4',
-                r'\*STATUS\?\n': lambda: b'0,0,0,0,0,0,0:20:1',
-                r'\*RESET\n': lambda: b'ACK',
+                r"\*IDN\?\n": lambda: b"Student Robotics:Power Board v4:srABC:4.4",
+                r"\*STATUS\?\n": lambda: b"0,0,0,0,0,0,0:20:1",
+                r"\*RESET\n": lambda: b"ACK",
             }
+
         return PowerSerialAlwaysNACK  # type: ignore
 
 
@@ -143,16 +143,18 @@ class MockPowerSerialBackendBadData(SRV4SerialProtocolPowerBoardHardwareBackend)
 
     def get_serial_class(self) -> Type[Serial]:
         """Get the serial class."""
+
         class PowerSerialBadData(PowerSerial):
             """A serial port that always returns bad data."""
 
             commands = {
-                r'\*IDN\?\n': lambda: b'Student Robotics:PBv4B:srABC:4.4',
-                r'\*STATUS\?\n': lambda: b'0,0,0,0,0,0,0:20:1',
-                r'\*RESET\n': lambda: b'ACK',
-                r'OUT:(\d):GET\?\n': lambda port: b'67',
-                r'BTN:START:GET\?\n': lambda: b'54',
+                r"\*IDN\?\n": lambda: b"Student Robotics:PBv4B:srABC:4.4",
+                r"\*STATUS\?\n": lambda: b"0,0,0,0,0,0,0:20:1",
+                r"\*RESET\n": lambda: b"ACK",
+                r"OUT:(\d):GET\?\n": lambda port: b"67",
+                r"BTN:START:GET\?\n": lambda: b"54",
             }
+
         return PowerSerialBadData  # type: ignore
 
 
@@ -197,7 +199,7 @@ class TestSRV4SerialProtocolPowerBoardHardwareBackend:
         backend = MockPowerSerialBackendBadData("COM0")
         with pytest.raises(CommunicationError) as e:
             backend.get_power_output_enabled(0)
-        e.match('Power Board returned an invalid response: 67')
+        e.match("Power Board returned an invalid response: 67")
 
     @pytest.mark.parametrize("identifier", [-1, 7])
     def test_get_power_output_enabled_bad_identifier(self, identifier: int) -> None:
@@ -212,7 +214,7 @@ class TestSRV4SerialProtocolPowerBoardHardwareBackend:
         backend = MockPowerSerialBackendAlwaysNACK("COM0")
         with pytest.raises(CommunicationError) as e:
             backend.get_power_output_enabled(0)
-        e.match('Power Board returned an error: Unrecognised command')
+        e.match("Power Board returned an error: Unrecognised command")
 
     def test_set_power_output_enabled(self) -> None:
         """Test that we can change whether a power output is enabled."""
@@ -229,7 +231,7 @@ class TestSRV4SerialProtocolPowerBoardHardwareBackend:
         backend = MockPowerSerialBackendAlwaysNACK("COM0")
         with pytest.raises(CommunicationError) as e:
             backend.set_power_output_enabled(0, True)
-        e.match('Power Board returned an error: Unrecognised command')
+        e.match("Power Board returned an error: Unrecognised command")
 
     @pytest.mark.parametrize(
         "identifier",
@@ -291,7 +293,7 @@ class TestSRV4SerialProtocolPowerBoardHardwareBackend:
         serial = cast(PowerSerial, backend._serial)
         serial.check_data_sent_by_constructor()
         with pytest.raises(NotSupportedByHardwareError) as e:
-            backend.buzz(0, timedelta(milliseconds=2 ** 31), 440, False)
+            backend.buzz(0, timedelta(milliseconds=2**31), 440, False)
         assert e.match(
             "Piezo duration must be in range of 0 - 2147483647ms",
         )
@@ -343,7 +345,7 @@ class TestSRV4SerialProtocolPowerBoardHardwareBackend:
         backend = MockPowerSerialBackendAlwaysNACK("COM0")
         with pytest.raises(CommunicationError) as e:
             backend.buzz(0, timedelta(milliseconds=500), 1, False)
-        e.match('Power Board returned an error: Unrecognised command')
+        e.match("Power Board returned an error: Unrecognised command")
 
     def test_get_button_state(self) -> None:
         """Test that we can get the button state."""
@@ -365,14 +367,14 @@ class TestSRV4SerialProtocolPowerBoardHardwareBackend:
         backend = MockPowerSerialBackendAlwaysNACK("COM0")
         with pytest.raises(CommunicationError) as e:
             backend.get_button_state(0)
-        e.match('Power Board returned an error: Unrecognised command')
+        e.match("Power Board returned an error: Unrecognised command")
 
     def test_get_button_state_bad_data(self) -> None:
         """Test that we get a CommunicationError on a bad response."""
         backend = MockPowerSerialBackendBadData("COM0")
         with pytest.raises(CommunicationError) as e:
             backend.get_button_state(0)
-        e.match('Power Board returned an invalid response: 54')
+        e.match("Power Board returned an invalid response: 54")
 
     def test_get_battery_sensor_voltage(self) -> None:
         """Test that we can fetch the battery sensor voltage."""
@@ -387,7 +389,7 @@ class TestSRV4SerialProtocolPowerBoardHardwareBackend:
         backend = MockPowerSerialBackendAlwaysNACK("COM0")
         with pytest.raises(CommunicationError) as e:
             backend.get_battery_sensor_voltage(0)
-        e.match('Power Board returned an error: Unrecognised command')
+        e.match("Power Board returned an error: Unrecognised command")
 
     def test_get_battery_sensor_voltage_bad_identifier(self) -> None:
         """Test that we handle a bad battery sensor identifier."""
@@ -411,7 +413,7 @@ class TestSRV4SerialProtocolPowerBoardHardwareBackend:
         backend = MockPowerSerialBackendAlwaysNACK("COM0")
         with pytest.raises(CommunicationError) as e:
             backend.get_battery_sensor_current(0)
-        e.match('Power Board returned an error: Unrecognised command')
+        e.match("Power Board returned an error: Unrecognised command")
 
     def test_get_battery_sensor_current_bad_identifier(self) -> None:
         """Test that we handle a bad battery sensor identifier."""

@@ -1,11 +1,12 @@
 """A base class for robots."""
 
 import socket
+from typing import Any
 
 from j5.boards import Board
 
 
-class UnableToObtainLock(OSError):
+class UnableToObtainLock(OSError):  # noqa: N818
     """Unable to obtain lock."""
 
     pass
@@ -14,13 +15,11 @@ class UnableToObtainLock(OSError):
 class BaseRobot:
     """A base robot."""
 
-    def __new__(cls, *args, **kwargs) -> 'BaseRobot':  # type: ignore
+    def __new__(cls, *args: Any, **kwargs: Any) -> "BaseRobot":
         """
         Create a new instance of the class.
 
         :returns: Instance of a robot object.
-
-        # noqa: DAR101
         """
         obj: BaseRobot = super().__new__(cls)
         obj._obtain_lock()
@@ -41,12 +40,11 @@ class BaseRobot:
         :raises OSError: An error occured when the socket was created.
         :raises UnableToObtainLock: Could not obtain the lock on the port.
         """
-        if not hasattr(self, '_lock'):
-
+        if not hasattr(self, "_lock"):
             self._lock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
             try:
-                self._lock.bind(('localhost', lock_port))
+                self._lock.bind(("localhost", lock_port))
             except OSError:
                 raise UnableToObtainLock(
                     "Unable to obtain lock. \

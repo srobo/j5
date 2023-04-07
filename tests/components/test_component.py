@@ -29,4 +29,4 @@ def test_derived_component_identifier() -> None:
     mdc = MyDerivedComponent()
 
     with pytest.raises(NotSupportedByComponentError):
-        mdc.identifier
+        _ = mdc.identifier

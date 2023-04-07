@@ -25,14 +25,15 @@ class SBArduinoSerial(MockSerial):
     expected_baudrate = 115200
     firmware_version = "2019.6.0"
 
-    def __init__(self,
-                 port: Optional[str] = None,
-                 baudrate: int = 9600,
-                 bytesize: int = 8,
-                 parity: str = 'N',
-                 stopbits: float = 1,
-                 timeout: Optional[float] = None,
-                 ):
+    def __init__(
+        self,
+        port: Optional[str] = None,
+        baudrate: int = 9600,
+        bytesize: int = 8,
+        parity: str = "N",
+        stopbits: float = 1,
+        timeout: Optional[float] = None,
+    ) -> None:
         super().__init__(
             port=port,
             baudrate=baudrate,
@@ -59,14 +60,15 @@ class SBArduinoSerialBootFail(MockSerial):
 
     expected_baudrate = 115200
 
-    def __init__(self,
-                 port: Optional[str] = None,
-                 baudrate: int = 9600,
-                 bytesize: int = 8,
-                 parity: str = 'N',
-                 stopbits: float = 1,
-                 timeout: Optional[float] = None,
-                 ):
+    def __init__(
+        self,
+        port: Optional[str] = None,
+        baudrate: int = 9600,
+        bytesize: int = 8,
+        parity: str = "N",
+        stopbits: float = 1,
+        timeout: Optional[float] = None,
+    ) -> None:
         super().__init__(
             port=port,
             baudrate=baudrate,
@@ -167,7 +169,6 @@ def make_backend(
     """Instantiate an SBArduinoSerialBackend."""
 
     class EphemeralBackend(SBArduinoHardwareBackend):
-
         def get_serial_class(self) -> Type[Serial]:
             return serial_class  # type: ignore
 
@@ -179,9 +180,7 @@ def test_backend_initialisation() -> None:
     backend = make_backend()
     assert backend.serial_port == "COM0"
     assert isinstance(backend._serial, SBArduinoSerial)
-    assert all(
-        pin.mode is GPIOPinMode.DIGITAL_INPUT for pin in backend._digital_pins.values()
-    )
+    assert all(pin.mode is GPIOPinMode.DIGITAL_INPUT for pin in backend._digital_pins.values())
     assert all(pin.state is False for pin in backend._digital_pins.values())
 
 

@@ -4,7 +4,7 @@ import inspect
 import logging
 from abc import ABCMeta, abstractmethod
 from functools import wraps
-from typing import TYPE_CHECKING, Optional, Set, Type
+from typing import TYPE_CHECKING, Any, Optional, Set, Type
 
 from j5.exceptions import j5Exception
 
@@ -23,7 +23,7 @@ class CommunicationError(j5Exception):
 
 
 def _wrap_method_with_logging(
-    backend_class: Type['Backend'],
+    backend_class: Type["Backend"],
     method_name: str,
     logger: logging.Logger,
 ) -> None:
@@ -31,22 +31,19 @@ def _wrap_method_with_logging(
     signature = inspect.signature(old_method)
 
     @wraps(old_method)
-    def new_method(*args, **kwargs):  # type: ignore
+    def new_method(*args: Any, **kwargs: Any) -> Any:
         retval = old_method(*args, **kwargs)
         arg_map = signature.bind(*args, **kwargs).arguments
-        args_str = ", ".join(
-            f"{name}={value!r}"
-            for name, value in arg_map.items()
-            if name != "self"
-        )
-        retval_str = (f" -> {retval!r}" if retval is not None else "")
+        args_str = ", ".join(f"{name}={value!r}" for name, value in arg_map.items() if name != "self")
+        retval_str = f" -> {retval!r}" if retval is not None else ""
         message = f"{method_name}({args_str}){retval_str}"
         logger.debug(message)
         return retval
+
     setattr(backend_class, method_name, new_method)
 
 
-def _wrap_methods_with_logging(backend_class: Type['Backend']) -> None:
+def _wrap_methods_with_logging(backend_class: Type["Backend"]) -> None:
     component_classes = backend_class.board.supported_components()  # type: ignore
     for component_class in component_classes:
         logger = logging.getLogger(component_class.__module__)
@@ -65,13 +62,11 @@ class BackendMeta(ABCMeta):
     in backend.board.supported_components.
     """
 
-    def __new__(mcs, name, bases, namespace, **kwargs):  # type:ignore
+    def __new__(mcs, name, bases, namespace, **kwargs):  # type:ignore  # noqa: ANN003, ANN001, ANN204, N804
         """
         Create a new class object.
 
         :returns: a new backend object.
-
-        # noqa: DAR101
         """
         cls = super().__new__(mcs, name, bases, namespace, **kwargs)
 
@@ -86,12 +81,12 @@ class BackendMeta(ABCMeta):
         if len(cls.__bases__) <= 1 and cls.discover_only:  # type: ignore
             return cls
 
-        mcs._check_component_interfaces(cls)  # type: ignore
+        mcs._check_component_interfaces(cls)
         _wrap_methods_with_logging(cls)  # type: ignore
 
         return cls
 
-    def _check_component_interfaces(cls):  # type: ignore
+    def _check_component_interfaces(cls) -> None:
         """
         Check that the backend has the right interfaces.
 
@@ -125,13 +120,13 @@ class Backend(metaclass=BackendMeta):
 
     @classmethod
     @abstractmethod
-    def discover(cls) -> Set['Board']:
+    def discover(cls) -> Set["Board"]:
         """Discover boards that this backend can control."""
         raise NotImplementedError  # pragma: no cover
 
     @property
     @abstractmethod
-    def board(self) -> Type['Board']:
+    def board(self) -> Type["Board"]:
         """Type of board this backend implements."""
         raise NotImplementedError  # pragma: no cover
 
@@ -144,7 +139,7 @@ class Backend(metaclass=BackendMeta):
         """
         return None
 
-    def get_features(self) -> Set['Board.AvailableFeatures']:
+    def get_features(self) -> Set["Board.AvailableFeatures"]:
         """
         The set of features available on this backend.
 

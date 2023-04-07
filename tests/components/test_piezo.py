@@ -10,8 +10,7 @@ from j5.components.piezo import Note, Piezo, PiezoInterface
 class MockPiezoDriver(PiezoInterface):
     """A testing driver for the piezo."""
 
-    def buzz(self, identifier: int,
-             duration: timedelta, frequency: float, blocking: bool) -> None:
+    def buzz(self, identifier: int, duration: timedelta, frequency: float, blocking: bool) -> None:
         """Queue a pitch to be played."""
         pass
 

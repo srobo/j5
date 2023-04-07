@@ -20,10 +20,7 @@ class MockKCHBoardBackend(RGBLEDInterface, Backend):
         return set()
 
     def __init__(self) -> None:
-        self._states: List[Tuple[float, float, float]] = [
-            (0, 0, 0)
-            for _ in range(0, 3)
-        ]
+        self._states: List[Tuple[float, float, float]] = [(0, 0, 0) for _ in range(0, 3)]
 
     @property
     def firmware_version(self) -> Optional[str]:

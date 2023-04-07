@@ -34,7 +34,9 @@ class BatterySensor(Component):
     """A sensor capable of monitoring a battery."""
 
     def __init__(
-        self, identifier: int, backend: BatterySensorInterface,
+        self,
+        identifier: int,
+        backend: BatterySensorInterface,
     ) -> None:
         self._backend = backend
         self._identifier = identifier

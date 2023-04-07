@@ -115,16 +115,14 @@ class MockUSBConfiguration:
 class MockUSBPowerBoardDevice(usb.core.Device):
     """This class mocks the behaviour of a USB device for a Power Board."""
 
-    def __init__(self, serial_number: str, fw_version: int = 3):
+    def __init__(self, serial_number: str, fw_version: int = 3) -> None:
         self.serial = serial_number
         self.firmware_version = fw_version
         self._ctx = MockUSBContext()  # Used by PyUSB when cleaning up the device.
 
     def configurations(self) -> Tuple[MockUSBConfiguration]:
         """Get the configurations on the device."""
-        return (
-            MockUSBConfiguration(),
-        )
+        return (MockUSBConfiguration(),)
 
     @property
     def serial_number(self) -> str:
@@ -242,9 +240,7 @@ class MockSRV4LegacyPowerBoardHardwareBackend(SRV4LegacyPowerBoardHardwareBacken
         assert idVendor == 0x1BDA
         assert idProduct == 0x0010
         assert find_all
-        return [
-            MockUSBPowerBoardDevice(f"SERIAL{n}") for n in range(0, 4)
-        ]
+        return [MockUSBPowerBoardDevice(f"SERIAL{n}") for n in range(0, 4)]
 
 
 def test_backend_initialisation() -> None:

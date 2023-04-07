@@ -45,9 +45,9 @@ class Motor(Component):
     """Brushed DC motor output."""
 
     def __init__(
-            self,
-            identifier: int,
-            backend: MotorInterface,
+        self,
+        identifier: int,
+        backend: MotorInterface,
     ) -> None:
         self._backend = backend
         self._identifier = identifier

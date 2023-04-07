@@ -23,9 +23,9 @@ class SBArduinoHardwareBackend(
     board = SBArduinoBoard
 
     def __init__(
-            self,
-            serial_port: str,
-    ):
+        self,
+        serial_port: str,
+    ) -> None:
         super().__init__(serial_port)
 
         # Initialise stored servo states
@@ -49,8 +49,7 @@ class SBArduinoHardwareBackend(
         version_ids = tuple(map(int, self.firmware_version.split(".")))
         if version_ids < (2019, 6, 0) or len(version_ids) != 3:
             raise CommunicationError(
-                f"Unexpected firmware version: {self.firmware_version},"
-                f" expected at least: \"2019.6.0\".",
+                f"Unexpected firmware version: {self.firmware_version}," f' expected at least: "2019.6.0".',
             )
 
     @property
@@ -174,9 +173,9 @@ class SBArduinoHardwareBackend(
         return self._servo_states[identifier]
 
     def set_servo_position(
-            self,
-            identifier: int,
-            position: ServoPosition,
+        self,
+        identifier: int,
+        position: ServoPosition,
     ) -> None:
         """
         Set the position of a servo.
@@ -194,7 +193,7 @@ class SBArduinoHardwareBackend(
         else:
             raise ValueError("Position of servo should be between 1 and -1.")
 
-        self._command('S', str(identifier), str(level))
+        self._command("S", str(identifier), str(level))
         self._servo_states[identifier] = position
 
     def get_ultrasound_pulse(
@@ -211,8 +210,7 @@ class SBArduinoHardwareBackend(
         :raises CommunicationError: Invalid response from Arduino
         """
         self._check_ultrasound_pins(trigger_pin_identifier, echo_pin_identifier)
-        results = self._command("T", str(trigger_pin_identifier),
-                                str(echo_pin_identifier))
+        results = self._command("T", str(trigger_pin_identifier), str(echo_pin_identifier))
         self._update_ultrasound_pin_modes(trigger_pin_identifier, echo_pin_identifier)
         if len(results) != 1:
             raise CommunicationError(f"Invalid response from Arduino: {results!r}")
@@ -238,8 +236,7 @@ class SBArduinoHardwareBackend(
         :raises CommunicationError: Invalid response from Arduino
         """
         self._check_ultrasound_pins(trigger_pin_identifier, echo_pin_identifier)
-        results = self._command("U", str(trigger_pin_identifier),
-                                str(echo_pin_identifier))
+        results = self._command("U", str(trigger_pin_identifier), str(echo_pin_identifier))
         self._update_ultrasound_pin_modes(trigger_pin_identifier, echo_pin_identifier)
         if len(results) != 1:
             raise CommunicationError(f"Invalid response from Arduino: {results!r}")
@@ -253,8 +250,8 @@ class SBArduinoHardwareBackend(
 
     @staticmethod
     def _check_ultrasound_pins(
-            trigger_pin_identifier: int,
-            echo_pin_identifier: int,
+        trigger_pin_identifier: int,
+        echo_pin_identifier: int,
     ) -> None:
         """
         Verify the validity of a pair of ultrasound pins.

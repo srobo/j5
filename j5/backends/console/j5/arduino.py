@@ -13,7 +13,7 @@ class PinData:
     mode: GPIOPinMode
     digital_state: bool
 
-    def __init__(self, *, mode: GPIOPinMode, digital_state: bool):
+    def __init__(self, *, mode: GPIOPinMode, digital_state: bool) -> None:
         self.mode = mode
         self.digital_state = digital_state
 
@@ -75,8 +75,7 @@ class ArduinoConsoleBackend(
         :raises ValueError: pin is not in correct mode.
         """
         if self._pins[identifier].mode is not GPIOPinMode.DIGITAL_OUTPUT:
-            raise ValueError(f"Pin {identifier} mode needs to be DIGITAL_OUTPUT "
-                             f"in order to set the digital state.")
+            raise ValueError(f"Pin {identifier} mode needs to be DIGITAL_OUTPUT " f"in order to set the digital state.")
         self._console.info(f"Set pin {identifier} state to {state}")
         self._pins[identifier].digital_state = state
 
@@ -89,8 +88,9 @@ class ArduinoConsoleBackend(
         :raises ValueError: pin is not in correct mode.
         """
         if self._pins[identifier].mode is not GPIOPinMode.DIGITAL_OUTPUT:
-            raise ValueError(f"Pin {identifier} mode needs to be DIGITAL_OUTPUT "
-                             f"in order to read the digital state.")
+            raise ValueError(
+                f"Pin {identifier} mode needs to be DIGITAL_OUTPUT " f"in order to read the digital state."
+            )
         return self._pins[identifier].digital_state
 
     def read_gpio_pin_digital_state(self, identifier: int) -> bool:
@@ -106,8 +106,9 @@ class ArduinoConsoleBackend(
             GPIOPinMode.DIGITAL_INPUT,
             GPIOPinMode.DIGITAL_INPUT_PULLDOWN,
         ]:
-            raise ValueError(f"Pin {identifier} mode needs to be DIGITAL_INPUT_* "
-                             f"in order to read the digital state.")
+            raise ValueError(
+                f"Pin {identifier} mode needs to be DIGITAL_INPUT_* " f"in order to read the digital state."
+            )
         return self._console.read(f"Pin {identifier} digital state [true/false]", bool)
 
     def read_gpio_pin_analogue_value(self, identifier: int) -> float:
@@ -119,8 +120,9 @@ class ArduinoConsoleBackend(
         :raises ValueError: pin is not in correct mode.
         """
         if self._pins[identifier].mode is not GPIOPinMode.ANALOGUE_INPUT:
-            raise ValueError(f"Pin {identifier} mode needs to be ANALOGUE_INPUT "
-                             f"in order to read the analogue value.")
+            raise ValueError(
+                f"Pin {identifier} mode needs to be ANALOGUE_INPUT " f"in order to read the analogue value."
+            )
         return self._console.read(f"Pin {identifier} ADC state [float]", float)
 
     def write_gpio_pin_dac_value(self, identifier: int, scaled_value: float) -> None:

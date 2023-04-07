@@ -42,10 +42,11 @@ class GPIOPinInterface(Interface):
     """An interface containing the methods required for a GPIO Pin."""
 
     @abstractmethod
-    def set_gpio_pin_mode(self,
-                          identifier: int,
-                          pin_mode: GPIOPinMode,
-                          ) -> None:
+    def set_gpio_pin_mode(
+        self,
+        identifier: int,
+        pin_mode: GPIOPinMode,
+    ) -> None:
         """
         Set the hardware mode of a GPIO pin.
 
@@ -65,10 +66,11 @@ class GPIOPinInterface(Interface):
         raise NotImplementedError  # pragma: nocover
 
     @abstractmethod
-    def write_gpio_pin_digital_state(self,
-                                     identifier: int,
-                                     state: bool,
-                                     ) -> None:
+    def write_gpio_pin_digital_state(
+        self,
+        identifier: int,
+        state: bool,
+    ) -> None:
         """
         Write to the digital state of a GPIO pin.
 
@@ -109,9 +111,9 @@ class GPIOPinInterface(Interface):
 
     @abstractmethod
     def write_gpio_pin_dac_value(
-            self,
-            identifier: int,
-            scaled_value: float,
+        self,
+        identifier: int,
+        scaled_value: float,
     ) -> None:
         """
         Write a scaled analogue value to the DAC on the GPIO pin.
@@ -123,9 +125,9 @@ class GPIOPinInterface(Interface):
 
     @abstractmethod
     def write_gpio_pin_pwm_value(
-            self,
-            identifier: int,
-            duty_cycle: float,
+        self,
+        identifier: int,
+        duty_cycle: float,
     ) -> None:
         """
         Write a scaled analogue value to the PWM on the GPIO pin.
@@ -143,13 +145,13 @@ class GPIOPin(Component):
     DEFAULT_FW_MODE: Set[FirmwareMode] = set()
 
     def __init__(
-            self,
-            identifier: int,
-            backend: GPIOPinInterface,
-            *,
-            initial_mode: PinMode,
-            hardware_modes: Set[GPIOPinMode] = DEFAULT_HW_MODE,
-            firmware_modes: Set[FirmwareMode] = DEFAULT_FW_MODE,
+        self,
+        identifier: int,
+        backend: GPIOPinInterface,
+        *,
+        initial_mode: PinMode,
+        hardware_modes: Set[GPIOPinMode] = DEFAULT_HW_MODE,
+        firmware_modes: Set[FirmwareMode] = DEFAULT_FW_MODE,
     ) -> None:
         self._backend = backend
         self._identifier = identifier
@@ -243,10 +245,8 @@ class GPIOPin(Component):
 
         :returns: digital read state of the pin.
         """
-        self._require_pin_modes({
-            GPIOPinMode.DIGITAL_INPUT,
-            GPIOPinMode.DIGITAL_INPUT_PULLUP,
-            GPIOPinMode.DIGITAL_INPUT_PULLDOWN},
+        self._require_pin_modes(
+            {GPIOPinMode.DIGITAL_INPUT, GPIOPinMode.DIGITAL_INPUT_PULLUP, GPIOPinMode.DIGITAL_INPUT_PULLDOWN},
         )
 
         return self._backend.read_gpio_pin_digital_state(self._identifier)
@@ -267,9 +267,11 @@ class GPIOPin(Component):
         :param new_value: analogue value
         :raises ValueError: pin value must be between 0 and 1
         """
-        self._require_pin_modes({
-            GPIOPinMode.ANALOGUE_OUTPUT,
-        })
+        self._require_pin_modes(
+            {
+                GPIOPinMode.ANALOGUE_OUTPUT,
+            }
+        )
         if new_value < 0 or new_value > 1:
             raise ValueError("An analogue pin value must be between 0 and 1.")
 
@@ -285,9 +287,11 @@ class GPIOPin(Component):
         :param new_value: new duty cycle
         :raises ValueError: pin value must be between 0 and 1
         """
-        self._require_pin_modes({
-            GPIOPinMode.PWM_OUTPUT,
-        })
+        self._require_pin_modes(
+            {
+                GPIOPinMode.PWM_OUTPUT,
+            }
+        )
         if new_value < 0 or new_value > 1:
             raise ValueError("An PWM pin value must be between 0 and 1.")
 

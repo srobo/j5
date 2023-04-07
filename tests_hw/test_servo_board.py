@@ -32,8 +32,7 @@ class Robot(BaseRobot):
         self.servo_board: ServoBoard = self.servo_boards.singular()
 
 
-if __name__ == '__main__':
-
+if __name__ == "__main__":
     print("Testing SR v4 Servo Board.")
 
     r = Robot()

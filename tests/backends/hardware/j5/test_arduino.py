@@ -27,10 +27,10 @@ class MockArduinoBackend(ArduinoHardwareBackend):
     board = ArduinoUno
 
     def __init__(
-            self,
-            serial_port: str,
-            baud: int = 9600,
-            timeout: timedelta = ArduinoHardwareBackend.DEFAULT_TIMEOUT,
+        self,
+        serial_port: str,
+        baud: int = 9600,
+        timeout: timedelta = ArduinoHardwareBackend.DEFAULT_TIMEOUT,
     ) -> None:
         super().__init__(
             serial_port=serial_port,
@@ -49,11 +49,13 @@ class MockArduinoBackend(ArduinoHardwareBackend):
 
     def _update_digital_pin(self, identifier: int) -> None:
         """Write the stored value of a digital pin to the Arduino."""
-        self._serial.write(update_digital_pin_command(
-            identifier,
-            self._digital_pins[identifier].mode,
-            self._digital_pins[identifier].state,
-        ))
+        self._serial.write(
+            update_digital_pin_command(
+                identifier,
+                self._digital_pins[identifier].mode,
+                self._digital_pins[identifier].state,
+            )
+        )
 
     def _read_digital_pin(self, identifier: int) -> bool:
         """Read the value of a digital pin from the Arduino."""
@@ -78,23 +80,27 @@ def update_digital_pin_command(identifier: int, mode: GPIOPinMode, state: bool) 
     if mode in {GPIOPinMode.ANALOGUE_INPUT, GPIOPinMode.ANALOGUE_OUTPUT}:
         return b""
 
-    return "_".join([
-        "update",
-        str(identifier),
-        mode.name,
-        str(state),
-    ]).encode("utf-8")
+    return "_".join(
+        [
+            "update",
+            str(identifier),
+            mode.name,
+            str(state),
+        ]
+    ).encode("utf-8")
 
 
 def read_digital_pin_command(identifier: int) -> Tuple[bytes, bool]:
     """Generate a digital pin read command to send to the mock arduino board."""
     result: bool = identifier % 2 == 0
     return (
-        "_".join([
-            "readdigital",
-            str(identifier),
-            str(result),
-        ]).encode("utf-8"),
+        "_".join(
+            [
+                "readdigital",
+                str(identifier),
+                str(result),
+            ]
+        ).encode("utf-8"),
         result,
     )
 
@@ -103,11 +109,13 @@ def read_analogue_pin_command(identifier: int) -> Tuple[bytes, float]:
     """Generate an analogue pin read command to send to the mock arduino board."""
     result: int = identifier
     return (
-        "_".join([
-            "readanalogue",
-            str(identifier),
-            str(result),
-        ]).encode("utf-8"),
+        "_".join(
+            [
+                "readanalogue",
+                str(identifier),
+                str(result),
+            ]
+        ).encode("utf-8"),
         float(result),
     )
 
@@ -135,15 +143,14 @@ def test_backend_is_arduino() -> None:
     """Test that the USB IDs listed are recognised as Arduinos."""
     assert len(ArduinoHardwareBackend.USB_IDS) > 0
     assert all(
-        ArduinoHardwareBackend.is_arduino(make_port_info(vid, pid))
-        for vid, pid in ArduinoHardwareBackend.USB_IDS
+        ArduinoHardwareBackend.is_arduino(make_port_info(vid, pid)) for vid, pid in ArduinoHardwareBackend.USB_IDS
     )
 
 
 def discover_arduinos(ports: List[ListPortInfo]) -> Set[Board]:
     """Mock function for arduino discovery."""
-    class MockDiscoveryArduinoBackend(MockArduinoBackend):
 
+    class MockDiscoveryArduinoBackend(MockArduinoBackend):
         @classmethod
         def get_comports(cls) -> List[ListPortInfo]:
             return ports
@@ -153,15 +160,12 @@ def discover_arduinos(ports: List[ListPortInfo]) -> Set[Board]:
 
 def test_backend_discover() -> None:
     """Test that we can discover Arduinos and only Arduinos."""
-    arduino_ports: List[ListPortInfo] = [
-        make_port_info(vid, pid)
-        for vid, pid in ArduinoHardwareBackend.USB_IDS
-    ]
+    arduino_ports: List[ListPortInfo] = [make_port_info(vid, pid) for vid, pid in ArduinoHardwareBackend.USB_IDS]
     other_ports: List[ListPortInfo] = [
         make_port_info(vid, pid)
         for vid, pid in [
-            (0x1e7d, 0x307a),  # Keyboard
-            (0x1bda, 0x0010),  # Power board
+            (0x1E7D, 0x307A),  # Keyboard
+            (0x1BDA, 0x0010),  # Power board
             (0x0781, 0x5581),  # USB flash drive
         ]
     ]
@@ -179,14 +183,11 @@ def test_backend_discover() -> None:
     # Find lots of Arduinos in a mixture
     assert len(discover_arduinos(other_ports + arduino_ports)) == len(arduino_ports)
     # Make sure they're all Arduinos
-    assert all(
-        isinstance(board, MockArduinoBackend.board)
-        for board in discover_arduinos(other_ports + arduino_ports)
-    )
+    assert all(isinstance(board, MockArduinoBackend.board) for board in discover_arduinos(other_ports + arduino_ports))
 
 
-def test_backend_discover_no_serial_number(  # type: ignore[no-untyped-def]
-    caplog,
+def test_backend_discover_no_serial_number(
+    caplog: pytest.LogCaptureFixture,
 ) -> None:
     """Test that we warn when a board has no serial number."""
     arduino_ports: List[ListPortInfo] = [
@@ -208,9 +209,7 @@ def test_backend_initialisation() -> None:
     backend = make_backend()
     assert backend.serial_port == "COM0"
     assert isinstance(backend._serial, MockSerial)
-    assert all(
-        pin.mode is GPIOPinMode.DIGITAL_INPUT for pin in backend._digital_pins.values()
-    )
+    assert all(pin.mode is GPIOPinMode.DIGITAL_INPUT for pin in backend._digital_pins.values())
     assert all(pin.state is False for pin in backend._digital_pins.values())
 
 
@@ -247,9 +246,9 @@ def test_backend_analogue_pin_modes() -> None:
 
 
 def check_pin_modes(
-        backend: ArduinoHardwareBackend,
-        pin: ArduinoUno.PinNumber,
-        legal_modes: Set[GPIOPinMode],
+    backend: ArduinoHardwareBackend,
+    pin: ArduinoUno.PinNumber,
+    legal_modes: Set[GPIOPinMode],
 ) -> None:
     """Check that a set of modes is supported on a backend for a pin."""
     for mode in GPIOPinMode:

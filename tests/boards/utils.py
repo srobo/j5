@@ -9,7 +9,7 @@ from j5.components import Component
 class MockBoard(Board):
     """A testing board with little to no functionality."""
 
-    def __init__(self, serial: str):
+    def __init__(self, serial: str) -> None:
         self._serial = serial
         self._safe = False
 
@@ -41,8 +41,7 @@ class MockBoard(Board):
 class MockBoardWithConstructor(MockBoard):
     """A testing board with a constructor."""
 
-    def __init__(self, test_param: str, another_param: str,
-                 one_that_defaults: bool = True) -> None:
+    def __init__(self, test_param: str, another_param: str, one_that_defaults: bool = True) -> None:
         self.test_param = test_param
         self.another_param = another_param
         self.one_that_defaults = one_that_defaults

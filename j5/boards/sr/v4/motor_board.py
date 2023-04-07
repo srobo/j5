@@ -19,19 +19,18 @@ class MotorBoard(Board):
     name: str = "Student Robotics v4 Motor Board"
 
     def __init__(
-            self,
-            serial: str,
-            backend: Backend,
-            *,
-            safe_state: MotorState = MotorSpecialState.BRAKE,
-    ):
+        self,
+        serial: str,
+        backend: Backend,
+        *,
+        safe_state: MotorState = MotorSpecialState.BRAKE,
+    ) -> None:
         self._serial = serial
         self._backend = backend
         self._safe_state = safe_state
 
         self._outputs = ImmutableList[Motor](
-            Motor(output, cast(MotorInterface, self._backend))
-            for output in range(0, 2)
+            Motor(output, cast(MotorInterface, self._backend)) for output in range(0, 2)
         )
 
     @property

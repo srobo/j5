@@ -19,9 +19,9 @@ class UltrasoundInterface(Interface):
 
     @abstractmethod
     def get_ultrasound_pulse(
-            self,
-            trigger_pin_identifier: int,
-            echo_pin_identifier: int,
+        self,
+        trigger_pin_identifier: int,
+        echo_pin_identifier: int,
     ) -> Optional[timedelta]:
         """
         Get a timedelta for the ultrasound time.
@@ -34,9 +34,9 @@ class UltrasoundInterface(Interface):
 
     @abstractmethod
     def get_ultrasound_distance(
-            self,
-            trigger_pin_identifier: int,
-            echo_pin_identifier: int,
+        self,
+        trigger_pin_identifier: int,
+        echo_pin_identifier: int,
     ) -> Optional[float]:
         """
         Get a distance in metres.
@@ -64,12 +64,9 @@ class UltrasoundSensor(DerivedComponent):
         *,
         distance_mode: bool = True,
     ) -> None:
-
-        if self.__class__ not in gpio_trigger.firmware_modes or \
-                self.__class__ not in gpio_echo.firmware_modes:
+        if self.__class__ not in gpio_trigger.firmware_modes or self.__class__ not in gpio_echo.firmware_modes:
             raise NotSupportedByComponentError(
-                f"Pins {gpio_trigger.identifier} and {gpio_echo.identifier}"
-                f" must support Ultrasound.",
+                f"Pins {gpio_trigger.identifier} and {gpio_echo.identifier}" f" must support Ultrasound.",
             )
 
         self._gpio_trigger = gpio_trigger

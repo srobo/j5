@@ -18,11 +18,11 @@ class SerialHardwareBackend(Backend, metaclass=BackendMeta):
     DEFAULT_TIMEOUT: timedelta = timedelta(milliseconds=250)
 
     def __init__(
-            self,
-            serial_port: str,
-            *,
-            baud: int = 115200,
-            timeout: timedelta = DEFAULT_TIMEOUT,
+        self,
+        serial_port: str,
+        *,
+        baud: int = 115200,
+        timeout: timedelta = DEFAULT_TIMEOUT,
     ) -> None:
         timeout_secs = timeout / timedelta(seconds=1)
         serial_class = self.get_serial_class()
@@ -90,16 +90,15 @@ class SerialHardwareBackend(Backend, metaclass=BackendMeta):
             if empty:
                 return ""
             raise CommunicationError(
-                "No response from board. "
-                "Is it correctly powered?",
+                "No response from board. " "Is it correctly powered?",
             )
 
         try:
-            ldata = bdata.decode('utf-8')
+            ldata = bdata.decode("utf-8")
         except UnicodeDecodeError as e:
             if empty:
                 logging.getLogger(__file__).error(f"{e} in {bdata!r}")
-                return ''
+                return ""
             raise
         return ldata.rstrip()
 
@@ -113,8 +112,9 @@ class SerialHardwareBackend(Backend, metaclass=BackendMeta):
         :raises CommunicationError: an error occurred during serial comms.
         """
         if size > self._serial.in_waiting:
-            raise ValueError(f"Tried to read {size} bytes from the serial buffer, "
-                             f"only {self._serial.in_waiting} were available.")
+            raise ValueError(
+                f"Tried to read {size} bytes from the serial buffer, " f"only {self._serial.in_waiting} were available."
+            )
 
         try:
             bdata = self._serial.read(size)
@@ -128,5 +128,5 @@ class SerialHardwareBackend(Backend, metaclass=BackendMeta):
                 f"Expected to receive {size} chars, got {len(bdata)} instead.",
             )
 
-        ldata = bdata.decode('utf-8')
+        ldata = bdata.decode("utf-8")
         return ldata.rstrip()

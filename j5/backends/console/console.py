@@ -37,10 +37,10 @@ class Console:
         self._print(f"{self._descriptor}: {message}")
 
     def read(  # type: ignore
-            self,
-            prompt: str,
-            return_type: Optional[Type[T]] = str,  # type: ignore
-            check_stdin: bool = True,
+        self,
+        prompt: str,
+        return_type: Optional[Type[T]] = str,  # type: ignore
+        check_stdin: bool = True,
     ) -> T:
         """
         Prompt the user for a value of type 'return_type'.
@@ -63,8 +63,7 @@ class Console:
                         return self._get_bool(response)  # type: ignore
                     return return_type(response)  # type: ignore
                 except ValueError:
-                    self.info(f"Unable to construct a {return_type.__name__}"
-                              f" from {response!r}")
+                    self.info(f"Unable to construct a {return_type.__name__}" f" from {response!r}")
         else:
             self._input(f"{self._descriptor}: {prompt}: ")
 

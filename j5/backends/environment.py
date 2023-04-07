@@ -31,12 +31,12 @@ class Environment:
     different situations.
     """
 
-    def __init__(self, name: str):
+    def __init__(self, name: str) -> None:
         self.name = name
-        self.board_backend_mapping: Dict[Type['Board'], Type[Backend]] = {}
+        self.board_backend_mapping: Dict[Type["Board"], Type[Backend]] = {}
 
     @property
-    def supported_boards(self) -> Set[Type['Board']]:
+    def supported_boards(self) -> Set[Type["Board"]]:
         """
         The boards that are supported by this environment.
 
@@ -59,13 +59,14 @@ class Environment:
         :param backend: The backend to register in the environment.
         :raises RuntimeError: The backend has already been registered.
         """
-        board_type: Type['Board'] = cast(Type['Board'], backend.board)
+        board_type: Type["Board"] = cast(Type["Board"], backend.board)
         if board_type in self.board_backend_mapping.keys():
-            raise RuntimeError(f"Attempted to register multiple backends for"
-                               f" {board_type.__name__} in the same environment.")
+            raise RuntimeError(
+                f"Attempted to register multiple backends for" f" {board_type.__name__} in the same environment."
+            )
         self.board_backend_mapping[board_type] = backend
 
-    def get_backend(self, board: Type['Board']) -> Type[Backend]:
+    def get_backend(self, board: Type["Board"]) -> Type[Backend]:
         """
         Get the backend for a board.
 
@@ -78,7 +79,7 @@ class Environment:
 
         return self.board_backend_mapping[board]
 
-    def get_board_group(self, board: Type[BoardT]) -> 'BoardGroup[BoardT, Backend]':
+    def get_board_group(self, board: Type[BoardT]) -> "BoardGroup[BoardT, Backend]":
         """
         Get a board group for the given board type.
 
@@ -94,7 +95,7 @@ class Environment:
             self.get_backend(board),
         )
 
-    def merge(self, other: 'Environment') -> None:
+    def merge(self, other: "Environment") -> None:
         """
         Merge in the board-backend mappings from another environment.
 
@@ -112,9 +113,7 @@ class Environment:
 
         if len(intersection) > 0:
             common_boards = ", ".join(x.__name__ for x in intersection)
-            raise RuntimeError(
-                f"Attempted to merge two Environments"
-                f" that both contain: {common_boards}")
+            raise RuntimeError(f"Attempted to merge two Environments" f" that both contain: {common_boards}")
         self.board_backend_mapping = {
             **self.board_backend_mapping,
             **other.board_backend_mapping,

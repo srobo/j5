@@ -19,10 +19,7 @@ from j5.components.servo import ServoInterface, ServoPosition
 
 CMD_READ_FWVER = ReadCommand(9, 4)
 
-CMD_WRITE_SET_SERVO = [
-    WriteCommand(i)
-    for i in range(0, 12)
-]
+CMD_WRITE_SET_SERVO = [WriteCommand(i) for i in range(0, 12)]
 CMD_WRITE_INIT = WriteCommand(12)
 
 
@@ -44,7 +41,7 @@ class SRV4ServoBoardHardwareBackend(
         """
         boards: Set[Board] = set()
         try:
-            device_list = cls.find(idVendor=0x1bda, idProduct=0x0011, find_all=True)
+            device_list = cls.find(idVendor=0x1BDA, idProduct=0x0011, find_all=True)
         except usb.core.USBError as e:
             raise USBCommunicationError(e) from e
 
@@ -78,14 +75,13 @@ class SRV4ServoBoardHardwareBackend(
         :raises CommunicationError: servo board is not responding.
         """
         try:
-            version, = struct.unpack("<I", self._read(CMD_READ_FWVER))
+            (version,) = struct.unpack("<I", self._read(CMD_READ_FWVER))
             return str(cast(int, version))
         except USBCommunicationError as e:
             if e.usb_error.errno in [5, 110]:  # "Input/Output", "operation timed out"
                 raise CommunicationError(
-                    f"{e}; are you sure the servo board"
-                    f" is being correctly powered?",
-                )
+                    f"{e}; are you sure the servo board" f" is being correctly powered?",
+                ) from None
             raise
 
     def check_firmware_version_supported(self) -> None:
@@ -96,8 +92,9 @@ class SRV4ServoBoardHardwareBackend(
         """
         v = self.firmware_version
         if v != "2":
-            raise NotImplementedError(f"Servo Board ({self.serial}) is running firmware "
-                                      f"version {v}, but only version 2 is supported")
+            raise NotImplementedError(
+                f"Servo Board ({self.serial}) is running firmware " f"version {v}, but only version 2 is supported"
+            )
 
     def get_servo_position(self, identifier: int) -> ServoPosition:
         """

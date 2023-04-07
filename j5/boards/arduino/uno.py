@@ -42,10 +42,10 @@ class ArduinoUno(Board):
     name: str = "Arduino Uno"
 
     def __init__(
-            self,
-            serial: str,
-            backend: Backend,
-    ):
+        self,
+        serial: str,
+        backend: Backend,
+    ) -> None:
         self._serial = serial
         self._backend = backend
 
@@ -64,7 +64,6 @@ class ArduinoUno(Board):
 
         self._analogue_pins = cast(
             Mapping[ArduinoUno.AnaloguePin, GPIOPin],
-
             self._generate_gpio_pins(
                 ArduinoUno.AnaloguePin.__members__.values(),
                 initial_mode=GPIOPinMode.ANALOGUE_INPUT,
@@ -78,12 +77,12 @@ class ArduinoUno(Board):
         )
 
     def _generate_gpio_pins(
-            self,
-            numbering: Iterable[PinNumber],
-            initial_mode: PinMode,
-            *,
-            hardware_modes: Set[GPIOPinMode] = GPIOPin.DEFAULT_HW_MODE,
-            firmware_modes: Set[FirmwareMode] = GPIOPin.DEFAULT_FW_MODE,
+        self,
+        numbering: Iterable[PinNumber],
+        initial_mode: PinMode,
+        *,
+        hardware_modes: Set[GPIOPinMode] = GPIOPin.DEFAULT_HW_MODE,
+        firmware_modes: Set[FirmwareMode] = GPIOPin.DEFAULT_FW_MODE,
     ) -> Mapping[PinNumber, GPIOPin]:
         """
         Generate a dict of GPIOPins with the same properties.
@@ -130,11 +129,12 @@ class ArduinoUno(Board):
 
         :returns: Dictionary of pins on the Arduino.
         """
-        pins = ImmutableDict[ArduinoUno.PinNumber, GPIOPin]({
-            **cast(Mapping[ArduinoUno.PinNumber, GPIOPin], self._analogue_pins),
-            **cast(Mapping[ArduinoUno.PinNumber, GPIOPin], self._digital_pins),
-
-        })
+        pins = ImmutableDict[ArduinoUno.PinNumber, GPIOPin](
+            {
+                **cast(Mapping[ArduinoUno.PinNumber, GPIOPin], self._analogue_pins),
+                **cast(Mapping[ArduinoUno.PinNumber, GPIOPin], self._digital_pins),
+            }
+        )
         return pins
 
     def make_safe(self) -> None:

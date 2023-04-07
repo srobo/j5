@@ -72,8 +72,7 @@ class TestBoardGroup:
         """Test that the board group can be represented as a string."""
         assert str(empty_board_group) == "Group of Boards - []"
         assert str(board_group) == "Group of Boards - [Testing Board - TESTSERIAL1]"
-        assert str(multi_board_group) == \
-            "Group of Boards - [Testing Board - TESTSERIAL1, Testing Board - TESTSERIAL2]"
+        assert str(multi_board_group) == "Group of Boards - [Testing Board - TESTSERIAL1, Testing Board - TESTSERIAL2]"
 
     def test_board_group_repr(
         self,
@@ -104,8 +103,7 @@ class TestBoardGroup:
     ) -> None:
         """Test that the boards property works on a board group."""
         assert len(board_group._boards) == 1
-        assert type(list(board_group._boards
-                    .values())[0]) == MockBoard
+        assert type(list(board_group._boards.values())[0]) == MockBoard
 
     def test_board_group_boards_multiple(
         self,
@@ -113,8 +111,7 @@ class TestBoardGroup:
     ) -> None:
         """Test that the boards property works on multiple boards."""
         assert len(multi_board_group._boards) == 2
-        assert type(list(multi_board_group._boards
-                    .values())[0]) == MockBoard
+        assert type(list(multi_board_group._boards.values())[0]) == MockBoard
 
     def test_board_group_boards_zero(
         self,
@@ -269,8 +266,10 @@ class TestBoardGroup:
         """Test that we get a KeyError if the serial isn't available."""
         with pytest.raises(KeyError) as e:
             multi_board_group["BEES"]
-        assert str(e.value) == "'Could not find a board with the serial number BEES;" \
+        assert (
+            str(e.value) == "'Could not find a board with the serial number BEES;"
             " Available board serials: TESTSERIAL1, TESTSERIAL2'"
+        )
 
     def test_get_by_serial_empty(
         self,

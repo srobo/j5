@@ -45,17 +45,20 @@ class Robot(BaseRobot):
 
     def __init__(self) -> None:
         self._power_boards = BoardGroup.get_board_group(
-            PowerBoard, SRV4PowerBoardHardwareBackend,
+            PowerBoard,
+            SRV4PowerBoardHardwareBackend,
         )
         self.power_board = self._power_boards.singular()
 
         self.motor_boards = BoardGroup.get_board_group(
-            MotorBoard, SRV4MotorBoardHardwareBackend,
+            MotorBoard,
+            SRV4MotorBoardHardwareBackend,
         )
         self.motor_board = self.motor_boards.singular()
 
         self.servo_boards = BoardGroup.get_board_group(
-            ServoBoard, SRV4ServoBoardHardwareBackend,
+            ServoBoard,
+            SRV4ServoBoardHardwareBackend,
         )
         self.servo_board = self.servo_boards.singular()
 ```

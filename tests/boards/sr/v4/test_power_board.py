@@ -52,7 +52,9 @@ class MockPowerBoardBackend(
         return True
 
     def set_power_output_enabled(
-        self, identifier: int, enabled: bool,
+        self,
+        identifier: int,
+        enabled: bool,
     ) -> None:
         """Set the enabled status of a power output."""
         pass
@@ -62,7 +64,11 @@ class MockPowerBoardBackend(
         return 1.0
 
     def buzz(
-        self, identifier: int, duration: timedelta, pitch: Pitch, blocking: bool,
+        self,
+        identifier: int,
+        duration: timedelta,
+        pitch: Pitch,
+        blocking: bool,
     ) -> None:
         """Buzz the buzzer."""
         pass
@@ -95,7 +101,7 @@ class MockPowerBoardBackend(
 class MockPowerBoardBackendWith5V(MockPowerBoardBackend):
     """A mock power board backend with toggleable 5V output."""
 
-    def get_features(self) -> Set['Board.AvailableFeatures']:
+    def get_features(self) -> Set["Board.AvailableFeatures"]:
         """The set of features available on this backend."""
         return {PowerBoard.AvailableFeatures.REG_5V_CONTROL}
 
@@ -225,7 +231,9 @@ class TestOutputIsControllable:
         "features,expected_outputs",
         [
             pytest.param(
-                set(), {0, 1, 2, 3, 4, 5}, id="no-features",
+                set(),
+                {0, 1, 2, 3, 4, 5},
+                id="no-features",
             ),
             pytest.param(
                 {PowerBoard.AvailableFeatures.REG_5V_CONTROL},
@@ -254,7 +262,6 @@ class TestOutputIsControllable:
     ) -> None:
         """Test the available outputs when the board has no features."""
         outputs = {
-            output.value for output in PowerOutputPosition
-            if PowerBoard._output_is_controllable(features, output)
+            output.value for output in PowerOutputPosition if PowerBoard._output_is_controllable(features, output)
         }
         assert outputs == expected_outputs

@@ -17,9 +17,7 @@ from j5.backends.hardware import DeviceMissingSerialNumberError
 from j5.boards import Board
 
 # Stop the library from closing the USB connections before make_safe is called.
-usb._objfinalizer._AutoFinalizedObjectBase._do_finalize_object = (  # type: ignore
-    lambda x: None
-)
+usb._objfinalizer._AutoFinalizedObjectBase._do_finalize_object = lambda x: None  # type: ignore
 
 
 class ReadCommand(NamedTuple):

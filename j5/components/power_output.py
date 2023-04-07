@@ -21,7 +21,9 @@ class PowerOutputInterface(Interface):
 
     @abstractmethod
     def set_power_output_enabled(
-        self, identifier: int, enabled: bool,
+        self,
+        identifier: int,
+        enabled: bool,
     ) -> None:
         """
         Set whether a power output is enabled.
@@ -51,7 +53,9 @@ class PowerOutput(Component):
     """
 
     def __init__(
-        self, identifier: int, backend: PowerOutputInterface,
+        self,
+        identifier: int,
+        backend: PowerOutputInterface,
     ) -> None:
         self._identifier = identifier
         self._backend = backend
@@ -102,13 +106,13 @@ class PowerOutput(Component):
         return self._backend.get_power_output_current(self._identifier)
 
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 class PowerOutputGroup:
     """A group of PowerOutputs."""
 
-    def __init__(self, outputs: Mapping[T, PowerOutput]):
+    def __init__(self, outputs: Mapping[T, PowerOutput]) -> None:
         self._outputs = outputs
 
     def power_on(self) -> None:

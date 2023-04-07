@@ -33,8 +33,7 @@ class Robot(BaseRobot):
         self.motor_board: MotorBoard = self.motor_boards.singular()
 
 
-if __name__ == '__main__':
-
+if __name__ == "__main__":
     print("Testing SR v4 MotorBoard.")
 
     r = Robot()

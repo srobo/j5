@@ -24,8 +24,7 @@ class Robot(BaseRobot):
         self.arduino: Ruggeduino = self.arduinos.singular()
 
 
-if __name__ == '__main__':
-
+if __name__ == "__main__":
     print("Testing SR Ruggeduino.")
 
     r = Robot()

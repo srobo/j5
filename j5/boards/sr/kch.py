@@ -22,14 +22,11 @@ class KCHBoard(Board):
 
     name: str = "Student Robotics KCH v1"
 
-    def __init__(self, serial: str, backend: Backend):
+    def __init__(self, serial: str, backend: Backend) -> None:
         self._serial = serial
         self._backend = backend
 
-        self._leds = {
-            led: RGBLED(led.value, cast("RGBLEDInterface", self._backend))
-            for led in KCHLED
-        }
+        self._leds = {led: RGBLED(led.value, cast("RGBLEDInterface", self._backend)) for led in KCHLED}
 
     @property
     def serial_number(self) -> str:

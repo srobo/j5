@@ -22,8 +22,7 @@ class Robot(BaseRobot):
         self.power_board: PowerBoard = self.power_boards.singular()
 
 
-if __name__ == '__main__':
-
+if __name__ == "__main__":
     print("Testing SR v4 PowerBoard.")
 
     r = Robot()

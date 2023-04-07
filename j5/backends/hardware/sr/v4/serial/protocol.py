@@ -56,8 +56,7 @@ class SRV4SerialProtocolBackend(SerialHardwareBackend, ABC):
         response = self.query("*IDN?")
         parts = response.split(":", 4)
         if len(parts) != 4:
-            raise CommunicationError(
-                f"Identify response did not match format: {response}")
+            raise CommunicationError(f"Identify response did not match format: {response}")
         else:
             return BoardIdentity(*parts)
 
@@ -115,7 +114,7 @@ class SRV4SerialProtocolBackend(SerialHardwareBackend, ABC):
         :returns: The response from the board.
         :raises CommunicationError: The request was not successful.
         """
-        request_data = command.encode("ascii") + b'\n'
+        request_data = command.encode("ascii") + b"\n"
 
         with self._lock:
             try:
@@ -197,6 +196,5 @@ class SRV4SerialProtocolBackend(SerialHardwareBackend, ABC):
 
         if version.fw_major not in supported_fw_versions:
             raise CommunicationError(
-                f"Expected major version number to be one of {supported_fw_versions},"
-                f" got {version.fw_major}",
+                f"Expected major version number to be one of {supported_fw_versions}," f" got {version.fw_major}",
             )
