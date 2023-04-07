@@ -119,7 +119,7 @@ class MockUSBServoBoardDevice(usb.core.Device):
         if wIndex == 12:
             # Initialise the board.
             # Turns on the timer interrupt to the I2C GPIO expander.
-            assert data == b''
+            assert data == b""
             assert wValue == 0
 
             # We don't want to do this twice.
@@ -133,7 +133,7 @@ class MockUSBServoBoardDevice(usb.core.Device):
     def write_servo(self, wValue: int, data: bytes) -> None:
         """Set the value of a servo."""
         assert -100 <= wValue <= 100
-        assert data == b''
+        assert data == b""
         assert self.timers_initialised
 
 

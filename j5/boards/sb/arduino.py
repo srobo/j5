@@ -20,9 +20,9 @@ class SBArduinoBoard(ArduinoUno):
     FIRMWARE_MODES: Set[Type[DerivedComponent]] = {UltrasoundSensor}
 
     def __init__(
-            self,
-            serial: str,
-            backend: Backend,
+        self,
+        serial: str,
+        backend: Backend,
     ) -> None:
         super().__init__(serial, backend)
 

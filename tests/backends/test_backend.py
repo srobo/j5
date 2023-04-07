@@ -21,6 +21,7 @@ def test_backend_instantiation() -> None:
 
 def test_backend_has_required_interface() -> None:
     """Test that the backend has to have the required interfaces."""
+
     class LEDMockBoard(Board):
         """A test board."""
 
@@ -49,11 +50,12 @@ def test_backend_has_required_interface() -> None:
             return {LED}
 
     with pytest.raises(TypeError):
+
         class BackendTwo(Backend):
             board = LEDMockBoard
 
             @classmethod
-            def discover(cls) -> Set['Board']:
+            def discover(cls) -> Set["Board"]:
                 return set()
 
             @property

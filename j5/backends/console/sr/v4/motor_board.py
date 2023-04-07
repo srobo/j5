@@ -30,10 +30,7 @@ class SRV4MotorBoardConsoleBackend(
         self._serial = serial
 
         # Initialise our stored values for the state.
-        self._state: List[MotorState] = [
-            MotorSpecialState.BRAKE
-            for _ in range(0, 2)
-        ]
+        self._state: List[MotorState] = [MotorSpecialState.BRAKE for _ in range(0, 2)]
 
         # Setup console helper
         self._console = console_class(f"{self.board.__name__}({self._serial})")

@@ -6,14 +6,14 @@ from j5.types import ImmutableDict, ImmutableList
 
 def test_immutable_dict_get_member() -> None:
     """Test that we can get an item from an ImmutableDict."""
-    d = ImmutableDict[str, str]({'foo': 'bar'})
+    d = ImmutableDict[str, str]({"foo": "bar"})
 
-    assert d['foo'] == 'bar'
+    assert d["foo"] == "bar"
 
 
 def test_immutable_dict_iterator() -> None:
     """Test that the iterator works."""
-    data = {'foo': 'bar', 'bar': 'doo', 'doo': 'foo'}
+    data = {"foo": "bar", "bar": "doo", "doo": "foo"}
     d = ImmutableDict(data)
 
     assert list(d) == list(data.values())
@@ -21,7 +21,7 @@ def test_immutable_dict_iterator() -> None:
 
 def test_immutable_dict_length() -> None:
     """Test that the length operation works."""
-    data = {'foo': 'bar', 'bar': 'doo', 'doo': 'foo'}
+    data = {"foo": "bar", "bar": "doo", "doo": "foo"}
     d = ImmutableDict(data)
 
     assert len(d) == 3
@@ -29,16 +29,16 @@ def test_immutable_dict_length() -> None:
 
 def test_immutable_dict_cannot_set_member() -> None:
     """Test that the immutable dict is immutable."""
-    data = {'foo': 'bar', 'bar': 'doo', 'doo': 'foo'}
+    data = {"foo": "bar", "bar": "doo", "doo": "foo"}
     d = ImmutableDict(data)
 
     with pytest.raises(TypeError):
-        d['foo'] = '12'  # type: ignore
+        d["foo"] = "12"  # type: ignore
 
 
 def test_immutable_dict_repr() -> None:
     """Test that the repr of the immutable dict is correct."""
-    data = {'foo': 'bar', 'bar': 'doo'}
+    data = {"foo": "bar", "bar": "doo"}
     d = ImmutableDict(data)
     assert repr(d) == "ImmutableDict({'foo': 'bar', 'bar': 'doo'})"
 

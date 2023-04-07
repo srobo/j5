@@ -57,7 +57,7 @@ Execute the test suite in `html-cov` mode: ``make test-cov``
 Linting
 ~~~~~~~
 
-We use `flake8` and a number of extensions to ensure that our code meets the `PEP 8` standards.
+We use `ruff` to ensure that our code meets the `PEP 8` standards.
 
 Execute the linter: ``make lint``
 

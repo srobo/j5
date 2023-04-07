@@ -11,9 +11,11 @@ all: type test lint
 
 lint: extract_snippets
 	$(CMD) ruff $(PYMODULE) $(GENERATEDCODE) $(TESTS) $(EXTRACODE)
+	$(CMD) black --check $(PYMODULE) $(GENERATEDCODE) $(TESTS) $(EXTRACODE)
 
 lint-fix:
 	$(CMD) ruff --fix $(PYMODULE) $(GENERATEDCODE) $(TESTS) $(EXTRACODE)
+	$(CMD) black $(PYMODULE) $(GENERATEDCODE) $(TESTS) $(EXTRACODE)
 
 type: extract_snippets
 	$(CMD) mypy $(PYMODULE) $(TESTS) $(EXTRACODE) $(GENERATEDCODE)

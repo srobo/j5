@@ -40,19 +40,13 @@ class SRV4PowerBoardConsoleBackend(
 
     def __init__(self, serial: str, console_class: Type[Console] = Console) -> None:
         self._serial = serial
-        self._output_states: Dict[int, bool] = {
-            output.value: False
-            for output in PowerOutputPosition
-        }
-        self._led_states: Dict[int, bool] = {
-            i: False
-            for i in range(2)
-        }
+        self._output_states: Dict[int, bool] = {output.value: False for output in PowerOutputPosition}
+        self._led_states: Dict[int, bool] = {i: False for i in range(2)}
 
         # Setup console helper
         self._console = console_class(f"{self.board.__name__}({self._serial})")
 
-    def get_features(self) -> Set['Board.AvailableFeatures']:
+    def get_features(self) -> Set["Board.AvailableFeatures"]:
         """
         The set of features available on this backend.
 
@@ -89,12 +83,16 @@ class SRV4PowerBoardConsoleBackend(
         try:
             return self._output_states[identifier]
         except KeyError:
-            raise ValueError(f"Invalid power output identifier {identifier!r}; "
-                             f"valid identifiers are "
-                             f"{self._output_states.keys()}") from None
+            raise ValueError(
+                f"Invalid power output identifier {identifier!r}; "
+                f"valid identifiers are "
+                f"{self._output_states.keys()}"
+            ) from None
 
     def set_power_output_enabled(
-        self, identifier: int, enabled: bool,
+        self,
+        identifier: int,
+        enabled: bool,
     ) -> None:
         """
         Set whether a power output is enabled.
@@ -105,9 +103,11 @@ class SRV4PowerBoardConsoleBackend(
         """
         self._console.info(f"Setting output {identifier} to {enabled}")
         if identifier not in self._output_states.keys():
-            raise ValueError(f"Invalid power output identifier {identifier!r}; "
-                             f"valid identifiers are "
-                             f"{self._output_states.keys()}")
+            raise ValueError(
+                f"Invalid power output identifier {identifier!r}; "
+                f"valid identifiers are "
+                f"{self._output_states.keys()}"
+            )
         self._output_states[identifier] = enabled
 
     def get_power_output_current(self, identifier: int) -> float:
@@ -119,15 +119,16 @@ class SRV4PowerBoardConsoleBackend(
         :raises ValueError: Invalid power output identifier.
         """
         if identifier in self._output_states:
-
             return self._console.read(
                 f"Current for power output {identifier} [amps]",
                 float,
             )
         else:
-            raise ValueError(f"Invalid power output identifier {identifier!r}; "
-                             f"valid identifiers are "
-                             f"{self._output_states.keys()}") from None
+            raise ValueError(
+                f"Invalid power output identifier {identifier!r}; "
+                f"valid identifiers are "
+                f"{self._output_states.keys()}"
+            ) from None
 
     def buzz(
         self,
@@ -146,8 +147,7 @@ class SRV4PowerBoardConsoleBackend(
         :raises ValueError: invalid value for parameter.
         """
         if identifier != 0:
-            raise ValueError(f"invalid piezo identifier {identifier!r}; "
-                             f"the only valid identifier is 0")
+            raise ValueError(f"invalid piezo identifier {identifier!r}; " f"the only valid identifier is 0")
         duration_ms = round(duration / timedelta(milliseconds=1))
         if duration_ms > 65535:
             raise ValueError("Maximum piezo duration is 65535ms.")
@@ -166,8 +166,7 @@ class SRV4PowerBoardConsoleBackend(
         :raises ValueError: invalid button identifier.
         """
         if identifier != 0:
-            raise ValueError(f"invalid button identifier {identifier!r}; "
-                             f"the only valid identifier is 0")
+            raise ValueError(f"invalid button identifier {identifier!r}; " f"the only valid identifier is 0")
         return self._console.read("Start button state [true/false]", bool)
 
     def wait_until_button_pressed(self, identifier: int) -> None:
@@ -188,8 +187,7 @@ class SRV4PowerBoardConsoleBackend(
         :raises ValueError: invalid battery sensor identifier.
         """
         if identifier != 0:
-            raise ValueError(f"invalid battery sensor identifier {identifier!r}; "
-                             f"the only valid identifier is 0")
+            raise ValueError(f"invalid battery sensor identifier {identifier!r}; " f"the only valid identifier is 0")
         return self._console.read("Battery voltage [volts]", float)
 
     def get_battery_sensor_current(self, identifier: int) -> float:
@@ -201,8 +199,7 @@ class SRV4PowerBoardConsoleBackend(
         :raises ValueError: invalid battery sensor identifier.
         """
         if identifier != 0:
-            raise ValueError(f"invalid battery sensor identifier {identifier!r}; "
-                             f"the only valid identifier is 0")
+            raise ValueError(f"invalid battery sensor identifier {identifier!r}; " f"the only valid identifier is 0")
         return self._console.read("Battery current [amps]", float)
 
     def get_led_state(self, identifier: int) -> bool:
@@ -226,5 +223,6 @@ class SRV4PowerBoardConsoleBackend(
             self._console.info(f"Set LED {identifier} to {state}")
             self._led_states[identifier] = state
         else:
-            raise ValueError(f"invalid LED identifier {identifier!r}; valid identifiers "
-                             f"are 0 (run LED) and 1 (error LED)") from None
+            raise ValueError(
+                f"invalid LED identifier {identifier!r}; valid identifiers " f"are 0 (run LED) and 1 (error LED)"
+            ) from None

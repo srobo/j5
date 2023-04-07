@@ -43,9 +43,9 @@ class SBArduinoConsoleBackend(
         return self._servo_states[identifier]
 
     def set_servo_position(
-            self,
-            identifier: int,
-            position: ServoPosition,
+        self,
+        identifier: int,
+        position: ServoPosition,
     ) -> None:
         """
         Set the position of a servo.
@@ -57,9 +57,9 @@ class SBArduinoConsoleBackend(
         self._console.info(f"Set servo {identifier} to {position}")
 
     def get_ultrasound_pulse(
-            self,
-            trigger_pin_identifier: int,
-            echo_pin_identifier: int,
+        self,
+        trigger_pin_identifier: int,
+        echo_pin_identifier: int,
     ) -> Optional[timedelta]:
         """
         Get a timedelta for the ultrasound time.
@@ -77,9 +77,9 @@ class SBArduinoConsoleBackend(
         return timedelta(microseconds=microseconds)
 
     def get_ultrasound_distance(
-            self,
-            trigger_pin_identifier: int,
-            echo_pin_identifier: int,
+        self,
+        trigger_pin_identifier: int,
+        echo_pin_identifier: int,
     ) -> Optional[float]:
         """
         Get a distance in metres.
@@ -89,8 +89,7 @@ class SBArduinoConsoleBackend(
         :returns: Distance measured in metres, or None if it timed out.
         """
         metres = self._console.read(
-            f"Distance for ultrasound sensor on pins "
-            f"{trigger_pin_identifier}/{echo_pin_identifier} [metres]",
+            f"Distance for ultrasound sensor on pins " f"{trigger_pin_identifier}/{echo_pin_identifier} [metres]",
             float,
         )
         self._update_ultrasound_pin_modes(trigger_pin_identifier, echo_pin_identifier)

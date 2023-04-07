@@ -42,13 +42,13 @@ class MockListPortInfo:
     """This class mocks the behaviour of serial.tools.ListPortInfo."""
 
     def __init__(
-            self,
-            device: str,
-            serial_number: Optional[str],
-            vid: int = 0x403,
-            pid: int = 0x6001,
-            manufacturer: str = "Student Robotics",
-            product: str = "MCV4B",
+        self,
+        device: str,
+        serial_number: Optional[str],
+        vid: int = 0x403,
+        pid: int = 0x6001,
+        manufacturer: str = "Student Robotics",
+        product: str = "MCV4B",
     ) -> None:
         self.device = device
         self.serial_number = serial_number
@@ -84,15 +84,13 @@ class MotorSerial(MockSerial):
     def respond_to_write(self, data: bytes) -> None:
         """Hook that can be overriden by subclasses to respond to sent data."""
         # We only end up returning data once, check for that here.
-        if data == b'\x01':  # Version Command
-            self.append_received_data(b'MCV4B:3', newline=True)
+        if data == b"\x01":  # Version Command
+            self.append_received_data(b"MCV4B:3", newline=True)
 
     def check_data_sent_by_constructor(self) -> None:
         """Check that the backend constructor sent expected data to the serial port."""
         self.check_sent_data(
-            b'\x01'  # Version Check
-            b'\x02\x02'  # Brake Motor 0 at init
-            b'\x03\x02',  # Brake Motor 1 at init
+            b"\x01" b"\x02\x02" b"\x03\x02",  # Version Check  # Brake Motor 0 at init  # Brake Motor 1 at init
         )
 
 
@@ -141,8 +139,8 @@ class MotorSerialBadFirmware(MotorSerial):
 
     def write(self, data: bytes) -> int:
         """Write data to the serial, but with the wrong fw version."""
-        if data == b'\x01':  # Version Command
-            self.append_received_data(b'MCV4B:5', newline=True)
+        if data == b"\x01":  # Version Command
+            self.append_received_data(b"MCV4B:5", newline=True)
         return len(data)
 
 
@@ -200,7 +198,7 @@ def test_backend_send_command() -> None:
     serial.check_sent_data(b"\x04")
 
     backend.send_command(2, 100)
-    serial.check_sent_data(b'\x02d')
+    serial.check_sent_data(b"\x02d")
 
 
 def test_backend_send_command_bad_write() -> None:
@@ -246,12 +244,12 @@ def test_get_firmware_version() -> None:
     serial = cast(MotorSerial, backend._serial)
     serial.check_data_sent_by_constructor()
     assert backend.firmware_version == "3"
-    serial.check_sent_data(b'\x01')
+    serial.check_sent_data(b"\x01")
 
-    serial.append_received_data(b'PBV4C:5', newline=True)
+    serial.append_received_data(b"PBV4C:5", newline=True)
     with pytest.raises(CommunicationError):
         _ = backend.firmware_version
-    serial.check_sent_data(b'\x01')
+    serial.check_sent_data(b"\x01")
 
 
 def test_get_set_motor_state() -> None:
@@ -264,32 +262,32 @@ def test_get_set_motor_state() -> None:
     assert backend.get_motor_state(1) == MotorSpecialState.BRAKE
 
     backend.set_motor_state(0, 0.65)
-    serial.check_sent_data(b'\x02\xd1')
+    serial.check_sent_data(b"\x02\xd1")
     assert backend.get_motor_state(0) == 0.65
 
     backend.set_motor_state(0, 1.0)
-    serial.check_sent_data(b'\x02\xfd')
+    serial.check_sent_data(b"\x02\xfd")
     assert backend.get_motor_state(0) == 1.0
 
     backend.set_motor_state(0, -1.0)
-    serial.check_sent_data(b'\x02\x03')
+    serial.check_sent_data(b"\x02\x03")
     assert backend.get_motor_state(0) == -1.0
 
     backend.set_motor_state(0, MotorSpecialState.BRAKE)
-    serial.check_sent_data(b'\x02\x02')
+    serial.check_sent_data(b"\x02\x02")
     assert backend.get_motor_state(0) == MotorSpecialState.BRAKE
 
     backend.set_motor_state(0, MotorSpecialState.COAST)
-    serial.check_sent_data(b'\x02\x01')
+    serial.check_sent_data(b"\x02\x01")
     assert backend.get_motor_state(0) == MotorSpecialState.COAST
 
     with pytest.raises(ValueError):
         backend.set_motor_state(0, 20.0)
-    serial.check_sent_data(b'')
+    serial.check_sent_data(b"")
 
     with pytest.raises(ValueError):
         backend.set_motor_state(2, 0.0)
-    serial.check_sent_data(b'')
+    serial.check_sent_data(b"")
 
 
 def test_brake_motors_at_deletion() -> None:
@@ -299,8 +297,7 @@ def test_brake_motors_at_deletion() -> None:
     serial.check_data_sent_by_constructor()
     del backend
     serial.check_sent_data(
-        b'\x02\x02'  # Brake motor 0
-        b'\x03\x02',  # Brake motor 1
+        b"\x02\x02" b"\x03\x02",  # Brake motor 0  # Brake motor 1
     )
 
 

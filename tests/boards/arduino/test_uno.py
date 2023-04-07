@@ -62,7 +62,7 @@ class MockArduinoUnoBackend(
         self.write_gpio_pin_digital_state(13, state)
 
     @classmethod
-    def discover(cls) -> Set['Board']:
+    def discover(cls) -> Set["Board"]:
         """Discover boards."""
         return set()
 

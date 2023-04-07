@@ -34,16 +34,14 @@ class SRV4RuggeduinoHardwareBackend(
             count += 1
             if count > 25:
                 raise CommunicationError(
-                    f"Ruggeduino ({self.serial_port}) is not responding "
-                    f"or runs custom firmware.",
+                    f"Ruggeduino ({self.serial_port}) is not responding " f"or runs custom firmware.",
                 )
         self._version_line = line
 
         # Verify the firmware version
         if int(self.firmware_version) != 1:
             raise CommunicationError(
-                f"Unexpected firmware version: {self.firmware_version}, "
-                f"expected \"1\".",
+                f"Unexpected firmware version: {self.firmware_version}, " f'expected "1".',
             )
 
         for pin_number in self._digital_pins.keys():
@@ -89,7 +87,7 @@ class SRV4RuggeduinoHardwareBackend(
         :param pin: pin number to encode, if any.
         :returns: encoded pin number.
         """
-        return chr(ord('a') + pin) if pin is not None else ""
+        return chr(ord("a") + pin) if pin is not None else ""
 
     def _update_digital_pin(self, identifier: int) -> None:
         """

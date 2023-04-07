@@ -24,9 +24,9 @@ class ServoInterface(Interface):
 
     @abstractmethod
     def set_servo_position(
-            self,
-            identifier: int,
-            position: ServoPosition,
+        self,
+        identifier: int,
+        position: ServoPosition,
     ) -> None:
         """
         Set the position of a servo.

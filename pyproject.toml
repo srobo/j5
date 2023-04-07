@@ -22,6 +22,7 @@ pyusb = "^1.0"
 pyserial = "^3.4"
 
 [tool.poetry.dev-dependencies]
+black = "^23"
 mypy = "*"
 pytest = "*"
 pytest-cov = "*"
@@ -33,6 +34,10 @@ sphinx-rtd-theme = "*"
 [build-system]
 requires = ["poetry>=1.0"]
 build-backend = "poetry.masonry.api"
+
+[tool.black]
+line-length = 120
+target-version = ['py37']
 
 [tool.mypy]
 mypy_path = "stubs"
@@ -63,7 +68,6 @@ target-version = "py37"
      "B",
      "BLE",
      "C4",
-     "COM",
      "DJ",
      "DTZ",
      "E",

@@ -16,8 +16,8 @@ from j5.backends import Backend, CommunicationError
 if TYPE_CHECKING:
     from j5.boards import Board  # noqa: F401
 
-T = TypeVar('T', bound='Board')
-U = TypeVar('U', bound=Backend)
+T = TypeVar("T", bound="Board")
+U = TypeVar("U", bound=Backend)
 
 
 class BoardGroup(Generic[T, U]):
@@ -30,7 +30,7 @@ class BoardGroup(Generic[T, U]):
         self.update_boards()
 
     @classmethod
-    def get_board_group(cls, _: Type[T], backend: Type[U]) -> 'BoardGroup[T, U]':
+    def get_board_group(cls, _: Type[T], backend: Type[U]) -> "BoardGroup[T, U]":
         """
         Get the board group with the given types.
 
@@ -77,7 +77,7 @@ class BoardGroup(Generic[T, U]):
 
         :returns: string representation of the board group.
         """
-        list_str = ', '.join(map(str, self._boards.values()))
+        list_str = ", ".join(map(str, self._boards.values()))
 
         return f"Group of Boards - [{list_str}]"
 

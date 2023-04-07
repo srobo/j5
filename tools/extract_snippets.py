@@ -27,7 +27,6 @@ class SnippetWriter:
 
         :param contents: contents of file.
         """
-        contents = f"# noqa: {','.join(ignored_flake8_rules)}\n{contents}"
         path = self.output_path / f"snippet{self.next_num:04d}.py"
         with open(path, "w") as file:
             file.write(contents)

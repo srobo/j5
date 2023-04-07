@@ -76,9 +76,9 @@ class MockSBArduinoBackend(
         return 1.0
 
     def set_servo_position(
-            self,
-            identifier: int,
-            position: ServoPosition,
+        self,
+        identifier: int,
+        position: ServoPosition,
     ) -> None:
         """Set the position of the servo."""
         pass
@@ -100,7 +100,7 @@ class MockSBArduinoBackend(
         return 1.0
 
     @classmethod
-    def discover(cls) -> Set['Board']:
+    def discover(cls) -> Set["Board"]:
         """Discover boards."""
         return set()
 

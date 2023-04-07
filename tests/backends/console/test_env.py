@@ -57,6 +57,7 @@ def test_console_read_none_type() -> None:
 
 def test_console_read_bad_type() -> None:
     """Test that the console emits an error if it cannot cast to the desired type."""
+
     class MockConsoleWithState(Console):
         """A mock console with state."""
 
@@ -83,6 +84,7 @@ def test_console_read_bad_type() -> None:
 
 def test_console_handle_boolean_correctly() -> None:
     """Test that the console handles bools correctly."""
+
     class MockConsoleBoolean(Console):
         """A mock console with state."""
 
@@ -104,8 +106,7 @@ def test_console_handle_boolean_correctly() -> None:
         def _print(self, text: str) -> None:  # noqa: A003,T002
             """Mock printing function."""
             if self._pos in [8, 9, 10, 11]:
-                assert text == f"TestConsole: Unable to construct a bool " \
-                    f"from {self.cases[self._pos - 1]!r}"
+                assert text == f"TestConsole: Unable to construct a bool " f"from {self.cases[self._pos - 1]!r}"
             else:
                 raise AssertionError()
 

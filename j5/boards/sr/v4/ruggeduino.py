@@ -22,9 +22,9 @@ class Ruggeduino(ArduinoUno):
     name: str = "Ruggeduino"
 
     def __init__(
-            self,
-            serial: str,
-            backend: Backend,
+        self,
+        serial: str,
+        backend: Backend,
     ) -> None:
         super().__init__(serial, backend)
 

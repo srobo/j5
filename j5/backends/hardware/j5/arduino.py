@@ -38,10 +38,10 @@ class ArduinoHardwareBackend(
     board: Type[ArduinoUno]
     USB_IDS: Set[Tuple[int, int]] = {
         (0x2341, 0x0043),  # Fake Uno
-        (0x2a03, 0x0043),  # Fake Uno
-        (0x1a86, 0x7523),  # Real Uno
-        (0x10c4, 0xea60),  # Ruggeduino
-        (0x16d0, 0x0613),  # Ruggeduino
+        (0x2A03, 0x0043),  # Fake Uno
+        (0x1A86, 0x7523),  # Real Uno
+        (0x10C4, 0xEA60),  # Ruggeduino
+        (0x16D0, 0x0613),  # Ruggeduino
     }
     DEFAULT_TIMEOUT: timedelta = timedelta(milliseconds=1250)
 
@@ -84,10 +84,10 @@ class ArduinoHardwareBackend(
         return boards
 
     def __init__(
-            self,
-            serial_port: str,
-            baud: int = 115200,
-            timeout: timedelta = DEFAULT_TIMEOUT,
+        self,
+        serial_port: str,
+        baud: int = 115200,
+        timeout: timedelta = DEFAULT_TIMEOUT,
     ) -> None:
         super().__init__(
             serial_port=serial_port,
@@ -198,8 +198,7 @@ class ArduinoHardwareBackend(
                 "Digital functions not supported on analogue pins",
             )
         if self._digital_pins[identifier].mode is not GPIOPinMode.DIGITAL_OUTPUT:
-            raise ValueError(f"Pin {identifier} mode needs to be DIGITAL_OUTPUT "
-                             f"in order to set the digital state.")
+            raise ValueError(f"Pin {identifier} mode needs to be DIGITAL_OUTPUT " f"in order to set the digital state.")
         self._digital_pins[identifier].state = state
         self._update_digital_pin(identifier)
 
@@ -217,8 +216,9 @@ class ArduinoHardwareBackend(
                 "Digital functions not supported on analogue pins.",
             )
         if self._digital_pins[identifier].mode is not GPIOPinMode.DIGITAL_OUTPUT:
-            raise ValueError(f"Pin {identifier} mode needs to be DIGITAL_OUTPUT "
-                             f"in order to read the digital state.")
+            raise ValueError(
+                f"Pin {identifier} mode needs to be DIGITAL_OUTPUT " f"in order to read the digital state."
+            )
         return self._digital_pins[identifier].state
 
     def read_gpio_pin_digital_state(self, identifier: int) -> bool:
@@ -238,8 +238,9 @@ class ArduinoHardwareBackend(
             GPIOPinMode.DIGITAL_INPUT,
             GPIOPinMode.DIGITAL_INPUT_PULLUP,
         ):
-            raise ValueError(f"Pin {identifier} mode needs to be DIGITAL_INPUT_* "
-                             f"in order to read the digital state.")
+            raise ValueError(
+                f"Pin {identifier} mode needs to be DIGITAL_INPUT_* " f"in order to read the digital state."
+            )
         return self._read_digital_pin(identifier)
 
     def read_gpio_pin_analogue_value(self, identifier: int) -> float:

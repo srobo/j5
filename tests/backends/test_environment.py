@@ -83,8 +83,7 @@ def test_environment_merge_duplicate() -> None:
     with pytest.raises(RuntimeError) as e:
         env1.merge(env2)
     assert e is not None
-    assert str(e.value) == \
-        "Attempted to merge two Environments that both contain: MockBoard"
+    assert str(e.value) == "Attempted to merge two Environments that both contain: MockBoard"
 
 
 def test_environment_check_multiple_backends_same_env() -> None:
@@ -103,7 +102,6 @@ def test_environment_check_multiple_backends_same_env() -> None:
             return None
 
     class BackendTwo(Backend):
-
         board = MockBoard
 
         @classmethod

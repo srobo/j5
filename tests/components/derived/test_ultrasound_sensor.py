@@ -17,9 +17,9 @@ class MockUltrasoundSensorDriver(UltrasoundInterface):
     """A testing driver for the ultrasound sensor."""
 
     def get_ultrasound_pulse(
-            self,
-            pin_trigger: int,
-            pin_echo: int,
+        self,
+        pin_trigger: int,
+        pin_echo: int,
     ) -> Optional[timedelta]:
         """
         Send a pulse and return the time taken.
@@ -29,9 +29,9 @@ class MockUltrasoundSensorDriver(UltrasoundInterface):
         return timedelta(milliseconds=20)
 
     def get_ultrasound_distance(
-            self,
-            pin_trigger: int,
-            pin_echo: int,
+        self,
+        pin_trigger: int,
+        pin_echo: int,
     ) -> Optional[float]:
         """
         Send a pulse and return the distance to the object.

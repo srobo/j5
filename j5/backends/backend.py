@@ -23,7 +23,7 @@ class CommunicationError(j5Exception):
 
 
 def _wrap_method_with_logging(
-    backend_class: Type['Backend'],
+    backend_class: Type["Backend"],
     method_name: str,
     logger: logging.Logger,
 ) -> None:
@@ -34,19 +34,16 @@ def _wrap_method_with_logging(
     def new_method(*args: Any, **kwargs: Any) -> Any:
         retval = old_method(*args, **kwargs)
         arg_map = signature.bind(*args, **kwargs).arguments
-        args_str = ", ".join(
-            f"{name}={value!r}"
-            for name, value in arg_map.items()
-            if name != "self"
-        )
-        retval_str = (f" -> {retval!r}" if retval is not None else "")
+        args_str = ", ".join(f"{name}={value!r}" for name, value in arg_map.items() if name != "self")
+        retval_str = f" -> {retval!r}" if retval is not None else ""
         message = f"{method_name}({args_str}){retval_str}"
         logger.debug(message)
         return retval
+
     setattr(backend_class, method_name, new_method)
 
 
-def _wrap_methods_with_logging(backend_class: Type['Backend']) -> None:
+def _wrap_methods_with_logging(backend_class: Type["Backend"]) -> None:
     component_classes = backend_class.board.supported_components()  # type: ignore
     for component_class in component_classes:
         logger = logging.getLogger(component_class.__module__)
@@ -123,13 +120,13 @@ class Backend(metaclass=BackendMeta):
 
     @classmethod
     @abstractmethod
-    def discover(cls) -> Set['Board']:
+    def discover(cls) -> Set["Board"]:
         """Discover boards that this backend can control."""
         raise NotImplementedError  # pragma: no cover
 
     @property
     @abstractmethod
-    def board(self) -> Type['Board']:
+    def board(self) -> Type["Board"]:
         """Type of board this backend implements."""
         raise NotImplementedError  # pragma: no cover
 
@@ -142,7 +139,7 @@ class Backend(metaclass=BackendMeta):
         """
         return None
 
-    def get_features(self) -> Set['Board.AvailableFeatures']:
+    def get_features(self) -> Set["Board.AvailableFeatures"]:
         """
         The set of features available on this backend.
 

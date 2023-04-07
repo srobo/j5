@@ -25,7 +25,7 @@ from j5.components import (
 )
 
 LED_NAMES = ("RUN", "ERR")
-MAX_BUZZ_DURATION_MS = (2 ** 31) - 1  # int32 max
+MAX_BUZZ_DURATION_MS = (2**31) - 1  # int32 max
 SUPPORTED_MAJOR_VERSIONS = {4}
 
 
@@ -39,8 +39,12 @@ def is_power_board(port: ListPortInfo) -> bool:
     :param port: ListPortInfo object.
     :returns: True if object represents a power board.
     """
-    return port.manufacturer == "Student Robotics" and port.product == "Power Board v4" \
-        and port.vid == 0x1bda and port.pid == 0x0010
+    return (
+        port.manufacturer == "Student Robotics"
+        and port.product == "Power Board v4"
+        and port.vid == 0x1BDA
+        and port.pid == 0x0010
+    )
 
 
 class SRV4SerialProtocolPowerBoardHardwareBackend(
@@ -88,8 +92,8 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         return boards
 
     def __init__(
-            self,
-            serial_port: str,
+        self,
+        serial_port: str,
     ) -> None:
         super().__init__(
             serial_port=serial_port,
@@ -101,11 +105,12 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
             1: False,
         }
         self._check_firmware_version_supported(
-            self.firmware_version, SUPPORTED_MAJOR_VERSIONS,
+            self.firmware_version,
+            SUPPORTED_MAJOR_VERSIONS,
         )
         self.reset_board()
 
-    def get_features(self) -> Set['Board.AvailableFeatures']:
+    def get_features(self) -> Set["Board.AvailableFeatures"]:
         """
         The set of features available on this backend.
 
@@ -132,13 +137,14 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
             elif response == "1":
                 return True
             else:
-                raise CommunicationError(
-                    f"Power Board returned an invalid response: {response}")
+                raise CommunicationError(f"Power Board returned an invalid response: {response}")
         else:
             raise ValueError(f"{identifier!r} is not a valid power output identifier")
 
     def set_power_output_enabled(
-        self, identifier: int, enabled: bool,
+        self,
+        identifier: int,
+        enabled: bool,
     ) -> None:
         """
         Set whether a power output is enabled.
@@ -185,8 +191,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         :raises NotSupportedByHardwareError: unsupported pitch freq or length.
         """
         if identifier != 0:
-            raise ValueError(f"Invalid piezo identifier {identifier!r}; "
-                             f"the only valid identifier is 0.")
+            raise ValueError(f"Invalid piezo identifier {identifier!r}; " f"the only valid identifier is 0.")
 
         duration_ms = round(duration.total_seconds() * 1000)
 
@@ -216,8 +221,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         :raises ValueError: invalid button identifier.
         """
         if identifier != 0:
-            raise ValueError(f"Invalid button identifier {identifier!r}; "
-                             f"the only valid identifier is 0.")
+            raise ValueError(f"Invalid button identifier {identifier!r}; " f"the only valid identifier is 0.")
         response = self.query("BTN:START:GET?")
         if ":" not in response:
             raise CommunicationError(
@@ -255,8 +259,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         :raises ValueError: invalid battery sensor identifier.
         """
         if identifier != 0:
-            raise ValueError(f"Invalid battery sensor identifier {identifier!r}; "
-                             f"the only valid identifier is 0.")
+            raise ValueError(f"Invalid battery sensor identifier {identifier!r}; " f"the only valid identifier is 0.")
         response = self.query("BATT:V?")
         return self._parse_float(response) / 1000
 
@@ -269,8 +272,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         :raises ValueError: invalid battery sensor identifier.
         """
         if identifier != 0:
-            raise ValueError(f"Invalid battery sensor identifier {identifier!r}; "
-                             f"the only valid identifier is 0.")
+            raise ValueError(f"Invalid battery sensor identifier {identifier!r}; " f"the only valid identifier is 0.")
         response = self.query("BATT:I?")
         return self._parse_float(response) / 1000
 
@@ -284,8 +286,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         """
         if identifier not in (0, 1):
             raise ValueError(
-                f"Invalid LED identifier {identifier!r}; the only valid identifiers"
-                " are 0 and 1.",
+                f"Invalid LED identifier {identifier!r}; the only valid identifiers" " are 0 and 1.",
             )
         return self._led_states[identifier]
 
@@ -299,8 +300,7 @@ class SRV4SerialProtocolPowerBoardHardwareBackend(
         """
         if identifier not in (0, 1):
             raise ValueError(
-                f"Invalid LED identifier {identifier!r}; the only valid identifiers"
-                " are 0 and 1.",
+                f"Invalid LED identifier {identifier!r}; the only valid identifiers" " are 0 and 1.",
             )
         led_name = LED_NAMES[identifier]
         state_int = int(state)

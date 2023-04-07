@@ -70,7 +70,7 @@ class MockRuggeduinoBackend(
         return command[::-1]
 
     @classmethod
-    def discover(cls) -> Set['Board']:
+    def discover(cls) -> Set["Board"]:
         """Discover boards."""
         return set()
 

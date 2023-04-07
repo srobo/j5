@@ -20,19 +20,12 @@ class MockGPIOPinDriver(GPIOPinInterface):
     """A testing driver for the GPIO pin component."""
 
     def __init__(self) -> None:
-
         self.pin_count: int = 10
-        self._mode: List[GPIOPinMode] = [
-            GPIOPinMode.DIGITAL_OUTPUT for _ in range(0, self.pin_count)
-        ]
+        self._mode: List[GPIOPinMode] = [GPIOPinMode.DIGITAL_OUTPUT for _ in range(0, self.pin_count)]
 
-        self._written_digital_state: List[bool] = [
-            False for _ in range(0, self.pin_count)
-        ]
+        self._written_digital_state: List[bool] = [False for _ in range(0, self.pin_count)]
 
-        self._digital_state: List[bool] = [
-            False for _ in range(0, self.pin_count)
-        ]
+        self._digital_state: List[bool] = [False for _ in range(0, self.pin_count)]
 
     def set_gpio_pin_mode(self, identifier: int, pin_mode: GPIOPinMode) -> None:
         """Set the hardware mode of a pin."""
@@ -59,17 +52,17 @@ class MockGPIOPinDriver(GPIOPinInterface):
         return 0.6
 
     def write_gpio_pin_dac_value(
-            self,
-            identifier: int,
-            scaled_value: float,
+        self,
+        identifier: int,
+        scaled_value: float,
     ) -> None:
         """Write a scaled analogue value to the DAC on the GPIO pin."""
         pass
 
     def write_gpio_pin_pwm_value(
-            self,
-            identifier: int,
-            duty_cycle: float,
+        self,
+        identifier: int,
+        duty_cycle: float,
     ) -> None:
         """Write a scaled analogue value to the PWM on the GPIO pin."""
         pass
@@ -209,10 +202,12 @@ def test_required_pin_modes() -> None:
         pin._require_pin_modes({GPIOPinMode.DIGITAL_INPUT_PULLUP})
 
     # 2
-    pin._require_pin_modes({
-        GPIOPinMode.DIGITAL_OUTPUT,
-        GPIOPinMode.DIGITAL_INPUT,
-    })
+    pin._require_pin_modes(
+        {
+            GPIOPinMode.DIGITAL_OUTPUT,
+            GPIOPinMode.DIGITAL_INPUT,
+        }
+    )
 
 
 def test_digital_state_getter() -> None:

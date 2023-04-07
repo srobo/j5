@@ -24,8 +24,8 @@ if TYPE_CHECKING:  # pragma: nocover
         None,
     ]
 
-T = TypeVar('T', bound='Board')
-U = TypeVar('U', bound=Backend)
+T = TypeVar("T", bound="Board")
+U = TypeVar("U", bound=Backend)
 
 
 class Board(metaclass=ABCMeta):
@@ -33,9 +33,9 @@ class Board(metaclass=ABCMeta):
 
     # BOARDS is a set of currently instantiated boards.
     # This is useful to know so that we can make them safe in a crash.
-    BOARDS: Set['Board'] = set()
+    BOARDS: Set["Board"] = set()
 
-    _backend: 'Backend'
+    _backend: "Backend"
 
     class AvailableFeatures(str, enum.Enum):
         """Features available on the board."""
@@ -48,7 +48,7 @@ class Board(metaclass=ABCMeta):
         """
         return f"{self.name} - {self.serial_number}"
 
-    def __new__(cls, *args: Any, **kwargs: Any) -> 'Board':
+    def __new__(cls, *args: Any, **kwargs: Any) -> "Board":
         """
         Ensure any instantiated board is added to the boards list.
 
@@ -67,7 +67,7 @@ class Board(metaclass=ABCMeta):
         return f"<{self.__class__.__name__} serial_number={self.serial_number}>"
 
     @property
-    def features(self) -> Set['Board.AvailableFeatures']:
+    def features(self) -> Set["Board.AvailableFeatures"]:
         """
         The set of features that are enabled on this board instance.
 
@@ -100,7 +100,7 @@ class Board(metaclass=ABCMeta):
 
     @staticmethod
     @abstractmethod
-    def supported_components() -> Set[Type['Component']]:
+    def supported_components() -> Set[Type["Component"]]:
         """The types of component supported by this board."""
         raise NotImplementedError  # pragma: no cover
 

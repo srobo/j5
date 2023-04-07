@@ -28,8 +28,12 @@ def is_motor_board(port: ListPortInfo) -> bool:
     :param port: ListPortInfo object.
     :returns: True if object represents motor board.
     """
-    return port.manufacturer == "Student Robotics" and port.product == "MCV4B" \
-        and port.vid == 0x0403 and port.pid == 0x6001
+    return (
+        port.manufacturer == "Student Robotics"
+        and port.product == "MCV4B"
+        and port.vid == 0x0403
+        and port.pid == 0x6001
+    )
 
 
 class SRV4MotorBoardHardwareBackend(
@@ -82,10 +86,7 @@ class SRV4MotorBoardHardwareBackend(
         )
 
         # Initialise our stored values for the state.
-        self._state: List[MotorState] = [
-            MotorSpecialState.BRAKE
-            for _ in range(0, 2)
-        ]
+        self._state: List[MotorState] = [MotorSpecialState.BRAKE for _ in range(0, 2)]
 
         self._lock = Lock()
 
@@ -93,7 +94,7 @@ class SRV4MotorBoardHardwareBackend(
         version = self.firmware_version
         if version != "3":
             raise CommunicationError(
-                f"Unexpected firmware version: {version}, expected: \"3\".",
+                f'Unexpected firmware version: {version}, expected: "3".',
             )
 
         # Brake both of the motors
@@ -184,10 +185,10 @@ class SRV4MotorBoardHardwareBackend(
         return self._state[identifier]
 
     def set_motor_state(
-            self,
-            identifier: int,
-            power: MotorState,
-            acquire_lock: bool = True,
+        self,
+        identifier: int,
+        power: MotorState,
+        acquire_lock: bool = True,
     ) -> None:
         """
         Set the state of a motor.

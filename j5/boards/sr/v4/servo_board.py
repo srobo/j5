@@ -16,10 +16,7 @@ class ServoBoard(Board):
         self._serial = serial
         self._backend = backend
 
-        self._servos = ImmutableList[Servo](
-            Servo(servo, cast(ServoInterface, self._backend))
-            for servo in range(0, 12)
-        )
+        self._servos = ImmutableList[Servo](Servo(servo, cast(ServoInterface, self._backend)) for servo in range(0, 12))
 
     @property
     def serial_number(self) -> str:

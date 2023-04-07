@@ -3,5 +3,5 @@
 from .arduino import SBArduinoBoard
 
 __all__ = [
-    'SBArduinoBoard',
+    "SBArduinoBoard",
 ]

@@ -25,10 +25,7 @@ class MockMotorBoardBackend(MotorInterface, Backend):
         return set()
 
     def __init__(self) -> None:
-        self._states: List[MotorState] = [
-            MotorSpecialState.BRAKE
-            for _ in range(0, 2)
-        ]
+        self._states: List[MotorState] = [MotorSpecialState.BRAKE for _ in range(0, 2)]
 
     @property
     def firmware_version(self) -> Optional[str]:
@@ -103,7 +100,6 @@ def test_motor_board_make_safe_option() -> None:
     ]
 
     for safe_state in test_safe_states:
-
         mb = MotorBoard("SERIAL0", MockMotorBoardBackend(), safe_state=safe_state)
 
         for m in mb.motors:

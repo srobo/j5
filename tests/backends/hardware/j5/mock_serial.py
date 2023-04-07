@@ -8,14 +8,15 @@ class MockSerial:
 
     expected_baudrate = 9600
 
-    def __init__(self,
-                 port: Optional[str] = None,
-                 baudrate: int = 9600,
-                 bytesize: int = 8,
-                 parity: str = 'N',
-                 stopbits: float = 1,
-                 timeout: Optional[float] = None,
-                 ) -> None:
+    def __init__(
+        self,
+        port: Optional[str] = None,
+        baudrate: int = 9600,
+        bytesize: int = 8,
+        parity: str = "N",
+        stopbits: float = 1,
+        timeout: Optional[float] = None,
+    ) -> None:
         self._is_open: bool = True
         self._receive_buffer: bytes = b""
         self._send_buffer: bytes = b""
@@ -23,7 +24,7 @@ class MockSerial:
 
         assert baudrate == self.expected_baudrate
         assert bytesize == 8
-        assert parity == 'N'
+        assert parity == "N"
         assert stopbits == 1
         assert timeout is not None
         assert 0.1 <= timeout <= 1.5  # Acceptable range of timeouts
@@ -53,9 +54,9 @@ class MockSerial:
     def readline(self) -> bytes:
         """Read up to a newline on the serial port."""
         try:
-            pos = self._receive_buffer.index(b'\n')
+            pos = self._receive_buffer.index(b"\n")
         except ValueError:
-            return b''
+            return b""
         return self.read(pos + 1)
 
     def write(self, data: bytes) -> int:
@@ -74,7 +75,7 @@ class MockSerial:
         """Append some data to the receive buffer."""
         self._receive_buffer += data
         if newline:
-            self._receive_buffer += b'\n'
+            self._receive_buffer += b"\n"
 
     def check_sent_data(self, data: bytes) -> None:
         """Check that the given data is what was written to the serial port."""
@@ -83,5 +84,4 @@ class MockSerial:
 
     def check_all_received_data_consumed(self) -> None:
         """Check all data queued by append_received_data was consumed by backend."""
-        assert self._receive_buffer == b"", \
-            "Backend didn't consume all expected incoming data"
+        assert self._receive_buffer == b"", "Backend didn't consume all expected incoming data"

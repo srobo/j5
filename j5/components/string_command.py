@@ -33,9 +33,9 @@ class StringCommandComponent(Component):
     """
 
     def __init__(
-            self,
-            identifier: int,
-            backend: StringCommandComponentInterface,
+        self,
+        identifier: int,
+        backend: StringCommandComponentInterface,
     ) -> None:
         self._backend = backend
         self._identifier = identifier

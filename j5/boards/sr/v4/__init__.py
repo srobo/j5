@@ -6,10 +6,10 @@ from .ruggeduino import Ruggeduino
 from .servo_board import ServoBoard
 
 __all__ = [
-    'MotorBoard',
-    'PowerBoard',
-    'PowerOutputGroup',
-    'PowerOutputPosition',
-    'Ruggeduino',
-    'ServoBoard',
+    "MotorBoard",
+    "PowerBoard",
+    "PowerOutputGroup",
+    "PowerOutputPosition",
+    "Ruggeduino",
+    "ServoBoard",
 ]

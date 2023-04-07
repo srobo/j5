@@ -17,7 +17,9 @@ class MockPowerOutputDriver(PowerOutputInterface):
         return self._enabled[identifier]
 
     def set_power_output_enabled(
-        self, identifier: int, enabled: bool,
+        self,
+        identifier: int,
+        enabled: bool,
     ) -> None:
         """Set whether a power output is enabled."""
         self._enabled[identifier] = enabled

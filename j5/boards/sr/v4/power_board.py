@@ -59,7 +59,8 @@ class PowerBoard(Board):
 
         self._outputs: Mapping[PowerOutputPosition, PowerOutput] = {
             output: PowerOutput(
-                output.value, cast("PowerOutputInterface", self._backend),
+                output.value,
+                cast("PowerOutputInterface", self._backend),
             )
             for output in PowerOutputPosition
             if self._output_is_controllable(self.features, output)
@@ -70,7 +71,8 @@ class PowerBoard(Board):
         self._piezo = Piezo(0, cast("PiezoInterface", self._backend))
         self._start_button = Button(0, cast("ButtonInterface", self._backend))
         self._battery_sensor = BatterySensor(
-            0, cast("BatterySensorInterface", self._backend),
+            0,
+            cast("BatterySensorInterface", self._backend),
         )
 
         self._run_led = LED(0, cast("LEDInterface", self._backend))
@@ -78,7 +80,7 @@ class PowerBoard(Board):
 
     @staticmethod
     def _output_is_controllable(
-        features: Set['Board.AvailableFeatures'],
+        features: Set["Board.AvailableFeatures"],
         output: PowerOutputPosition,
     ) -> bool:
         """
@@ -88,12 +90,10 @@ class PowerBoard(Board):
         :param output: The output to check
         :returns: True if we can control the output.
         """
-        if PowerBoard.AvailableFeatures.BRAIN_OUTPUT in features and \
-           output is PowerOutputPosition.L2:
+        if PowerBoard.AvailableFeatures.BRAIN_OUTPUT in features and output is PowerOutputPosition.L2:
             return False
 
-        if PowerBoard.AvailableFeatures.REG_5V_CONTROL not in features and \
-           output is PowerOutputPosition.FIVE_VOLT:
+        if PowerBoard.AvailableFeatures.REG_5V_CONTROL not in features and output is PowerOutputPosition.FIVE_VOLT:
             return False
 
         return True

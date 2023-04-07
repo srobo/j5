@@ -39,7 +39,7 @@ def run() -> None:
     tag_match = re.match(r"refs/tags/(.+)", tag_ref)
 
     if tag_match:
-        tag, = tag_match.groups()
+        (tag,) = tag_match.groups()
     else:
         print(f"Git Ref {tag_ref} did not match expected format!")
         tag = "UNKNOWN"

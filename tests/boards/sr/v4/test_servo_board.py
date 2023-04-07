@@ -20,10 +20,7 @@ class MockServoBoardBackend(ServoInterface, Backend):
         return set()
 
     def __init__(self) -> None:
-        self._positions: List[ServoPosition] = [
-            None
-            for _ in range(0, 12)
-        ]
+        self._positions: List[ServoPosition] = [None for _ in range(0, 12)]
 
     @property
     def firmware_version(self) -> Optional[str]:
