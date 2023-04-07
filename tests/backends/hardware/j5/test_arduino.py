@@ -185,8 +185,8 @@ def test_backend_discover() -> None:
     )
 
 
-def test_backend_discover_no_serial_number(  # type: ignore[no-untyped-def]
-    caplog,
+def test_backend_discover_no_serial_number(
+    caplog: pytest.LogCaptureFixture,
 ) -> None:
     """Test that we warn when a board has no serial number."""
     arduino_ports: List[ListPortInfo] = [

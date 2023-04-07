@@ -23,7 +23,7 @@ class SRV4RuggeduinoHardwareBackend(
 
     board = Ruggeduino
 
-    def __init__(self, serial_port: str):
+    def __init__(self, serial_port: str) -> None:
         super().__init__(serial_port)
 
         # Verify that the Ruggeduino has booted

@@ -108,7 +108,7 @@ T = TypeVar('T')
 class PowerOutputGroup:
     """A group of PowerOutputs."""
 
-    def __init__(self, outputs: Mapping[T, PowerOutput]):
+    def __init__(self, outputs: Mapping[T, PowerOutput]) -> None:
         self._outputs = outputs
 
     def power_on(self) -> None:

@@ -13,7 +13,7 @@ class PinData:
     mode: GPIOPinMode
     digital_state: bool
 
-    def __init__(self, *, mode: GPIOPinMode, digital_state: bool):
+    def __init__(self, *, mode: GPIOPinMode, digital_state: bool) -> None:
         self.mode = mode
         self.digital_state = digital_state
 

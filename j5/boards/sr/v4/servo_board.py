@@ -12,7 +12,7 @@ class ServoBoard(Board):
 
     name: str = "Student Robotics v4 Servo Board"
 
-    def __init__(self, serial: str, backend: Backend):
+    def __init__(self, serial: str, backend: Backend) -> None:
         self._serial = serial
         self._backend = backend
 

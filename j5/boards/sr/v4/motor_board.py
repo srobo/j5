@@ -24,7 +24,7 @@ class MotorBoard(Board):
             backend: Backend,
             *,
             safe_state: MotorState = MotorSpecialState.BRAKE,
-    ):
+    ) -> None:
         self._serial = serial
         self._backend = backend
         self._safe_state = safe_state

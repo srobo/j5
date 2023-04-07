@@ -1,11 +1,12 @@
 """A base class for robots."""
 
 import socket
+from typing import Any
 
 from j5.boards import Board
 
 
-class UnableToObtainLock(OSError):
+class UnableToObtainLock(OSError):  # noqa: N818
     """Unable to obtain lock."""
 
     pass
@@ -14,7 +15,7 @@ class UnableToObtainLock(OSError):
 class BaseRobot:
     """A base robot."""
 
-    def __new__(cls, *args, **kwargs) -> 'BaseRobot':  # type: ignore
+    def __new__(cls, *args: Any, **kwargs: Any) -> 'BaseRobot':
         """
         Create a new instance of the class.
 

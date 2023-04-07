@@ -9,7 +9,7 @@ from j5.components import Component
 class MockBoard(Board):
     """A testing board with little to no functionality."""
 
-    def __init__(self, serial: str):
+    def __init__(self, serial: str) -> None:
         self._serial = serial
         self._safe = False
 

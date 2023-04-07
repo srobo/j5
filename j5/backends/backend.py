@@ -4,7 +4,7 @@ import inspect
 import logging
 from abc import ABCMeta, abstractmethod
 from functools import wraps
-from typing import TYPE_CHECKING, Optional, Set, Type
+from typing import TYPE_CHECKING, Any, Optional, Set, Type
 
 from j5.exceptions import j5Exception
 
@@ -31,7 +31,7 @@ def _wrap_method_with_logging(
     signature = inspect.signature(old_method)
 
     @wraps(old_method)
-    def new_method(*args, **kwargs):  # type: ignore
+    def new_method(*args: Any, **kwargs: Any) -> Any:
         retval = old_method(*args, **kwargs)
         arg_map = signature.bind(*args, **kwargs).arguments
         args_str = ", ".join(
@@ -65,7 +65,7 @@ class BackendMeta(ABCMeta):
     in backend.board.supported_components.
     """
 
-    def __new__(mcs, name, bases, namespace, **kwargs):  # type:ignore
+    def __new__(mcs, name, bases, namespace, **kwargs):  # type:ignore  # noqa: ANN003, ANN001, ANN204, N804
         """
         Create a new class object.
 
@@ -84,12 +84,12 @@ class BackendMeta(ABCMeta):
         if len(cls.__bases__) <= 1 and cls.discover_only:  # type: ignore
             return cls
 
-        mcs._check_component_interfaces(cls)  # type: ignore
+        mcs._check_component_interfaces(cls)
         _wrap_methods_with_logging(cls)  # type: ignore
 
         return cls
 
-    def _check_component_interfaces(cls):  # type: ignore
+    def _check_component_interfaces(cls) -> None:
         """
         Check that the backend has the right interfaces.
 

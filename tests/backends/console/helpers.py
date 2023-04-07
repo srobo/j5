@@ -10,7 +10,7 @@ T = TypeVar("T")
 class MockConsole(Console):
     """Test Console for testing boards."""
 
-    def __init__(self, descriptor: str):
+    def __init__(self, descriptor: str) -> None:
         super(Console, self).__init__()
         self._descriptor = descriptor
         self.next_input: str = ""

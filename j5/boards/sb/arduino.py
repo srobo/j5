@@ -23,7 +23,7 @@ class SBArduinoBoard(ArduinoUno):
             self,
             serial: str,
             backend: Backend,
-    ):
+    ) -> None:
         super().__init__(serial, backend)
 
         for pin in self._digital_pins.values():
@@ -56,7 +56,7 @@ class UltrasoundSensors:
     accessed.
     """
 
-    def __init__(self, arduino: SBArduinoBoard):
+    def __init__(self, arduino: SBArduinoBoard) -> None:
         self._arduino = arduino
 
     def __getitem__(

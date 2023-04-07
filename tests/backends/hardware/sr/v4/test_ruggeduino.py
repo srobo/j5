@@ -30,7 +30,7 @@ class RuggeduinoSerial(MockSerial):
                  parity: str = 'N',
                  stopbits: float = 1,
                  timeout: Optional[float] = None,
-                 ):
+                 ) -> None:
         super().__init__(
             port=port,
             baudrate=baudrate,

@@ -53,7 +53,7 @@ class PowerBoard(Board):
         BRAIN_OUTPUT = "brain_output"  # Brain is powered from L2
         REG_5V_CONTROL = "5v_control"  # 5V output is controllable
 
-    def __init__(self, serial: str, backend: Backend):
+    def __init__(self, serial: str, backend: Backend) -> None:
         self._serial = serial
         self._backend = backend
 

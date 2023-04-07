@@ -209,7 +209,7 @@ class SRV4LegacyPowerBoardHardwareBackend(
                 raise CommunicationError(
                     f"{e}; are you sending buzz commands to the "
                     f"power board too quickly",
-                )
+                ) from None
             raise
 
         # If the buzz needs to block, wait for the correct time.

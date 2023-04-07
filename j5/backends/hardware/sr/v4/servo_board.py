@@ -85,7 +85,7 @@ class SRV4ServoBoardHardwareBackend(
                 raise CommunicationError(
                     f"{e}; are you sure the servo board"
                     f" is being correctly powered?",
-                )
+                ) from None
             raise
 
     def check_firmware_version_supported(self) -> None:

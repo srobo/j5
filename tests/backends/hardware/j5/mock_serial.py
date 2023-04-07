@@ -15,7 +15,7 @@ class MockSerial:
                  parity: str = 'N',
                  stopbits: float = 1,
                  timeout: Optional[float] = None,
-                 ):
+                 ) -> None:
         self._is_open: bool = True
         self._receive_buffer: bytes = b""
         self._send_buffer: bytes = b""

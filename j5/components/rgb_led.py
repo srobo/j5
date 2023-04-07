@@ -94,7 +94,7 @@ class RGBLED(Component):
                 raise ValueError(
                     f"{channel} is not a RGB colour, choose from: "
                     "red, green, blue",
-                )
+                ) from None
         else:
             colour = channel
 
@@ -116,7 +116,7 @@ class RGBLED(Component):
                 raise ValueError(
                     f"{channel} is not a RGB colour, choose from: "
                     "red, green, blue",
-                )
+                ) from None
         else:
             colour = channel
 

@@ -32,7 +32,7 @@ class SBArduinoSerial(MockSerial):
                  parity: str = 'N',
                  stopbits: float = 1,
                  timeout: Optional[float] = None,
-                 ):
+                 ) -> None:
         super().__init__(
             port=port,
             baudrate=baudrate,
@@ -66,7 +66,7 @@ class SBArduinoSerialBootFail(MockSerial):
                  parity: str = 'N',
                  stopbits: float = 1,
                  timeout: Optional[float] = None,
-                 ):
+                 ) -> None:
         super().__init__(
             port=port,
             baudrate=baudrate,

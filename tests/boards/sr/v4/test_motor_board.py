@@ -95,14 +95,14 @@ def test_motor_board_make_safe_default() -> None:
 
 def test_motor_board_make_safe_option() -> None:
     """Test the default make_safe method of the motor board."""
-    TEST_SAFE_STATES: List[MotorState] = [
+    test_safe_states: List[MotorState] = [
         MotorSpecialState.BRAKE,
         MotorSpecialState.COAST,
         0,
         0.1,
     ]
 
-    for safe_state in TEST_SAFE_STATES:
+    for safe_state in test_safe_states:
 
         mb = MotorBoard("SERIAL0", MockMotorBoardBackend(), safe_state=safe_state)
 

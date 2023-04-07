@@ -25,7 +25,7 @@ class Ruggeduino(ArduinoUno):
             self,
             serial: str,
             backend: Backend,
-    ):
+    ) -> None:
         super().__init__(serial, backend)
 
         self.command = StringCommandComponent(

@@ -115,7 +115,7 @@ class MockUSBConfiguration:
 class MockUSBPowerBoardDevice(usb.core.Device):
     """This class mocks the behaviour of a USB device for a Power Board."""
 
-    def __init__(self, serial_number: str, fw_version: int = 3):
+    def __init__(self, serial_number: str, fw_version: int = 3) -> None:
         self.serial = serial_number
         self.firmware_version = fw_version
         self._ctx = MockUSBContext()  # Used by PyUSB when cleaning up the device.

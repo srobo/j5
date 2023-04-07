@@ -23,7 +23,7 @@ class DigitalPinData:
     mode: GPIOPinMode
     state: bool
 
-    def __init__(self, *, mode: GPIOPinMode, state: bool):
+    def __init__(self, *, mode: GPIOPinMode, state: bool) -> None:
         self.mode = mode
         self.state = state
 

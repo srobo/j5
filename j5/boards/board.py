@@ -8,7 +8,7 @@ import signal
 import sys
 from abc import ABCMeta, abstractmethod
 from types import FrameType
-from typing import TYPE_CHECKING, Dict, Optional, Set, Type, TypeVar
+from typing import TYPE_CHECKING, Any, Dict, Optional, Set, Type, TypeVar
 
 from j5.backends import Backend
 
@@ -48,7 +48,7 @@ class Board(metaclass=ABCMeta):
         """
         return f"{self.name} - {self.serial_number}"
 
-    def __new__(cls, *args, **kwargs):  # type: ignore
+    def __new__(cls, *args: Any, **kwargs: Any) -> 'Board':
         """
         Ensure any instantiated board is added to the boards list.
 

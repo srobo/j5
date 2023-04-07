@@ -31,7 +31,7 @@ class Environment:
     different situations.
     """
 
-    def __init__(self, name: str):
+    def __init__(self, name: str) -> None:
         self.name = name
         self.board_backend_mapping: Dict[Type['Board'], Type[Backend]] = {}
 

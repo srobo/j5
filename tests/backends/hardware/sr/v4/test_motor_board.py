@@ -250,7 +250,7 @@ def test_get_firmware_version() -> None:
 
     serial.append_received_data(b'PBV4C:5', newline=True)
     with pytest.raises(CommunicationError):
-        backend.firmware_version
+        _ = backend.firmware_version
     serial.check_sent_data(b'\x01')
 
 

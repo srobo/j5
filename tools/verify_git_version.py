@@ -44,10 +44,10 @@ def run() -> None:
         print(f"Git Ref {tag_ref} did not match expected format!")
         tag = "UNKNOWN"
 
-    VERSION = find_version("j5", "__init__.py")
+    version = find_version("j5", "__init__.py")
 
-    if tag != VERSION:
-        info = f"Git tag: {tag} != j5 version: {VERSION}"
+    if tag != version:
+        info = f"Git tag: {tag} != j5 version: {version}"
         sys.exit(info)
 
 
