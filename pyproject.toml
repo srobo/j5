@@ -22,7 +22,6 @@ pyusb = "^1.0"
 pyserial = "^3.4"
 
 [tool.poetry.dev-dependencies]
-darglint = "*"
 flake8 = "*"
 flake8-bugbear = "*"
 flake8-builtins = "*"

@@ -19,7 +19,3 @@ ignore =
     D401
 
 max_line_length = 90
-
-# Darglint settings
-strictness=full
-docstring_style=sphinx
