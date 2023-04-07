@@ -81,7 +81,12 @@ class SRV4ServoBoardHardwareBackend(
             if e.usb_error.errno in [5, 110]:  # "Input/Output", "operation timed out"
                 raise CommunicationError(
                     f"{e}; are you sure the servo board" f" is being correctly powered?",
-                ) from None
+                ) from e
+            elif e.usb_error.errno == 32:  # "Pipe Error"
+                raise CommunicationError(
+                    "Unable to communicate with servo board. ",
+                    "Please browse to srobo.org/sbv4#pipe-error for more info.",
+                ) from e
             raise
 
     def check_firmware_version_supported(self) -> None:

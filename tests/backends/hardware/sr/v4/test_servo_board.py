@@ -153,6 +153,14 @@ class MockUSBServoBoardDeviceUSBTimeout(MockUSBServoBoardDevice):
         raise usb.core.USBError("Timeout Error", 110, 110)
 
 
+class MockUSBServoBoardDevicePipeError(MockUSBServoBoardDevice):
+    """This MockBoard throws an Pipe Error on FW read."""
+
+    def read_fw(self, wLength: int) -> bytes:
+        """Mock reading the firmware number."""
+        raise usb.core.USBError("Pipe Error", 32, 32)
+
+
 class MockUSBServoBoardDeviceUSBTimerExpired(MockUSBServoBoardDevice):
     """This MockBoard throws an Timer Expired Error on FW read."""
 
@@ -250,6 +258,15 @@ def test_backend_catch_usb_error_input_output() -> None:
     device = MockUSBServoBoardDeviceUSBInputOutput("SERIAL0")
     with pytest.raises(CommunicationError):
         SRV4ServoBoardHardwareBackend(device)
+
+
+def test_backend_catch_usb_error_pipe() -> None:
+    """Test that we catch and throw usb pipe errors properly."""
+    device = MockUSBServoBoardDevicePipeError("SERIAL0")
+    with pytest.raises(CommunicationError) as e:
+        SRV4ServoBoardHardwareBackend(device)
+    assert "Unable to communicate with servo board." in str(e)
+    assert "srobo.org/sbv4" in str(e)
 
 
 def test_backend_catch_usb_error_timeout() -> None:
