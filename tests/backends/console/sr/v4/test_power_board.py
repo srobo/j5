@@ -169,7 +169,7 @@ def test_backend_get_led_states() -> None:
         console_class=MockConsole,
     )
 
-    assert not any([backend.get_led_state(i) for i in [0, 1]])  # noqa: C407
+    assert not any(backend.get_led_state(i) for i in [0, 1])  # noqa: C407
 
     with pytest.raises(KeyError):
         backend.get_led_state(7)
